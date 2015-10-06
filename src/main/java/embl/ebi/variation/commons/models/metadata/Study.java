@@ -63,9 +63,8 @@ public class Study implements Serializable {
 
     protected Study(){}
 
-    public Study(String studyAccession, Long studyId, String centre, StudyEnums.Material material, StudyEnums.Scope scope, String type) {
+    public Study(String studyAccession, String centre, StudyEnums.Material material, StudyEnums.Scope scope, String type) {
         this.studyAccession = studyAccession;
-        this.studyId = studyId;
         this.centre = centre;
         this.material = material;
         this.scope = scope;
