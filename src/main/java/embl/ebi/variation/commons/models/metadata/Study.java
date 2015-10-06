@@ -23,98 +23,70 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "Study")
 public class Study implements Serializable {
 
     @Id
-    @Column(name = "study_id", nullable = false)
-    private int studyId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long studyId;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name="submission_id", unique=true, nullable = false) // unsure if both of these attributes are needed if object has a Submission
-    private Submission submission; // TODO submission class needed
-    private int submissionId; // submission_id
+    private String studyAccession; // Bioproject ID?
 
-    @Column(name = "stable_id", unique=true, nullable = false)
-    private String stableId;
-    @Column(name = "study_type", nullable = false)
-    private String studyType;
-    @Column(name = "name", nullable = false)
-    private String name;
-    @Column(name = "title")
     private String title;
-    @Column(name = "abstract")
-    private String abstract_;
-    @Column(name = "description")
+    private String alias;
     private String description;
-    @Column(name = "accession")
-    private String accession;
-    @Column(name = "url")
-    private String url;
-    @Column(name = "current")
-    private int current;
-    @Column(name = "released")
-    private int released;
-    @Column(name = "date")
-    private LocalDateTime date;
-    @ManyToOne // Unsure of how many parent studies a study can have
-    @JoinColumn(name="parent_id")
-    private Study parentStudy;
-    @OneToMany(mappedBy = "parentStudy", cascade = CascadeType.ALL)
-    private Set<Study> childStudies = new HashSet<Study>();
 
-    Study() {
-    }
+    private String centre;
+//    private Organisation centre; // could this be used to connect an Organisation class? Organisation class could be used for broker attribute too
 
-    public Study(int studyId, Submission submission, int submissionId, String stableId, String studyType, String name) {
+//    private Taxonomy taxonomy; // When there is a taxonomy
+
+    private StudyEnums.Scope scope; // controlled vocabulary, use enum?
+    private StudyEnums.Material material; // controlled vocabulary, use enum?
+//    private Set<Publication> publications; // if there will be separate publication class
+
+//    private Set<Study> associatedStudies = new HashSet<Study>(); // in submission template is described as: "Associated Project(s)	Accession OR Alias of all project(s) assoicated to this project (NCBI, ENA, EVA all share the same project accession space so no database distinction is necessary) (e.g. PRJEB4019)" but will a hierarchy of studies be needed instead?
+//    private Study parentStudy;
+//    private Set<Study> childStudies = new HashSet<Study>(); // ... or use this hierarchical relationship?
+
+//    private Set<Link> links = new HashSet<Link>(); // should this be given as a string or as relation to other "Link" class? Submission template gives as: "Link(s)	Links in the form DB:ID:LABEL (e.g. DGVA:esv1, DBSNP:rs149486)"
+    private LocalDateTime holdDate;
+//    private Set<Collaborator> collaborators = new HashSet<Collaborator>(); // link to collaborator class? collaborator could be part of multiple studies
+
+//    private Strain strain; // part of submission template, but should they be strings or separate classes?
+//    private Breed breed;
+
+//    private Broker broker; // if there is a separate broker/organisation class
+
+    private Set<String> urls = new HashSet<String>();
+    private String type; // e.g. umbrella, pop genomics BUT separate column for study_type (aggregate, control set, case control)
+
+
+    protected Study(){}
+
+    public Study(String studyAccession, Long studyId, String centre, StudyEnums.Material material, StudyEnums.Scope scope, String type) {
+        this.studyAccession = studyAccession;
         this.studyId = studyId;
-        this.submission = submission;
-        this.submissionId = submissionId;
-        this.stableId = stableId;
-        this.studyType = studyType;
-        this.name = name;
+        this.centre = centre;
+        this.material = material;
+        this.scope = scope;
+        this.type = type;
     }
 
-    // TODO getter and setter for submission relation
 
-    public int getStudyId() {
+    public Long getStudyId() {
         return studyId;
     }
 
-    public void setStudyId(int studyId) {
+    public void setStudyId(Long studyId) {
         this.studyId = studyId;
     }
 
-    public int getSubmissionId() {
-        return submissionId;
+    public String getStudyAccession() {
+        return studyAccession;
     }
 
-    public void setSubmissionId(int submissionId) {
-        this.submissionId = submissionId;
-    }
-
-    public String getStableId() {
-        return stableId;
-    }
-
-    public void setStableId(String stableId) {
-        this.stableId = stableId;
-    }
-
-    public String getStudyType() {
-        return studyType;
-    }
-
-    public void setStudyType(String studyType) {
-        this.studyType = studyType;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setStudyAccession(String studyAccession) {
+        this.studyAccession = studyAccession;
     }
 
     public String getTitle() {
@@ -125,12 +97,12 @@ public class Study implements Serializable {
         this.title = title;
     }
 
-    public String getAbstract_() {
-        return abstract_;
+    public String getAlias() {
+        return alias;
     }
 
-    public void setAbstract_(String abstract_) {
-        this.abstract_ = abstract_;
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public String getDescription() {
@@ -141,43 +113,43 @@ public class Study implements Serializable {
         this.description = description;
     }
 
-    public String getAccession() {
-        return accession;
+    public String getCentre() {
+        return centre;
     }
 
-    public void setAccession(String accession) {
-        this.accession = accession;
+    public void setCentre(String centre) {
+        this.centre = centre;
     }
 
-    public String getUrl() {
-        return url;
+    public StudyEnums.Scope getScope() {
+        return scope;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setScope(StudyEnums.Scope scope) {
+        this.scope = scope;
     }
 
-    public int getCurrent() {
-        return current;
+    public StudyEnums.Material getMaterial() {
+        return material;
     }
 
-    public void setCurrent(int current) {
-        this.current = current;
+    public void setMaterial(StudyEnums.Material material) {
+        this.material = material;
     }
 
-    public int getReleased() {
-        return released;
+    public LocalDateTime getHoldDate() {
+        return holdDate;
     }
 
-    public void setReleased(int released) {
-        this.released = released;
+    public void setHoldDate(LocalDateTime holdDate) {
+        this.holdDate = holdDate;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public String getType() {
+        return type;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
+    public void setType(String type) {
+        this.type = type;
     }
 }
