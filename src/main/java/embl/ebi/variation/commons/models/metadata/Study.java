@@ -65,6 +65,7 @@ public class Study implements Serializable {
 
     public Study(String studyAccession, String centre, StudyEnums.Material material, StudyEnums.Scope scope, String type) {
         this.studyAccession = studyAccession;
+
         this.centre = centre;
         this.material = material;
         this.scope = scope;
@@ -85,6 +86,7 @@ public class Study implements Serializable {
     }
 
     public void setStudyAccession(String studyAccession) {
+        // starts with "PRJEB\d+"
         this.studyAccession = studyAccession;
     }
 
@@ -150,5 +152,13 @@ public class Study implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Set<String> getUrls() {
+        return urls;
+    }
+
+    public void setUrls(Set<String> urls) {
+        this.urls = urls;
     }
 }
