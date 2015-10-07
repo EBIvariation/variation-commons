@@ -16,9 +16,17 @@
 
 package embl.ebi.variation.commons.models.metadata;
 
+import org.apache.commons.validator.routines.UrlValidator;
+
 import javax.persistence.*;
+import java.io.IOException;
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -86,8 +94,13 @@ public class Study implements Serializable {
     }
 
     public void setStudyAccession(String studyAccession) {
-        // starts with "PRJEB\d+"
-        this.studyAccession = studyAccession;
+        // starts with "PRJEA or PRJEB PRJNA\d+"
+        if(studyAccession.matches("PRJ(E(A|B)|NA)\\d+")){
+            this.studyAccession = studyAccession;
+        }else{
+            throw new IllegalArgumentException("Study accession must begin with a prefix from the following: (PRJEA, PRJEB, PRJNA), followed by multiple numerical digits.");
+            // TODO openpojo tester throws exception with this
+        }
     }
 
     public String getTitle() {
@@ -155,10 +168,30 @@ public class Study implements Serializable {
     }
 
     public Set<String> getUrls() {
-        return urls;
+        return Collections.unmodifiableSet(urls);
+    }
+
+    public void addUrl(String url){
+        UrlValidator urlValidator = new UrlValidator();
+        if(urlValidator.isValid(url)){
+            urls.add(url);
+        }else{
+            // TODO deal with invalid url
+        }
+    }
+
+    public void removeUrl(String url){
+        urls.remove(url);
     }
 
     public void setUrls(Set<String> urls) {
-        this.urls = urls;
+        for(String url: this.urls.toArray(new String[urls.size()])){
+            removeUrl(url);
+        }
+        if(urls != null){
+            for(String url: urls) {
+                addUrl(url);
+            }
+        }
     }
 }
