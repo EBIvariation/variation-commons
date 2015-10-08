@@ -21,7 +21,7 @@ public class DatasetTest {
 
         // add one run to the dataset
         String runStableId1 = "EGAR00001";
-        Run run1 = new Run(runStableId1, null, null, null, null, null, null);
+        Run run1 = new Run(runStableId1, null, null, null, null, null, null, null);
         dataset.addFileGenerator(run1);
         checkDatasetHasFileGenerators(dataset, run1);
         checkDatasetInFileGenerators(dataset, run1);
@@ -30,7 +30,7 @@ public class DatasetTest {
         checkDatasetHasFileGenerators(dataset, run1);
         checkDatasetInFileGenerators(dataset, run1);
         // add again the same run in a different object instance
-        Run anotherRun1 = new Run(runStableId1, null, null, null, null, null, null);
+        Run anotherRun1 = new Run(runStableId1, null, null, null, null, null, null, null);
         dataset.addFileGenerator(anotherRun1);
         checkDatasetHasFileGenerators(dataset, run1);
         checkDatasetHasFileGenerators(dataset, anotherRun1);
@@ -71,7 +71,7 @@ public class DatasetTest {
 
         // add another run and dataset
         String runStableId2 = "EGAR00002";
-        Run run2 = new Run(runStableId2, null, null, null, null, null, null);
+        Run run2 = new Run(runStableId2, null, null, null, null, null, null, null);
         dataset.addFileGenerator(run2);
 //        Array array2 = new Array(2);
 //        dataset.addFileGenerator(array2);

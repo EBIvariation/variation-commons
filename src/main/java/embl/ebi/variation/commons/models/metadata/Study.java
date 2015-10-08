@@ -44,15 +44,15 @@ public class Study implements Serializable {
     private StudyEnums.Scope scope; // controlled vocabulary, use enum?
     private String type; // e.g. umbrella, pop genomics BUT separate column for study_type (aggregate, control set, case control)
 
-    private Set<FileGenerator> fileGenerators;
+    private Set<FileGenerator> fileGenerators = new HashSet<FileGenerator>();
 
     private String alias;
     private String description;
     private Set<String> urls = new HashSet<String>();
 //    private Taxonomy taxonomy; // When there is a taxonomy
-    private Set<String> publications; //    private Set<Publication> publications; if there will be separate publication class
-    private Set<String> links; // should this be given as a string or as relation to other "Link" (i.e. Set<Link>) class? Submission template gives as: "Link(s)	Links in the form DB:ID:LABEL (e.g. DGVA:esv1, DBSNP:rs149486)"
-    private Set<String> collaborators; // link to collaborator class? collaborator could be part of multiple studies  private Set<Collaborator>
+    private Set<String> publications = new HashSet<String>(); //    private Set<Publication> publications; if there will be separate publication class
+    private Set<String> links = new HashSet<String>(); // should this be given as a string or as relation to other "Link" (i.e. Set<Link>) class? Submission template gives as: "Link(s)	Links in the form DB:ID:LABEL (e.g. DGVA:esv1, DBSNP:rs149486)"
+    private Set<String> collaborators = new HashSet<String>(); // link to collaborator class? collaborator could be part of multiple studies  private Set<Collaborator>
     private LocalDateTime holdDate;
     private String strain; // part of submission template, but should they be strings or separate "Strain" and "Breed" classes?
     private String breed;
@@ -64,7 +64,7 @@ public class Study implements Serializable {
 
 
     public Study(String studyAccession, String centre, StudyEnums.Material material, StudyEnums.Scope scope, String type) {
-        this.studyAccession = studyAccession;
+        this.setStudyAccession(studyAccession);
         this.centre = centre;
         this.material = material;
         this.scope = scope;

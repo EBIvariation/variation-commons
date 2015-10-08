@@ -35,11 +35,7 @@ public abstract class FileGenerator {
 
     protected FileGenerator(Dataset dataset, Set<File> files) {
         this.dataset = dataset;
-        this.files = files;
-    }
-
-    public Dataset getDataset() {
-        return dataset;
+        setFiles(files);
     }
 
     void setDataset(Dataset dataset) {
@@ -47,7 +43,11 @@ public abstract class FileGenerator {
     }
 
     public Set<File> getFiles() {
-        return Collections.unmodifiles;
+        return Collections.unmodifiableSet(files);
+    }
+
+    public void addFile(File file){
+        this.files.add(file);
     }
 
     public void setFiles(Set<File> files) {

@@ -17,6 +17,7 @@
 package embl.ebi.variation.commons.models.metadata;
 
 import java.util.Date;
+import java.util.HashSet;
 
 /**
  * Created by parce on 05/10/15.
@@ -32,6 +33,7 @@ public class Run extends FileGenerator {
     private Experiment experiment;
 
     public Run(String stableId, String alias, String eraVersion, String released, Date releasedTimestamp, Date loadTimestamp, Experiment experiment, String dataset) {
+        super(new Dataset(), new HashSet<File>());
         this.stableId = stableId;
         this.alias = alias;
         this.eraVersion = eraVersion;
