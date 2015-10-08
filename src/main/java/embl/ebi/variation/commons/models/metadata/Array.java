@@ -19,27 +19,9 @@ package embl.ebi.variation.commons.models.metadata;
 /**
  * Created by parce on 05/10/15.
  */
-public class Array extends FileGenerator {
-    public Array(long id) {
-        super(id);
+public abstract class Array extends FileGenerator {
+    protected Array(Dataset dataset) {
+        super(dataset);
     }
-
-    @Override
-    public boolean equals(Object e) {
-        if (e == this) {
-            return true;
-        }else if (!(e instanceof Array)) {
-            return false;
-        }else {
-            return ((Array)e).getId() == id;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        int hashCode = 22;
-        int c = (int)(getId() ^(getId() >>>32));
-        hashCode = 31 * hashCode + c;
-        return hashCode;
-    }
+    // TODO: implement class
 }

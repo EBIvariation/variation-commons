@@ -45,11 +45,11 @@ public class Sample {
     public long getId() {
         return id;
     }
-
-    public void addFile(File file) {
-        internalAddFile(file);
-        file.internalAddSample(this);
-    }
+//
+//    public void addFile(File file) {
+//        internalAddFile(file);
+//        file.internalAddSample(this);
+//    }
 
     void internalAddFile(File file) {
         if (getFiles() == null) {

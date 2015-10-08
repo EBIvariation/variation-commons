@@ -22,8 +22,8 @@ import java.util.Date;
  * Created by parce on 05/10/15.
  */
 public class Run extends FileGenerator {
+
     private String stableId;
-    private String experimentStableId; // TODO: we have an exeperiment relation, maybe we should delete this field
     private String alias;
     private String eraVersion;
     private String released;
@@ -31,32 +31,14 @@ public class Run extends FileGenerator {
     private Date loadTimestamp;
     private Experiment experiment;
 
-    public Run(long id) {
-        super(id);
-    }
-
-    public void setExperiment(Experiment experiment) {
+    public Run(String stableId, String alias, String eraVersion, String released, Date releasedTimestamp, Date loadTimestamp, Experiment experiment, String dataset) {
+        this.stableId = stableId;
+        this.alias = alias;
+        this.eraVersion = eraVersion;
+        this.released = released;
+        this.releasedTimestamp = releasedTimestamp;
+        this.loadTimestamp = loadTimestamp;
         this.experiment = experiment;
-        experiment.internalAddRun(this);
-    }
-
-    @Override
-    public boolean equals(Object e) {
-        if (e == this) {
-            return true;
-        }else if (!(e instanceof Run)) {
-            return false;
-        }else {
-            return ((Run)e).getId() == id;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        int hashCode = 23;
-        int c = (int)(getId() ^(getId() >>>32));
-        hashCode = 31 * hashCode + c;
-        return hashCode;
     }
 
     public String getStableId() {
@@ -65,14 +47,6 @@ public class Run extends FileGenerator {
 
     public void setStableId(String stableId) {
         this.stableId = stableId;
-    }
-
-    public String getExperimentStableId() {
-        return experimentStableId;
-    }
-
-    public void setExperimentStableId(String experimentStableId) {
-        this.experimentStableId = experimentStableId;
     }
 
     public String getAlias() {
@@ -117,5 +91,25 @@ public class Run extends FileGenerator {
 
     public Experiment getExperiment() {
         return experiment;
+    }
+
+    void setExperiment(Experiment experiment) {
+        this.experiment = experiment;
+    }
+
+    @Override
+    public boolean equals(Object e) {
+        if (e == this) {
+            return true;
+        }else if (!(e instanceof Run)) {
+            return false;
+        }else {
+            return ((Run)e).getStableId() == stableId;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return stableId.hashCode();
     }
 }

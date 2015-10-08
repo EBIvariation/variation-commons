@@ -24,9 +24,7 @@ import java.util.Set;
  * Created by parce on 05/10/15.
  */
 public class Experiment {
-    private long id;
     private String stableId;
-    // private String studyStableId; TODO: Study is not going to be linked to Experiment
     private String alias;
     private String instrumentPlatform;
     private String instrumentModel;
@@ -45,27 +43,43 @@ public class Experiment {
 
     private Set<Run> runs;
 
-    public Experiment(long id) {
-        this.id = id;
+    public Experiment(String stableId, String alias, String instrumentPlatform, String instrumentModel,
+                      String libraryModel, String libraryLayout, String libraryName, String libraryStrategy,
+                      String librarySource, String librarySelection, String pairedNominalLength, String pairedNominalSdev,
+                      String eraVersion, String released, Date releasedTimeStamp, Date loadTimestamp)
+    {
+        this(stableId, alias, instrumentPlatform, instrumentModel, libraryModel, libraryLayout, libraryName,
+                libraryStrategy, librarySource, librarySelection, pairedNominalLength, pairedNominalSdev, eraVersion,
+                released, releasedTimeStamp, loadTimestamp, new HashSet<Run>());
+    }
+
+    public Experiment(String stableId, String alias, String instrumentPlatform, String instrumentModel,
+                      String libraryModel, String libraryLayout, String libraryName, String libraryStrategy,
+                      String librarySource, String librarySelection, String pairedNominalLength, String pairedNominalSdev,
+                      String eraVersion, String released, Date releasedTimeStamp, Date loadTimestamp, Set<Run> runs)
+    {
+        this.stableId = stableId;
+        this.alias = alias;
+        this.instrumentPlatform = instrumentPlatform;
+        this.instrumentModel = instrumentModel;
+        this.libraryModel = libraryModel;
+        this.libraryLayout = libraryLayout;
+        this.libraryName = libraryName;
+        this.libraryStrategy = libraryStrategy;
+        this.librarySource = librarySource;
+        this.librarySelection = librarySelection;
+        this.pairedNominalLength = pairedNominalLength;
+        this.pairedNominalSdev = pairedNominalSdev;
+        this.eraVersion = eraVersion;
+        this.released = released;
+        this.releasedTimeStamp = releasedTimeStamp;
+        this.loadTimestamp = loadTimestamp;
+        this.runs = runs;
     }
 
     public void addRun(Run run) {
-        run.setExperiment(this);
-    }
-
-    public void internalAddRun(Run run) {
-        if (runs == null) {
-            runs = new HashSet<Run>();
-        }
         runs.add(run);
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
+        run.setExperiment(this);
     }
 
     public String getStableId() {
@@ -201,6 +215,9 @@ public class Experiment {
     }
 
     public void setRuns(Set<Run> runs) {
-        this.runs = runs;
+        this.runs.clear();
+        for (Run run : runs) {
+            addRun(run);
+        }
     }
 }
