@@ -1,4 +1,3 @@
-/variation-commons.iml
 *.class
 
 # Mobile Tools for Java (J2ME)
@@ -16,5 +15,6 @@ hs_err_pid*
 # Others
 .DS_Store
 
-# intellij files
+# IntelliJ files
 .idea
+*.iml
