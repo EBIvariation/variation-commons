@@ -16,6 +16,7 @@
 
 package embl.ebi.variation.commons.models.metadata;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,6 +27,7 @@ public class FileGenerator {
     protected long id;
     protected Set<File> files;
     protected Dataset dataset;
+    protected Set<Study> studies;
 
     protected FileGenerator(long id) {
         this.id = id;
@@ -66,5 +68,13 @@ public class FileGenerator {
 
     public Dataset getDataset() {
         return dataset;
+    }
+
+    public Set<Study> getStudies() {
+        return Collections.unmodifiableSet(studies);
+    }
+
+    void addStudy(Study study){
+        studies.add(study);
     }
 }

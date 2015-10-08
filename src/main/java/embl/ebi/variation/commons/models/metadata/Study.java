@@ -38,42 +38,33 @@ public class Study implements Serializable {
     private Long studyId;
 
     private String studyAccession; // Bioproject ID?
-
     private String title;
+    private String centre; // could this be used to connect an Organisation class (i.e. private Organisation centre)? Organisation class could be used for broker attribute too
+    private StudyEnums.Material material; // controlled vocabulary, use enum?
+    private StudyEnums.Scope scope; // controlled vocabulary, use enum?
+    private String type; // e.g. umbrella, pop genomics BUT separate column for study_type (aggregate, control set, case control)
+
+    private Set<FileGenerator> fileGenerators;
+
     private String alias;
     private String description;
-
-    private String centre;
-//    private Organisation centre; // could this be used to connect an Organisation class? Organisation class could be used for broker attribute too
-
+    private Set<String> urls = new HashSet<String>();
 //    private Taxonomy taxonomy; // When there is a taxonomy
-
-    private StudyEnums.Scope scope; // controlled vocabulary, use enum?
-    private StudyEnums.Material material; // controlled vocabulary, use enum?
-//    private Set<Publication> publications; // if there will be separate publication class
+    private Set<String> publications; //    private Set<Publication> publications; if there will be separate publication class
+    private Set<String> links; // should this be given as a string or as relation to other "Link" (i.e. Set<Link>) class? Submission template gives as: "Link(s)	Links in the form DB:ID:LABEL (e.g. DGVA:esv1, DBSNP:rs149486)"
+    private Set<String> collaborators; // link to collaborator class? collaborator could be part of multiple studies  private Set<Collaborator>
+    private LocalDateTime holdDate;
+    private String strain; // part of submission template, but should they be strings or separate "Strain" and "Breed" classes?
+    private String breed;
+    private String broker; // if there is a separate broker/organisation class
 
 //    private Set<Study> associatedStudies = new HashSet<Study>(); // in submission template is described as: "Associated Project(s)	Accession OR Alias of all project(s) assoicated to this project (NCBI, ENA, EVA all share the same project accession space so no database distinction is necessary) (e.g. PRJEB4019)" but will a hierarchy of studies be needed instead?
 //    private Study parentStudy;
 //    private Set<Study> childStudies = new HashSet<Study>(); // ... or use this hierarchical relationship?
 
-//    private Set<Link> links = new HashSet<Link>(); // should this be given as a string or as relation to other "Link" class? Submission template gives as: "Link(s)	Links in the form DB:ID:LABEL (e.g. DGVA:esv1, DBSNP:rs149486)"
-    private LocalDateTime holdDate;
-//    private Set<Collaborator> collaborators = new HashSet<Collaborator>(); // link to collaborator class? collaborator could be part of multiple studies
-
-//    private Strain strain; // part of submission template, but should they be strings or separate classes?
-//    private Breed breed;
-
-//    private Broker broker; // if there is a separate broker/organisation class
-
-    private Set<String> urls = new HashSet<String>();
-    private String type; // e.g. umbrella, pop genomics BUT separate column for study_type (aggregate, control set, case control)
-
-
-    protected Study(){}
 
     public Study(String studyAccession, String centre, StudyEnums.Material material, StudyEnums.Scope scope, String type) {
         this.studyAccession = studyAccession;
-
         this.centre = centre;
         this.material = material;
         this.scope = scope;
@@ -81,13 +72,13 @@ public class Study implements Serializable {
     }
 
 
-    public Long getStudyId() {
-        return studyId;
-    }
-
-    public void setStudyId(Long studyId) {
-        this.studyId = studyId;
-    }
+//    public Long getStudyId() {
+//        return studyId;
+//    }
+//
+//    public void setStudyId(Long studyId) {
+//        this.studyId = studyId;
+//    }
 
     public String getStudyAccession() {
         return studyAccession;
@@ -172,12 +163,12 @@ public class Study implements Serializable {
     }
 
     public void addUrl(String url){
-        UrlValidator urlValidator = new UrlValidator();
-        if(urlValidator.isValid(url)){
+//        UrlValidator urlValidator = new UrlValidator();
+//        if(urlValidator.isValid(url)){
             urls.add(url);
-        }else{
+//        }else{
             // TODO deal with invalid url
-        }
+//        }
     }
 
     public void removeUrl(String url){
@@ -185,13 +176,112 @@ public class Study implements Serializable {
     }
 
     public void setUrls(Set<String> urls) {
-        for(String url: this.urls.toArray(new String[urls.size()])){
-            removeUrl(url);
-        }
+        this.urls.clear();
         if(urls != null){
             for(String url: urls) {
                 addUrl(url);
             }
         }
+    }
+
+    public Set<FileGenerator> getFileGenerators() {
+        return Collections.unmodifiableSet(fileGenerators);
+    }
+
+    public void removeFileGenerator(FileGenerator fileGenerator){
+        fileGenerators.remove(fileGenerator);
+    }
+
+    public void addFileGenerator(FileGenerator fileGenerator){
+        fileGenerators.add(fileGenerator);
+        fileGenerator.addStudy(this);
+    }
+
+    public void setFileGenerators(Set<FileGenerator> fileGenerators) {
+        this.fileGenerators.clear();
+        for(FileGenerator fileGenerator: fileGenerators){
+            addFileGenerator(fileGenerator);
+        }
+    }
+
+    public Set<String> getPublications() {
+        return Collections.unmodifiableSet(publications);
+    }
+
+    public void removePublication(String publication){
+        publications.remove(publication);
+    }
+
+    public void addPublication(String publicaton){
+        publications.add(publicaton);
+    }
+
+    public void setPublications(Set<String> publications) {
+        this.publications.clear();
+        for(String publication: publications){
+            addPublication(publication);
+        }
+    }
+
+    public Set<String> getLinks() {
+        return Collections.unmodifiableSet(links);
+    }
+
+    public void removeLink(String link){
+        links.remove(link);
+    }
+
+    public void addLink(String link){
+        links.add(link);
+    }
+
+    public void setLinks(Set<String> links) {
+        this.links.clear();
+        for(String link: links){
+            addLink(link);
+        }
+    }
+
+    public Set<String> getCollaborators() {
+        return Collections.unmodifiableSet(collaborators);
+    }
+
+    public void removeCollaborator(String collaborator){
+        collaborators.remove(collaborator);
+    }
+
+    public void addCollaborator(String collaborator){
+        collaborators.add(collaborator);
+    }
+
+    public void setCollaborators(Set<String> collaborators) {
+        this.collaborators.clear();
+        for(String collaborator: collaborators){
+            addCollaborator(collaborator);
+        }
+    }
+
+    public String getStrain() {
+        return strain;
+    }
+
+    public void setStrain(String strain) {
+        this.strain = strain;
+    }
+
+    public String getBreed() {
+        return breed;
+    }
+
+    public void setBreed(String breed) {
+        this.breed = breed;
+    }
+
+    public String getBroker() {
+        return broker;
+    }
+
+    public void setBroker(String broker) {
+        this.broker = broker;
     }
 }
