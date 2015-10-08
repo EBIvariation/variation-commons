@@ -22,7 +22,7 @@ import java.util.Date;
  * Created by parce on 02/10/15.
  */
 public class Analysis extends FileGenerator {
-   // accession -> String?
+    private String accession;
     private String alias;
     private String title;
     private String centerName;
@@ -32,27 +32,18 @@ public class Analysis extends FileGenerator {
     private String vcfReferenceAccession;
     private Boolean hiddenInEva;
 
-    public Analysis(long id) {
-        super(id);
-    }
-
-    @Override
-    public boolean equals(Object e) {
-        if (e == this) {
-            return true;
-        }else if (!(e instanceof Analysis)) {
-            return false;
-        }else {
-            return ((Analysis)e).getId() == id;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        int hashCode = 24;
-        int c = (int)(getId() ^(getId() >>>32));
-        hashCode = 31 * hashCode + c;
-        return hashCode;
+    public Analysis(String accession, String alias, String title, String centerName, String description, Date date,
+                    String vcfReference, String vcfReferenceAccession, Boolean hiddenInEva)
+    {
+        this.accession = accession;
+        this.alias = alias;
+        this.title = title;
+        this.centerName = centerName;
+        this.description = description;
+        this.date = date;
+        this.vcfReference = vcfReference;
+        this.vcfReferenceAccession = vcfReferenceAccession;
+        this.hiddenInEva = hiddenInEva;
     }
 
     public String getAlias() {
@@ -117,5 +108,29 @@ public class Analysis extends FileGenerator {
 
     public void setHiddenInEva(Boolean hiddenInEva) {
         this.hiddenInEva = hiddenInEva;
+    }
+
+    public String getAccession() {
+        return accession;
+    }
+
+    public void setAccession(String accession) {
+        this.accession = accession;
+    }
+
+    @Override
+    public boolean equals(Object e) {
+        if (e == this) {
+            return true;
+        }else if (!(e instanceof Analysis)) {
+            return false;
+        }else {
+            return ((Analysis)e).getAccession() == accession;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return accession.hashCode();
     }
 }

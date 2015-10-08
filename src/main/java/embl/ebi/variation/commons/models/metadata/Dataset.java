@@ -22,7 +22,6 @@ import java.util.*;
  * Created by parce on 05/10/15.
  */
 public class Dataset {
-    private long id;
     // EVA PRO (ega_ega_dataset table)
     private String submissionId;
     private String centerName;
@@ -40,34 +39,40 @@ public class Dataset {
     private Date lastUpdated;
     //private String egaSubmissionId; // TODO: this is a foreign key?? replace by object reference
 
+    public Dataset(String submissionId, String centerName, int statusId, Date holdDate, boolean protect, int version,
+                   String md5, Date auditTime, String auditUser, String auditOsuser, Date firstCleated,
+                   Date firstPublic, Boolean editable, Date lastUpdated){
+        this(submissionId, centerName, statusId, holdDate, protect, version, md5, auditTime, auditUser, auditOsuser,
+                firstCleated, firstPublic, editable, lastUpdated, new HashSet<FileGenerator>());
+    }
+
+    public Dataset(String submissionId, String centerName, int statusId, Date holdDate, boolean protect, int version,
+                   String md5, Date auditTime, String auditUser, String auditOsuser, Date firstCleated,
+                   Date firstPublic, Boolean editable, Date lastUpdated, Set<FileGenerator> fileGenerators)
+    {
+        this.submissionId = submissionId;
+        this.centerName = centerName;
+        this.statusId = statusId;
+        this.holdDate = holdDate;
+        this.protect = protect;
+        this.version = version;
+        this.md5 = md5;
+        this.auditTime = auditTime;
+        this.auditUser = auditUser;
+        this.auditOsuser = auditOsuser;
+        this.firstCleated = firstCleated;
+        this.firstPublic = firstPublic;
+        this.editable = editable;
+        this.lastUpdated = lastUpdated;
+        this.fileGenerators = fileGenerators != null ? fileGenerators : new HashSet<FileGenerator>();
+    }
+
     private Set<FileGenerator> fileGenerators;
-
-    public Dataset(int id) {
-        this.id = id;
-    }
-
-    public void addFileGenerator(FileGenerator generator) {
-        generator.setDataset(this);
-    }
-
-    void internalAddFileGenerator(FileGenerator generator) {
-        if (fileGenerators == null) {
-            fileGenerators = new HashSet<FileGenerator>();
-        }
-        fileGenerators.add(generator);
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getSubmissionId() {
         return submissionId;
     }
+
 
     public void setSubmissionId(String submissionId) {
         this.submissionId = submissionId;
@@ -182,6 +187,14 @@ public class Dataset {
     }
 
     public void setFileGenerators(Set<FileGenerator> fileGenerators) {
-        this.fileGenerators = fileGenerators;
+        this.fileGenerators.clear();
+        for (FileGenerator f : fileGenerators) {
+            addFileGenerator(f);
+        }
+    }
+
+    public void addFileGenerator(FileGenerator generator) {
+        fileGenerators.add(generator);
+        generator.setDataset(this);
     }
 }

@@ -22,38 +22,26 @@ import java.util.Set;
 /**
  * Created by parce on 02/10/15.
  */
-public class FileGenerator {
-    protected long id;
+public abstract class FileGenerator {
+
     protected Set<File> files;
     protected Dataset dataset;
 
-    protected FileGenerator(long id) {
-        this.id = id;
+    protected FileGenerator(Dataset dataset){
+        this(dataset, new HashSet<File>());
     }
 
-    public void addFile(File file) {
-        internalAddFile(file);
-        file.internalAddFileGenerator(this);
-    }
-
-    void internalAddFile(File file) {
-        if (files == null) {
-            files = new HashSet<File>();
-        }
-        files.add(file);
-    }
-
-    public void setDataset(Dataset dataset) {
+    protected FileGenerator(Dataset dataset, Set<File> files) {
         this.dataset = dataset;
-        dataset.internalAddFileGenerator(this);
+        this.files = files;
     }
 
-    public long getId() {
-        return id;
+    public Dataset getDataset() {
+        return dataset;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    void setDataset(Dataset dataset) {
+        this.dataset = dataset;
     }
 
     public Set<File> getFiles() {
@@ -61,10 +49,20 @@ public class FileGenerator {
     }
 
     public void setFiles(Set<File> files) {
-        this.files = files;
+        this.files.clear();
+        for (File f : files) {
+            addFile(f);
+        }
     }
 
-    public Dataset getDataset() {
-        return dataset;
+    public void addFile(File file) {
+        files.add(file);
+        file.addFileGenerator(this);
     }
+
+    @Override
+    public abstract boolean equals(Object e);
+
+    @Override
+    public abstract int hashCode();
 }

@@ -23,66 +23,50 @@ import java.util.Set;
  * Created by parce on 02/10/15.
  */
 public class File {
-    private long id;
     private String name;
     private String type;
     private String md5;
     private Set<FileGenerator> fileGenerators;
     private Set<Sample> samples;
 
-    public File(long id) {
-        this.id = id;
+    public File(String name, String type, String md5) {
+        this(name, type, md5, new HashSet<FileGenerator>(), new HashSet<Sample>());
     }
 
-    public long getId() {
-        return id;
+    public File(String name, String type, String md5, Set<FileGenerator> fileGenerators, Set<Sample> samples) {
+        this.name = name;
+        this.type = type;
+        this.md5 = md5;
+        this.fileGenerators = fileGenerators != null ? fileGenerators : new HashSet<FileGenerator>();
+        this.samples = samples != null ? samples : new HashSet<Sample>();
     }
 
-    public void addSample(Sample sample) {
+
+//    public void addSample(Sample sample) {
+//        samples.add(sample);
+//        sample.addFile(this);
+//    }
+
+
+//    public void setSamples(Set<Sample> samples) {
+//        this.samples.clear();
+//        for (Sample s : sample) {
+//            addSample(s);
+//        }
+//    }
+
+
+    /*public void addSample(Sample sample) {
         internalAddSample(sample);
         sample.internalAddFile(this);
     }
 
     void internalAddSample(Sample sample) {
-        if (getSamples() == null) {
-            setSamples(new HashSet<Sample>());
-        }
-        getSamples().add(sample);
-    }
-
-    public void addFileGenerator(FileGenerator generator) {
-        internalAddFileGenerator(generator);
-        generator.internalAddFile(this);
-    }
-
-    void internalAddFileGenerator(FileGenerator fileGenerator) {
-        if (getFileGenerators() == null) {
-            setFileGenerators(new HashSet<FileGenerator>());
-        }
-        getFileGenerators().add(fileGenerator);
-    }
+        samples.add(sample);
+    }*/
 
     public Set<Sample> getSamples() {
         return samples;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (object == this) {
-            return true;
-        }else if (!(object instanceof File)) {
-            return false;
-        }else {
-            return ((File)object).getId() == getId();
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        int hashCode = 22;
-        int c = (int)(getId() ^(getId() >>>32));
-        hashCode = 31 * hashCode + c;
-        return hashCode;
     }
 
     public void setId(long id) {
@@ -117,11 +101,38 @@ public class File {
         return fileGenerators;
     }
 
-    public void setFileGenerators(Set<FileGenerator> fileGenerators) {
-        this.fileGenerators = fileGenerators;
+    void setFileGenerators(Set<FileGenerator> fileGenerators) {
+        this.fileGenerators.clear();
+        for (FileGenerator g: fileGenerators) {
+            addFileGenerator(g);
+        }
     }
 
     public void setSamples(Set<Sample> samples) {
         this.samples = samples;
+        // TODO: add this fle to all those samples
+    }
+
+    void addFileGenerator(FileGenerator generator) {
+        fileGenerators.add(generator);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == this) {
+            return true;
+        }else if (!(object instanceof File)) {
+            return false;
+        }else {
+            return ((File)object).getId() == getId();
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hashCode = 22;
+        int c = (int)(getId() ^(getId() >>>32));
+        hashCode = 31 * hashCode + c;
+        return hashCode;
     }
 }

@@ -4,9 +4,7 @@ import org.junit.Test;
 
 import java.util.Set;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 /**
@@ -17,11 +15,13 @@ public class ExperimentTest {
     @Test
     public void testAddRun() throws Exception {
         // create a experiment without runs
-        Experiment experiment = new Experiment(1);
-        assertThat(experiment.getRuns(), nullValue());
+        String experimentStableId = "EGAE000001";
+        Experiment experiment = new Experiment(experimentStableId, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        assertThat(experiment.getRuns(), empty());
 
         // add one run to the experiment
-        Run run1 = new Run(1);
+        String runStableId1 = "EGAR00001";
+        Run run1 = new Run(runStableId1, null, null, null, null, null, null, null);
         experiment.addRun(run1);
         checkExperimentHasRun(experiment, run1);
         checkExperimentInRun(experiment, run1);
@@ -32,14 +32,15 @@ public class ExperimentTest {
         checkExperimentInRun(experiment, run1);
 
         // add again the same run in a different object instance
-        Run anotherRun1 = new Run(1);
+        Run anotherRun1 = new Run(runStableId1, null, null, null, null, null, null, null);
         experiment.addRun(anotherRun1);
         checkExperimentHasRun(experiment, run1);
         checkExperimentHasRun(experiment, anotherRun1);
         checkExperimentInRun(experiment, run1, anotherRun1);
 
         // add another run, experiment and array
-        Run run2 = new Run(2);
+        String runStableId2 = "EGAR00002";
+        Run run2 = new Run(runStableId2, null, null, null, null, null, null, null);
         experiment.addRun(run2);
         checkExperimentHasRun(experiment, run1, run2);
         checkExperimentInRun(experiment, run1, run2);
