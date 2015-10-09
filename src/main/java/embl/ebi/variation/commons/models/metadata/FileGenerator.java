@@ -27,8 +27,8 @@ public abstract class FileGenerator {
     protected Set<File> files;
     protected Dataset dataset;
 
-    protected FileGenerator(Dataset dataset){
-        this(dataset, new HashSet<File>());
+    protected FileGenerator(){
+        this(null, new HashSet<File>());
     }
 
     protected FileGenerator(Dataset dataset, Set<File> files) {
@@ -59,6 +59,8 @@ public abstract class FileGenerator {
         files.add(file);
         file.addFileGenerator(this);
     }
+
+    // TODO: add removeFile method
 
     @Override
     public abstract boolean equals(Object e);
