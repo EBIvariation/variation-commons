@@ -6,7 +6,7 @@ package embl.ebi.variation.commons.models.metadata;
 public class StudyEnums {
 
     public enum Scope {
-        SINGLE_ISOLATE ("single isloate"),
+        SINGLE_ISOLATE ("single isolate"),
         MULTI_ISOLATE ("multi-isolate"),
         SINGLE_CELL ("single cell"),
         COMMUNITY ("community"),

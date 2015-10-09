@@ -27,7 +27,7 @@ public abstract class FileGenerator {
 
     protected Set<File> files;
     protected Dataset dataset;
-    protected Set<Study> studies;
+    protected Study study;
 
     //TODO does FileGenerator need to have study in the constructor, otherwise it's possible to have a floating filegenerator, not attached to a study. e.g.:
 //    protected FileGenerator(Study study){
@@ -44,6 +44,8 @@ public abstract class FileGenerator {
 //        studies = new HashSet<Study>();
 //        addStudy(study);
 //    }
+
+    protected FileGenerator(){}
 
     protected FileGenerator(Dataset dataset){
         this(dataset, new HashSet<File>());
@@ -77,12 +79,16 @@ public abstract class FileGenerator {
         return dataset;
     }
 
-    public Set<Study> getStudies() {
-        return Collections.unmodifiableSet(studies);
+    public Study getStudy() {
+        return study;
     }
 
-    void addStudy(Study study){
-        studies.add(study);
+    void removeFromStudy(){
+        study = null;
+    }
+
+    void setStudy (Study study){
+        this.study = study;
     }
 
     @Override

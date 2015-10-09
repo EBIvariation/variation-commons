@@ -3,7 +3,9 @@ package embl.ebi.variation.commons.models.metadata;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.lang.reflect.Method;
 import java.util.Set;
+import java.util.function.Function;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
@@ -109,10 +111,18 @@ public class StudyTest {
         assertEquals(attemptSetAccession(study, "PRJEB1"), null);
         assertEquals(attemptSetAccession(study, "PRJEA1324"), null);
         assertEquals(attemptSetAccession(study, "PRJEB632"), null);
+        // TODO move correct to separate
 
     }
 
-    private Throwable attemptSetAccession(Study study, String testAcc){
+    @Test
+    private void testAddUrl(){
+        Study study = new Study("PRJEB123", null, null, null, null);
+
+        attemptSetAccession(study, Study::addUrl);
+    }
+
+    private Throwable attemptSetAccession(Study study,  Function function){
         Throwable e = null;
         try {
             study.setStudyAccession(testAcc);
