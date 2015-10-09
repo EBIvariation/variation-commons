@@ -26,7 +26,8 @@ public class Run extends FileGenerator {
     private String alias;
     private Experiment experiment;
 
-    public Run(String alias) {
+    public Run(Study study, String alias) {
+        super(study);
         this.alias = alias;
     }
 

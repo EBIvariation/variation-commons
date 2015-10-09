@@ -37,8 +37,9 @@ public class Analysis extends FileGenerator {
     private String links; // TODO: use a set? Create an externalResourceClass to represent BD:ID:LABEL?
     private String runs; // TODO: use a set? relation to run?
 
-    public Analysis(String title, String alias, String description, String reference, String platform, String software,
+    public Analysis(Study study, String title, String alias, String description, String reference, String platform, String software,
                     boolean imputation, String centre, Date date, String links, String runs) {
+        super(study);
         this.title = title;
         this.alias = alias;
         this.description = description;

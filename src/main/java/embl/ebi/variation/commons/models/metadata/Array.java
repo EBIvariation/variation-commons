@@ -22,7 +22,8 @@ package embl.ebi.variation.commons.models.metadata;
 public class Array extends FileGenerator {
     private String alias;
 
-    public Array(String alias) {
+    public Array(Study study, String alias) {
+        super(study);
         this.alias = alias;
     }
 
