@@ -29,6 +29,8 @@ public class File {
     private Set<FileGenerator> fileGenerators;
     private Set<Sample> samples;
 
+    // private String analysisTitle; // TODO: there is no relation between file or analysis in the new model?
+
     public File(String name, String type, String md5) {
         this(name, type, md5, new HashSet<FileGenerator>(), new HashSet<Sample>());
     }
@@ -39,38 +41,6 @@ public class File {
         this.md5 = md5;
         this.fileGenerators = fileGenerators != null ? fileGenerators : new HashSet<FileGenerator>();
         this.samples = samples != null ? samples : new HashSet<Sample>();
-    }
-
-
-//    public void addSample(Sample sample) {
-//        samples.add(sample);
-//        sample.addFile(this);
-//    }
-
-
-//    public void setSamples(Set<Sample> samples) {
-//        this.samples.clear();
-//        for (Sample s : sample) {
-//            addSample(s);
-//        }
-//    }
-
-
-    /*public void addSample(Sample sample) {
-        internalAddSample(sample);
-        sample.internalAddFile(this);
-    }
-
-    void internalAddSample(Sample sample) {
-        samples.add(sample);
-    }*/
-
-    public Set<Sample> getSamples() {
-        return samples;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -108,9 +78,20 @@ public class File {
         }
     }
 
+    public Set<Sample> getSamples() {
+        return samples;
+    }
+
     public void setSamples(Set<Sample> samples) {
-        this.samples = samples;
-        // TODO: add this fle to all those samples
+        this.samples.clear();
+        for (Sample s : samples) {
+            addSample(s);
+        }
+    }
+
+    public void addSample(Sample sample) {
+        samples.add(sample);
+        sample.addFile(this);
     }
 
     void addFileGenerator(FileGenerator generator) {
@@ -124,14 +105,19 @@ public class File {
         }else if (!(object instanceof File)) {
             return false;
         }else {
-            return ((File)object).getId() == getId();
+            File otherFile = (File)object;
+            return (otherFile.getName().equals(name )&& otherFile.getType().equals(type) && otherFile.getMd5().equals(md5));
         }
     }
 
     @Override
     public int hashCode() {
         int hashCode = 22;
-        int c = (int)(getId() ^(getId() >>>32));
+        int c = name.hashCode();
+        hashCode = 31 * hashCode + c;
+        c = type.hashCode();
+        hashCode = 31 * hashCode + c;
+        c = md5.hashCode();
         hashCode = 31 * hashCode + c;
         return hashCode;
     }

@@ -23,60 +23,30 @@ import java.util.*;
  */
 public class Dataset {
     // EVA PRO (ega_ega_dataset table)
-    private String submissionId;
     private String centerName;
     private int statusId;
-    private Date holdDate;
     private boolean protect;
     private int version;
     private String md5;
-    private Date auditTime;
-    private String auditUser;
-    private String auditOsuser;
-    private Date firstCleated;
-    private Date firstPublic;
     private Boolean editable;
-    private Date lastUpdated;
     //private String egaSubmissionId; // TODO: this is a foreign key?? replace by object reference
 
-    public Dataset(String submissionId, String centerName, int statusId, Date holdDate, boolean protect, int version,
-                   String md5, Date auditTime, String auditUser, String auditOsuser, Date firstCleated,
-                   Date firstPublic, Boolean editable, Date lastUpdated){
-        this(submissionId, centerName, statusId, holdDate, protect, version, md5, auditTime, auditUser, auditOsuser,
-                firstCleated, firstPublic, editable, lastUpdated, new HashSet<FileGenerator>());
+    public Dataset(String centerName, int statusId, boolean protect, int version, String md5, Boolean editable) {
+        this(centerName, statusId, protect, version, md5, editable, new HashSet<FileGenerator>());
     }
 
-    public Dataset(String submissionId, String centerName, int statusId, Date holdDate, boolean protect, int version,
-                   String md5, Date auditTime, String auditUser, String auditOsuser, Date firstCleated,
-                   Date firstPublic, Boolean editable, Date lastUpdated, Set<FileGenerator> fileGenerators)
-    {
-        this.submissionId = submissionId;
+    public Dataset(String centerName, int statusId, boolean protect, int version, String md5, Boolean editable,
+                   Set<FileGenerator> fileGenerators) {
         this.centerName = centerName;
         this.statusId = statusId;
-        this.holdDate = holdDate;
         this.protect = protect;
         this.version = version;
         this.md5 = md5;
-        this.auditTime = auditTime;
-        this.auditUser = auditUser;
-        this.auditOsuser = auditOsuser;
-        this.firstCleated = firstCleated;
-        this.firstPublic = firstPublic;
         this.editable = editable;
-        this.lastUpdated = lastUpdated;
         this.fileGenerators = fileGenerators != null ? fileGenerators : new HashSet<FileGenerator>();
     }
 
     private Set<FileGenerator> fileGenerators;
-
-    public String getSubmissionId() {
-        return submissionId;
-    }
-
-
-    public void setSubmissionId(String submissionId) {
-        this.submissionId = submissionId;
-    }
 
     public String getCenterName() {
         return centerName;
@@ -92,14 +62,6 @@ public class Dataset {
 
     public void setStatusId(int statusId) {
         this.statusId = statusId;
-    }
-
-    public Date getHoldDate() {
-        return holdDate;
-    }
-
-    public void setHoldDate(Date holdDate) {
-        this.holdDate = holdDate;
     }
 
     public boolean isProtect() {
@@ -126,60 +88,12 @@ public class Dataset {
         this.md5 = md5;
     }
 
-    public Date getAuditTime() {
-        return auditTime;
-    }
-
-    public void setAuditTime(Date auditTime) {
-        this.auditTime = auditTime;
-    }
-
-    public String getAuditUser() {
-        return auditUser;
-    }
-
-    public void setAuditUser(String auditUser) {
-        this.auditUser = auditUser;
-    }
-
-    public String getAuditOsuser() {
-        return auditOsuser;
-    }
-
-    public void setAuditOsuser(String auditOsuser) {
-        this.auditOsuser = auditOsuser;
-    }
-
-    public Date getFirstCleated() {
-        return firstCleated;
-    }
-
-    public void setFirstCleated(Date firstCleated) {
-        this.firstCleated = firstCleated;
-    }
-
-    public Date getFirstPublic() {
-        return firstPublic;
-    }
-
-    public void setFirstPublic(Date firstPublic) {
-        this.firstPublic = firstPublic;
-    }
-
     public Boolean getEditable() {
         return editable;
     }
 
     public void setEditable(Boolean editable) {
         this.editable = editable;
-    }
-
-    public Date getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(Date lastUpdated) {
-        this.lastUpdated = lastUpdated;
     }
 
     public Set<FileGenerator> getFileGenerators() {
@@ -197,4 +111,6 @@ public class Dataset {
         fileGenerators.add(generator);
         generator.setDataset(this);
     }
+
+    // TODO add removeFileGenerator method
 }

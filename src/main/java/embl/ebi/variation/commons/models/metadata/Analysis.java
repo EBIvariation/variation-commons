@@ -22,28 +22,34 @@ import java.util.Date;
  * Created by parce on 02/10/15.
  */
 public class Analysis extends FileGenerator {
-    private String accession;
-    private String alias;
     private String title;
-    private String centerName;
+    private String alias;
     private String description;
+    // private String projectTitle; TODO: relationship to Project?
+    // TODO: experiment type in experiment? there is no relation between analysis and experiment
+    // private String experimentType; Choose 1 of the following "whole genome sequencing", "Exome sequencing"', "Genotyping by array", "Curation"
+    private String reference; // Reference the analysis was performed against. GRC reference name or ENA accession accepted
+    private String platform;
+    private String software;
+    private boolean imputation;
+    private String centre;
     private Date date;
-    private String vcfReference;
-    private String vcfReferenceAccession;
-    private Boolean hiddenInEva;
+    private String links; // TODO: use a set? Create an externalResourceClass to represent BD:ID:LABEL?
+    private String runs; // TODO: use a set? relation to run?
 
-    public Analysis(String accession, String alias, String title, String centerName, String description, Date date,
-                    String vcfReference, String vcfReferenceAccession, Boolean hiddenInEva)
-    {
-        this.accession = accession;
-        this.alias = alias;
+    public Analysis(String title, String alias, String description, String reference, String platform, String software,
+                    boolean imputation, String centre, Date date, String links, String runs) {
         this.title = title;
-        this.centerName = centerName;
+        this.alias = alias;
         this.description = description;
+        this.reference = reference;
+        this.platform = platform;
+        this.software = software;
+        this.imputation = imputation;
+        this.centre = centre;
         this.date = date;
-        this.vcfReference = vcfReference;
-        this.vcfReferenceAccession = vcfReferenceAccession;
-        this.hiddenInEva = hiddenInEva;
+        this.links = links;
+        this.runs = runs;
     }
 
     public String getAlias() {
@@ -62,14 +68,6 @@ public class Analysis extends FileGenerator {
         this.title = title;
     }
 
-    public String getCenterName() {
-        return centerName;
-    }
-
-    public void setCenterName(String centerName) {
-        this.centerName = centerName;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -86,38 +84,6 @@ public class Analysis extends FileGenerator {
         this.date = date;
     }
 
-    public String getVcfReference() {
-        return vcfReference;
-    }
-
-    public void setVcfReference(String vcfReference) {
-        this.vcfReference = vcfReference;
-    }
-
-    public String getVcfReferenceAccession() {
-        return vcfReferenceAccession;
-    }
-
-    public void setVcfReferenceAccession(String vcfReferenceAccession) {
-        this.vcfReferenceAccession = vcfReferenceAccession;
-    }
-
-    public Boolean getHiddenInEva() {
-        return hiddenInEva;
-    }
-
-    public void setHiddenInEva(Boolean hiddenInEva) {
-        this.hiddenInEva = hiddenInEva;
-    }
-
-    public String getAccession() {
-        return accession;
-    }
-
-    public void setAccession(String accession) {
-        this.accession = accession;
-    }
-
     @Override
     public boolean equals(Object e) {
         if (e == this) {
@@ -125,12 +91,12 @@ public class Analysis extends FileGenerator {
         }else if (!(e instanceof Analysis)) {
             return false;
         }else {
-            return ((Analysis)e).getAccession() == accession;
+            return ((Analysis)e).getTitle() == title;
         }
     }
 
     @Override
     public int hashCode() {
-        return accession.hashCode();
+        return title.hashCode();
     }
 }

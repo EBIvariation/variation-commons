@@ -21,68 +21,47 @@ import java.util.Set;
 
 /**
  * Created by parce on 06/10/15.
+ * @TODO review how to connect with biosamples
  */
 public class Sample {
-    private long id;
     private String alias;
     private String accession;
     private String samplesetAccession;
-    private String analysisAlias;
+    // Alias of the analysis performed on this sample. Comma separated list allowable for multiple analyses
+    private String analysisAlias; // TODO: Set? Relation to analysis?
     private String description;
     private String gender;
-    private String links;
-    private String attributes; // TODO: use a map?
-    private String phenotypes; // use a map?
+    // Links to resources related to this sample/sampleset (publication(s), dataset(s), online database(s)). Format DB:ID:LABEL (label optional, a text label to dispaly for the link), or URL:LABEL (URL must start with "ftp:" or "http:" or "file:". Comma separated list allowed for multiple links
+    private String links; // TODO: Set? Class to represent the links?
+    private String attributes; // TODO: use a map? attribute class?
+    private String phenotypes; // TODO: use a map? phenotype class?
     private String diseaseSite;
     private String strain;
     private String breed;
     private Set<File> files;
 
-    public Sample(long id) {
-        this.id = id;
+    public Sample(String alias, String accession, String samplesetAccession, String analysisAlias, String description,
+                  String gender, String links, String attributes, String phenotypes, String diseaseSite, String strain,
+                  String breed) {
+        this(alias, accession, samplesetAccession, analysisAlias, description, gender, links, attributes, phenotypes, diseaseSite, strain, breed, new HashSet<File>());
     }
 
-    public long getId() {
-        return id;
-    }
-//
-//    public void addFile(File file) {
-//        internalAddFile(file);
-//        file.internalAddSample(this);
-//    }
-
-    void internalAddFile(File file) {
-        if (getFiles() == null) {
-            setFiles(new HashSet<File>());
-        }
-        getFiles().add(file);
-    }
-
-    public Set<File> getFiles() {
-        return files;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (object == this) {
-            return true;
-        }else if (!(object instanceof Sample)) {
-            return false;
-        }else {
-            return ((Sample)object).getId() == getId();
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        int hashCode = 22;
-        int c = (int)(getId() ^(getId() >>>32));
-        hashCode = 31 * hashCode + c;
-        return hashCode;
-    }
-
-    public void setId(long id) {
-        this.id = id;
+    public Sample(String alias, String accession, String samplesetAccession, String analysisAlias, String description,
+                  String gender, String links, String attributes, String phenotypes, String diseaseSite, String strain,
+                  String breed, Set<File> files) {
+        this.alias = alias;
+        this.accession = accession;
+        this.samplesetAccession = samplesetAccession;
+        this.analysisAlias = analysisAlias;
+        this.description = description;
+        this.gender = gender;
+        this.links = links;
+        this.attributes = attributes;
+        this.phenotypes = phenotypes;
+        this.diseaseSite = diseaseSite;
+        this.strain = strain;
+        this.breed = breed;
+        this.files = files;
     }
 
     public String getAlias() {
@@ -181,7 +160,34 @@ public class Sample {
         this.breed = breed;
     }
 
-    public void setFiles(Set<File> files) {
-        this.files = files;
+    public Set<File> getFiles() {
+        return files;
+    }
+
+    void setFiles(Set<File> files) {
+        this.files.clear();
+        for (File f: files) {
+            addFile(f);
+        }
+    }
+
+    void addFile(File file) {
+        files.add(file);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == this) {
+            return true;
+        }else if (!(object instanceof Sample)) {
+            return false;
+        }else {
+            return ((Sample)object).getAccession() == accession;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return accession.hashCode();
     }
 }

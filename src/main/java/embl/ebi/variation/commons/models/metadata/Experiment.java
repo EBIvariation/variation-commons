@@ -24,7 +24,6 @@ import java.util.Set;
  * Created by parce on 05/10/15.
  */
 public class Experiment {
-    private String stableId;
     private String alias;
     private String instrumentPlatform;
     private String instrumentModel;
@@ -36,29 +35,19 @@ public class Experiment {
     private String librarySelection;
     private String pairedNominalLength;
     private String pairedNominalSdev;
-    private String eraVersion;
-    private String released;
-    private Date releasedTimeStamp;
-    private Date loadTimestamp;
 
     private Set<Run> runs;
 
-    public Experiment(String stableId, String alias, String instrumentPlatform, String instrumentModel,
-                      String libraryModel, String libraryLayout, String libraryName, String libraryStrategy,
-                      String librarySource, String librarySelection, String pairedNominalLength, String pairedNominalSdev,
-                      String eraVersion, String released, Date releasedTimeStamp, Date loadTimestamp)
-    {
-        this(stableId, alias, instrumentPlatform, instrumentModel, libraryModel, libraryLayout, libraryName,
-                libraryStrategy, librarySource, librarySelection, pairedNominalLength, pairedNominalSdev, eraVersion,
-                released, releasedTimeStamp, loadTimestamp, new HashSet<Run>());
+    public Experiment(String alias, String instrumentPlatform, String instrumentModel, String libraryModel,
+                      String libraryLayout, String libraryName, String libraryStrategy, String librarySource,
+                      String librarySelection, String pairedNominalLength, String pairedNominalSdev) {
+        this(alias, instrumentPlatform, instrumentModel, libraryModel, libraryLayout, libraryName, libraryStrategy,
+                librarySource, librarySelection, pairedNominalLength, pairedNominalSdev, new HashSet<Run>());
     }
 
-    public Experiment(String stableId, String alias, String instrumentPlatform, String instrumentModel,
-                      String libraryModel, String libraryLayout, String libraryName, String libraryStrategy,
-                      String librarySource, String librarySelection, String pairedNominalLength, String pairedNominalSdev,
-                      String eraVersion, String released, Date releasedTimeStamp, Date loadTimestamp, Set<Run> runs)
-    {
-        this.stableId = stableId;
+    public Experiment(String alias, String instrumentPlatform, String instrumentModel, String libraryModel,
+                      String libraryLayout, String libraryName, String libraryStrategy, String librarySource,
+                      String librarySelection, String pairedNominalLength, String pairedNominalSdev, Set<Run> runs) {
         this.alias = alias;
         this.instrumentPlatform = instrumentPlatform;
         this.instrumentModel = instrumentModel;
@@ -70,24 +59,7 @@ public class Experiment {
         this.librarySelection = librarySelection;
         this.pairedNominalLength = pairedNominalLength;
         this.pairedNominalSdev = pairedNominalSdev;
-        this.eraVersion = eraVersion;
-        this.released = released;
-        this.releasedTimeStamp = releasedTimeStamp;
-        this.loadTimestamp = loadTimestamp;
         this.runs = runs;
-    }
-
-    public void addRun(Run run) {
-        runs.add(run);
-        run.setExperiment(this);
-    }
-
-    public String getStableId() {
-        return stableId;
-    }
-
-    public void setStableId(String stableId) {
-        this.stableId = stableId;
     }
 
     public String getAlias() {
@@ -178,38 +150,6 @@ public class Experiment {
         this.pairedNominalSdev = pairedNominalSdev;
     }
 
-    public String getEraVersion() {
-        return eraVersion;
-    }
-
-    public void setEraVersion(String eraVersion) {
-        this.eraVersion = eraVersion;
-    }
-
-    public String getReleased() {
-        return released;
-    }
-
-    public void setReleased(String released) {
-        this.released = released;
-    }
-
-    public Date getReleasedTimeStamp() {
-        return releasedTimeStamp;
-    }
-
-    public void setReleasedTimeStamp(Date releasedTimeStamp) {
-        this.releasedTimeStamp = releasedTimeStamp;
-    }
-
-    public Date getLoadTimestamp() {
-        return loadTimestamp;
-    }
-
-    public void setLoadTimestamp(Date loadTimestamp) {
-        this.loadTimestamp = loadTimestamp;
-    }
-
     public Set<Run> getRuns() {
         return runs;
     }
@@ -220,4 +160,11 @@ public class Experiment {
             addRun(run);
         }
     }
+
+    public void addRun(Run run) {
+        runs.add(run);
+        run.setExperiment(this);
+    }
+
+    // TODO: add removeRun method
 }
