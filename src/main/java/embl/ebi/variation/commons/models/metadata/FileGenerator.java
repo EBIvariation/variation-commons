@@ -25,7 +25,7 @@ import java.util.Set;
  */
 public abstract class FileGenerator {
 
-    protected Set<File> files;
+    protected Set<File> files = new HashSet<File>();
     protected Dataset dataset;
     protected Study study;
 
@@ -34,13 +34,17 @@ public abstract class FileGenerator {
     }
 
     protected FileGenerator(Study study, Dataset dataset){
-        this(study, dataset, new HashSet<File>());
+        this(study, dataset, null);
     }
 
     protected FileGenerator(Study study, Dataset dataset, Set<File> files) {
         this.study = study;
-        this.dataset = dataset;
-        setFiles(files);
+        if(this.dataset != null){
+            this.dataset = dataset;
+        }
+        if(files != null){
+            setFiles(files);
+        }
     }
 
     void setDataset(Dataset dataset) {
@@ -48,17 +52,22 @@ public abstract class FileGenerator {
     }
 
     public Set<File> getFiles() {
-        return Collections.unmodifiableSet(files);
+        if(files != null){
+            return Collections.unmodifiableSet(files);
+        }else{
+            return files;
+        }
     }
 
     public void addFile(File file){
         this.files.add(file);
+        file.addFileGenerator(this);
     }
 
     public void setFiles(Set<File> files) {
         this.files.clear();
-        for (File f : files) {
-            addFile(f);
+        for(File file: files){
+            addFile(file);
         }
     }
 

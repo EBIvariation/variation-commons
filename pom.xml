@@ -8,9 +8,30 @@
     <artifactId>variation-commons</artifactId>
     <version>0.1</version>
 
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
+
+
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
         <testSourceDirectory>src/test/java</testSourceDirectory>
+
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.2</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <showDeprecation>true</showDeprecation>
+                        <showWarnings>true</showWarnings>
+                        <encoding>UTF-8</encoding>
+                    </configuration>
+                </plugin>
+            </plugins>
+
     </build>
     <dependencies>
         <dependency>
@@ -29,18 +50,12 @@
             <artifactId>persistence-api</artifactId>
             <version>1.0.2</version>
         </dependency>
-        <dependency>
-            <groupId>com.openpojo</groupId>
-            <artifactId>openpojo</artifactId>
-            <version>0.8.0</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-validator</groupId>
-            <artifactId>commons-validator</artifactId>
-            <version>1.4.1</version>
-        </dependency>
 
     </dependencies>
+
+
+
+
 
 
 </project>

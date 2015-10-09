@@ -1,11 +1,8 @@
 package embl.ebi.variation.commons.models.metadata;
 
-import org.junit.Assert;
 import org.junit.Test;
 
-import java.lang.reflect.Method;
 import java.util.Set;
-import java.util.function.Function;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
@@ -23,8 +20,7 @@ public class StudyTest {
         assertThat(study.getFileGenerators(), empty());
 
         // add one run to the study
-        String runStableId1 = "EGAR00001";
-        Run run1 = new Run(runStableId1, null, null, null, null, null, null, null);
+        Run run1 = new Run(study, "Run1");
         study.addFileGenerator(run1);
         checkStudyHasFileGenerators(study, run1);
         checkStudyInFileGenerators(study, run1);
@@ -33,40 +29,53 @@ public class StudyTest {
         checkStudyHasFileGenerators(study, run1);
         checkStudyInFileGenerators(study, run1);
         // add again the same run in a different object instance
-        Run anotherRun1 = new Run(runStableId1, null, null, null, null, null, null, null);
+        Run anotherRun1 = new Run(study, "Run1");
         study.addFileGenerator(anotherRun1);
         checkStudyHasFileGenerators(study, run1);
         checkStudyHasFileGenerators(study, anotherRun1);
         checkStudyInFileGenerators(study, run1, anotherRun1);
 
-        // add one analysis to the study
-        String analysisAccession1 = "EGAA00001";
-        Analysis analysis1 = new Analysis(analysisAccession1, null, null, null, null, null, null, null, false);
-        study.addFileGenerator(analysis1);
-        checkStudyHasFileGenerators(study, run1, analysis1);
-        checkStudyInFileGenerators(study, run1, analysis1);
-        // add again the same analysis object to the study
-        study.addFileGenerator(analysis1);
-        checkStudyHasFileGenerators(study, run1, analysis1);
-        checkStudyInFileGenerators(study, run1, analysis1);
-        // add again the same analysis in a different object instance
-        Analysis anotherAnalysis1 = new Analysis(analysisAccession1, null, null, null, null, null, null, null, false);
-        study.addFileGenerator(anotherAnalysis1);
-        checkStudyHasFileGenerators(study, run1, analysis1);
-        checkStudyHasFileGenerators(study, run1, anotherAnalysis1);
-        checkStudyInFileGenerators(study, run1, analysis1, anotherAnalysis1);
+        // add one array to the dataset
+        Array array1 = new Array(study, "Array1");
+        study.addFileGenerator(array1);
+        checkStudyHasFileGenerators(study, run1, array1);
+        checkStudyInFileGenerators(study, run1, array1);
+        // add again the same array object to the dataset
+        study.addFileGenerator(array1);
+        checkStudyHasFileGenerators(study, run1, array1);
+        checkStudyInFileGenerators(study, run1, array1);
+        // add again the same array in a different object instance
+        Array anotherArray1 = new Array(study, "Array1");
+        study.addFileGenerator(anotherArray1);
+        checkStudyHasFileGenerators(study, run1, array1);
+        checkStudyHasFileGenerators(study, run1, anotherArray1);
+        checkStudyInFileGenerators(study, run1, array1, anotherArray1);
 
-        // add another run and study
-        String runStableId2 = "EGAR00002";
-        Run run2 = new Run(runStableId2, null, null, null, null, null, null, null);
+        // add one analysis to the dataset
+        Analysis analysis1 = new Analysis(study, "Analysis1", null, null, null, null, null, false, null, null, null, null);
+        study.addFileGenerator(analysis1);
+        checkStudyHasFileGenerators(study, run1, array1, analysis1);
+        checkStudyInFileGenerators(study, run1, array1, analysis1);
+        // add again the same analysis object to the dataset
+        study.addFileGenerator(analysis1);
+        checkStudyHasFileGenerators(study, run1, array1, analysis1);
+        checkStudyInFileGenerators(study, run1, array1, analysis1);
+        // add again the same analysis in a different object instance
+        Analysis anotherAnalysis1 = new Analysis(study, "Analysis1", null, null, null, null, null, false, null, null, null, null);
+        study.addFileGenerator(anotherAnalysis1);
+        checkStudyHasFileGenerators(study, run1, array1, analysis1);
+        checkStudyHasFileGenerators(study, run1, array1, anotherAnalysis1);
+        checkStudyInFileGenerators(study, run1, array1, analysis1, anotherAnalysis1);
+
+        // add another run and dataset
+        Run run2 = new Run(study, "Run2");
         study.addFileGenerator(run2);
-//        Array array2 = new Array(2);
-//        study.addFileGenerator(array2);
-        String analysisAccession2 = "EGAA00002";
-        Analysis analysis2 = new Analysis(analysisAccession2, null, null, null, null, null, null, null, false);
+        Array array2 = new Array(study, "Array2");
+        study.addFileGenerator(array2);
+        Analysis analysis2 = new Analysis(study, "Analysis2", null, null, null, null, null, false, null, null, null, null);
         study.addFileGenerator(analysis2);
-        checkStudyHasFileGenerators(study, run1, analysis1, run2, analysis2);
-        checkStudyInFileGenerators(study, run1, analysis1, run2, analysis2);
+        checkStudyHasFileGenerators(study, run1, array1, analysis1, run2, array2, analysis2);
+        checkStudyInFileGenerators(study, run1, array1, analysis1, run2, array2, analysis2);
     }
 
     private void checkStudyHasFileGenerators(Study study, FileGenerator... generators) {
