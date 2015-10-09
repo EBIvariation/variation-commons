@@ -16,12 +16,13 @@
 
 package embl.ebi.variation.commons.models.metadata;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Created by parce on 05/10/15.
+ * 
+ * @TODO Come back to this class for further design
  */
 public class Experiment {
     private String alias;

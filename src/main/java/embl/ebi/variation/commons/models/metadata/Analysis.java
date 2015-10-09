@@ -13,58 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package embl.ebi.variation.commons.models.metadata;
 
 import java.util.Date;
 
 /**
  * Created by parce on 02/10/15.
+ * 
+ * @TODO Experiment type: Choose 1 of the following "whole genome sequencing", "Exome sequencing", "Genotyping by array", "Curation"
+ * @TODO Link with Dataset class
  */
 public class Analysis extends FileGenerator {
+
     private String title;
-    private String alias;
     private String description;
-    // private String projectTitle; TODO: relationship to Project?
-    // TODO: experiment type in experiment? there is no relation between analysis and experiment
-    // private String experimentType; Choose 1 of the following "whole genome sequencing", "Exome sequencing"', "Genotyping by array", "Curation"
-    private String reference; // Reference the analysis was performed against. GRC reference name or ENA accession accepted
+    private String centre;
     private String platform;
     private String software;
     private boolean imputation;
-    private String centre;
     private Date date;
-    private String links; // TODO: use a set? Create an externalResourceClass to represent BD:ID:LABEL?
-    private String runs; // TODO: use a set? relation to run?
 
-    public Analysis(String title, String alias, String description, String reference, String platform, String software,
-                    boolean imputation, String centre, Date date, String links, String runs) {
-        this.title = title;
-        this.alias = alias;
-        this.description = description;
-        this.reference = reference;
+    public Analysis(String alias, String title, String description, String centre, 
+            String platform, String software, boolean imputation, Date date) {
+        super(alias);
+        this.setTitle(title);
+        this.setDescription(description);
+        this.centre = centre;
         this.platform = platform;
         this.software = software;
         this.imputation = imputation;
-        this.centre = centre;
         this.date = date;
-        this.links = links;
-        this.runs = runs;
     }
-
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
+    
     public String getTitle() {
         return title;
     }
 
     public void setTitle(String title) {
+        if (title == null) {
+            throw new IllegalArgumentException("Title not specified");
+        }
         this.title = title;
     }
 
@@ -73,7 +61,42 @@ public class Analysis extends FileGenerator {
     }
 
     public void setDescription(String description) {
+        if (description == null) {
+            throw new IllegalArgumentException("Description not specified");
+        }
         this.description = description;
+    }
+
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
+    }
+
+    public String getSoftware() {
+        return software;
+    }
+
+    public void setSoftware(String software) {
+        this.software = software;
+    }
+
+    public boolean isImputation() {
+        return imputation;
+    }
+
+    public void setImputation(boolean imputation) {
+        this.imputation = imputation;
+    }
+
+    public String getCentre() {
+        return centre;
+    }
+
+    public void setCentre(String centre) {
+        this.centre = centre;
     }
 
     public Date getDate() {
@@ -88,10 +111,10 @@ public class Analysis extends FileGenerator {
     public boolean equals(Object e) {
         if (e == this) {
             return true;
-        }else if (!(e instanceof Analysis)) {
+        } else if (!(e instanceof Analysis)) {
             return false;
-        }else {
-            return ((Analysis)e).getTitle() == title;
+        } else {
+            return ((Analysis) e).getTitle().equals(title);
         }
     }
 
@@ -99,4 +122,5 @@ public class Analysis extends FileGenerator {
     public int hashCode() {
         return title.hashCode();
     }
+
 }

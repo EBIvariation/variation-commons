@@ -18,22 +18,15 @@ package embl.ebi.variation.commons.models.metadata;
 
 /**
  * Created by parce on 05/10/15.
+ * 
+ * @TODO Come back to this class for further design
  */
 public class Array extends FileGenerator {
-    private String alias;
 
     public Array(String alias) {
-        this.alias = alias;
+        super(alias);
     }
-
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
+    
     @Override
     public boolean equals(Object e) {
         if (e == this) {
@@ -41,7 +34,7 @@ public class Array extends FileGenerator {
         }else if (!(e instanceof Array)) {
             return false;
         }else {
-            return ((Array)e).getAlias() == alias;
+            return ((Array)e).getAlias().equals(alias);
         }
     }
 

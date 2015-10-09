@@ -12,6 +12,11 @@ import static org.junit.Assert.*;
  */
 public class FileGeneratorTest {
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructorNoAlias() {
+        Run run = new Run(null);
+    }
+    
     @Test
     public void testAddFile() throws Exception {
         // create a file generator without files

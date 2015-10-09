@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package embl.ebi.variation.commons.models.metadata;
 
 import java.util.HashSet;
@@ -24,16 +23,29 @@ import java.util.Set;
  */
 public abstract class FileGenerator {
 
+    protected String alias;
     protected Set<File> files;
     protected Dataset dataset;
 
-    protected FileGenerator(){
-        this(null, new HashSet<File>());
+    protected FileGenerator(String alias) {
+        this(alias, new HashSet<File>(), null);
     }
 
-    protected FileGenerator(Dataset dataset, Set<File> files) {
+    protected FileGenerator(String alias, Set<File> files, Dataset dataset) {
+        this.setAlias(alias);
+        this.files = files != null ? files : new HashSet<File>();
         this.dataset = dataset;
-        this.files = files;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        if (alias == null) {
+            throw new IllegalArgumentException("Alias not specified");
+        }
+        this.alias = alias;
     }
 
     public Dataset getDataset() {
@@ -61,7 +73,6 @@ public abstract class FileGenerator {
     }
 
     // TODO: add removeFile method
-
     @Override
     public abstract boolean equals(Object e);
 

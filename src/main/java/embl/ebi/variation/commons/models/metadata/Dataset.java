@@ -20,25 +20,26 @@ import java.util.*;
 
 /**
  * Created by parce on 05/10/15.
+ * 
+ * @TODO Come back to this class for further design
  */
 public class Dataset {
     // EVA PRO (ega_ega_dataset table)
-    private String centerName;
-    private int statusId;
+    private String centre;
     private boolean protect;
     private int version;
     private String md5;
-    private Boolean editable;
-    //private String egaSubmissionId; // TODO: this is a foreign key?? replace by object reference
+    private boolean editable;
 
-    public Dataset(String centerName, int statusId, boolean protect, int version, String md5, Boolean editable) {
-        this(centerName, statusId, protect, version, md5, editable, new HashSet<FileGenerator>());
+    private Set<FileGenerator> fileGenerators;
+
+    public Dataset(String centre, boolean protect, int version, String md5, Boolean editable) {
+        this(centre, protect, version, md5, editable, new HashSet<FileGenerator>());
     }
 
-    public Dataset(String centerName, int statusId, boolean protect, int version, String md5, Boolean editable,
+    public Dataset(String centre, boolean protect, int version, String md5, Boolean editable,
                    Set<FileGenerator> fileGenerators) {
-        this.centerName = centerName;
-        this.statusId = statusId;
+        this.centre = centre;
         this.protect = protect;
         this.version = version;
         this.md5 = md5;
@@ -46,22 +47,12 @@ public class Dataset {
         this.fileGenerators = fileGenerators != null ? fileGenerators : new HashSet<FileGenerator>();
     }
 
-    private Set<FileGenerator> fileGenerators;
-
-    public String getCenterName() {
-        return centerName;
+    public String getCentre() {
+        return centre;
     }
 
-    public void setCenterName(String centerName) {
-        this.centerName = centerName;
-    }
-
-    public int getStatusId() {
-        return statusId;
-    }
-
-    public void setStatusId(int statusId) {
-        this.statusId = statusId;
+    public void setCentre(String centre) {
+        this.centre = centre;
     }
 
     public boolean isProtect() {
@@ -88,11 +79,11 @@ public class Dataset {
         this.md5 = md5;
     }
 
-    public Boolean getEditable() {
+    public boolean isEditable() {
         return editable;
     }
 
-    public void setEditable(Boolean editable) {
+    public void setEditable(boolean editable) {
         this.editable = editable;
     }
 

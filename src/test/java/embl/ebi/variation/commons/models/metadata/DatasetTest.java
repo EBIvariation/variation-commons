@@ -2,7 +2,6 @@ package embl.ebi.variation.commons.models.metadata;
 
 import org.junit.Test;
 
-import java.util.Date;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.*;
@@ -16,7 +15,7 @@ public class DatasetTest {
     @Test
     public void testAddFileGenerator() throws Exception {
         // create a dataset without file generators
-        Dataset dataset = new Dataset("Center", 0, false, 0, null, false);
+        Dataset dataset = new Dataset("Center", false, 0, null, false);
         assertThat(dataset.getFileGenerators(), empty());
 
         // add one run to the dataset
@@ -52,7 +51,7 @@ public class DatasetTest {
         checkDatasetInFileGenerators(dataset, run1, array1, anotherArray1);
 
         // add one analysis to the dataset
-        Analysis analysis1 = new Analysis("Analysis1", null, null, null, null, null, false, null, null, null, null);
+        Analysis analysis1 = new Analysis("Analysis1", "Analysis1", "Description", null, null, null, false, null);
         dataset.addFileGenerator(analysis1);
         checkDatasetHasFileGenerators(dataset, run1, array1, analysis1);
         checkDatasetInFileGenerators(dataset, run1, array1, analysis1);
@@ -61,7 +60,7 @@ public class DatasetTest {
         checkDatasetHasFileGenerators(dataset, run1, array1,  analysis1);
         checkDatasetInFileGenerators(dataset, run1, array1, analysis1);
         // add again the same analysis in a different object instance
-        Analysis anotherAnalysis1 = new Analysis("Analysis1", null, null, null, null, null, false, null, null, null, null);
+        Analysis anotherAnalysis1 = new Analysis("Analysis1", "Analysis1", "Description", null, null, null, false, null);
         dataset.addFileGenerator(anotherAnalysis1);
         checkDatasetHasFileGenerators(dataset, run1, array1, analysis1);
         checkDatasetHasFileGenerators(dataset, run1, array1, anotherAnalysis1);
@@ -72,7 +71,7 @@ public class DatasetTest {
         dataset.addFileGenerator(run2);
         Array array2 = new Array("Array2");
         dataset.addFileGenerator(array2);
-        Analysis analysis2 = new Analysis("Analysis2", null, null, null, null, null, false, null, null, null, null);
+        Analysis analysis2 = new Analysis("Analysis2", "Analysis2", "Description", null, null, null, false, null);
         dataset.addFileGenerator(analysis2);
         checkDatasetHasFileGenerators(dataset, run1, array1, analysis1, run2, array2, analysis2);
         checkDatasetInFileGenerators(dataset, run1, array1, analysis1, run2, array2, analysis2);
