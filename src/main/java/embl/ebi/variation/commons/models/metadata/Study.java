@@ -16,16 +16,9 @@
 
 package embl.ebi.variation.commons.models.metadata;
 
-import org.apache.commons.validator.routines.UrlValidator;
-
 import javax.persistence.*;
-import java.io.IOException;
 import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.time.LocalDateTime;
-import java.util.Collection;
+import java.net.URI;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -48,18 +41,14 @@ public class Study implements Serializable {
 
     private String alias;
     private String description;
-    private Set<String> urls = new HashSet<String>();
+    private Set<URI> uris = new HashSet<URI>();
 //    private Taxon taxon; // When there is a taxon class
     private Set<String> publications = new HashSet<String>(); // TODO   private Set<Publication> publications; if there will be separate publication class
-//    private Set<String> links = new HashSet<String>(); // should this be given as a string or as relation to other "Link" (i.e. Set<Link>) class? Submission template gives as: "Link(s)	Links in the form DB:ID:LABEL (e.g. DGVA:esv1, DBSNP:rs149486)"
-//    private Set<String> collaborators = new HashSet<String>(); // link to collaborator class? collaborator could be part of multiple studies  private Set<Collaborator>
-    private String strain; // part of submission template, but should they be strings or separate "Strain" and "Breed" classes?
-    private String breed;
     private String broker; // if there is a separate broker/organisation class
 
-    private Set<Study> associatedStudies = new HashSet<Study>(); // in submission template is described as: "Associated Project(s)	Accession OR Alias of all project(s) assoicated to this project (NCBI, ENA, EVA all share the same project accession space so no database distinction is necessary) (e.g. PRJEB4019)" but will a hierarchy of studies be needed instead?
-    private Study parentStudy;
-    private Set<Study> childStudies = new HashSet<Study>(); // ... or use this hierarchical relationship?
+//    private Set<Study> associatedStudies = new HashSet<Study>(); // in submission template is described as: "Associated Project(s)	Accession OR Alias of all project(s) assoicated to this project (NCBI, ENA, EVA all share the same project accession space so no database distinction is necessary) (e.g. PRJEB4019)" but will a hierarchy of studies be needed instead?
+//    private Study parentStudy;
+//    private Set<Study> childStudies = new HashSet<Study>(); // ... or use this hierarchical relationship?
 
 
     public Study(String studyAccession, String centre, StudyEnums.Material material, StudyEnums.Scope scope, String type) {
@@ -71,13 +60,9 @@ public class Study implements Serializable {
     }
 
 
-//    public Long getStudyId() {
-//        return studyId;
-//    }
-//
-//    public void setStudyId(Long studyId) {
-//        this.studyId = studyId;
-//    }
+    public Long getStudyId() {
+        return studyId;
+    }
 
     public String getStudyAccession() {
         return studyAccession;
@@ -149,28 +134,23 @@ public class Study implements Serializable {
         this.type = type;
     }
 
-    public Set<String> getUrls() {
-        return Collections.unmodifiableSet(urls);
+    public Set<URI> getUris() {
+        return Collections.unmodifiableSet(uris);
     }
 
-    public void addUrl(String url){
-        UrlValidator urlValidator = new UrlValidator();
-        if(urlValidator.isValid(url)){
-            urls.add(url);
-        }else{
-            throw new IllegalArgumentException("Invalid URL");
-        }
+    public void addUri(URI uri){
+        uris.add(uri);
     }
 
-    public void removeUrl(String url){
-        urls.remove(url);
+    public void removeUrl(URI url){
+        uris.remove(url);
     }
 
-    public void setUrls(Set<String> urls) {
-        this.urls.clear();
-        if(urls != null){
-            for(String url: urls) {
-                addUrl(url);
+    public void setUris(Set<URI> uris) {
+        this.uris.clear();
+        if(uris != null){
+            for(URI uri: uris) {
+                addUri(uri);
             }
         }
     }
@@ -213,60 +193,6 @@ public class Study implements Serializable {
         for(String publication: publications){
             addPublication(publication);
         }
-    }
-
-//    public Set<String> getLinks() {
-//        return Collections.unmodifiableSet(links);
-//    }
-//
-//    public void removeLink(String link){
-//        links.remove(link);
-//    }
-//
-//    public void addLink(String link){
-//        links.add(link);
-//    }
-//
-//    public void setLinks(Set<String> links) {
-//        this.links.clear();
-//        for(String link: links){
-//            addLink(link);
-//        }
-//    }
-
-    public Set<String> getCollaborators() {
-        return Collections.unmodifiableSet(collaborators);
-    }
-
-    public void removeCollaborator(String collaborator){
-        collaborators.remove(collaborator);
-    }
-
-    public void addCollaborator(String collaborator){
-        collaborators.add(collaborator);
-    }
-
-    public void setCollaborators(Set<String> collaborators) {
-        this.collaborators.clear();
-        for(String collaborator: collaborators){
-            addCollaborator(collaborator);
-        }
-    }
-
-    public String getStrain() {
-        return strain;
-    }
-
-    public void setStrain(String strain) {
-        this.strain = strain;
-    }
-
-    public String getBreed() {
-        return breed;
-    }
-
-    public void setBreed(String breed) {
-        this.breed = breed;
     }
 
     public String getBroker() {

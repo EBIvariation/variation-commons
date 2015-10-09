@@ -77,7 +77,7 @@ public class StudyTest {
 
     private void checkStudyInFileGenerators(Study study, FileGenerator... generators) {
         for (FileGenerator generator : generators) {
-            assertThat(generator.studies, hasItem(study));
+            assertEquals(generator.study, study);
         }
     }
 
@@ -88,7 +88,7 @@ public class StudyTest {
     }
 
     @Test
-    public void testSetStudyAccession(){
+    public void testSetStudyAccessionBadAccs(){
         Study study = new Study("PRJEB123", null, null, null, null);
 
         assertThat(attemptSetAccession(study, "PRJR1234"), instanceOf(IllegalArgumentException.class));
@@ -104,6 +104,11 @@ public class StudyTest {
         assertThat(attemptSetAccession(study, "prjea1213"), instanceOf(IllegalArgumentException.class));
         assertThat(attemptSetAccession(study, "prjna256"), instanceOf(IllegalArgumentException.class));
         assertThat(attemptSetAccession(study, "Prjeb122"), instanceOf(IllegalArgumentException.class));
+    }
+
+    @Test
+    public void testSetStudyAccessionGoodAccs(){
+        Study study = new Study("PRJEB123", null, null, null, null);
 
         assertEquals(attemptSetAccession(study, "PRJEB123"), null);
         assertEquals(attemptSetAccession(study, "PRJEA324234"), null);
@@ -111,18 +116,16 @@ public class StudyTest {
         assertEquals(attemptSetAccession(study, "PRJEB1"), null);
         assertEquals(attemptSetAccession(study, "PRJEA1324"), null);
         assertEquals(attemptSetAccession(study, "PRJEB632"), null);
-        // TODO move correct to separate
-
     }
 
-    @Test
-    private void testAddUrl(){
-        Study study = new Study("PRJEB123", null, null, null, null);
+//    @Test
+//    private void testAddUrl(){
+//        Study study = new Study("PRJEB123", null, null, null, null);
+//
+//        attemptSetAccession(study, Study::addUrl);
+//    }
 
-        attemptSetAccession(study, Study::addUrl);
-    }
-
-    private Throwable attemptSetAccession(Study study,  Function function){
+    private Throwable attemptSetAccession(Study study,  String testAcc){
         Throwable e = null;
         try {
             study.setStudyAccession(testAcc);

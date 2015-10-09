@@ -29,29 +29,16 @@ public abstract class FileGenerator {
     protected Dataset dataset;
     protected Study study;
 
-    //TODO does FileGenerator need to have study in the constructor, otherwise it's possible to have a floating filegenerator, not attached to a study. e.g.:
-//    protected FileGenerator(Study study){
-//        this(study, null);
-//    }
-//
-//    protected FileGenerator(Study study, Dataset dataset){
-//        this(study, dataset, new HashSet<File>());
-//    }
-//
-//    protected FileGenerator(Study study, Dataset dataset, Set<File> files) {
-//        this.dataset = dataset;
-//        setFiles(files);
-//        studies = new HashSet<Study>();
-//        addStudy(study);
-//    }
-
-    protected FileGenerator(){}
-
-    protected FileGenerator(){
-        this(null, new HashSet<File>());
+    protected FileGenerator(Study study){
+        this(study, null);
     }
 
-    protected FileGenerator(Dataset dataset, Set<File> files) {
+    protected FileGenerator(Study study, Dataset dataset){
+        this(study, dataset, new HashSet<File>());
+    }
+
+    protected FileGenerator(Study study, Dataset dataset, Set<File> files) {
+        this.study = study;
         this.dataset = dataset;
         setFiles(files);
     }
