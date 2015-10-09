@@ -49,7 +49,7 @@ public class Study implements Serializable {
     private String alias;
     private String description;
     private Set<String> urls = new HashSet<String>();
-//    private Taxonomy taxonomy; // When there is a taxonomy
+//    private Taxon taxon; // When there is a taxon class
     private Set<String> publications = new HashSet<String>(); //    private Set<Publication> publications; if there will be separate publication class
     private Set<String> links = new HashSet<String>(); // should this be given as a string or as relation to other "Link" (i.e. Set<Link>) class? Submission template gives as: "Link(s)	Links in the form DB:ID:LABEL (e.g. DGVA:esv1, DBSNP:rs149486)"
     private Set<String> collaborators = new HashSet<String>(); // link to collaborator class? collaborator could be part of multiple studies  private Set<Collaborator>
