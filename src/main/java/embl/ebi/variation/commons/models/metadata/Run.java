@@ -16,29 +16,19 @@
 
 package embl.ebi.variation.commons.models.metadata;
 
-import java.util.Date;
-
 /**
  * Created by parce on 05/10/15.
+ * 
+ * @TODO Come back to this class for further design
  */
 public class Run extends FileGenerator {
 
-    private String alias;
     private Experiment experiment;
 
-    public Run(Study study, String alias) {
-        super(study);
-        this.alias = alias;
+    public Run(String alias) {
+        super(alias);
     }
-
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
+    
     public Experiment getExperiment() {
         return experiment;
     }
@@ -54,7 +44,7 @@ public class Run extends FileGenerator {
         }else if (!(e instanceof Run)) {
             return false;
         }else {
-            return ((Run)e).getAlias() == alias;
+            return ((Run)e).getAlias().equals(alias);
         }
     }
 

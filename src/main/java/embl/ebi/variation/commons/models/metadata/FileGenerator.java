@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package embl.ebi.variation.commons.models.metadata;
 
 import java.util.Collections;
@@ -25,6 +24,7 @@ import java.util.Set;
  */
 public abstract class FileGenerator {
 
+    protected String alias;
     protected Set<File> files = new HashSet<File>();
     protected Dataset dataset;
     protected Study study;
@@ -45,6 +45,19 @@ public abstract class FileGenerator {
         if(files != null){
             setFiles(files);
         }
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        if (alias == null) {
+            throw new IllegalArgumentException("Alias not specified");
+        }
+        this.alias = alias;
+    }
+
+    public Dataset getDataset() {
+        return dataset;
     }
 
     void setDataset(Dataset dataset) {
@@ -52,11 +65,7 @@ public abstract class FileGenerator {
     }
 
     public Set<File> getFiles() {
-        if(files != null){
-            return Collections.unmodifiableSet(files);
-        }else{
-            return files;
-        }
+        return files;
     }
 
     public void addFile(File file){
@@ -66,21 +75,13 @@ public abstract class FileGenerator {
 
     public void setFiles(Set<File> files) {
         this.files.clear();
-        for(File file: files){
-            addFile(file);
+        for (File f : files) {
+            addFile(f);
         }
-    }
-
-    public Dataset getDataset() {
-        return dataset;
     }
 
     public Study getStudy() {
         return study;
-    }
-
-    void removeFromStudy(){
-        study = null;
     }
 
     void setStudy (Study study){

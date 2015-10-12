@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package embl.ebi.variation.commons.models.metadata;
 
 import java.util.HashSet;
@@ -23,19 +22,18 @@ import java.util.Set;
  * Created by parce on 02/10/15.
  */
 public class File {
+
     private String name;
-    private String type;
+    private File.Type type;
     private String md5;
     private Set<FileGenerator> fileGenerators;
     private Set<Sample> samples;
 
-    // private String analysisTitle; // TODO: there is no relation between file or analysis in the new model?
-
-    public File(String name, String type, String md5) {
+    public File(String name, File.Type type, String md5) {
         this(name, type, md5, new HashSet<FileGenerator>(), new HashSet<Sample>());
     }
 
-    public File(String name, String type, String md5, Set<FileGenerator> fileGenerators, Set<Sample> samples) {
+    public File(String name, File.Type type, String md5, Set<FileGenerator> fileGenerators, Set<Sample> samples) {
         this.name = name;
         this.type = type;
         this.md5 = md5;
@@ -51,11 +49,11 @@ public class File {
         this.name = name;
     }
 
-    public String getType() {
+    public File.Type getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(File.Type type) {
         this.type = type;
     }
 
@@ -73,9 +71,13 @@ public class File {
 
     void setFileGenerators(Set<FileGenerator> fileGenerators) {
         this.fileGenerators.clear();
-        for (FileGenerator g: fileGenerators) {
+        for (FileGenerator g : fileGenerators) {
             addFileGenerator(g);
         }
+    }
+
+    void addFileGenerator(FileGenerator generator) {
+        fileGenerators.add(generator);
     }
 
     public Set<Sample> getSamples() {
@@ -94,19 +96,15 @@ public class File {
         sample.addFile(this);
     }
 
-    void addFileGenerator(FileGenerator generator) {
-        fileGenerators.add(generator);
-    }
-
     @Override
     public boolean equals(Object object) {
         if (object == this) {
             return true;
-        }else if (!(object instanceof File)) {
+        } else if (!(object instanceof File)) {
             return false;
-        }else {
-            File otherFile = (File)object;
-            return (otherFile.getName().equals(name )&& otherFile.getType().equals(type) && otherFile.getMd5().equals(md5));
+        } else {
+            File otherFile = (File) object;
+            return (otherFile.getName().equals(name) && otherFile.getType().equals(type) && otherFile.getMd5().equals(md5));
         }
     }
 
@@ -120,5 +118,35 @@ public class File {
         c = md5.hashCode();
         hashCode = 31 * hashCode + c;
         return hashCode;
+    }
+    
+    public enum Type {
+        
+        VCF("vcf"),
+        VCF_AGGREGATE("vcf_aggregate"),
+        README("readme_file"),
+        PHENOTYPE("phenotype_file"),
+        CRAM("cram"),
+        TABIX("tabix"),
+        WIG("wig"),
+        BED("bed"),
+        GFF("gff"),
+        FASTA("fasta"),
+        OTHER("other");
+        
+        private final String name;
+
+        private Type(String s) {
+            name = s;
+        }
+
+        public boolean equalsName(String otherName) {
+            return (otherName != null) && name.equals(otherName);
+        }
+
+        @Override
+        public String toString() {
+            return this.name;
+        }   
     }
 }
