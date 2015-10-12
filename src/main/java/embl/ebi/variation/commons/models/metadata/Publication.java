@@ -5,6 +5,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -23,7 +24,7 @@ public class Publication {
     private LocalDateTime publicationDate;
 
     private List<String> contributors;
-    private Set<Study> studies;
+    private Set<Study> studies = new HashSet<>();
 
 
     public Publication(int pmid, String database, String title, String journal, LocalDateTime publicationDate, List<String> contributors) {

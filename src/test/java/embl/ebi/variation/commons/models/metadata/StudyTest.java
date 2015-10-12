@@ -2,6 +2,8 @@ package embl.ebi.variation.commons.models.metadata;
 
 import org.junit.Test;
 
+import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.*;
@@ -142,6 +144,57 @@ public class StudyTest {
             e = ex;
         }
         return e;
+    }
+
+    @Test
+    public void testAddPublication(){
+        Study study = new Study("PRJEB12345", null, null, null, null);
+
+        Publication publication1 = new Publication(1234, "Pubmed", "test title", "test journal", null, null);
+        Publication publication2 = new Publication(1235, "Pubmed", "this is a title", "some journal", null, null);
+        study.addPublication(publication1);
+        study.addPublication(publication2);
+
+        Set<Publication> pubs = new HashSet<>();
+        pubs.add(publication1);
+        pubs.add(publication2);
+
+        assertThat(study.getPublications(), hasSize(pubs.size()));
+        assertThat(study.getPublications(), containsInAnyOrder(pubs.toArray()));
+
+        for (Publication publication: pubs) {
+            assertThat(publication.getStudies(), containsInAnyOrder(study));
+        }
+    }
+
+    @Test
+    public void testSetPublication(){
+        Study study = new Study("PRJEB12345", null, null, null, null);
+
+        Publication publication1 = new Publication(1234, "Pubmed", "test title", "test journal", null, null);
+        Publication publication2 = new Publication(1235, "Pubmed", "this is a title", "some journal", null, null);
+        Set<Publication> pubs = new HashSet<>();
+        pubs.add(publication1);
+        pubs.add(publication2);
+
+        study.setPublications(pubs);
+
+        assertThat(study.getPublications(), hasSize(pubs.size()));
+        assertThat(study.getPublications(), containsInAnyOrder(pubs.toArray()));
+
+        for (Publication publication: pubs) {
+            assertThat(publication.getStudies(), containsInAnyOrder(study));
+        }
+    }
+
+    @Test
+    public void addCentre(){
+        Study study = new Study("PRJEB12345", null, null, null, null);
+
+        Centre centre1 = new Centre("EBI_test");
+        study.setCentre(centre1);
+
+        assertEquals(study.getCentre(), centre1);
     }
 
 }

@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -21,7 +22,7 @@ public class Centre {
     private String email; // one or multiple emails?
     private String address; // one or multiple addresses?
 
-    private Set<Study> studies;
+    private Set<Study> studies = new HashSet<>();
 
     public long getCentreId() {
         return centreId;

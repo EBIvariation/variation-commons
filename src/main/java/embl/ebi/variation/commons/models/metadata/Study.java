@@ -185,9 +185,9 @@ public class Study implements Serializable {
         publications.remove(publication);
     }
 
-    public void addPublication(Publication publicaton){
-        publications.add(publicaton);
-        publicaton.addStudy(this);
+    public void addPublication(Publication publication){
+        publications.add(publication);
+        publication.addStudy(this);
     }
 
     public void setPublications(Set<Publication> publications) {
