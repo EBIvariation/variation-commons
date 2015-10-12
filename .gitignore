@@ -14,3 +14,7 @@ hs_err_pid*
 
 # Others
 .DS_Store
+
+# IntelliJ files
+.idea
+*.iml
