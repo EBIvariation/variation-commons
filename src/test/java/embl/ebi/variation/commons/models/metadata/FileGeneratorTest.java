@@ -24,7 +24,7 @@ public class FileGeneratorTest {
         assertThat(generator.getFiles(), empty());
 
         // add one file to the generator
-        File file1 = new File("file1.vcf", "vcf", "76ysdfhdf76sd6f78sd");
+        File file1 = new File("file1.vcf", File.Type.VCF, "76ysdfhdf76sd6f78sd");
         generator.addFile(file1);
         checkGeneratorHasFiles(generator, file1);
         checkGeneratorInFiles(generator, file1);
@@ -35,14 +35,14 @@ public class FileGeneratorTest {
         checkGeneratorInFiles(generator, file1);
 
         // add again the same file in a different object instance
-        File anotherFile1 = new File("file1.vcf", "vcf", "76ysdfhdf76sd6f78sd");
+        File anotherFile1 = new File("file1.vcf", File.Type.VCF, "76ysdfhdf76sd6f78sd");
         generator.addFile(anotherFile1);
         checkGeneratorHasFiles(generator, file1);
         checkGeneratorHasFiles(generator, anotherFile1);
         checkGeneratorInFiles(generator, file1, anotherFile1);
 
         // add a different file
-        File file2 = new File("file1.vcf", "vcf", "aDifferentMd5");
+        File file2 = new File("file1.vcf", File.Type.VCF_AGGREGATE, "aDifferentMd5");
         generator.addFile(file2);
         checkGeneratorHasFiles(generator, file1, file2);
         checkGeneratorInFiles(generator, file1, file2);

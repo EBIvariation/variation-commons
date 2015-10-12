@@ -15,8 +15,9 @@ public class FileTest {
     @Test
     public void testAddSample() throws Exception {
         // create a file without samples
-        File file = new File("file1.vcf", "vcf", "7s6efgwe78748");
+        File file = new File("file1.vcf", File.Type.VCF, "7s6efgwe78748");
         assertThat(file.getSamples(), empty());
+        assertThat(file.getFileGenerators(), empty());
 
         // add one file to the sample
         Sample sample1 = new Sample("alias1", "sample1", null, null, null, null, null, null, null, null, null, null);
