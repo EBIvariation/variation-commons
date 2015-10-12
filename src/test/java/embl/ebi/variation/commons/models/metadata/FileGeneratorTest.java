@@ -14,7 +14,8 @@ public class FileGeneratorTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorNoAlias() {
-        Run run = new Run(null);
+        Study study = new Study("PRJEA12345", null, null, null, null);
+        Run run = new Run(study, null);
     }
     
     @Test

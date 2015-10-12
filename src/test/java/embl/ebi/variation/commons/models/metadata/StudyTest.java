@@ -53,7 +53,7 @@ public class StudyTest {
         checkStudyInFileGenerators(study, run1, array1, anotherArray1);
 
         // add one analysis to the dataset
-        Analysis analysis1 = new Analysis(study, "Analysis1", null, null, null, null, null, false, null, null, null, null);
+        Analysis analysis1 = new Analysis(study, "Analysis1", "Analysis1", "Description");
         study.addFileGenerator(analysis1);
         checkStudyHasFileGenerators(study, run1, array1, analysis1);
         checkStudyInFileGenerators(study, run1, array1, analysis1);
@@ -62,18 +62,18 @@ public class StudyTest {
         checkStudyHasFileGenerators(study, run1, array1, analysis1);
         checkStudyInFileGenerators(study, run1, array1, analysis1);
         // add again the same analysis in a different object instance
-        Analysis anotherAnalysis1 = new Analysis(study, "Analysis1", null, null, null, null, null, false, null, null, null, null);
+        Analysis anotherAnalysis1 = new Analysis(study, "Analysis1", "Analysis1", "Description");
         study.addFileGenerator(anotherAnalysis1);
         checkStudyHasFileGenerators(study, run1, array1, analysis1);
         checkStudyHasFileGenerators(study, run1, array1, anotherAnalysis1);
         checkStudyInFileGenerators(study, run1, array1, analysis1, anotherAnalysis1);
 
-        // add another run and dataset
+        // add another run, array and analysis
         Run run2 = new Run(study, "Run2");
         study.addFileGenerator(run2);
         Array array2 = new Array(study, "Array2");
         study.addFileGenerator(array2);
-        Analysis analysis2 = new Analysis(study, "Analysis2", null, null, null, null, null, false, null, null, null, null);
+        Analysis analysis2 = new Analysis(study, "Analysis2", "Analysis2", "Description");
         study.addFileGenerator(analysis2);
         checkStudyHasFileGenerators(study, run1, array1, analysis1, run2, array2, analysis2);
         checkStudyInFileGenerators(study, run1, array1, analysis1, run2, array2, analysis2);
@@ -89,12 +89,6 @@ public class StudyTest {
         for (FileGenerator generator : generators) {
             assertEquals(generator.study, study);
         }
-    }
-
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testConstructorStudyAccession(){
-        Study study = new Study("PRA1234", null, null, null, null);
     }
 
     @Test

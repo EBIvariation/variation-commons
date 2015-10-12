@@ -25,26 +25,22 @@ import java.util.Set;
 public abstract class FileGenerator {
 
     protected String alias;
-    protected Set<File> files = new HashSet<File>();
+    protected Set<File> files = new HashSet<>();
     protected Dataset dataset;
     protected Study study;
 
-    protected FileGenerator(Study study){
-        this(study, null);
+    protected FileGenerator(Study study, String alias){
+        this(study, alias, new HashSet<File>(), null);
     }
 
-    protected FileGenerator(Study study, Dataset dataset){
-        this(study, dataset, null);
-    }
-
-    protected FileGenerator(Study study, Dataset dataset, Set<File> files) {
-        this.study = study;
-        if(this.dataset != null){
-            this.dataset = dataset;
-        }
+    protected FileGenerator(Study study, String alias, Set<File> files, Dataset dataset) {
+        this.setAlias(alias);
         if(files != null){
             setFiles(files);
         }
+        this.dataset = dataset;
+    }
+
     public String getAlias() {
         return alias;
     }
