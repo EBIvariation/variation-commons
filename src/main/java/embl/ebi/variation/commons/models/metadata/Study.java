@@ -32,7 +32,7 @@ public class Study implements Serializable {
 
     private String studyAccession; // Bioproject ID?
     private String title;
-    private String centre; //TODO Make a set and connect an Organisation class (i.e. private Organisation centre)? Organisation class could be used for broker attribute too
+    private Centre centre; //TODO Make a set and connect an Organisation class (i.e. private Organisation centre)? Organisation class could be used for broker attribute too
     private StudyEnums.Material material; // controlled vocabulary, use enum?
     private StudyEnums.Scope scope; // controlled vocabulary, use enum?
     private String type; // e.g. umbrella, pop genomics BUT separate column for study_type (aggregate, control set, case control)
@@ -43,7 +43,7 @@ public class Study implements Serializable {
     private String description;
     private Set<URI> uris = new HashSet<URI>();
 //    private Taxon taxon; // When there is a taxon class
-    private Set<String> publications = new HashSet<String>(); // TODO   private Set<Publication> publications; if there will be separate publication class
+    private Set<Publication> publications = new HashSet<>(); // TODO   private Set<Publication> publications; if there will be separate publication class
     private String broker; // if there is a separate broker/organisation class
 
 //    private Set<Study> associatedStudies = new HashSet<Study>(); // in submission template is described as: "Associated Project(s)	Accession OR Alias of all project(s) assoicated to this project (NCBI, ENA, EVA all share the same project accession space so no database distinction is necessary) (e.g. PRJEB4019)" but will a hierarchy of studies be needed instead?
@@ -51,7 +51,7 @@ public class Study implements Serializable {
 //    private Set<Study> childStudies = new HashSet<Study>(); // ... or use this hierarchical relationship?
 
 
-    public Study(String studyAccession, String centre, StudyEnums.Material material, StudyEnums.Scope scope, String type) {
+    public Study(String studyAccession, Centre centre, StudyEnums.Material material, StudyEnums.Scope scope, String type) {
         this.setStudyAccession(studyAccession);
         this.centre = centre;
         this.material = material;
@@ -102,12 +102,13 @@ public class Study implements Serializable {
         this.description = description;
     }
 
-    public String getCentre() {
+    public Centre getCentre() {
         return centre;
     }
 
-    public void setCentre(String centre) {
+    public void setCentre(Centre centre) {
         this.centre = centre;
+        centre.addStudy(this); // should the study be adding itself to the centre, or the other way around? which is responsible?
     }
 
     public StudyEnums.Scope getScope() {
@@ -176,7 +177,7 @@ public class Study implements Serializable {
         }
     }
 
-    public Set<String> getPublications() {
+    public Set<Publication> getPublications() {
         return Collections.unmodifiableSet(publications);
     }
 
@@ -184,13 +185,14 @@ public class Study implements Serializable {
         publications.remove(publication);
     }
 
-    public void addPublication(String publicaton){
+    public void addPublication(Publication publicaton){
         publications.add(publicaton);
+        publicaton.addStudy(this);
     }
 
-    public void setPublications(Set<String> publications) {
+    public void setPublications(Set<Publication> publications) {
         this.publications.clear();
-        for(String publication: publications){
+        for(Publication publication: publications){
             addPublication(publication);
         }
     }
