@@ -16,23 +16,18 @@
 
 package embl.ebi.variation.commons.models.metadata;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Entity
 public class Study implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long studyId;
 
     private String studyAccession; // Bioproject ID?
     private String title;
-    private Centre centre; //TODO Make a set and connect an Organisation class (i.e. private Organisation centre)? Organisation class could be used for broker attribute too
+    private Organisation centre; //TODO Make a set and connect an Organisation class (i.e. private Organisation centre)? Organisation class could be used for broker attribute too
     private StudyEnums.Material material; // controlled vocabulary, use enum?
     private StudyEnums.Scope scope; // controlled vocabulary, use enum?
     private String type; // e.g. umbrella, pop genomics BUT separate column for study_type (aggregate, control set, case control)
@@ -44,24 +39,19 @@ public class Study implements Serializable {
     private Set<URI> uris = new HashSet<URI>();
 //    private Taxon taxon; // When there is a taxon class
     private Set<Publication> publications = new HashSet<>(); // TODO   private Set<Publication> publications; if there will be separate publication class
-    private String broker; // if there is a separate broker/organisation class
+    private Organisation broker; // if there is a separate broker/centre class
 
 //    private Set<Study> associatedStudies = new HashSet<Study>(); // in submission template is described as: "Associated Project(s)	Accession OR Alias of all project(s) assoicated to this project (NCBI, ENA, EVA all share the same project accession space so no database distinction is necessary) (e.g. PRJEB4019)" but will a hierarchy of studies be needed instead?
 //    private Study parentStudy;
 //    private Set<Study> childStudies = new HashSet<Study>(); // ... or use this hierarchical relationship?
 
 
-    public Study(String studyAccession, Centre centre, StudyEnums.Material material, StudyEnums.Scope scope, String type) {
-        this.setStudyAccession(studyAccession);
-        this.centre = centre;
+    public Study(String alias, String title, String description, StudyEnums.Material material, StudyEnums.Scope scope) {
+        this.alias = alias;
+        this.title = title;
+        this.description = description;
         this.material = material;
         this.scope = scope;
-        this.type = type;
-    }
-
-
-    public Long getStudyId() {
-        return studyId;
     }
 
     public String getStudyAccession() {
@@ -102,11 +92,11 @@ public class Study implements Serializable {
         this.description = description;
     }
 
-    public Centre getCentre() {
+    public Organisation getCentre() {
         return centre;
     }
 
-    public void setCentre(Centre centre) {
+    public void setCentre(Organisation centre) {
         this.centre = centre;
         centre.addStudy(this); // should the study be adding itself to the centre, or the other way around? which is responsible?
     }
@@ -197,11 +187,44 @@ public class Study implements Serializable {
         }
     }
 
-    public String getBroker() {
+    public Organisation getBroker() {
         return broker;
     }
 
-    public void setBroker(String broker) {
+    public void setBroker(Organisation broker) {
         this.broker = broker;
+    }
+
+
+    @Override
+    public boolean equals(Object e) {
+        if (e == this) {
+            return true;
+        }else if (!(e instanceof Study)) {
+            return false;
+        }else if (studyAccession != null){
+            return Objects.equals(((Study) e).getStudyAccession(), studyAccession);
+        }else{
+            return (
+                    Objects.equals(((Study) e).getTitle(), title) &&
+                            Objects.equals(((Study) e).getMaterial(), material) &&
+                            Objects.equals(((Study) e).getScope(), scope) &&
+                            Objects.equals(((Study) e).getDescription(), description)
+            );
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        if (studyAccession != null){
+            return studyAccession.hashCode();
+        }else{
+            int result = 17;
+            result = 31 * result + title.hashCode();
+            result = 31 * result + material.hashCode();
+            result = 31 * result + scope.hashCode();
+            result = 31 * result + description.hashCode();
+            return result;
+        }
     }
 }

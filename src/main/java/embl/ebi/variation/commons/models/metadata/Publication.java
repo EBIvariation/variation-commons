@@ -4,19 +4,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by tom on 12/10/15.
  */
 public class Publication {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long publicationId;
     private int pmid;
     private String database;
     private String title;
@@ -27,13 +21,11 @@ public class Publication {
     private Set<Study> studies = new HashSet<>();
 
 
-    public Publication(int pmid, String database, String title, String journal, LocalDateTime publicationDate, List<String> contributors) {
+    public Publication(int pmid, String database, String title, String journal) {
         this.pmid = pmid;
         this.database = database;
         this.title = title;
         this.journal = journal;
-        this.publicationDate = publicationDate;
-        this.contributors = contributors;
     }
 
     public int getPmid() {
@@ -97,5 +89,22 @@ public class Publication {
 
     void addStudy(Study study){
         studies.add(study);
+    }
+
+    @Override
+    public boolean equals(Object e) {
+        if (e == this) {
+            return true;
+        }else if (!(e instanceof Publication)) {
+            return false;
+        }else{
+            return (Objects.equals(((Publication) e).getPmid(), pmid));
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        return (31 * result + pmid);
     }
 }

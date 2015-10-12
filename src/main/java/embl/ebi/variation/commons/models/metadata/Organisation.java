@@ -5,30 +5,21 @@ import org.apache.commons.validator.EmailValidator;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by tom on 12/10/15.
  */
-public class Centre {
+public class Organisation {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long centreId;
     private String name;
     private String email; // one or multiple emails?
     private String address; // one or multiple addresses?
 
     private Set<Study> studies = new HashSet<>();
 
-    public long getCentreId() {
-        return centreId;
-    }
 
-    public Centre(String name) {
+    public Organisation(String name) {
         this.name = name;
     }
 
@@ -76,5 +67,29 @@ public class Centre {
 
     void addStudy(Study study){
         studies.add(study);
+    }
+
+
+    @Override
+    public boolean equals(Object e) {
+        if (e == this) {
+            return true;
+        }else if (!(e instanceof Organisation)) {
+            return false;
+        }else {
+            return Objects.equals(((Organisation) e).getName(), name);
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        if (address != null){
+            int result = 17;
+            result = 31 * result + name.hashCode();
+            result = 31 * result + address.hashCode();
+            return result;
+        }else{
+            return name.hashCode();
+        }
     }
 }
