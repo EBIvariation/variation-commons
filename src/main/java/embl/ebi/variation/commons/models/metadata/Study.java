@@ -42,8 +42,8 @@ public class Study implements Serializable {
     private Organisation broker; // if there is a separate broker/centre class
 
 //    private Set<Study> associatedStudies = new HashSet<Study>(); // in submission template is described as: "Associated Project(s)	Accession OR Alias of all project(s) assoicated to this project (NCBI, ENA, EVA all share the same project accession space so no database distinction is necessary) (e.g. PRJEB4019)" but will a hierarchy of studies be needed instead?
-//    private Study parentStudy;
-//    private Set<Study> childStudies = new HashSet<Study>(); // ... or use this hierarchical relationship?
+    private Study parentStudy;
+    private Set<Study> childStudies = new HashSet<>();
 
 
     public Study(String alias, String title, String description, StudyEnums.Material material, StudyEnums.Scope scope) {
@@ -151,6 +151,7 @@ public class Study implements Serializable {
     }
 
     public void removeFileGenerator(FileGenerator fileGenerator){
+        fileGenerator.unsetStudy();
         fileGenerators.remove(fileGenerator);
     }
 
@@ -170,7 +171,8 @@ public class Study implements Serializable {
         return Collections.unmodifiableSet(publications);
     }
 
-    public void removePublication(String publication){
+    public void removePublication(Publication publication){
+        publication.removeStudy(this);
         publications.remove(publication);
     }
 
@@ -194,6 +196,39 @@ public class Study implements Serializable {
         this.broker = broker;
     }
 
+    public Study getParentStudy() {
+        return parentStudy;
+    }
+
+    void setParentStudy(Study parentStudy) {
+        this.parentStudy = parentStudy;
+    }
+
+    void unsetParentStudy(){
+        this.parentStudy = null;
+    }
+
+    public Set<Study> getChildStudies() {
+        return Collections.unmodifiableSet(childStudies);
+    }
+
+    public void addChildStudy(Study childStudy){
+        childStudies.add(childStudy);
+        childStudy.setParentStudy(this);
+    }
+
+    public void removeChildStudy(Study childStudy){
+        childStudies.remove(childStudy);
+        childStudy.unsetParentStudy();
+    }
+
+    public void setChildStudies(Set<Study> childStudies) {
+        this.childStudies.clear();
+        for(Study childStudy: childStudies){
+            addChildStudy(childStudy);
+            childStudy.setParentStudy(this);
+        }
+    }
 
     @Override
     public boolean equals(Object e) {

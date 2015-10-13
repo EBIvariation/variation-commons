@@ -2,7 +2,9 @@ package embl.ebi.variation.commons.models.metadata;
 
 import org.junit.Test;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.*;
@@ -122,13 +124,6 @@ public class StudyTest {
         assertEquals(attemptSetAccession(study, "PRJEB632"), null);
     }
 
-//    @Test
-//    private void testAddUrl(){
-//        Study study = new Study("PRJEB123", null, null, null, null);
-//
-//        attemptSetAccession(study, Study::addUrl);
-//    }
-
     private Throwable attemptSetAccession(Study study,  String testAcc){
         Throwable e = null;
         try {
@@ -181,13 +176,46 @@ public class StudyTest {
     }
 
     @Test
-    public void addCentre(){
+    public void testAddCentre(){
         Study study = new Study("PRJEB12345", null, null, null, null);
 
         Organisation organisation1 = new Organisation("EBI_test");
         study.setCentre(organisation1);
 
         assertEquals(study.getCentre(), organisation1);
+    }
+
+
+    @Test
+    public void testAddChildStudy(){
+        Study pStudy = new Study("PRJEB12345", null, null, null, null);
+
+        Study cStudy1 = new Study("PRJEB2354", null, null, null, null);
+        Study cStudy2 = new Study("PRJEB2354", null, null, null, null);
+
+        Set<Study> cStudies = new HashSet<>();
+
+        cStudies.add(cStudy1);
+        pStudy.addChildStudy(cStudy1);
+        testAddChildStudyHelper(pStudy, cStudies);
+
+        cStudies.add(cStudy1);
+        pStudy.addChildStudy(cStudy1);
+        testAddChildStudyHelper(pStudy, cStudies);
+
+        cStudies.add(cStudy2);
+        pStudy.addChildStudy(cStudy2);
+        testAddChildStudyHelper(pStudy, cStudies);
+
+        for(Study cStudy: cStudies){
+            assertEquals(cStudy.getParentStudy(), pStudy);
+        }
+
+    }
+
+    private void testAddChildStudyHelper(Study pStudy, Set studies) {
+        assertThat(pStudy.getChildStudies(), hasSize(studies.toArray().length));
+        assertThat(pStudy.getChildStudies(), containsInAnyOrder(studies.toArray()));
     }
 
 }

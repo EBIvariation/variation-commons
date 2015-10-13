@@ -87,6 +87,10 @@ public class Publication {
         return Collections.unmodifiableSet(studies);
     }
 
+    void removeStudy(Study study){
+        studies.remove(study);
+    }
+
     void addStudy(Study study){
         studies.add(study);
     }

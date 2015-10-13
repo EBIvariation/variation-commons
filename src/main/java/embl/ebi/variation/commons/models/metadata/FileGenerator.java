@@ -80,6 +80,10 @@ public abstract class FileGenerator {
         return study;
     }
 
+    void unsetStudy(){
+        this.study = null;
+    }
+
     void setStudy (Study study){
         this.study = study;
     }
