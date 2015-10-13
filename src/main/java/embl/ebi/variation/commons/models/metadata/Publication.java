@@ -1,9 +1,5 @@
 package embl.ebi.variation.commons.models.metadata;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -15,7 +11,7 @@ public class Publication {
     private String database;
     private String title;
     private String journal; // should journal be separate class?
-    private LocalDateTime publicationDate;
+    private Calendar publicationDate;
 
     private List<String> contributors;
     private Set<Study> studies = new HashSet<>();
@@ -60,11 +56,11 @@ public class Publication {
         this.journal = journal;
     }
 
-    public LocalDateTime getPublicationDate() {
+    public Calendar getPublicationDate() {
         return publicationDate;
     }
 
-    public void setPublicationDate(LocalDateTime publicationDate) {
+    public void setPublicationDate(Calendar publicationDate) {
         this.publicationDate = publicationDate;
     }
 
