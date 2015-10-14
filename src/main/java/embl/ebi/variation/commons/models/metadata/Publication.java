@@ -11,9 +11,14 @@ public class Publication {
     private String database;
     private String title;
     private String journal; // should journal be separate class?
+    private String volume;
+    private int startPage;
+    private int endPage;
+    private String doi;
+    private String isbn;
     private Calendar publicationDate;
-
-    private List<String> contributors;
+    private String firstAuthor;
+    private List<String> authors = new ArrayList<>();
     private Set<Study> studies = new HashSet<>();
 
 
@@ -56,6 +61,46 @@ public class Publication {
         this.journal = journal;
     }
 
+    public String getVolume() {
+        return volume;
+    }
+
+    public void setVolume(String volume) {
+        this.volume = volume;
+    }
+
+    public int getStartPage() {
+        return startPage;
+    }
+
+    public void setStartPage(int startPage) {
+        this.startPage = startPage;
+    }
+
+    public int getEndPage() {
+        return endPage;
+    }
+
+    public void setEndPage(int endPage) {
+        this.endPage = endPage;
+    }
+
+    public String getDoi() {
+        return doi;
+    }
+
+    public void setDoi(String doi) {
+        this.doi = doi;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
     public Calendar getPublicationDate() {
         return publicationDate;
     }
@@ -64,18 +109,31 @@ public class Publication {
         this.publicationDate = publicationDate;
     }
 
-    public List<String> getContributors() {
-        return Collections.unmodifiableList(contributors);
+    public String getFirstAuthor() {
+        return firstAuthor;
     }
 
-    public void addContributor(String contributor){
-        contributors.add(contributor);
+    public void setFirstAuthor(String firstAuthor) {
+        if (getAuthors().contains(firstAuthor)){
+            this.firstAuthor = firstAuthor;
+        }else{
+            throw new IllegalArgumentException("Setting first author as an author that isn't in the list of authors.");
+        }
+
     }
 
-    public void setContributors(List<String> contributors) {
-        this.contributors.clear();
-        for(String contributor: contributors){
-            addContributor(contributor);
+    public List<String> getAuthors() {
+        return Collections.unmodifiableList(authors);
+    }
+
+    public void addAuthor(String author){
+        authors.add(author);
+    }
+
+    public void setAuthors(List<String> authors) {
+        this.authors.clear();
+        for(String author: authors){
+            addAuthor(author);
         }
     }
 
