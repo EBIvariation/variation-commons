@@ -255,11 +255,11 @@ public class Study implements Serializable {
             return studyAccession.hashCode();
         }else{
             int result = 17;
-            result = 31 * result + title.hashCode();
-            result = 31 * result + material.hashCode();
-            result = 31 * result + scope.hashCode();
-            result = 31 * result + description.hashCode();
-            result = 31 * result + alias.hashCode();
+            result = (title!=null)? 31 * result + title.hashCode(): result;
+            result = (material!=null)? 31 * result + material.hashCode(): result;
+            result = (scope!=null)? 31 * result + scope.hashCode(): result;
+            result = (description!=null)? 31 * result + description.hashCode(): result;
+            result = (alias!=null)? 31 * result + alias.hashCode(): result;
 
             return result;
         }

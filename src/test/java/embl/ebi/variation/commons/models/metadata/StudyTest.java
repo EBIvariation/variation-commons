@@ -141,8 +141,8 @@ public class StudyTest {
     public void testAddPublication(){
         Study study = new Study("PRJEB12345", null, null, null, null);
 
-        Publication publication1 = new Publication("1234", "Pubmed", "test title", "test journal", "1", new ArrayList<String>());
-        Publication publication2 = new Publication("1235", "Pubmed", "this is a title", "some journal", "2", new ArrayList<String>());
+        Publication publication1 = new Publication("1234", "Pubmed", "test title", "test journal", "1", Arrays.asList("Mrs Example", "Mr Scientist", "Professor Java"));
+        Publication publication2 = new Publication("1235", "Pubmed", "this is a title", "some journal", "2", Arrays.asList("Dr Researcher", "Ms Biologist", "Mr Biologist"));
         study.addPublication(publication1);
         study.addPublication(publication2);
 

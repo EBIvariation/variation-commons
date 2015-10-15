@@ -15,27 +15,31 @@ public class OrganisationTest {
         static Organisation x = new Organisation("Sanger", "Wellcome Genome Campus");
         static Organisation y = new Organisation("Sanger", "Wellcome Genome Campus");
         static Organisation z = new Organisation("Sanger", "Wellcome Genome Campus");
-        static Organisation notx = new Organisation("Sanger", "Wellcome Genome Campus");
+        static Organisation notx = new Organisation("Uni of Cam", "Cambridge");
     }
 
     @Test
     public void testSetEmailGoodEmails(){
-        assertEquals(attemptSetEmail(Fixture.x, "test1@domain.com"), null);
-        assertEquals(attemptSetEmail(Fixture.x, "abcd@gmail.co.uk"), null);
-        assertEquals(attemptSetEmail(Fixture.x, "example@ebi.ac.uk"), null);
-        assertEquals(attemptSetEmail(Fixture.x, "asasdf.asdfadsf@alesefd.uk"), null);
-        assertEquals(attemptSetEmail(Fixture.x, "testing_gfasdf123@yahoo.com"), null);
+        Organisation testOrganisation = new Organisation("Sanger", "Wellcome Genome Campus");
+
+        assertEquals(attemptSetEmail(testOrganisation, "test1@domain.com"), null);
+        assertEquals(attemptSetEmail(testOrganisation, "abcd@gmail.co.uk"), null);
+        assertEquals(attemptSetEmail(testOrganisation, "example@ebi.ac.uk"), null);
+        assertEquals(attemptSetEmail(testOrganisation, "asasdf.asdfadsf@alesefd.uk"), null);
+        assertEquals(attemptSetEmail(testOrganisation, "testing_gfasdf123@yahoo.com"), null);
     }
 
     @Test
-    public void testSetStudyAccessionBadAccs(){
-        assertThat(attemptSetEmail(Fixture.x, "notanemail"), instanceOf(IllegalArgumentException.class));
-        assertThat(attemptSetEmail(Fixture.x, ""), instanceOf(IllegalArgumentException.class));
-        assertThat(attemptSetEmail(Fixture.x, "123"), instanceOf(IllegalArgumentException.class));
-        assertThat(attemptSetEmail(Fixture.x, "test_gmail.com"), instanceOf(IllegalArgumentException.class));
-        assertThat(attemptSetEmail(Fixture.x, "test@ebi"), instanceOf(IllegalArgumentException.class));
-        assertThat(attemptSetEmail(Fixture.x, "@gmail.com"), instanceOf(IllegalArgumentException.class));
-        assertThat(attemptSetEmail(Fixture.x, "gmail.com"), instanceOf(IllegalArgumentException.class));
+    public void testSetEmailBadEmails(){
+        Organisation testOrganisation = new Organisation("Sanger", "Wellcome Genome Campus");
+
+        assertThat(attemptSetEmail(testOrganisation, "notanemail"), instanceOf(IllegalArgumentException.class));
+        assertThat(attemptSetEmail(testOrganisation, ""), instanceOf(IllegalArgumentException.class));
+        assertThat(attemptSetEmail(testOrganisation, "123"), instanceOf(IllegalArgumentException.class));
+        assertThat(attemptSetEmail(testOrganisation, "test_gmail.com"), instanceOf(IllegalArgumentException.class));
+        assertThat(attemptSetEmail(testOrganisation, "test@ebi"), instanceOf(IllegalArgumentException.class));
+        assertThat(attemptSetEmail(testOrganisation, "@gmail.com"), instanceOf(IllegalArgumentException.class));
+        assertThat(attemptSetEmail(testOrganisation, "gmail.com"), instanceOf(IllegalArgumentException.class));
 
     }
 
