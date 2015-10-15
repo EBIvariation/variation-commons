@@ -40,7 +40,7 @@ public class Organisation {
         if(emailValidator.isValid(email)){
             this.email = email;
         }else{
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Email address: " + email + " is not valid");
         }
     }
 
@@ -77,7 +77,8 @@ public class Organisation {
         }else if (!(e instanceof Organisation)) {
             return false;
         }else {
-            return Objects.equals(((Organisation) e).getName(), name);
+            return (Objects.equals(((Organisation) e).getName(), name) &&
+                            Objects.equals(((Organisation) e).getAddress(), address));
         }
     }
 

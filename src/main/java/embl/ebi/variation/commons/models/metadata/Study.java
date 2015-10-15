@@ -28,8 +28,8 @@ public class Study implements Serializable {
     private String studyAccession; // Bioproject ID?
     private String title;
     private Organisation centre; //TODO Make a set and connect an Organisation class (i.e. private Organisation centre)? Organisation class could be used for broker attribute too
-    private StudyEnums.Material material; // controlled vocabulary, use enum?
-    private StudyEnums.Scope scope; // controlled vocabulary, use enum?
+    private Material material; // controlled vocabulary, use enum?
+    private Scope scope; // controlled vocabulary, use enum?
     private String type; // e.g. umbrella, pop genomics BUT separate column for study_type (aggregate, control set, case control)
 
     private Set<FileGenerator> fileGenerators = new HashSet<FileGenerator>();
@@ -46,7 +46,7 @@ public class Study implements Serializable {
     private Set<Study> childStudies = new HashSet<>();
 
 
-    public Study(String alias, String title, String description, StudyEnums.Material material, StudyEnums.Scope scope) {
+    public Study(String alias, String title, String description, Material material, Scope scope) {
         this.alias = alias;
         this.title = title;
         this.description = description;
@@ -101,19 +101,19 @@ public class Study implements Serializable {
         centre.addStudy(this); // should the study be adding itself to the centre, or the other way around? which is responsible?
     }
 
-    public StudyEnums.Scope getScope() {
+    public Scope getScope() {
         return scope;
     }
 
-    public void setScope(StudyEnums.Scope scope) {
+    public void setScope(Scope scope) {
         this.scope = scope;
     }
 
-    public StudyEnums.Material getMaterial() {
+    public Material getMaterial() {
         return material;
     }
 
-    public void setMaterial(StudyEnums.Material material) {
+    public void setMaterial(Material material) {
         this.material = material;
     }
 
@@ -236,14 +236,15 @@ public class Study implements Serializable {
             return true;
         }else if (!(e instanceof Study)) {
             return false;
-        }else if (studyAccession != null){
-            return Objects.equals(((Study) e).getStudyAccession(), studyAccession);
+//        }else if (studyAccession != null){
+//            return Objects.equals(((Study) e).getStudyAccession(), studyAccession); // remove this, per comment "Both studies should have the accession defined. Although ENA doesn't have a single criteria for study accessioning any more, so we could just stick to the other attributes that we know will always exist."?
         }else{
             return (
                     Objects.equals(((Study) e).getTitle(), title) &&
                             Objects.equals(((Study) e).getMaterial(), material) &&
                             Objects.equals(((Study) e).getScope(), scope) &&
-                            Objects.equals(((Study) e).getDescription(), description)
+                            Objects.equals(((Study) e).getDescription(), description) &&
+                            Objects.equals(((Study) e).getAlias(), alias)
             );
         }
     }
@@ -254,11 +255,59 @@ public class Study implements Serializable {
             return studyAccession.hashCode();
         }else{
             int result = 17;
-            result = (title != null)? 31 * result + title.hashCode(): result;
-            result = (material != null)? 31 * result + material.hashCode(): result;
-            result = (scope != null)? 31 * result + scope.hashCode() : result;
-            result = (description!= null)? 31 * result + description.hashCode() : result;
+            result = 31 * result + title.hashCode();
+            result = 31 * result + material.hashCode();
+            result = 31 * result + scope.hashCode();
+            result = 31 * result + description.hashCode();
+            result = 31 * result + alias.hashCode();
+
             return result;
+        }
+    }
+
+    public enum Scope {
+        SINGLE_ISOLATE ("single isolate"),
+        MULTI_ISOLATE ("multi-isolate"),
+        SINGLE_CELL ("single cell"),
+        COMMUNITY ("community"),
+        UNKNOWN ("unknown"),
+        OTHER ("other");
+
+        private final String name;
+
+        private Scope(String s) {
+            name = s;
+        }
+
+        public boolean equalsName(String otherName) {
+            return (otherName != null) && name.equals(otherName);
+        }
+
+        public String toString() {
+            return this.name;
+        }
+    }
+
+
+    public enum Material {
+        DNA ("DNA"),
+        EXONIC_RNA ("exonic RNA"),
+        TRANSCRIBED_RNA ("transcribed RNA"),
+        UNKNOWN ("unknown"),
+        OTHER ("other");
+
+        private final String name;
+
+        private Material(String s) {
+            name = s;
+        }
+
+        public boolean equalsName(String otherName) {
+            return (otherName != null) && name.equals(otherName);
+        }
+
+        public String toString() {
+            return this.name;
         }
     }
 }

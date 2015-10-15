@@ -2,12 +2,15 @@ package embl.ebi.variation.commons.models.metadata;
 
 import java.util.*;
 
+import com.gs.collections.api.bag.Bag;
+import com.gs.collections.impl.list.mutable.FastList;
+
 /**
  * Created by tom on 12/10/15.
  */
 public class Publication {
 
-    private int pmid;
+    private int dbId;
     private String database;
     private String title;
     private String journal; // should journal be separate class?
@@ -17,24 +20,25 @@ public class Publication {
     private String doi;
     private String isbn;
     private Calendar publicationDate;
-    private String firstAuthor;
     private List<String> authors = new ArrayList<>();
     private Set<Study> studies = new HashSet<>();
 
 
-    public Publication(int pmid, String database, String title, String journal) {
-        this.pmid = pmid;
+    public Publication(int dbId, String database, String title, String journal, String volume, List<String> authors) {
+        this.dbId = dbId;
         this.database = database;
         this.title = title;
         this.journal = journal;
+        this.volume = volume;
+        setAuthors(authors);
     }
 
-    public int getPmid() {
-        return pmid;
+    public int getDbId() {
+        return dbId;
     }
 
-    public void setPmid(int pmid) {
-        this.pmid = pmid;
+    public void setDbId(int dbId) {
+        this.dbId = dbId;
     }
 
     public String getDatabase() {
@@ -110,16 +114,7 @@ public class Publication {
     }
 
     public String getFirstAuthor() {
-        return firstAuthor;
-    }
-
-    public void setFirstAuthor(String firstAuthor) {
-        if (getAuthors().contains(firstAuthor)){
-            this.firstAuthor = firstAuthor;
-        }else{
-            throw new IllegalArgumentException("Setting first author as an author that isn't in the list of authors.");
-        }
-
+        return getAuthors().get(0);
     }
 
     public List<String> getAuthors() {
@@ -156,13 +151,25 @@ public class Publication {
         }else if (!(e instanceof Publication)) {
             return false;
         }else{
-            return (Objects.equals(((Publication) e).getPmid(), pmid));
+            Bag<String> eAuthorsBag = FastList.newList(((Publication) e).getAuthors()).toBag();
+            Bag<String> thisAuthorsBag = FastList.newList(authors).toBag();
+
+            return (
+                    Objects.equals(((Publication) e).getTitle(), title) &&
+                            Objects.equals(((Publication) e).getJournal(), journal) &&
+                            Objects.equals(((Publication) e).getVolume(), volume) &&
+                            Objects.equals(eAuthorsBag, thisAuthorsBag)
+            );
         }
     }
 
     @Override
     public int hashCode() {
         int result = 17;
-        return (31 * result + pmid);
+        result = 31 * result + title.hashCode();
+        result = 31 * result + journal.hashCode();
+        result = 31 * result + volume.hashCode();
+        result = 31 * result + authors.hashCode();
+        return result;
     }
 }
