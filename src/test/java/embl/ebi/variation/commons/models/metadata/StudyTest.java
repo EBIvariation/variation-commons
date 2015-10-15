@@ -2,19 +2,22 @@ package embl.ebi.variation.commons.models.metadata;
 
 import org.junit.Test;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 /**
  * Created by tom on 07/10/15.
  */
 public class StudyTest {
+
+    static final class Fixture {
+        static Study x = new Study("This is a title", "aliasA", "a great study", Study.Material.DNA, Study.Scope.MULTI_ISOLATE);
+        static Study y = new Study("This is a title", "aliasA", "a great study", Study.Material.DNA, Study.Scope.MULTI_ISOLATE);
+        static Study z = new Study("This is a title", "aliasA", "a great study", Study.Material.DNA, Study.Scope.MULTI_ISOLATE);
+        static Study notx = new Study("This is a different title", "aliasB", "an ok study", Study.Material.OTHER, Study.Scope.COMMUNITY);
+    }
 
     @Test
     public void testAddFileGenerator() throws Exception {
@@ -138,8 +141,8 @@ public class StudyTest {
     public void testAddPublication(){
         Study study = new Study("PRJEB12345", null, null, null, null);
 
-        Publication publication1 = new Publication(1234, "Pubmed", "test title", "test journal");
-        Publication publication2 = new Publication(1235, "Pubmed", "this is a title", "some journal");
+        Publication publication1 = new Publication("1234", "Pubmed", "test title", "test journal", "1", new ArrayList<String>());
+        Publication publication2 = new Publication("1235", "Pubmed", "this is a title", "some journal", "2", new ArrayList<String>());
         study.addPublication(publication1);
         study.addPublication(publication2);
 
@@ -159,8 +162,8 @@ public class StudyTest {
     public void testSetPublication(){
         Study study = new Study("PRJEB12345", null, null, null, null);
 
-        Publication publication1 = new Publication(1234, "Pubmed", "test title", "test journal");
-        Publication publication2 = new Publication(1235, "Pubmed", "this is a title", "some journal");
+        Publication publication1 = new Publication("1234", "Pubmed", "test title", "test journal", "1", new ArrayList<String>());
+        Publication publication2 = new Publication("1235", "Pubmed", "this is a title", "some journal", "2", new ArrayList<String>());
         Set<Publication> pubs = new HashSet<>();
         pubs.add(publication1);
         pubs.add(publication2);
@@ -179,7 +182,7 @@ public class StudyTest {
     public void testAddCentre(){
         Study study = new Study("PRJEB12345", null, null, null, null);
 
-        Organisation organisation1 = new Organisation("EBI_test");
+        Organisation organisation1 = new Organisation("EBI_test", "Hinxton");
         study.setCentre(organisation1);
 
         assertEquals(study.getCentre(), organisation1);
@@ -216,6 +219,111 @@ public class StudyTest {
     private void testAddChildStudyHelper(Study pStudy, Set studies) {
         assertThat(pStudy.getChildStudies(), hasSize(studies.toArray().length));
         assertThat(pStudy.getChildStudies(), containsInAnyOrder(studies.toArray()));
+    }
+
+    @Test
+    /**
+     * A class is equal to itself.
+     */
+    public void testEqual_ToSelf() {
+
+        assertTrue("Class equal to itself.", Fixture.x.equals(Fixture.x));
+    }
+
+    /**
+     * x.equals(WrongType) must return false;
+     *
+     */
+    @Test
+    public void testPassIncompatibleType_isFalse() {
+        assertFalse("Passing incompatible object to equals should return false", Fixture.x.equals("string"));
+    }
+
+    /**
+     * x.equals(null) must return false;
+     *
+     */
+    @Test
+    public void testNullReference_isFalse() {
+        assertFalse("Passing null to equals should return false", Fixture.x.equals(null));
+    }
+
+    /**
+     * 1. x, x.equals(x) must return true.
+     * 2. x and y, x.equals(y) must return true if and only if y.equals(x) returns true.
+     */
+    @Test
+    public void testEquals_isReflexive_isSymmetric() {
+
+        assertTrue("Reflexive test fail x,y", Fixture.x.equals(Fixture.y));
+        assertTrue("Symmetric test fail y", Fixture.y.equals(Fixture.x));
+
+    }
+
+    /**
+     * 1. x.equals(y) returns true
+     * 2. y.equals(z) returns true
+     * 3. x.equals(z) must return true
+     */
+    @Test
+    public void testEquals_isTransitive() {
+
+        assertTrue("Transitive test fails x,y", Fixture.x.equals(Fixture.y));
+        assertTrue("Transitive test fails y,z", Fixture.y.equals(Fixture.z));
+        assertTrue("Transitive test fails x,z", Fixture.x.equals(Fixture.z));
+    }
+
+    /**
+     * Repeated calls to equals consistently return true or false.
+     */
+    @Test
+    public void testEquals_isConsistent() {
+
+        assertTrue("Consistent test fail x,y", Fixture.x.equals(Fixture.y));
+        assertTrue("Consistent test fail x,y", Fixture.x.equals(Fixture.y));
+        assertTrue("Consistent test fail x,y", Fixture.x.equals(Fixture.y));
+        assertFalse(Fixture.notx.equals(Fixture.x));
+        assertFalse(Fixture.notx.equals(Fixture.x));
+        assertFalse(Fixture.notx.equals(Fixture.x));
+
+    }
+
+    /**
+     * Repeated calls to hashcode should consistently return the same integer.
+     */
+    @Test
+    public void testHashcode_isConsistent() {
+
+        int initial_hashcode = Fixture.x.hashCode();
+
+        assertEquals("Consistent hashcode test fails", initial_hashcode, Fixture.x.hashCode());
+        assertEquals("Consistent hashcode test fails", initial_hashcode, Fixture.x.hashCode());
+    }
+
+    /**
+     * Objects that are equal using the equals method should return the same integer.
+     */
+    @Test
+    public void testHashcode_twoEqualsObjects_produceSameNumber() {
+
+        int xhashcode = Fixture.x.hashCode();
+        int yhashcode = Fixture.y.hashCode();
+
+        assertEquals("Equal object, return equal hashcode test fails", xhashcode, yhashcode);
+    }
+
+    /**
+     * A more optimal implementation of hashcode ensures
+     * that if the objects are unequal different integers are produced.
+     *
+     */
+    @Test
+    public void testHashcode_twoUnEqualObjects_produceDifferentNumber() {
+
+        int xhashcode = Fixture.x.hashCode();
+        int notxHashcode = Fixture.notx.hashCode();
+
+        assertTrue("Equal object, return unequal hashcode test fails", !(xhashcode == notxHashcode));
     }
 
 }

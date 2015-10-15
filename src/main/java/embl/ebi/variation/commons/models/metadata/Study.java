@@ -46,9 +46,9 @@ public class Study implements Serializable {
     private Set<Study> childStudies = new HashSet<>();
 
 
-    public Study(String alias, String title, String description, Material material, Scope scope) {
-        this.alias = alias;
+    public Study(String title, String alias, String description, Material material, Scope scope) {
         this.title = title;
+        this.alias = alias;
         this.description = description;
         this.material = material;
         this.scope = scope;

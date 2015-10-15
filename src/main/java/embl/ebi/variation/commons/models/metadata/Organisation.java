@@ -19,8 +19,9 @@ public class Organisation {
     private Set<Study> studies = new HashSet<>();
 
 
-    public Organisation(String name) {
+    public Organisation(String name, String address) {
         this.name = name;
+        this.address = address;
     }
 
     public String getName() {

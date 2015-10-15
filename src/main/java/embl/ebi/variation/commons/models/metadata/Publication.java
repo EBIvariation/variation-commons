@@ -10,7 +10,7 @@ import com.gs.collections.impl.list.mutable.FastList;
  */
 public class Publication {
 
-    private int dbId;
+    private String dbId;
     private String database;
     private String title;
     private String journal; // should journal be separate class?
@@ -24,7 +24,7 @@ public class Publication {
     private Set<Study> studies = new HashSet<>();
 
 
-    public Publication(int dbId, String database, String title, String journal, String volume, List<String> authors) {
+    public Publication(String dbId, String database, String title, String journal, String volume, List<String> authors) {
         this.dbId = dbId;
         this.database = database;
         this.title = title;
@@ -33,11 +33,11 @@ public class Publication {
         setAuthors(authors);
     }
 
-    public int getDbId() {
+    public String getDbId() {
         return dbId;
     }
 
-    public void setDbId(int dbId) {
+    public void setDbId(String dbId) {
         this.dbId = dbId;
     }
 
