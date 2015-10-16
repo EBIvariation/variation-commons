@@ -17,7 +17,7 @@ public class ExperimentTest {
         // create a experiment without runs
         Experiment experiment = new Experiment("Experiment1", null, null, null, null, null, null, null, null, null, null);
         assertThat(experiment.getRuns(), empty());
-        Study study = new Study("PRJEB123", null, null, null, null);
+        Study study = new Study("Some study", "PRJEB12345", "Study description", Study.Material.UNKNOWN, Study.Scope.UNKNOWN);
 
         // add one run to the experiment
         String run1Alias = "Run1";

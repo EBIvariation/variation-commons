@@ -12,15 +12,34 @@ import static org.junit.Assert.*;
  */
 public class FileGeneratorTest {
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
+    public void testConstructorNoTitle() {
+        Study study = new Study(null, "Alias", "Description", Study.Material.DNA, Study.Scope.OTHER);
+    }
+    
+    @Test(expected = NullPointerException.class)
     public void testConstructorNoAlias() {
-        Study study = new Study("PRJEA12345", null, null, null, null);
-        Run run = new Run(study, null);
+        Study study = new Study("Title", null, "Description", Study.Material.DNA, Study.Scope.OTHER);
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void testConstructorNoDescription() {
+        Study study = new Study("Title", "Alias", null, Study.Material.DNA, Study.Scope.OTHER);
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void testConstructorNoMaterial() {
+        Study study = new Study("Title", "Alias", "Description", null, Study.Scope.OTHER);
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void testConstructorNoScope() {
+        Study study = new Study("Title", "Alias", "Description", Study.Material.DNA, null);
     }
     
     @Test
     public void testAddFile() throws Exception {
-        Study study = new Study("PRJEB123", null, null, null, null);
+        Study study = new Study("Some study", "PRJEB12345", "Study description", Study.Material.UNKNOWN, Study.Scope.UNKNOWN);
         // create a file generator without files
         FileGenerator generator = new Run(study, "Run1");
         assertThat(generator.getFiles(), empty());

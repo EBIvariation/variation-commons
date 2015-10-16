@@ -1,3 +1,18 @@
+/*
+ * Copyright 2015 EMBL - European Bioinformatics Institute
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package embl.ebi.variation.commons.models.metadata;
 
 import java.util.*;
@@ -10,27 +25,32 @@ import com.gs.collections.impl.list.mutable.FastList;
  */
 public class Publication {
 
-    private String dbId;
-    private String database;
     private String title;
     private String journal; // should journal be separate class?
     private String volume;
     private int startPage;
     private int endPage;
+    private String dbId;
+    private String database;
     private String doi;
     private String isbn;
     private Calendar publicationDate;
-    private List<String> authors = new ArrayList<>();
-    private Set<Study> studies = new HashSet<>();
+    private List<String> authors;
+    private Set<Study> studies;
 
+    
+    public Publication(String title, String journal, String volume, List<String> authors) {
+        this(title, journal, volume, authors, null, null);
+    }
 
-    public Publication(String dbId, String database, String title, String journal, String volume, List<String> authors) {
+    public Publication(String title, String journal, String volume, List<String> authors, String database, String dbId) {
+        setTitle(title);
+        setJournal(journal);
+        setVolume(volume);
+        setAuthors(authors);
         this.dbId = dbId;
         this.database = database;
-        this.title = title;
-        this.journal = journal;
-        this.volume = volume;
-        setAuthors(authors);
+        this.studies = new HashSet<>();
     }
 
     public String getDbId() {
@@ -53,7 +73,8 @@ public class Publication {
         return title;
     }
 
-    public void setTitle(String title) {
+    public final void setTitle(String title) {
+        Objects.requireNonNull(title, "Title not specified");
         this.title = title;
     }
 
@@ -61,7 +82,8 @@ public class Publication {
         return journal;
     }
 
-    public void setJournal(String journal) {
+    public final void setJournal(String journal) {
+        Objects.requireNonNull(journal, "Journal not specified");
         this.journal = journal;
     }
 
@@ -69,7 +91,8 @@ public class Publication {
         return volume;
     }
 
-    public void setVolume(String volume) {
+    public final void setVolume(String volume) {
+        Objects.requireNonNull(volume, "Journal volume not specified");
         this.volume = volume;
     }
 
@@ -125,11 +148,9 @@ public class Publication {
         authors.add(author);
     }
 
-    public void setAuthors(List<String> authors) {
-        this.authors.clear();
-        for(String author: authors){
-            addAuthor(author);
-        }
+    public final void setAuthors(List<String> authors) {
+        Objects.requireNonNull(authors, "List of authors not specified");
+        this.authors = authors;
     }
 
     public Set<Study> getStudies() {

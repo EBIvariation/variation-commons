@@ -20,6 +20,7 @@ import java.util.Date;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
 
 /**
  *
@@ -27,9 +28,15 @@ import static org.junit.Assert.*;
  */
 public class AnalysisTest {
     
+    Study study;
+    
+    @Before
+    public void setUp() {
+        study = new Study("Some study", "PRJEB12345", "Study description", Study.Material.UNKNOWN, Study.Scope.UNKNOWN);
+    }
+    
     @Test
     public void testConstructorSuccessful() {
-        Study study = new Study("PRJEA12345", null, null, null, null);
         Analysis analysis1 = new Analysis(study, "Analysis1", "Analysis1", "Description");
         assertEquals(analysis1.getAlias(), "Analysis1");
         assertEquals(analysis1.getTitle(), "Analysis1");
@@ -61,21 +68,18 @@ public class AnalysisTest {
         assertNotNull(analysis3.getDate());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testConstructorNoAlias() {
-        Study study = new Study("PRJEA12345", null, null, null, null);
         Analysis analysis = new Analysis(study, null, "Title", "Description", null, null, null, true, null);
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testConstructorNoTitle() {
-        Study study = new Study("PRJEA12345", null, null, null, null);
         Analysis analysis = new Analysis(study, "Analysis1", null, "Description", null, null, null, true, null);
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testConstructorNoDescription() {
-        Study study = new Study("PRJEA12345", null, null, null, null);
         Analysis analysis = new Analysis(study, "Analysis1", "Title", null, null, null, null, true, null);
     }
     

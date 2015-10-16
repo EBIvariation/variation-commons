@@ -17,12 +17,14 @@
 package embl.ebi.variation.commons.models.metadata;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Created by parce on 02/10/15.
  * 
  * @TODO Experiment type: Choose 1 of the following "whole genome sequencing", "Exome sequencing", "Genotyping by array", "Curation"
  * @TODO Link with Dataset class
+ * @TODO Link with Organisation classs?
  */
 public class Analysis extends FileGenerator {
 
@@ -54,10 +56,8 @@ public class Analysis extends FileGenerator {
         return title;
     }
 
-    public void setTitle(String title) {
-        if (title == null) {
-            throw new IllegalArgumentException("Title not specified");
-        }
+    public final void setTitle(String title) {
+        Objects.requireNonNull(title, "Title not specified");
         this.title = title;
     }
 
@@ -65,10 +65,8 @@ public class Analysis extends FileGenerator {
         return description;
     }
 
-    public void setDescription(String description) {
-        if (description == null) {
-            throw new IllegalArgumentException("Description not specified");
-        }
+    public final void setDescription(String description) {
+        Objects.requireNonNull(description, "Description not specified");
         this.description = description;
     }
 

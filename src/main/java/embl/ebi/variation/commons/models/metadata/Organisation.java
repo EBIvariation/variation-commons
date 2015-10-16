@@ -1,10 +1,22 @@
+/*
+ * Copyright 2015 EMBL - European Bioinformatics Institute
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package embl.ebi.variation.commons.models.metadata;
 
 import org.apache.commons.validator.EmailValidator;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import java.util.*;
 
 /**
@@ -16,19 +28,20 @@ public class Organisation {
     private String email; // one or multiple emails?
     private String address; // one or multiple addresses?
 
-    private Set<Study> studies = new HashSet<>();
-
+    private Set<Study> studies;
 
     public Organisation(String name, String address) {
-        this.name = name;
-        this.address = address;
+        setName(name);
+        setAddress(address);
+        studies = new HashSet<>();
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public final void setName(String name) {
+        Objects.requireNonNull(name, "Name not specified");
         this.name = name;
     }
 
@@ -38,9 +51,9 @@ public class Organisation {
 
     public void setEmail(String email) {
         EmailValidator emailValidator = EmailValidator.getInstance();
-        if(emailValidator.isValid(email)){
+        if (emailValidator.isValid(email)) {
             this.email = email;
-        }else{
+        } else {
             throw new IllegalArgumentException("Email address: " + email + " is not valid");
         }
     }
@@ -49,7 +62,8 @@ public class Organisation {
         return address;
     }
 
-    public void setAddress(String address) {
+    public final void setAddress(String address) {
+        Objects.requireNonNull(address, "Address not specified");
         this.address = address;
     }
 
@@ -65,33 +79,27 @@ public class Organisation {
 //            addStudy(study);
 //        }
 //    }
-
-    void addStudy(Study study){
+    void addStudy(Study study) {
         studies.add(study);
     }
-
 
     @Override
     public boolean equals(Object e) {
         if (e == this) {
             return true;
-        }else if (!(e instanceof Organisation)) {
+        } else if (!(e instanceof Organisation)) {
             return false;
-        }else {
-            return (Objects.equals(((Organisation) e).getName(), name) &&
-                            Objects.equals(((Organisation) e).getAddress(), address));
+        } else {
+            return (Objects.equals(((Organisation) e).getName(), name)
+                    && Objects.equals(((Organisation) e).getAddress(), address));
         }
     }
 
     @Override
     public int hashCode() {
-        if (address != null){
-            int result = 17;
-            result = 31 * result + name.hashCode();
-            result = 31 * result + address.hashCode();
-            return result;
-        }else{
-            return name.hashCode();
-        }
+        int result = 17;
+        result = 31 * result + name.hashCode();
+        result = 31 * result + address.hashCode();
+        return result;
     }
 }

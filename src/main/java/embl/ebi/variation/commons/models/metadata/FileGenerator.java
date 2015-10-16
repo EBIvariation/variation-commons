@@ -15,8 +15,8 @@
  */
 package embl.ebi.variation.commons.models.metadata;
 
-import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -29,26 +29,22 @@ public abstract class FileGenerator {
     protected Dataset dataset;
     protected Study study;
 
-    protected FileGenerator(Study study, String alias){
-        this(study, alias, new HashSet<File>(), null);
+    protected FileGenerator(Study study, String alias) {
+        this(study, alias, new HashSet<File>());
     }
 
-    protected FileGenerator(Study study, String alias, Set<File> files, Dataset dataset) {
-        this.setAlias(alias);
-        if(files != null){
-            setFiles(files);
-        }
-        this.dataset = dataset;
+    protected FileGenerator(Study study, String alias, Set<File> files) {
+        this.study = study;
+        setAlias(alias);
+        setFiles(files);
     }
 
     public String getAlias() {
         return alias;
     }
 
-    public void setAlias(String alias) {
-        if (alias == null) {
-            throw new IllegalArgumentException("Alias not specified");
-        }
+    public final void setAlias(String alias) {
+        Objects.requireNonNull(alias, "Alias not specified");
         this.alias = alias;
     }
 
@@ -64,12 +60,13 @@ public abstract class FileGenerator {
         return files;
     }
 
-    public void addFile(File file){
+    public void addFile(File file) {
         this.files.add(file);
         file.addFileGenerator(this);
     }
 
-    public void setFiles(Set<File> files) {
+    public final void setFiles(Set<File> files) {
+        Objects.requireNonNull(files, "Files not specified");
         this.files.clear();
         for (File f : files) {
             addFile(f);
@@ -80,16 +77,15 @@ public abstract class FileGenerator {
         return study;
     }
 
-    void unsetStudy(){
+    void unsetStudy() {
         this.study = null;
     }
 
-    void setStudy (Study study){
+    void setStudy(Study study) {
         this.study = study;
     }
 
     // TODO: add removeFile method
-
     @Override
     public abstract boolean equals(Object e);
 

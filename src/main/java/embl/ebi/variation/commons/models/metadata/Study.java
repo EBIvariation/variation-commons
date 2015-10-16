@@ -13,45 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package embl.ebi.variation.commons.models.metadata;
 
-import java.io.Serializable;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-public class Study implements Serializable {
+public class Study {
 
-    private String studyAccession; // Bioproject ID?
     private String title;
-    private Organisation centre; //TODO Make a set and connect an Organisation class (i.e. private Organisation centre)? Organisation class could be used for broker attribute too
-    private Material material; // controlled vocabulary, use enum?
-    private Scope scope; // controlled vocabulary, use enum?
-    private String type; // e.g. umbrella, pop genomics BUT separate column for study_type (aggregate, control set, case control)
-
-    private Set<FileGenerator> fileGenerators = new HashSet<FileGenerator>();
-
     private String alias;
     private String description;
-    private Set<URI> uris = new HashSet<URI>();
-//    private Taxon taxon; // When there is a taxon class
-    private Set<Publication> publications = new HashSet<>(); // TODO   private Set<Publication> publications; if there will be separate publication class
-    private Organisation broker; // if there is a separate broker/centre class
+    private Material material;
+    private Scope scope;
 
-//    private Set<Study> associatedStudies = new HashSet<Study>(); // in submission template is described as: "Associated Project(s)	Accession OR Alias of all project(s) assoicated to this project (NCBI, ENA, EVA all share the same project accession space so no database distinction is necessary) (e.g. PRJEB4019)" but will a hierarchy of studies be needed instead?
+    private String type; // e.g. umbrella, pop genomics BUT separate column for study_type (aggregate, control set, case control)
+
+    private String studyAccession; // Bioproject ID?
+    private Organisation centre;
+    private Organisation broker;
+
+    private Set<FileGenerator> fileGenerators;
+
+    private Set<URI> uris;
+    private Set<Publication> publications;
+
     private Study parentStudy;
-    private Set<Study> childStudies = new HashSet<>();
-
+    private Set<Study> childStudies;
 
     public Study(String title, String alias, String description, Material material, Scope scope) {
-        this.title = title;
-        this.alias = alias;
-        this.description = description;
-        this.material = material;
-        this.scope = scope;
+        setTitle(title);
+        setAlias(alias);
+        setDescription(description);
+        setMaterial(material);
+        setScope(scope);
+        fileGenerators = new HashSet<>();
+        uris = new HashSet<>();
+        publications = new HashSet<>();
+        childStudies = new HashSet<>();
     }
 
     public String getStudyAccession() {
@@ -60,10 +61,12 @@ public class Study implements Serializable {
 
     public void setStudyAccession(String studyAccession) {
         // starts with "PRJEA or PRJEB PRJNA\d+"
-        if(studyAccession.matches("PRJ(E(A|B)|NA)\\d+")){
+        if (studyAccession.matches("PRJ(E(A|B)|NA)\\d+")) {
             this.studyAccession = studyAccession;
-        }else{
-            throw new IllegalArgumentException("Study accession must begin with a prefix from the following: (PRJEA, PRJEB, PRJNA), followed by multiple numerical digits.");
+        } else {
+            throw new IllegalArgumentException(
+                    "Study accession must begin with a prefix from the following: (PRJEA, PRJEB, PRJNA), "
+                    + "followed by multiple numerical digits.");
             // TODO openpojo tester throws exception with this
         }
     }
@@ -72,7 +75,8 @@ public class Study implements Serializable {
         return title;
     }
 
-    public void setTitle(String title) {
+    public final void setTitle(String title) {
+        Objects.requireNonNull(title, "Title not specified");
         this.title = title;
     }
 
@@ -80,7 +84,8 @@ public class Study implements Serializable {
         return alias;
     }
 
-    public void setAlias(String alias) {
+    public final void setAlias(String alias) {
+        Objects.requireNonNull(alias, "Alias not specified");
         this.alias = alias;
     }
 
@@ -88,7 +93,8 @@ public class Study implements Serializable {
         return description;
     }
 
-    public void setDescription(String description) {
+    public final void setDescription(String description) {
+        Objects.requireNonNull(description, "Description not specified");
         this.description = description;
     }
 
@@ -105,7 +111,8 @@ public class Study implements Serializable {
         return scope;
     }
 
-    public void setScope(Scope scope) {
+    public final void setScope(Scope scope) {
+        Objects.requireNonNull(scope, "Scope not specified");
         this.scope = scope;
     }
 
@@ -113,7 +120,8 @@ public class Study implements Serializable {
         return material;
     }
 
-    public void setMaterial(Material material) {
+    public final void setMaterial(Material material) {
+        Objects.requireNonNull(material, "Material not specified");
         this.material = material;
     }
 
@@ -129,18 +137,18 @@ public class Study implements Serializable {
         return Collections.unmodifiableSet(uris);
     }
 
-    public void addUri(URI uri){
+    public void addUri(URI uri) {
         uris.add(uri);
     }
 
-    public void removeUrl(URI url){
+    public void removeUrl(URI url) {
         uris.remove(url);
     }
 
     public void setUris(Set<URI> uris) {
         this.uris.clear();
-        if(uris != null){
-            for(URI uri: uris) {
+        if (uris != null) {
+            for (URI uri : uris) {
                 addUri(uri);
             }
         }
@@ -150,19 +158,19 @@ public class Study implements Serializable {
         return Collections.unmodifiableSet(fileGenerators);
     }
 
-    public void removeFileGenerator(FileGenerator fileGenerator){
+    public void removeFileGenerator(FileGenerator fileGenerator) {
         fileGenerator.unsetStudy();
         fileGenerators.remove(fileGenerator);
     }
 
-    public void addFileGenerator(FileGenerator fileGenerator){
+    public void addFileGenerator(FileGenerator fileGenerator) {
         fileGenerators.add(fileGenerator);
         fileGenerator.setStudy(this);
     }
 
     public void setFileGenerators(Set<FileGenerator> fileGenerators) {
         this.fileGenerators.clear();
-        for(FileGenerator fileGenerator: fileGenerators){
+        for (FileGenerator fileGenerator : fileGenerators) {
             addFileGenerator(fileGenerator);
         }
     }
@@ -171,19 +179,19 @@ public class Study implements Serializable {
         return Collections.unmodifiableSet(publications);
     }
 
-    public void removePublication(Publication publication){
+    public void removePublication(Publication publication) {
         publication.removeStudy(this);
         publications.remove(publication);
     }
 
-    public void addPublication(Publication publication){
+    public void addPublication(Publication publication) {
         publications.add(publication);
         publication.addStudy(this);
     }
 
     public void setPublications(Set<Publication> publications) {
         this.publications.clear();
-        for(Publication publication: publications){
+        for (Publication publication : publications) {
             addPublication(publication);
         }
     }
@@ -204,7 +212,7 @@ public class Study implements Serializable {
         this.parentStudy = parentStudy;
     }
 
-    void unsetParentStudy(){
+    void unsetParentStudy() {
         this.parentStudy = null;
     }
 
@@ -212,19 +220,19 @@ public class Study implements Serializable {
         return Collections.unmodifiableSet(childStudies);
     }
 
-    public void addChildStudy(Study childStudy){
+    public void addChildStudy(Study childStudy) {
         childStudies.add(childStudy);
         childStudy.setParentStudy(this);
     }
 
-    public void removeChildStudy(Study childStudy){
+    public void removeChildStudy(Study childStudy) {
         childStudies.remove(childStudy);
         childStudy.unsetParentStudy();
     }
 
     public void setChildStudies(Set<Study> childStudies) {
         this.childStudies.clear();
-        for(Study childStudy: childStudies){
+        for (Study childStudy : childStudies) {
             addChildStudy(childStudy);
             childStudy.setParentStudy(this);
         }
@@ -234,44 +242,36 @@ public class Study implements Serializable {
     public boolean equals(Object e) {
         if (e == this) {
             return true;
-        }else if (!(e instanceof Study)) {
+        } else if (!(e instanceof Study)) {
             return false;
-//        }else if (studyAccession != null){
-//            return Objects.equals(((Study) e).getStudyAccession(), studyAccession); // remove this, per comment "Both studies should have the accession defined. Although ENA doesn't have a single criteria for study accessioning any more, so we could just stick to the other attributes that we know will always exist."?
-        }else{
-            return (
-                    Objects.equals(((Study) e).getTitle(), title) &&
-                            Objects.equals(((Study) e).getMaterial(), material) &&
-                            Objects.equals(((Study) e).getScope(), scope) &&
-                            Objects.equals(((Study) e).getDescription(), description) &&
-                            Objects.equals(((Study) e).getAlias(), alias)
-            );
+        } else {
+            return (Objects.equals(((Study) e).getTitle(), title)
+                    && Objects.equals(((Study) e).getMaterial(), material)
+                    && Objects.equals(((Study) e).getScope(), scope)
+                    && Objects.equals(((Study) e).getDescription(), description)
+                    && Objects.equals(((Study) e).getAlias(), alias));
         }
     }
 
     @Override
     public int hashCode() {
-        if (studyAccession != null){
-            return studyAccession.hashCode();
-        }else{
-            int result = 17;
-            result = (title!=null)? 31 * result + title.hashCode(): result;
-            result = (material!=null)? 31 * result + material.hashCode(): result;
-            result = (scope!=null)? 31 * result + scope.hashCode(): result;
-            result = (description!=null)? 31 * result + description.hashCode(): result;
-            result = (alias!=null)? 31 * result + alias.hashCode(): result;
-
-            return result;
-        }
+        int result = 17;
+        result = (title != null) ? 31 * result + title.hashCode() : result;
+        result = (material != null) ? 31 * result + material.hashCode() : result;
+        result = (scope != null) ? 31 * result + scope.hashCode() : result;
+        result = (description != null) ? 31 * result + description.hashCode() : result;
+        result = (alias != null) ? 31 * result + alias.hashCode() : result;
+        return result;
     }
 
     public enum Scope {
-        SINGLE_ISOLATE ("single isolate"),
-        MULTI_ISOLATE ("multi-isolate"),
-        SINGLE_CELL ("single cell"),
-        COMMUNITY ("community"),
-        UNKNOWN ("unknown"),
-        OTHER ("other");
+
+        SINGLE_ISOLATE("single isolate"),
+        MULTI_ISOLATE("multi-isolate"),
+        SINGLE_CELL("single cell"),
+        COMMUNITY("community"),
+        UNKNOWN("unknown"),
+        OTHER("other");
 
         private final String name;
 
@@ -283,18 +283,19 @@ public class Study implements Serializable {
             return (otherName != null) && name.equals(otherName);
         }
 
+        @Override
         public String toString() {
             return this.name;
         }
     }
 
-
     public enum Material {
-        DNA ("DNA"),
-        EXONIC_RNA ("exonic RNA"),
-        TRANSCRIBED_RNA ("transcribed RNA"),
-        UNKNOWN ("unknown"),
-        OTHER ("other");
+
+        DNA("DNA"),
+        EXONIC_RNA("exonic RNA"),
+        TRANSCRIBED_RNA("transcribed RNA"),
+        UNKNOWN("unknown"),
+        OTHER("other");
 
         private final String name;
 
@@ -306,6 +307,7 @@ public class Study implements Serializable {
             return (otherName != null) && name.equals(otherName);
         }
 
+        @Override
         public String toString() {
             return this.name;
         }

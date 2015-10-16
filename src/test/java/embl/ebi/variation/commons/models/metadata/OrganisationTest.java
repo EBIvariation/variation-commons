@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.*;
+import org.junit.Before;
 
 
 /**
@@ -11,13 +12,16 @@ import static org.junit.Assert.*;
  */
 public class OrganisationTest {
 
-    static final class Fixture {
-        static Organisation x = new Organisation("Sanger", "Wellcome Genome Campus");
-        static Organisation y = new Organisation("Sanger", "Wellcome Genome Campus");
-        static Organisation z = new Organisation("Sanger", "Wellcome Genome Campus");
-        static Organisation notx = new Organisation("Uni of Cam", "Cambridge");
-    }
+    Organisation x, y, z, notx;
 
+    @Before
+    public void setUp() {
+        x = new Organisation("Sanger", "Wellcome Genome Campus");
+        y = new Organisation("Sanger", "Wellcome Genome Campus");
+        z = new Organisation("Sanger", "Wellcome Genome Campus");
+        notx = new Organisation("Uni of Cam", "Cambridge");
+    }
+    
     @Test
     public void testSetEmailGoodEmails(){
         Organisation testOrganisation = new Organisation("Sanger", "Wellcome Genome Campus");
@@ -59,8 +63,7 @@ public class OrganisationTest {
      * A class is equal to itself.
      */
     public void testEqual_ToSelf() {
-
-        assertTrue("Class equal to itself.", Fixture.x.equals(Fixture.x));
+        assertTrue("Class equal to itself.", x.equals(x));
     }
 
     /**
@@ -69,7 +72,7 @@ public class OrganisationTest {
      */
     @Test
     public void testPassIncompatibleType_isFalse() {
-        assertFalse("Passing incompatible object to equals should return false", Fixture.x.equals("string"));
+        assertFalse("Passing incompatible object to equals should return false", x.equals("string"));
     }
 
     /**
@@ -78,7 +81,7 @@ public class OrganisationTest {
      */
     @Test
     public void testNullReference_isFalse() {
-        assertFalse("Passing null to equals should return false", Fixture.x.equals(null));
+        assertFalse("Passing null to equals should return false", x.equals(null));
     }
 
     /**
@@ -87,10 +90,8 @@ public class OrganisationTest {
      */
     @Test
     public void testEquals_isReflexive_isSymmetric() {
-
-        assertTrue("Reflexive test fail x,y", Fixture.x.equals(Fixture.y));
-        assertTrue("Symmetric test fail y", Fixture.y.equals(Fixture.x));
-
+        assertTrue("Reflexive test fail x,y", x.equals(y));
+        assertTrue("Symmetric test fail y", y.equals(x));
     }
 
     /**
@@ -100,10 +101,9 @@ public class OrganisationTest {
      */
     @Test
     public void testEquals_isTransitive() {
-
-        assertTrue("Transitive test fails x,y", Fixture.x.equals(Fixture.y));
-        assertTrue("Transitive test fails y,z", Fixture.y.equals(Fixture.z));
-        assertTrue("Transitive test fails x,z", Fixture.x.equals(Fixture.z));
+        assertTrue("Transitive test fails x,y", x.equals(y));
+        assertTrue("Transitive test fails y,z", y.equals(z));
+        assertTrue("Transitive test fails x,z", x.equals(z));
     }
 
     /**
@@ -111,13 +111,12 @@ public class OrganisationTest {
      */
     @Test
     public void testEquals_isConsistent() {
-
-        assertTrue("Consistent test fail x,y", Fixture.x.equals(Fixture.y));
-        assertTrue("Consistent test fail x,y", Fixture.x.equals(Fixture.y));
-        assertTrue("Consistent test fail x,y", Fixture.x.equals(Fixture.y));
-        assertFalse(Fixture.notx.equals(Fixture.x));
-        assertFalse(Fixture.notx.equals(Fixture.x));
-        assertFalse(Fixture.notx.equals(Fixture.x));
+        assertTrue("Consistent test fail x,y", x.equals(y));
+        assertTrue("Consistent test fail x,y", x.equals(y));
+        assertTrue("Consistent test fail x,y", x.equals(y));
+        assertFalse(notx.equals(x));
+        assertFalse(notx.equals(x));
+        assertFalse(notx.equals(x));
 
     }
 
@@ -126,11 +125,10 @@ public class OrganisationTest {
      */
     @Test
     public void testHashcode_isConsistent() {
+        int initial_hashcode = x.hashCode();
 
-        int initial_hashcode = Fixture.x.hashCode();
-
-        assertEquals("Consistent hashcode test fails", initial_hashcode, Fixture.x.hashCode());
-        assertEquals("Consistent hashcode test fails", initial_hashcode, Fixture.x.hashCode());
+        assertEquals("Consistent hashcode test fails", initial_hashcode, x.hashCode());
+        assertEquals("Consistent hashcode test fails", initial_hashcode, x.hashCode());
     }
 
     /**
@@ -138,9 +136,8 @@ public class OrganisationTest {
      */
     @Test
     public void testHashcode_twoEqualsObjects_produceSameNumber() {
-
-        int xhashcode = Fixture.x.hashCode();
-        int yhashcode = Fixture.y.hashCode();
+        int xhashcode = x.hashCode();
+        int yhashcode = y.hashCode();
 
         assertEquals("Equal object, return equal hashcode test fails", xhashcode, yhashcode);
     }
@@ -152,9 +149,8 @@ public class OrganisationTest {
      */
     @Test
     public void testHashcode_twoUnEqualObjects_produceDifferentNumber() {
-
-        int xhashcode = Fixture.x.hashCode();
-        int notxHashcode = Fixture.notx.hashCode();
+        int xhashcode = x.hashCode();
+        int notxHashcode = notx.hashCode();
 
         assertTrue("Equal object, return unequal hashcode test fails", !(xhashcode == notxHashcode));
     }

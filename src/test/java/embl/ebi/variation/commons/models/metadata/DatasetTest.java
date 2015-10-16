@@ -17,7 +17,7 @@ public class DatasetTest {
     public void testAddFileGenerator() throws Exception {
         // create a dataset without file generators
         Dataset dataset = new Dataset("Center", false, 0, null, false);
-        Study study = new Study("PRJEB1234", null, null, null, null);
+        Study study = new Study("Some study", "PRJEB12345", "Study description", Study.Material.UNKNOWN, Study.Scope.UNKNOWN);
         assertThat(dataset.getFileGenerators(), empty());
 
         // add one run to the dataset

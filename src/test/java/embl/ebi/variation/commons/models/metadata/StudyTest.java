@@ -6,23 +6,27 @@ import java.util.*;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import org.junit.Before;
 
 /**
  * Created by tom on 07/10/15.
  */
 public class StudyTest {
 
-    static final class Fixture {
-        static Study x = new Study("This is a title", "aliasA", "a great study", Study.Material.DNA, Study.Scope.MULTI_ISOLATE);
-        static Study y = new Study("This is a title", "aliasA", "a great study", Study.Material.DNA, Study.Scope.MULTI_ISOLATE);
-        static Study z = new Study("This is a title", "aliasA", "a great study", Study.Material.DNA, Study.Scope.MULTI_ISOLATE);
-        static Study notx = new Study("This is a different title", "aliasB", "an ok study", Study.Material.OTHER, Study.Scope.COMMUNITY);
-    }
+    Study x, y, z, notx;
 
+    @Before
+    public void setUp() {
+        x = new Study("This is a title", "aliasA", "a great study", Study.Material.DNA, Study.Scope.MULTI_ISOLATE);
+        y = new Study("This is a title", "aliasA", "a great study", Study.Material.DNA, Study.Scope.MULTI_ISOLATE);
+        z = new Study("This is a title", "aliasA", "a great study", Study.Material.DNA, Study.Scope.MULTI_ISOLATE);
+        notx = new Study("This is a different title", "aliasB", "an ok study", Study.Material.OTHER, Study.Scope.COMMUNITY);
+    }
+    
     @Test
     public void testAddFileGenerator() throws Exception {
         // create a study without file generators
-        Study study = new Study("PRJEA12345", null, null, null, null);
+        Study study = new Study("Some study", "PRJEB12345", "Study description", Study.Material.UNKNOWN, Study.Scope.UNKNOWN);
         assertThat(study.getFileGenerators(), empty());
 
         // add one run to the study
@@ -98,7 +102,7 @@ public class StudyTest {
 
     @Test
     public void testSetStudyAccessionBadAccs(){
-        Study study = new Study("PRJEB123", null, null, null, null);
+        Study study = new Study("Some study", "PRJEB123", "Study description", Study.Material.UNKNOWN, Study.Scope.UNKNOWN);
 
         assertThat(attemptSetAccession(study, "PRJR1234"), instanceOf(IllegalArgumentException.class));
         assertThat(attemptSetAccession(study, ""), instanceOf(IllegalArgumentException.class));
@@ -117,7 +121,7 @@ public class StudyTest {
 
     @Test
     public void testSetStudyAccessionGoodAccs(){
-        Study study = new Study("PRJEB123", null, null, null, null);
+        Study study = new Study("Some study", "PRJEB123", "Study description", Study.Material.UNKNOWN, Study.Scope.UNKNOWN);
 
         assertEquals(attemptSetAccession(study, "PRJEB123"), null);
         assertEquals(attemptSetAccession(study, "PRJEA324234"), null);
@@ -139,10 +143,10 @@ public class StudyTest {
 
     @Test
     public void testAddPublication(){
-        Study study = new Study("PRJEB12345", null, null, null, null);
+        Study study = new Study("Some study", "PRJEB123", "Study description", Study.Material.UNKNOWN, Study.Scope.UNKNOWN);
 
-        Publication publication1 = new Publication("1234", "Pubmed", "test title", "test journal", "1", Arrays.asList("Mrs Example", "Mr Scientist", "Professor Java"));
-        Publication publication2 = new Publication("1235", "Pubmed", "this is a title", "some journal", "2", Arrays.asList("Dr Researcher", "Ms Biologist", "Mr Biologist"));
+        Publication publication1 = new Publication("test title", "test journal", "1", Arrays.asList("Mrs Example", "Mr Scientist", "Professor Java"), "1234", "Pubmed");
+        Publication publication2 = new Publication("this is a title", "some journal", "2", Arrays.asList("Dr Researcher", "Ms Biologist", "Mr Biologist"), "1235", "Pubmed");
         study.addPublication(publication1);
         study.addPublication(publication2);
 
@@ -160,10 +164,10 @@ public class StudyTest {
 
     @Test
     public void testSetPublication(){
-        Study study = new Study("PRJEB12345", null, null, null, null);
+        Study study = new Study("Some study", "PRJEB123", "Study description", Study.Material.UNKNOWN, Study.Scope.UNKNOWN);
 
-        Publication publication1 = new Publication("1234", "Pubmed", "test title", "test journal", "1", new ArrayList<String>());
-        Publication publication2 = new Publication("1235", "Pubmed", "this is a title", "some journal", "2", new ArrayList<String>());
+        Publication publication1 = new Publication("test title", "test journal", "1", new ArrayList<String>(), "1234", "Pubmed");
+        Publication publication2 = new Publication("this is a title", "some journal", "2", new ArrayList<String>(), "1235", "Pubmed");
         Set<Publication> pubs = new HashSet<>();
         pubs.add(publication1);
         pubs.add(publication2);
@@ -180,7 +184,7 @@ public class StudyTest {
 
     @Test
     public void testAddCentre(){
-        Study study = new Study("PRJEB12345", null, null, null, null);
+        Study study = new Study("Some study", "PRJEB123", "Study description", Study.Material.UNKNOWN, Study.Scope.UNKNOWN);
 
         Organisation organisation1 = new Organisation("EBI_test", "Hinxton");
         study.setCentre(organisation1);
@@ -191,10 +195,10 @@ public class StudyTest {
 
     @Test
     public void testAddChildStudy(){
-        Study pStudy = new Study("PRJEB12345", null, null, null, null);
+        Study pStudy = new Study("Some study", "PRJEB12345", "Study description", Study.Material.UNKNOWN, Study.Scope.UNKNOWN);
 
-        Study cStudy1 = new Study("PRJEB2354", null, null, null, null);
-        Study cStudy2 = new Study("PRJEB2354", null, null, null, null);
+        Study cStudy1 = new Study("Some study", "PRJEB2345", "Study description", Study.Material.UNKNOWN, Study.Scope.UNKNOWN);
+        Study cStudy2 = new Study("Some study", "PRJEB2354", "Study description", Study.Material.UNKNOWN, Study.Scope.UNKNOWN);
 
         Set<Study> cStudies = new HashSet<>();
 
@@ -226,8 +230,7 @@ public class StudyTest {
      * A class is equal to itself.
      */
     public void testEqual_ToSelf() {
-
-        assertTrue("Class equal to itself.", Fixture.x.equals(Fixture.x));
+        assertTrue("Class equal to itself.", x.equals(x));
     }
 
     /**
@@ -236,7 +239,7 @@ public class StudyTest {
      */
     @Test
     public void testPassIncompatibleType_isFalse() {
-        assertFalse("Passing incompatible object to equals should return false", Fixture.x.equals("string"));
+        assertFalse("Passing incompatible object to equals should return false", x.equals("string"));
     }
 
     /**
@@ -245,7 +248,7 @@ public class StudyTest {
      */
     @Test
     public void testNullReference_isFalse() {
-        assertFalse("Passing null to equals should return false", Fixture.x.equals(null));
+        assertFalse("Passing null to equals should return false", x.equals(null));
     }
 
     /**
@@ -254,10 +257,8 @@ public class StudyTest {
      */
     @Test
     public void testEquals_isReflexive_isSymmetric() {
-
-        assertTrue("Reflexive test fail x,y", Fixture.x.equals(Fixture.y));
-        assertTrue("Symmetric test fail y", Fixture.y.equals(Fixture.x));
-
+        assertTrue("Reflexive test fail x,y", x.equals(y));
+        assertTrue("Symmetric test fail y", y.equals(x));
     }
 
     /**
@@ -267,10 +268,9 @@ public class StudyTest {
      */
     @Test
     public void testEquals_isTransitive() {
-
-        assertTrue("Transitive test fails x,y", Fixture.x.equals(Fixture.y));
-        assertTrue("Transitive test fails y,z", Fixture.y.equals(Fixture.z));
-        assertTrue("Transitive test fails x,z", Fixture.x.equals(Fixture.z));
+        assertTrue("Transitive test fails x,y", x.equals(y));
+        assertTrue("Transitive test fails y,z", y.equals(z));
+        assertTrue("Transitive test fails x,z", x.equals(z));
     }
 
     /**
@@ -278,14 +278,12 @@ public class StudyTest {
      */
     @Test
     public void testEquals_isConsistent() {
-
-        assertTrue("Consistent test fail x,y", Fixture.x.equals(Fixture.y));
-        assertTrue("Consistent test fail x,y", Fixture.x.equals(Fixture.y));
-        assertTrue("Consistent test fail x,y", Fixture.x.equals(Fixture.y));
-        assertFalse(Fixture.notx.equals(Fixture.x));
-        assertFalse(Fixture.notx.equals(Fixture.x));
-        assertFalse(Fixture.notx.equals(Fixture.x));
-
+        assertTrue("Consistent test fail x,y", x.equals(y));
+        assertTrue("Consistent test fail x,y", x.equals(y));
+        assertTrue("Consistent test fail x,y", x.equals(y));
+        assertFalse(notx.equals(x));
+        assertFalse(notx.equals(x));
+        assertFalse(notx.equals(x));
     }
 
     /**
@@ -293,11 +291,10 @@ public class StudyTest {
      */
     @Test
     public void testHashcode_isConsistent() {
+        int initial_hashcode = x.hashCode();
 
-        int initial_hashcode = Fixture.x.hashCode();
-
-        assertEquals("Consistent hashcode test fails", initial_hashcode, Fixture.x.hashCode());
-        assertEquals("Consistent hashcode test fails", initial_hashcode, Fixture.x.hashCode());
+        assertEquals("Consistent hashcode test fails", initial_hashcode, x.hashCode());
+        assertEquals("Consistent hashcode test fails", initial_hashcode, x.hashCode());
     }
 
     /**
@@ -305,9 +302,8 @@ public class StudyTest {
      */
     @Test
     public void testHashcode_twoEqualsObjects_produceSameNumber() {
-
-        int xhashcode = Fixture.x.hashCode();
-        int yhashcode = Fixture.y.hashCode();
+        int xhashcode = x.hashCode();
+        int yhashcode = y.hashCode();
 
         assertEquals("Equal object, return equal hashcode test fails", xhashcode, yhashcode);
     }
@@ -319,9 +315,8 @@ public class StudyTest {
      */
     @Test
     public void testHashcode_twoUnEqualObjects_produceDifferentNumber() {
-
-        int xhashcode = Fixture.x.hashCode();
-        int notxHashcode = Fixture.notx.hashCode();
+        int xhashcode = x.hashCode();
+        int notxHashcode = notx.hashCode();
 
         assertTrue("Equal object, return unequal hashcode test fails", !(xhashcode == notxHashcode));
     }
