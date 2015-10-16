@@ -22,6 +22,12 @@
                <version>${spring.boot.version}</version>
                <type>pom</type>
                <scope>import</scope>
+               <exclusions>
+                   <exclusion>
+                        <groupId>commons-validator</groupId>
+                        <artifactId>commons-validator</artifactId>
+                   </exclusion>
+               </exclusions>
            </dependency>
        </dependencies>
     </dependencyManagement>
@@ -37,18 +43,24 @@
         </dependency>
         
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-library</artifactId>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>1.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>oro</groupId>
+            <artifactId>oro</artifactId>
+            <version>2.0.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.goldmansachs</groupId>
+            <artifactId>gs-collections</artifactId>
+            <version>6.2.0</version>
         </dependency>
     </dependencies>
     
@@ -71,5 +83,5 @@
             </plugin>
         </plugins>
     </build>
-    
+
 </project>

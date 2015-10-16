@@ -16,6 +16,7 @@
 package embl.ebi.variation.commons.models.metadata;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -24,27 +25,26 @@ import java.util.Set;
 public abstract class FileGenerator {
 
     protected String alias;
-    protected Set<File> files;
+    protected Set<File> files = new HashSet<>();
     protected Dataset dataset;
+    protected Study study;
 
-    protected FileGenerator(String alias) {
-        this(alias, new HashSet<File>(), null);
+    protected FileGenerator(Study study, String alias) {
+        this(study, alias, new HashSet<File>());
     }
 
-    protected FileGenerator(String alias, Set<File> files, Dataset dataset) {
-        this.setAlias(alias);
-        this.files = files != null ? files : new HashSet<File>();
-        this.dataset = dataset;
+    protected FileGenerator(Study study, String alias, Set<File> files) {
+        this.study = study;
+        setAlias(alias);
+        setFiles(files);
     }
 
     public String getAlias() {
         return alias;
     }
 
-    public void setAlias(String alias) {
-        if (alias == null) {
-            throw new IllegalArgumentException("Alias not specified");
-        }
+    public final void setAlias(String alias) {
+        Objects.requireNonNull(alias, "Alias not specified");
         this.alias = alias;
     }
 
@@ -60,16 +60,29 @@ public abstract class FileGenerator {
         return files;
     }
 
-    public void setFiles(Set<File> files) {
+    public void addFile(File file) {
+        this.files.add(file);
+        file.addFileGenerator(this);
+    }
+
+    public final void setFiles(Set<File> files) {
+        Objects.requireNonNull(files, "Files not specified");
         this.files.clear();
         for (File f : files) {
             addFile(f);
         }
     }
 
-    public void addFile(File file) {
-        files.add(file);
-        file.addFileGenerator(this);
+    public Study getStudy() {
+        return study;
+    }
+
+    void unsetStudy() {
+        this.study = null;
+    }
+
+    void setStudy(Study study) {
+        this.study = study;
     }
 
     // TODO: add removeFile method

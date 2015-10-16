@@ -16,6 +16,7 @@
 package embl.ebi.variation.commons.models.metadata;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -41,7 +42,9 @@ public class File extends AbstractPersistable<Long> {
     @Transient private Set<Sample> samples;
 
     public File() {
-        this(null, File.Type.OTHER, null);
+        this.name = null;
+        this.type = File.Type.OTHER;
+        this.md5 = null;
     }
 
     public File(Long id) {
@@ -53,18 +56,19 @@ public class File extends AbstractPersistable<Long> {
     }
 
     public File(String name, File.Type type, String md5, Set<FileGenerator> fileGenerators, Set<Sample> samples) {
-        this.name = name;
-        this.type = type;
-        this.md5 = md5;
-        this.fileGenerators = fileGenerators != null ? fileGenerators : new HashSet<FileGenerator>();
-        this.samples = samples != null ? samples : new HashSet<Sample>();
+        setName(name);
+        setType(type);
+        setMd5(md5);
+        setFileGenerators(fileGenerators);
+        setSamples(samples);
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public final void setName(String name) {
+        Objects.requireNonNull(name, "Filename not specified");
         this.name = name;
     }
 
@@ -72,7 +76,8 @@ public class File extends AbstractPersistable<Long> {
         return type;
     }
 
-    public void setType(File.Type type) {
+    public final void setType(File.Type type) {
+        Objects.requireNonNull(type, "Type not specified");
         this.type = type;
     }
 
@@ -80,7 +85,8 @@ public class File extends AbstractPersistable<Long> {
         return md5;
     }
 
-    public void setMd5(String md5) {
+    public final void setMd5(String md5) {
+        Objects.requireNonNull(md5, "MD5 not specified");
         this.md5 = md5;
     }
 
@@ -88,10 +94,15 @@ public class File extends AbstractPersistable<Long> {
         return fileGenerators;
     }
 
-    void setFileGenerators(Set<FileGenerator> fileGenerators) {
-        this.fileGenerators.clear();
-        for (FileGenerator g : fileGenerators) {
-            addFileGenerator(g);
+    final void setFileGenerators(Set<FileGenerator> fileGenerators) {
+        Objects.requireNonNull(fileGenerators, "File generators not specified");
+        if (this.fileGenerators == null) { // Called from constructor
+            this.fileGenerators = fileGenerators; 
+        } else {
+            this.fileGenerators.clear();
+            for (FileGenerator g : fileGenerators) {
+                addFileGenerator(g);
+            }
         }
     }
 
@@ -103,10 +114,15 @@ public class File extends AbstractPersistable<Long> {
         return samples;
     }
 
-    public void setSamples(Set<Sample> samples) {
-        this.samples.clear();
-        for (Sample s : samples) {
-            addSample(s);
+    public final void setSamples(Set<Sample> samples) {
+        Objects.requireNonNull(samples, "Samples not specified");
+        if (this.samples == null) { // Called from constructor
+            this.samples = samples; 
+        } else {
+            this.samples.clear();
+            for (Sample s : samples) {
+                addSample(s);
+            }
         }
     }
 
