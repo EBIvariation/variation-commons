@@ -116,6 +116,11 @@ public class File extends AbstractPersistable<Long> {
     }
 
     @Override
+    public String toString() {
+        return "File{" + "name=" + name + ", type=" + type + ", md5=" + md5 + '}';
+    }
+
+    @Override
     public boolean equals(Object object) {
         if (object == this) {
             return true;

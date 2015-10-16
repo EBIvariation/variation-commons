@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import embl.ebi.variation.commons.models.metadata.DatabaseTestConfiguration;
 import embl.ebi.variation.commons.models.metadata.File;
+import org.springframework.orm.jpa.JpaSystemException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
@@ -91,11 +92,13 @@ public class FileDatabaseTest {
 	public void testEquals() {
 		// Compare saved and unsaved entities
 		File savedFile1 = repository.save(file1);
-		assertEquals(file1, savedFile1);
+		File detachedFile1 = new File("file1.vcf", File.Type.VCF, "7s6efgwe78748");
+		assertEquals(detachedFile1, savedFile1);
 
 		File savedFile2 = repository.save(file2);
+		File detachedFile2 = new File("file2.vcf", File.Type.VCF, "7s6efgwe78748");
 		// Compare two saved entities
-		assertEquals(file2, savedFile2);
+		assertEquals(detachedFile2, savedFile2);
 		assertNotEquals(file1, savedFile2);
 		assertNotEquals(savedFile1, savedFile2);
 	}
@@ -108,4 +111,31 @@ public class FileDatabaseTest {
 		File savedFile1 = repository.save(file1);
 		assertEquals(file1.hashCode(), savedFile1.hashCode());
 	}
+        
+        /**
+         * Deleting one file leaves the other still in the database.
+         */
+        @Test
+        public void testDelete() {
+		repository.save(file1);
+		repository.save(file2);
+		assertEquals(2, repository.count());
+		repository.delete(file1);
+		assertEquals(1, repository.count());
+                assertEquals(file2, repository.findAll().iterator().next());
+        }
+        
+        /**
+         * Updating a file assigning the unique key from other must fail when serialising
+         * @todo How to report this kind of errors?
+         */
+        @Test(expected = JpaSystemException.class)
+        public void testUpdateDuplicate() {
+		File savedFile1 = repository.save(file1);
+		File savedFile2 = repository.save(file2);
+                
+                savedFile1.setName("file2.vcf");
+                repository.save(savedFile1);
+                repository.findAll();
+        }
 }
