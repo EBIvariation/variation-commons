@@ -15,7 +15,7 @@
  */
 package embl.ebi.variation.commons.models.metadata;
 
-import org.apache.commons.validator.EmailValidator;
+import org.apache.commons.validator.routines.EmailValidator;
 
 import java.util.*;
 

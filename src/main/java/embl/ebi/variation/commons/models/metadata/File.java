@@ -19,16 +19,37 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.springframework.data.jpa.domain.AbstractPersistable;
+
 /**
  * Created by parce on 02/10/15.
  */
-public class File {
+@Entity
+@Table(indexes = {@Index(name = "file_unique", columnList = "name,type,md5", unique = true)})
+public class File extends AbstractPersistable<Long> {
+
+    private static final long serialVersionUID = 4602079283068239196L;
 
     private String name;
     private File.Type type;
     private String md5;
-    private Set<FileGenerator> fileGenerators;
-    private Set<Sample> samples;
+    @Transient private Set<FileGenerator> fileGenerators;
+    @Transient private Set<Sample> samples;
+
+    public File() {
+        this.name = null;
+        this.type = File.Type.OTHER;
+        this.md5 = null;
+    }
+
+    public File(Long id) {
+        this.setId(id);
+    }
 
     public File(String name, File.Type type, String md5) {
         this(name, type, md5, new HashSet<FileGenerator>(), new HashSet<Sample>());
@@ -111,6 +132,11 @@ public class File {
     }
 
     @Override
+    public String toString() {
+        return "File{" + "name=" + name + ", type=" + type + ", md5=" + md5 + '}';
+    }
+
+    @Override
     public boolean equals(Object object) {
         if (object == this) {
             return true;
@@ -118,7 +144,7 @@ public class File {
             return false;
         } else {
             File otherFile = (File) object;
-            return (otherFile.getName().equals(name) && otherFile.getType().equals(type) && otherFile.getMd5().equals(md5));
+            return otherFile.getName().equals(name) && otherFile.getType().equals(type) && otherFile.getMd5().equals(md5);
         }
     }
 
@@ -133,9 +159,9 @@ public class File {
         hashCode = 31 * hashCode + c;
         return hashCode;
     }
-    
+
     public enum Type {
-        
+
         VCF("vcf"),
         VCF_AGGREGATE("vcf_aggregate"),
         README("readme_file"),
@@ -147,7 +173,7 @@ public class File {
         GFF("gff"),
         FASTA("fasta"),
         OTHER("other");
-        
+
         private final String name;
 
         private Type(String s) {
@@ -161,6 +187,6 @@ public class File {
         @Override
         public String toString() {
             return this.name;
-        }   
+        }
     }
 }
