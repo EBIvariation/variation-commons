@@ -103,6 +103,11 @@ public class Organisation extends AbstractPersistable<Long> {
     }
 
     @Override
+    public String toString() {
+        return "Organisation{" + "name=" + name + ", address=" + address + ", email=" + email + '}';
+    }
+
+    @Override
     public boolean equals(Object e) {
         if (e == this) {
             return true;
