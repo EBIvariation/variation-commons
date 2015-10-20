@@ -48,7 +48,7 @@ public class Study extends AbstractPersistable<Long>{
 
     @Transient private Set<FileGenerator> fileGenerators;
 
-    private Set<URI> uris;
+    @Transient private Set<URI> uris;
     @Transient private Set<Publication> publications;
 
     @Transient private Study parentStudy;
