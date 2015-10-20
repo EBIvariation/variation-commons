@@ -29,12 +29,11 @@ public abstract class FileGenerator {
     protected Dataset dataset;
     protected Study study;
 
-    protected FileGenerator(Study study, String alias) {
-        this(study, alias, new HashSet<File>());
+    protected FileGenerator(String alias) {
+        this(alias, new HashSet<File>());
     }
 
-    protected FileGenerator(Study study, String alias, Set<File> files) {
-        this.study = study;
+    protected FileGenerator(String alias, Set<File> files) {
         setAlias(alias);
         setFiles(files);
     }

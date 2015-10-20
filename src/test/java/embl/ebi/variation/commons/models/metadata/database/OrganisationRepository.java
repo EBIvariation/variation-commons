@@ -13,33 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package embl.ebi.variation.commons.models.metadata.database;
 
-package embl.ebi.variation.commons.models.metadata;
+import embl.ebi.variation.commons.models.metadata.Organisation;
+import org.springframework.data.repository.CrudRepository;
 
 /**
- * Created by parce on 05/10/15.
- * 
- * @TODO Come back to this class for further design
+ *
+ * @author Cristina Yenyxe Gonzalez Garcia <cyenyxe@ebi.ac.uk>
  */
-public class Array extends FileGenerator {
-
-    public Array(String alias) {
-        super(alias);
-    }
+public interface OrganisationRepository extends CrudRepository<Organisation, Long> {
     
-    @Override
-    public boolean equals(Object e) {
-        if (e == this) {
-            return true;
-        }else if (!(e instanceof Array)) {
-            return false;
-        }else {
-            return ((Array)e).getAlias().equals(alias);
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        return alias.hashCode();
-    }
 }

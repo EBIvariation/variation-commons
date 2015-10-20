@@ -36,13 +36,13 @@ public class Analysis extends FileGenerator {
     private boolean imputation;
     private Date date;
 
-    public Analysis(Study study, String alias, String title, String description) {
-        this(study, alias, title, description, null, null, null, false, null);
+    public Analysis(String alias, String title, String description) {
+        this(alias, title, description, null, null, null, false, null);
     }
     
-    public Analysis(Study study, String alias, String title, String description, String centre,
+    public Analysis(String alias, String title, String description, String centre,
             String platform, String software, boolean imputation, Date date) {
-        super(study, alias);
+        super(alias);
         this.setTitle(title);
         this.setDescription(description);
         this.centre = centre;
