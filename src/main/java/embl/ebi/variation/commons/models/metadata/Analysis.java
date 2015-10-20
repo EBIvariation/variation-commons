@@ -18,15 +18,19 @@ package embl.ebi.variation.commons.models.metadata;
 
 import java.util.Date;
 import java.util.Objects;
+import javax.persistence.Entity;
 
 /**
  * Created by parce on 02/10/15.
  * 
  * @TODO Experiment type: Choose 1 of the following "whole genome sequencing", "Exome sequencing", "Genotyping by array", "Curation"
  * @TODO Link with Dataset class
- * @TODO Link with Organisation classs?
+ * @TODO Link with Organisation class?
  */
+@Entity
 public class Analysis extends FileGenerator {
+    
+    private static final long serialVersionUID = 4570425497988698833L;
 
     private String title;
     private String description;
@@ -36,6 +40,13 @@ public class Analysis extends FileGenerator {
     private boolean imputation;
     private Date date;
 
+    public Analysis() {
+    }
+
+    public Analysis(Long id) {
+        super(id);
+    }
+    
     public Analysis(String alias, String title, String description) {
         this(alias, title, description, null, null, null, false, null);
     }
