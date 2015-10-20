@@ -26,6 +26,7 @@ public class OrganisationTest {
     public void testSetEmailGoodEmails(){
         Organisation testOrganisation = new Organisation("Sanger", "Wellcome Genome Campus");
 
+        assertEquals(attemptSetEmail(testOrganisation, null), null);
         assertEquals(attemptSetEmail(testOrganisation, "test1@domain.com"), null);
         assertEquals(attemptSetEmail(testOrganisation, "abcd@gmail.co.uk"), null);
         assertEquals(attemptSetEmail(testOrganisation, "example@ebi.ac.uk"), null);
@@ -44,7 +45,6 @@ public class OrganisationTest {
         assertThat(attemptSetEmail(testOrganisation, "test@ebi"), instanceOf(IllegalArgumentException.class));
         assertThat(attemptSetEmail(testOrganisation, "@gmail.com"), instanceOf(IllegalArgumentException.class));
         assertThat(attemptSetEmail(testOrganisation, "gmail.com"), instanceOf(IllegalArgumentException.class));
-
     }
 
     private Throwable attemptSetEmail(Organisation organisation,  String email){

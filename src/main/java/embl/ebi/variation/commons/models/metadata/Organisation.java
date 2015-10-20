@@ -18,17 +18,36 @@ package embl.ebi.variation.commons.models.metadata;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import java.util.*;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import org.springframework.data.jpa.domain.AbstractPersistable;
 
 /**
  * Created by tom on 12/10/15.
  */
-public class Organisation {
+@Entity
+@Table(indexes = {@Index(name = "organisation_unique", columnList = "name,address", unique = true)})
+public class Organisation extends AbstractPersistable<Long> {
+    
+    private static final long serialVersionUID = -8470868229663325878L;
 
     private String name;
     private String email; // one or multiple emails?
     private String address; // one or multiple addresses?
 
-    private Set<Study> studies;
+    @Transient private Set<Study> studies;
+
+    public Organisation() {
+        this.name = null;
+        this.email = null;
+        this.address = null;
+    }
+
+    public Organisation(Long id) {
+        this.setId(id);
+    }
 
     public Organisation(String name, String address) {
         setName(name);
@@ -51,7 +70,7 @@ public class Organisation {
 
     public void setEmail(String email) {
         EmailValidator emailValidator = EmailValidator.getInstance();
-        if (emailValidator.isValid(email)) {
+        if (emailValidator.isValid(email) || email == null) {
             this.email = email;
         } else {
             throw new IllegalArgumentException("Email address: " + email + " is not valid");
@@ -81,6 +100,11 @@ public class Organisation {
 //    }
     void addStudy(Study study) {
         studies.add(study);
+    }
+
+    @Override
+    public String toString() {
+        return "Organisation{" + "name=" + name + ", address=" + address + ", email=" + email + '}';
     }
 
     @Override
