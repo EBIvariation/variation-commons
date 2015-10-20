@@ -37,7 +37,7 @@ public class AnalysisTest {
     
     @Test
     public void testConstructorSuccessful() {
-        Analysis analysis1 = new Analysis(study, "Analysis1", "Analysis1", "Description");
+        Analysis analysis1 = new Analysis("Analysis1", "Analysis1", "Description");
         assertEquals(analysis1.getAlias(), "Analysis1");
         assertEquals(analysis1.getTitle(), "Analysis1");
         assertEquals(analysis1.getDescription(), "Description");
@@ -47,7 +47,7 @@ public class AnalysisTest {
         assertFalse(analysis1.isImputation());
         assertNull(analysis1.getDate());
         
-        Analysis analysis2 = new Analysis(study, "Analysis2", "Analysis2", "Description", null, null, null, true, null);
+        Analysis analysis2 = new Analysis("Analysis2", "Analysis2", "Description", null, null, null, true, null);
         assertEquals(analysis2.getAlias(), "Analysis2");
         assertEquals(analysis2.getTitle(), "Analysis2");
         assertEquals(analysis2.getDescription(), "Description");
@@ -57,7 +57,7 @@ public class AnalysisTest {
         assertTrue(analysis2.isImputation());
         assertNull(analysis2.getDate());
         
-        Analysis analysis3 = new Analysis(study, "Analysis3", "Analysis3", "Description", "Centre", "Platform", "Software", false, new Date());
+        Analysis analysis3 = new Analysis("Analysis3", "Analysis3", "Description", "Centre", "Platform", "Software", false, new Date());
         assertEquals(analysis3.getAlias(), "Analysis3");
         assertEquals(analysis3.getTitle(), "Analysis3");
         assertEquals(analysis3.getDescription(), "Description");
@@ -70,17 +70,17 @@ public class AnalysisTest {
 
     @Test(expected = NullPointerException.class)
     public void testConstructorNoAlias() {
-        Analysis analysis = new Analysis(study, null, "Title", "Description", null, null, null, true, null);
+        Analysis analysis = new Analysis(null, "Title", "Description", null, null, null, true, null);
     }
     
     @Test(expected = NullPointerException.class)
     public void testConstructorNoTitle() {
-        Analysis analysis = new Analysis(study, "Analysis1", null, "Description", null, null, null, true, null);
+        Analysis analysis = new Analysis("Analysis1", null, "Description", null, null, null, true, null);
     }
     
     @Test(expected = NullPointerException.class)
     public void testConstructorNoDescription() {
-        Analysis analysis = new Analysis(study, "Analysis1", "Title", null, null, null, null, true, null);
+        Analysis analysis = new Analysis("Analysis1", "Title", null, null, null, null, true, null);
     }
     
 }
