@@ -39,9 +39,8 @@ public class FileGeneratorTest {
     
     @Test
     public void testAddFile() throws Exception {
-        Study study = new Study("Some study", "PRJEB12345", "Study description", Study.Material.UNKNOWN, Study.Scope.UNKNOWN);
         // create a file generator without files
-        FileGenerator generator = new Run(study, "Run1");
+        FileGenerator generator = new Run("Run1");
         assertThat(generator.getFiles(), empty());
 
         // add one file to the generator

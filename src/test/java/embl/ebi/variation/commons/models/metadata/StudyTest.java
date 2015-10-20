@@ -29,7 +29,7 @@ public class StudyTest {
         assertThat(x.getFileGenerators(), empty());
 
         // add one run to the study
-        Run run1 = new Run(x, "Run1");
+        Run run1 = new Run("Run1");
         x.addFileGenerator(run1);
         checkStudyHasFileGenerators(x, run1);
         checkStudyInFileGenerators(x, run1);
@@ -40,25 +40,25 @@ public class StudyTest {
         checkStudyInFileGenerators(x, run1);
 
         // add again the same run in a different object instance
-        Run anotherRun1 = new Run(x, "Run1");
+        Run anotherRun1 = new Run("Run1");
         x.addFileGenerator(anotherRun1);
         checkStudyHasFileGenerators(x, run1);
         checkStudyHasFileGenerators(x, anotherRun1);
         checkStudyInFileGenerators(x, run1, anotherRun1);
 
         // add another run, array and analysis
-        Run run2 = new Run(x, "Run2");
+        Run run2 = new Run("Run2");
         x.addFileGenerator(run2);checkStudyHasFileGenerators(x, run1, run2);
         checkStudyInFileGenerators(x, run1, run2);
     }
 
     @Test
-    public void testAddDataset() {
+    public void testAddArray() {
         // the study x initially has no file generators
         assertThat(x.getFileGenerators(), empty());
 
         // add one array to the dataset
-        Array array1 = new Array(x, "Array1");
+        Array array1 = new Array("Array1");
         x.addFileGenerator(array1);
         checkStudyHasFileGenerators(x, array1);
         checkStudyInFileGenerators(x, array1);
@@ -69,14 +69,14 @@ public class StudyTest {
         checkStudyInFileGenerators(x, array1);
 
         // add again the same array in a different object instance
-        Array anotherArray1 = new Array(x, "Array1");
+        Array anotherArray1 = new Array("Array1");
         x.addFileGenerator(anotherArray1);
         checkStudyHasFileGenerators(x, array1);
         checkStudyHasFileGenerators(x, anotherArray1);
         checkStudyInFileGenerators(x, array1, anotherArray1);
 
         // add another array
-        Array array2 = new Array(x, "Array2");
+        Array array2 = new Array("Array2");
         x.addFileGenerator(array2);
         checkStudyHasFileGenerators(x, array1, array2);
         checkStudyInFileGenerators(x, array1, array2);
@@ -88,7 +88,7 @@ public class StudyTest {
         assertThat(x.getFileGenerators(), empty());
 
         // add one analysis to the dataset
-        Analysis analysis1 = new Analysis(null, "Analysis1", "Analysis1", "Description");
+        Analysis analysis1 = new Analysis("Analysis1", "Analysis1", "Description");
         x.addFileGenerator(analysis1);
         checkStudyHasFileGenerators(x, analysis1);
         checkStudyInFileGenerators(x, analysis1);
@@ -99,14 +99,14 @@ public class StudyTest {
         checkStudyInFileGenerators(x, analysis1);
 
         // add again the same analysis in a different object instance
-        Analysis anotherAnalysis1 = new Analysis(null, "Analysis1", "Analysis1", "Description");
+        Analysis anotherAnalysis1 = new Analysis("Analysis1", "Analysis1", "Description");
         x.addFileGenerator(anotherAnalysis1);
         checkStudyHasFileGenerators(x, analysis1);
         checkStudyHasFileGenerators(x, anotherAnalysis1);
         checkStudyInFileGenerators(x, analysis1, anotherAnalysis1);
 
         // add another analysis
-        Analysis analysis2 = new Analysis(null, "Analysis2", "Analysis2", "Description");
+        Analysis analysis2 = new Analysis("Analysis2", "Analysis2", "Description");
         x.addFileGenerator(analysis2);
         checkStudyHasFileGenerators(x, analysis1, analysis2);
         checkStudyInFileGenerators(x,analysis1, analysis2);
@@ -118,21 +118,21 @@ public class StudyTest {
         assertThat(x.getFileGenerators(), empty());
 
         // add one run, array, and analysis to the study
-        Run run1 = new Run(x, "Run1");
+        Run run1 = new Run("Run1");
         x.addFileGenerator(run1);
-        Array array1 = new Array(x, "Array1");
+        Array array1 = new Array("Array1");
         x.addFileGenerator(array1);
-        Analysis analysis1 = new Analysis(null, "Analysis1", "Analysis1", "Description");
+        Analysis analysis1 = new Analysis("Analysis1", "Analysis1", "Description");
         x.addFileGenerator(analysis1);
         checkStudyHasFileGenerators(x, run1, array1, analysis1);
         checkStudyInFileGenerators(x, run1, array1, analysis1);
 
         // add another run, array and analysis
-        Run run2 = new Run(x, "Run2");
+        Run run2 = new Run("Run2");
         x.addFileGenerator(run2);
-        Array array2 = new Array(x, "Array2");
+        Array array2 = new Array("Array2");
         x.addFileGenerator(array2);
-        Analysis analysis2 = new Analysis(null, "Analysis2", "Analysis2", "Description");
+        Analysis analysis2 = new Analysis("Analysis2", "Analysis2", "Description");
         x.addFileGenerator(analysis2);
         checkStudyHasFileGenerators(x, run1, array1, analysis1, run2, array2, analysis2);
         checkStudyInFileGenerators(x, run1, array1, analysis1, run2, array2, analysis2);
