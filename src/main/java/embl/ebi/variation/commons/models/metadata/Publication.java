@@ -19,11 +19,18 @@ import java.util.*;
 
 import com.gs.collections.api.bag.Bag;
 import com.gs.collections.impl.list.mutable.FastList;
+import org.springframework.data.jpa.domain.AbstractPersistable;
+
+import javax.persistence.*;
 
 /**
  * Created by tom on 12/10/15.
  */
-public class Publication {
+@Entity
+@Table(indexes = {@Index(name = "publication_unique", columnList = "title,journal,volume", unique = true)})
+public class Publication extends AbstractPersistable<Long>  {
+
+    private static final long serialVersionUID = 8055335219199952073L;
 
     private String title;
     private String journal; // should journal be separate class?
@@ -35,8 +42,9 @@ public class Publication {
     private String doi;
     private String isbn;
     private Calendar publicationDate;
+    @ElementCollection
     private List<String> authors;
-    private Set<Study> studies;
+    @Transient private Set<Study> studies;
 
     
     public Publication(String title, String journal, String volume, List<String> authors) {
