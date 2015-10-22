@@ -44,7 +44,7 @@ public class StudyDatabaseTest {
         // Study(String title, String alias, String description, Material material, Scope scope)
 
         study1 = new Study("study1", "studyA", "A study", Study.Material.OTHER, Study.Scope.OTHER);
-        study2 = new Study("study2", "studyB", "Another study", Study.Material.DNA, Study.Scope.SINGLE_ISOLATE);
+        study2 = new Study("study2", "studyA", "A study", Study.Material.OTHER, Study.Scope.OTHER);
     }
 
     /**
@@ -105,7 +105,7 @@ public class StudyDatabaseTest {
         assertEquals(detachedStudy1, savedStudy1);
 
         Study savedStudy2 = repository.save(study2);
-        Study detachedStudy2 = new Study("study2", "studyB", "Another study", Study.Material.DNA, Study.Scope.SINGLE_ISOLATE);
+        Study detachedStudy2 = new Study("study2", "studyA", "A study", Study.Material.OTHER, Study.Scope.OTHER);
         // Compare two saved entities
         assertEquals(detachedStudy2, savedStudy2);
         assertNotEquals(study1, savedStudy2);
@@ -138,13 +138,13 @@ public class StudyDatabaseTest {
      * Updating a study assigning the unique key from other must fail when serialising
      * @todo How to report this kind of errors?
      */
-//    @Test(expected = JpaSystemException.class)
-//    public void testUpdateDuplicate() {
-//        Study savedStudy1 = repository.save(study1);
-//        Study savedStudy2 = repository.save(study2);
-//
-//        savedStudy1.setTitle(savedStudy2.getTitle());
-//        repository.save(savedStudy1);
-//        repository.findAll();
-//    }
+    @Test(expected = JpaSystemException.class)
+    public void testUpdateDuplicate() {
+        Study savedStudy1 = repository.save(study1);
+        Study savedStudy2 = repository.save(study2);
+
+        savedStudy1.setTitle(savedStudy2.getTitle());
+        repository.save(savedStudy1);
+        repository.findAll();
+    }
 }
