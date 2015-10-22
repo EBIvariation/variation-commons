@@ -1,7 +1,6 @@
 package embl.ebi.variation.commons.models.metadata.database;
 
 import embl.ebi.variation.commons.models.metadata.DatabaseTestConfiguration;
-import embl.ebi.variation.commons.models.metadata.File;
 import embl.ebi.variation.commons.models.metadata.Publication;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,8 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -51,6 +49,6 @@ public class PublicationDatabaseTest {
         assertEquals(publication1.getTitle(), savedPublication.getTitle());
         assertEquals(publication1.getJournal(), savedPublication.getJournal());
         assertEquals(publication1.getVolume(), savedPublication.getVolume());
-        assertEquals(publication1.getAuthors(), savedPublication.getAuthors());
+        assertThat(publication1.getAuthors(), contains(savedPublication.getAuthors().toArray()));
     }
 }
