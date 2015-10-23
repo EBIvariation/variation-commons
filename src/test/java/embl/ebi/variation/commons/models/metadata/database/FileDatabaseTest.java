@@ -134,7 +134,7 @@ public class FileDatabaseTest {
 		File savedFile1 = repository.save(file1);
 		File savedFile2 = repository.save(file2);
                 
-                savedFile1.setName("file2.vcf");
+                savedFile1.setName(savedFile2.getName());
                 repository.save(savedFile1);
                 repository.findAll();
         }

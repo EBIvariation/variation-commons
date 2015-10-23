@@ -15,13 +15,24 @@
  */
 package embl.ebi.variation.commons.models.metadata;
 
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.springframework.data.jpa.domain.AbstractPersistable;
+
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-public class Study {
+@Entity
+@Table(indexes = {@Index(name = "study_unique", columnList = "title,material,scope,description,alias", unique = true)})
+public class Study extends AbstractPersistable<Long>{
+
+    private static final long serialVersionUid = 3947143813564096660L;
 
     private String title;
     private String alias;
@@ -32,16 +43,28 @@ public class Study {
     private String type; // e.g. umbrella, pop genomics BUT separate column for study_type (aggregate, control set, case control)
 
     private String studyAccession; // Bioproject ID?
-    private Organisation centre;
-    private Organisation broker;
+    @Transient private Organisation centre;
+    @Transient private Organisation broker;
 
-    private Set<FileGenerator> fileGenerators;
+    @Transient private Set<FileGenerator> fileGenerators;
 
-    private Set<URI> uris;
-    private Set<Publication> publications;
+    @Transient private Set<URI> uris;
+    @Transient private Set<Publication> publications;
 
-    private Study parentStudy;
-    private Set<Study> childStudies;
+    @Transient private Study parentStudy;
+    @Transient private Set<Study> childStudies;
+
+    public Study(){
+        this.title = null;
+        this.alias = null;
+        this.description = null;
+        this.material = Material.OTHER;
+        this.scope = Scope.OTHER;
+    }
+
+    public Study(Long id){
+        this.setId(id);
+    }
 
     public Study(String title, String alias, String description, Material material, Scope scope) {
         setTitle(title);
@@ -236,6 +259,11 @@ public class Study {
             addChildStudy(childStudy);
             childStudy.setParentStudy(this);
         }
+    }
+
+    @Override
+    public String toString(){
+        return "Study{" + "title=" + title + ", material=" + material + ", scope=" + scope + ", description=" + description + ", alias=" + alias + '}';
     }
 
     @Override
