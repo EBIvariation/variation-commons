@@ -15,9 +15,9 @@
  */
 package embl.ebi.variation.commons.models.metadata.database;
 
-import embl.ebi.variation.commons.models.metadata.Organisation;
+import embl.ebi.variation.commons.models.metadata.Analysis;
 import org.springframework.data.repository.CrudRepository;
 
-public interface OrganisationRepository extends CrudRepository<Organisation, Long> {
+public interface AnalysisRepository extends CrudRepository<Analysis, Long> {
     
 }

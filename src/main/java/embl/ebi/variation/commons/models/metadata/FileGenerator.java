@@ -18,26 +18,48 @@ package embl.ebi.variation.commons.models.metadata;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
+import org.springframework.data.jpa.domain.AbstractPersistable;
 
 /**
  * Created by parce on 02/10/15.
  */
-public abstract class FileGenerator {
-
+@Entity
+@Inheritance
+@DiscriminatorColumn(name = "type")
+@Table(uniqueConstraints = {@UniqueConstraint(name = "alias_unique", columnNames = "alias")})
+public abstract class FileGenerator extends AbstractPersistable<Long> {
+    
+    private static final long serialVersionUID = -5926609525556333330L;
+    
     protected String alias;
-    protected Set<File> files = new HashSet<>();
-    protected Dataset dataset;
-    protected Study study;
+    @Transient protected Set<File> files = new HashSet<>();
+    @Transient protected Dataset dataset;
+    @Transient protected Study study;
 
+    public FileGenerator() {
+    }
+
+    public FileGenerator(Long id) {
+        this.setId(id);
+    }
+    
     protected FileGenerator(String alias) {
         this(alias, new HashSet<File>());
     }
-
+    
     protected FileGenerator(String alias, Set<File> files) {
         setAlias(alias);
         setFiles(files);
     }
 
+    @Column(name = "alias")
     public String getAlias() {
         return alias;
     }
@@ -45,14 +67,6 @@ public abstract class FileGenerator {
     public final void setAlias(String alias) {
         Objects.requireNonNull(alias, "Alias not specified");
         this.alias = alias;
-    }
-
-    public Dataset getDataset() {
-        return dataset;
-    }
-
-    void setDataset(Dataset dataset) {
-        this.dataset = dataset;
     }
 
     public Set<File> getFiles() {
@@ -72,16 +86,28 @@ public abstract class FileGenerator {
         }
     }
 
+    public Dataset getDataset() {
+        return dataset;
+    }
+
+    void setDataset(Dataset dataset) {
+        this.dataset = dataset;
+    }
+
+    void unsetDataset() {
+        this.dataset = null;
+    }
+
     public Study getStudy() {
         return study;
     }
 
-    void unsetStudy() {
-        this.study = null;
-    }
-
     void setStudy(Study study) {
         this.study = study;
+    }
+
+    void unsetStudy() {
+        this.study = null;
     }
 
     // TODO: add removeFile method
