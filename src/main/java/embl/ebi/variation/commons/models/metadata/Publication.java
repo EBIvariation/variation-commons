@@ -156,7 +156,7 @@ public class Publication extends AbstractPersistable<Long>  {
         authors.add(author);
     }
 
-    public final void setAuthors(List<String> authors) {
+    final void setAuthors(List<String> authors) {
         Objects.requireNonNull(authors, "List of authors not specified");
         this.authors = authors;
     }
