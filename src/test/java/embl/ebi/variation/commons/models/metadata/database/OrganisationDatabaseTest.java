@@ -112,53 +112,53 @@ public class OrganisationDatabaseTest {
 		assertEquals(organisation1.hashCode(), savedOrganisation1.hashCode());
 	}
         
-        /**
-         * Deleting one organisation leaves the other still in the database.
-         */
-        @Test
-        public void testDelete() {
-		repository.save(organisation1);
-		repository.save(organisation2);
-		assertEquals(2, repository.count());
-		repository.delete(organisation1);
-		assertEquals(1, repository.count());
-                assertEquals(organisation2, repository.findAll().iterator().next());
-        }
+	/**
+	 * Deleting one organisation leaves the other still in the database.
+	 */
+	@Test
+	public void testDelete() {
+	repository.save(organisation1);
+	repository.save(organisation2);
+	assertEquals(2, repository.count());
+	repository.delete(organisation1);
+	assertEquals(1, repository.count());
+		assertEquals(organisation2, repository.findAll().iterator().next());
+	}
+
+	/**
+	 * Updating a organisation assigning only part of the unique key from other must not fail when serialising
+	 */
+	@Test
+	public void testUpdateNonDuplicate() {
+	Organisation savedOrganisation1 = repository.save(organisation1);
+	Organisation savedOrganisation2 = repository.save(organisation2);
+
+		savedOrganisation1.setName(organisation2.getName());
+		repository.save(savedOrganisation1);
+
+		Iterator<Organisation> iterator = repository.findAll().iterator();
+
+		Organisation retrievedOrganisation1 = iterator.next();
+		assertEquals(organisation2.getName(), retrievedOrganisation1.getName());
+		assertEquals(organisation1.getAddress(), retrievedOrganisation1.getAddress());
+
+		Organisation retrievedOrganisation2 = iterator.next();
+		assertEquals(organisation2.getName(), retrievedOrganisation2.getName());
+		assertEquals(organisation2.getAddress(), retrievedOrganisation2.getAddress());
+	}
         
-        /**
-         * Updating a organisation assigning only part of the unique key from other must not fail when serialising
-         */
-        @Test
-        public void testUpdateNonDuplicate() {
-		Organisation savedOrganisation1 = repository.save(organisation1);
-		Organisation savedOrganisation2 = repository.save(organisation2);
-                
-                savedOrganisation1.setName(organisation2.getName());
-                repository.save(savedOrganisation1);
-                
-                Iterator<Organisation> iterator = repository.findAll().iterator();
-                
-                Organisation retrievedOrganisation1 = iterator.next();
-                assertEquals(organisation2.getName(), retrievedOrganisation1.getName());
-                assertEquals(organisation1.getAddress(), retrievedOrganisation1.getAddress());
-                
-                Organisation retrievedOrganisation2 = iterator.next();
-                assertEquals(organisation2.getName(), retrievedOrganisation2.getName());
-                assertEquals(organisation2.getAddress(), retrievedOrganisation2.getAddress());
-        }
-        
-        /**
-         * Updating a organisation assigning the unique key from other must fail when serialising
-         * @todo How to report this kind of errors?
-         */
-        @Test(expected = JpaSystemException.class)
-        public void testUpdateDuplicate() {
-		Organisation savedOrganisation1 = repository.save(organisation1);
-		Organisation savedOrganisation2 = repository.save(organisation2);
-                
-                savedOrganisation1.setName(organisation2.getName());
-                savedOrganisation1.setAddress(organisation2.getAddress());
-                repository.save(savedOrganisation1);
-                repository.findAll();
-        }
+	/**
+	 * Updating a organisation assigning the unique key from other must fail when serialising
+	 * @todo How to report this kind of errors?
+	 */
+	@Test(expected = JpaSystemException.class)
+	public void testUpdateDuplicate() {
+	Organisation savedOrganisation1 = repository.save(organisation1);
+	Organisation savedOrganisation2 = repository.save(organisation2);
+
+		savedOrganisation1.setName(organisation2.getName());
+		savedOrganisation1.setAddress(organisation2.getAddress());
+		repository.save(savedOrganisation1);
+		repository.findAll();
+	}
 }
