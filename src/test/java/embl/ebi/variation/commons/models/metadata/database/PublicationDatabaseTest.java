@@ -36,12 +36,9 @@ public class PublicationDatabaseTest {
         List<String> publication1Authors = new ArrayList<>();
         publication1Authors.add(author1);
         publication1Authors.add(author2);
-        List<String> publication2Authors = new ArrayList<>();
-        publication2Authors.add(author2);
-        publication2Authors.add(author1);
 
-        publication1 = new Publication("Publication 1", "Journal 1", "111", publication1Authors);
-        publication2 = new Publication("Publication 2", "Journal 2", "111", publication2Authors);
+        publication1 = new Publication("Publication 1", "Journal 1", "111");
+        publication2 = new Publication("Publication 2", "Journal 2", "111");
         publication3 = new Publication("Publication 3", "Journal 3", "3", publication1Authors, "database", "dbid");
     }
 
@@ -58,7 +55,7 @@ public class PublicationDatabaseTest {
         assertEquals(publication1.getTitle(), savedPublication.getTitle());
         assertEquals(publication1.getJournal(), savedPublication.getJournal());
         assertEquals(publication1.getVolume(), savedPublication.getVolume());
-        assertThat(publication1.getAuthors(), contains(savedPublication.getAuthors().toArray()));
+        assertNull(savedPublication.getAuthors());
         assertEquals(0, savedPublication.getStartPage());
         assertEquals(0, savedPublication.getEndPage());
         assertNull(savedPublication.getDatabase());
@@ -77,7 +74,6 @@ public class PublicationDatabaseTest {
     @Test
     public void testSaveNonMandatoryFields() {
         // add optional fields that are not in the constructor
-        publication3.setDoi("doi");
         publication3.setStartPage(100);
         publication3.setEndPage(120);
         Calendar calendar = Calendar.getInstance();
@@ -127,11 +123,11 @@ public class PublicationDatabaseTest {
     public void testEquals() {
         // Compare saved and unsaved entities
         Publication savedPublication1 = repository.save(publication1);
-        Publication detachedPublication1 = new Publication("Publication 1", "Journal 1", "111", Arrays.asList("Author 1", "Author 2"));
+        Publication detachedPublication1 = new Publication("Publication 1", "Journal 1", "111");
         assertEquals(detachedPublication1, savedPublication1);
 
         Publication savedPublication2 = repository.save(publication2);
-        Publication detachedPublication2 = new Publication("Publication 2", "Journal 2", "111", Arrays.asList("Author 1", "Author 2"));
+        Publication detachedPublication2 = new Publication("Publication 2", "Journal 2", "111");
         // Compare two saved entities
         assertEquals(detachedPublication2, savedPublication2);
         assertNotEquals(publication1, savedPublication2);
@@ -177,13 +173,11 @@ public class PublicationDatabaseTest {
         assertEquals(publication2.getTitle(), retrievedPublication1.getTitle());
         assertEquals(publication1.getJournal(), retrievedPublication1.getJournal());
         assertEquals(publication1.getVolume(), retrievedPublication1.getVolume());
-        assertThat(publication1.getAuthors(), contains(retrievedPublication1.getAuthors().toArray()));
 
         Publication retrievedPublication2 = iterator.next();
         assertEquals(publication2.getTitle(), retrievedPublication2.getTitle());
         assertEquals(publication2.getJournal(), retrievedPublication2.getJournal());
         assertEquals(publication2.getVolume(), retrievedPublication2.getVolume());
-        assertThat(publication2.getAuthors(), contains(retrievedPublication2.getAuthors().toArray()));
     }
 
     /**

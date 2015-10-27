@@ -17,8 +17,6 @@ package embl.ebi.variation.commons.models.metadata;
 
 import java.util.*;
 
-import com.gs.collections.api.bag.Bag;
-import com.gs.collections.impl.list.mutable.FastList;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import javax.persistence.*;
@@ -47,8 +45,8 @@ public class Publication extends AbstractPersistable<Long>  {
     @Transient private Set<Study> studies;
 
     
-    public Publication(String title, String journal, String volume, List<String> authors) {
-        this(title, journal, volume, authors, null, null);
+    public Publication(String title, String journal, String volume) {
+        this(title, journal, volume, null, null, null);
     }
 
     public Publication(String title, String journal, String volume, List<String> authors, String database, String dbId) {
@@ -149,7 +147,10 @@ public class Publication extends AbstractPersistable<Long>  {
     }
 
     public List<String> getAuthors() {
-        return Collections.unmodifiableList(authors);
+        if (authors != null) {
+            return Collections.unmodifiableList(authors);
+        }
+        return null;
     }
 
     public void addAuthor(String author){
@@ -157,7 +158,6 @@ public class Publication extends AbstractPersistable<Long>  {
     }
 
     final void setAuthors(List<String> authors) {
-        Objects.requireNonNull(authors, "List of authors not specified");
         this.authors = authors;
     }
 
@@ -180,14 +180,10 @@ public class Publication extends AbstractPersistable<Long>  {
         }else if (!(e instanceof Publication)) {
             return false;
         }else{
-            Bag<String> eAuthorsBag = FastList.newList(((Publication) e).getAuthors()).toBag();
-            Bag<String> thisAuthorsBag = FastList.newList(authors).toBag();
-
             return (
                     Objects.equals(((Publication) e).getTitle(), title) &&
                             Objects.equals(((Publication) e).getJournal(), journal) &&
-                            Objects.equals(((Publication) e).getVolume(), volume) &&
-                            Objects.equals(eAuthorsBag, thisAuthorsBag)
+                            Objects.equals(((Publication) e).getVolume(), volume)
             );
         }
     }
@@ -198,7 +194,6 @@ public class Publication extends AbstractPersistable<Long>  {
         result = 31 * result + title.hashCode();
         result = 31 * result + journal.hashCode();
         result = 31 * result + volume.hashCode();
-        result = 31 * result + authors.hashCode();
         return result;
     }
 }
