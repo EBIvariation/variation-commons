@@ -17,13 +17,18 @@ package embl.ebi.variation.commons.models.metadata;
 
 import java.util.*;
 
-import com.gs.collections.api.bag.Bag;
-import com.gs.collections.impl.list.mutable.FastList;
+import org.springframework.data.jpa.domain.AbstractPersistable;
+
+import javax.persistence.*;
 
 /**
  * Created by tom on 12/10/15.
  */
-public class Publication {
+@Entity
+@Table(indexes = {@Index(name = "publication_unique", columnList = "title,journal,volume", unique = true)})
+public class Publication extends AbstractPersistable<Long>  {
+
+    private static final long serialVersionUID = 8055335219199952073L;
 
     private String title;
     private String journal; // should journal be separate class?
@@ -35,12 +40,13 @@ public class Publication {
     private String doi;
     private String isbn;
     private Calendar publicationDate;
+    @ElementCollection
     private List<String> authors;
-    private Set<Study> studies;
+    @Transient private Set<Study> studies;
 
     
-    public Publication(String title, String journal, String volume, List<String> authors) {
-        this(title, journal, volume, authors, null, null);
+    public Publication(String title, String journal, String volume) {
+        this(title, journal, volume, null, null, null);
     }
 
     public Publication(String title, String journal, String volume, List<String> authors, String database, String dbId) {
@@ -141,15 +147,17 @@ public class Publication {
     }
 
     public List<String> getAuthors() {
-        return Collections.unmodifiableList(authors);
+        if (authors != null) {
+            return Collections.unmodifiableList(authors);
+        }
+        return null;
     }
 
     public void addAuthor(String author){
         authors.add(author);
     }
 
-    public final void setAuthors(List<String> authors) {
-        Objects.requireNonNull(authors, "List of authors not specified");
+    final void setAuthors(List<String> authors) {
         this.authors = authors;
     }
 
@@ -172,14 +180,10 @@ public class Publication {
         }else if (!(e instanceof Publication)) {
             return false;
         }else{
-            Bag<String> eAuthorsBag = FastList.newList(((Publication) e).getAuthors()).toBag();
-            Bag<String> thisAuthorsBag = FastList.newList(authors).toBag();
-
             return (
                     Objects.equals(((Publication) e).getTitle(), title) &&
                             Objects.equals(((Publication) e).getJournal(), journal) &&
-                            Objects.equals(((Publication) e).getVolume(), volume) &&
-                            Objects.equals(eAuthorsBag, thisAuthorsBag)
+                            Objects.equals(((Publication) e).getVolume(), volume)
             );
         }
     }
@@ -190,7 +194,6 @@ public class Publication {
         result = 31 * result + title.hashCode();
         result = 31 * result + journal.hashCode();
         result = 31 * result + volume.hashCode();
-        result = 31 * result + authors.hashCode();
         return result;
     }
 }
