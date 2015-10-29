@@ -18,8 +18,11 @@ package embl.ebi.variation.commons.models.metadata.database;
 import embl.ebi.variation.commons.models.metadata.Analysis;
 import embl.ebi.variation.commons.models.metadata.DatabaseTestConfiguration;
 import java.util.Date;
+
 import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.*;
+
+import embl.ebi.variation.commons.models.metadata.File;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -170,5 +173,16 @@ public class AnalysisDatabaseTest {
         savedAnalysis1.setAlias("analysis2");
         repository.save(savedAnalysis1);
         repository.findAll();
+    }
+
+
+    @Test
+    public void testAddFiles() {
+        File vcfFile = new File("file.vcf", File.Type.VCF, "7sd7fsd89fsd7dsf");
+        File cramFile = new File("file.cram", File.Type.CRAM, "3sdasasdasd219fsd3845");
+        analysis1.addFile(vcfFile);
+        analysis1.addFile(cramFile);
+        Analysis savedAnalysis1 = repository.save(analysis1);
+        assertEquals(1, repository.count());
     }
 }
