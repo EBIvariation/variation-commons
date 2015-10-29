@@ -15,10 +15,7 @@
  */
 package embl.ebi.variation.commons.models.metadata;
 
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
@@ -43,16 +40,21 @@ public class Study extends AbstractPersistable<Long>{
     private String type; // e.g. umbrella, pop genomics BUT separate column for study_type (aggregate, control set, case control)
 
     private String studyAccession; // Bioproject ID?
-    @Transient private Organisation centre;
+    @Transient
+    private Organisation centre;
     @Transient private Organisation broker;
 
     @Transient private Set<FileGenerator> fileGenerators;
 
+//    @ManyToMany(targetEntity=URI.class)
     @Transient private Set<URI> uris;
+//    @ManyToMany(targetEntity=Publication.class)
     @Transient private Set<Publication> publications;
 
-    @Transient private Study parentStudy;
-    @Transient private Set<Study> childStudies;
+    @ManyToOne
+    private Study parentStudy;
+    @OneToMany(targetEntity=Study.class)
+    private Set<Study> childStudies;
 
     public Study(){
         this.title = null;
