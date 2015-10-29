@@ -100,4 +100,10 @@ public class StudyRelationTest {
         }
     }
 
+    @Test
+    public void testRecursive(){
+        parentStudy1.addChildStudy(childStudy1);
+        childStudy1.addChildStudy(parentStudy1);
+    }
+
 }

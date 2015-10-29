@@ -142,7 +142,6 @@ public class StudyDatabaseTest {
     public void testUpdateDuplicate() {
         Study savedStudy1 = repository.save(study1);
         Study savedStudy2 = repository.save(study2);
-
         savedStudy1.setTitle(savedStudy2.getTitle());
         repository.save(savedStudy1);
         repository.findAll();
