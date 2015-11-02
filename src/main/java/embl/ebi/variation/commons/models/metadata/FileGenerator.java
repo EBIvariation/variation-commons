@@ -34,7 +34,7 @@ public abstract class FileGenerator extends AbstractPersistable<Long> {
     private static final long serialVersionUID = -5926609525556333330L;
     
     protected String alias;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name="FILE_GENERATOR_FILE",
             joinColumns = {@JoinColumn(name="file_generator_id", referencedColumnName = "id")},
