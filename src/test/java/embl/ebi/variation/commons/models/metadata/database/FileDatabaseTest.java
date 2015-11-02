@@ -112,30 +112,30 @@ public class FileDatabaseTest {
 		assertEquals(file1.hashCode(), savedFile1.hashCode());
 	}
         
-        /**
-         * Deleting one file leaves the other still in the database.
-         */
-        @Test
-        public void testDelete() {
+	/**
+	 * Deleting one file leaves the other still in the database.
+	 */
+	@Test
+	public void testDelete() {
 		repository.save(file1);
 		repository.save(file2);
 		assertEquals(2, repository.count());
 		repository.delete(file1);
 		assertEquals(1, repository.count());
-                assertEquals(file2, repository.findAll().iterator().next());
-        }
-        
-        /**
-         * Updating a file assigning the unique key from other must fail when serialising
-         * @todo How to report this kind of errors?
-         */
-        @Test(expected = JpaSystemException.class)
-        public void testUpdateDuplicate() {
+		assertEquals(file2, repository.findAll().iterator().next());
+	}
+
+	/**
+	 * Updating a file assigning the unique key from other must fail when serialising
+	 * @todo How to report this kind of errors?
+	 */
+	@Test(expected = JpaSystemException.class)
+	public void testUpdateDuplicate() {
 		File savedFile1 = repository.save(file1);
 		File savedFile2 = repository.save(file2);
-                
-                savedFile1.setName(savedFile2.getName());
-                repository.save(savedFile1);
-                repository.findAll();
-        }
+		savedFile1.setName(savedFile2.getName());
+		repository.save(savedFile1);
+		repository.findAll();
+	}
+
 }
