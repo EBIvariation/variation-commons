@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package embl.ebi.variation.commons.models.metadata;
+package embl.ebi.variation.commons.models.metadata.database;
 
+import embl.ebi.variation.commons.models.metadata.DatabaseTestConfiguration;
+import embl.ebi.variation.commons.models.metadata.Study;
 import embl.ebi.variation.commons.models.metadata.database.StudyRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +38,7 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
 @ContextConfiguration(classes = DatabaseTestConfiguration.class)
-public class StudyRelationTest {
+public class StudyRelationDatabaseTest {
 
     @Autowired
     StudyRepository repository;
@@ -102,8 +104,19 @@ public class StudyRelationTest {
 
     @Test
     public void testRecursive(){
+        // TODO prevent allowing recursive relationships
         parentStudy1.addChildStudy(childStudy1);
         childStudy1.addChildStudy(parentStudy1);
+
+        repository.save(parentStudy1);
+    }
+
+    @Test
+    public void testSelfParent(){
+        // TODO prevent allowing recursive relationships
+        parentStudy1.addChildStudy(parentStudy1);
+
+        repository.save(parentStudy1);
     }
 
 }
