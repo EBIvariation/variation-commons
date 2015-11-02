@@ -17,8 +17,12 @@ package embl.ebi.variation.commons.models.metadata.database;
 
 import embl.ebi.variation.commons.models.metadata.Analysis;
 import embl.ebi.variation.commons.models.metadata.DatabaseTestConfiguration;
+
+import java.util.Arrays;
 import java.util.Date;
 
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.*;
 
@@ -40,6 +44,8 @@ public class AnalysisDatabaseTest {
 
     @Autowired
     AnalysisRepository repository;
+    @Autowired
+    FileRepository fileRepository;
 
     Analysis analysis1, analysis2, analysis3;
 
@@ -175,14 +181,80 @@ public class AnalysisDatabaseTest {
         repository.findAll();
     }
 
-
+    /**
+     * If we add some files to an analysis, and save the analysis into the database, the files also will be saved
+     */
     @Test
-    public void testAddFiles() {
+    public void testAddManyFilesToOneAnalyis() {
         File vcfFile = new File("file.vcf", File.Type.VCF, "7sd7fsd89fsd7dsf");
         File cramFile = new File("file.cram", File.Type.CRAM, "3sdasasdasd219fsd3845");
         analysis1.addFile(vcfFile);
         analysis1.addFile(cramFile);
         Analysis savedAnalysis1 = repository.save(analysis1);
+
+        // check that analysis has been saved
         assertEquals(1, repository.count());
+        assertEquals(analysis1, savedAnalysis1);
+        assertEquals(2, savedAnalysis1.getFiles().size());
+        assertThat(savedAnalysis1.getFiles(), containsInAnyOrder(vcfFile, cramFile));
+
+        // check that files have been saved
+        assertEquals(2, fileRepository.count());
+        assertThat(fileRepository.findAll(), containsInAnyOrder(vcfFile, cramFile));
+    }
+
+    /**
+     * If we add one file to many analysis, and save the analysis into the database,
+     * the file also will be saved
+     */
+    @Test
+    public void testAddOneFileToManyAnalyis() {
+        File vcfFile = new File("file.vcf", File.Type.VCF, "7sd7fsd89fsd7dsf");
+        analysis1.addFile(vcfFile);
+        Analysis savedAnalysis1 = repository.save(analysis1);
+        analysis2.addFile(vcfFile);
+        Analysis savedAnalysis2 = repository.save(analysis2);
+
+        // check that analysis have been saved
+        assertEquals(2, repository.count());
+        assertEquals(analysis1, savedAnalysis1);
+        assertEquals(analysis2, savedAnalysis2);
+        assertEquals(1, savedAnalysis1.getFiles().size());
+        assertEquals(1, savedAnalysis2.getFiles().size());
+        assertThat(savedAnalysis1.getFiles(), contains(vcfFile));
+        assertThat(savedAnalysis2.getFiles(), contains(vcfFile));
+
+        // check that file have been saved
+        assertEquals(1, fileRepository.count());
+        File savedFile = fileRepository.findAll().iterator().next();
+        assertEquals(savedFile, vcfFile);
+    }
+
+    /**
+     * If we add some files to an analysis, and save the analysis into the database, the files also will be saved
+     */
+    @Test
+    public void testAddManyFilesToManyAnalyis() {
+        File vcfFile = new File("file.vcf", File.Type.VCF, "7sd7fsd89fsd7dsf");
+        File cramFile = new File("file.cram", File.Type.CRAM, "3sdasasdasd219fsd3845");
+        analysis1.addFile(vcfFile);
+        analysis1.addFile(cramFile);
+        Analysis savedAnalysis1 = repository.save(analysis1);
+        analysis2.addFile(vcfFile);
+        analysis2.addFile(cramFile);
+        Analysis savedAnalysis2 = repository.save(analysis2);
+
+        // check that analysis has been saved
+        assertEquals(2, repository.count());
+        assertEquals(analysis1, savedAnalysis1);
+        assertEquals(analysis2, savedAnalysis2);
+        assertEquals(2, savedAnalysis1.getFiles().size());
+        assertEquals(2, savedAnalysis2.getFiles().size());
+        assertThat(savedAnalysis1.getFiles(), containsInAnyOrder(vcfFile, cramFile));
+        assertThat(savedAnalysis2.getFiles(), containsInAnyOrder(vcfFile, cramFile));
+
+        // check that files have been saved
+        assertEquals(2, fileRepository.count());
+        assertThat(fileRepository.findAll(), containsInAnyOrder(vcfFile, cramFile));
     }
 }
