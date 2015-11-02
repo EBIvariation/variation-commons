@@ -101,20 +101,4 @@ public class StudyRelationDatabaseTest {
             assertEquals(childStudy.getParentStudy(), parentStudy);
         }
     }
-
-    @Test
-    public void testRecursive(){
-        // TODO prevent allowing recursive relationships
-        parentStudy1.addChildStudy(childStudy1);
-        childStudy1.addChildStudy(parentStudy1);
-        repository.save(parentStudy1);
-    }
-
-    @Test
-    public void testSelfParent(){
-        // TODO prevent allowing recursive relationships
-        parentStudy1.addChildStudy(parentStudy1);
-        repository.save(parentStudy1);
-    }
-
 }

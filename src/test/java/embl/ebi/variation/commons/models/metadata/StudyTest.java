@@ -7,6 +7,7 @@ import java.util.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.springframework.orm.jpa.JpaSystemException;
 
 /**
  * Created by tom on 07/10/15.
@@ -369,6 +370,16 @@ public class StudyTest {
         int notxHashcode = notx.hashCode();
 
         assertTrue("Equal object, return unequal hashcode test fails", !(xhashcode == notxHashcode));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testSelfChild(){
+        x.addChildStudy(x);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testSelfParent(){
+        x.addChildStudy(x);
     }
 
 }
