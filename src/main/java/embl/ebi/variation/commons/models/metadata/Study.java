@@ -53,10 +53,10 @@ public class Study extends AbstractPersistable<Long>{
 
 //    @Transient
 //    TODO giving this a manytoone relationship breaks StudyDatabaseTest.testUpdateDuplicate(). Makes it throw org.springframework.dao.DataIntegrityViolationException instead
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Study parentStudy;
 
-    @OneToMany(targetEntity=Study.class, mappedBy = "parentStudy", fetch = FetchType.LAZY)
+    @OneToMany(targetEntity=Study.class, mappedBy = "parentStudy")
     private Set<Study> childStudies;
 
     public Study(){
