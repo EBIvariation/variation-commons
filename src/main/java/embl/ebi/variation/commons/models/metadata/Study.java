@@ -237,6 +237,9 @@ public class Study extends AbstractPersistable<Long>{
     }
 
     void setParentStudy(Study parentStudy) {
+        if(parentStudy.equals(this)){
+            throw new RuntimeException("A study can't be its own parent study.");
+        }
         this.parentStudy = parentStudy;
     }
 
@@ -249,6 +252,9 @@ public class Study extends AbstractPersistable<Long>{
     }
 
     public void addChildStudy(Study childStudy) {
+        if(childStudy.equals(this)){
+            throw new RuntimeException("A study can't be its own child study.");
+        }
         childStudies.add(childStudy);
         childStudy.setParentStudy(this);
     }

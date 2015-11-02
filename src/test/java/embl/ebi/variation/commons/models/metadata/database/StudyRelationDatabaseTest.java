@@ -107,7 +107,6 @@ public class StudyRelationDatabaseTest {
         // TODO prevent allowing recursive relationships
         parentStudy1.addChildStudy(childStudy1);
         childStudy1.addChildStudy(parentStudy1);
-
         repository.save(parentStudy1);
     }
 
@@ -115,7 +114,6 @@ public class StudyRelationDatabaseTest {
     public void testSelfParent(){
         // TODO prevent allowing recursive relationships
         parentStudy1.addChildStudy(parentStudy1);
-
         repository.save(parentStudy1);
     }
 
