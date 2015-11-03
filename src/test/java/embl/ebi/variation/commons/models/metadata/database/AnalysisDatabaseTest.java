@@ -18,7 +18,6 @@ package embl.ebi.variation.commons.models.metadata.database;
 import embl.ebi.variation.commons.models.metadata.Analysis;
 import embl.ebi.variation.commons.models.metadata.DatabaseTestConfiguration;
 
-import java.util.Arrays;
 import java.util.Date;
 
 import static org.hamcrest.Matchers.contains;
@@ -27,6 +26,7 @@ import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.*;
 
 import embl.ebi.variation.commons.models.metadata.File;
+import embl.ebi.variation.commons.models.metadata.FileGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +46,8 @@ public class AnalysisDatabaseTest {
     AnalysisRepository repository;
     @Autowired
     FileRepository fileRepository;
+    @Autowired
+    FileGeneratorRepository fileGeneratorRepository;
 
     Analysis analysis1, analysis2, analysis3;
 
@@ -111,6 +113,7 @@ public class AnalysisDatabaseTest {
         repository.save(analysis1);
         repository.save(analysis2);
         assertEquals(2, repository.count());
+        assertEquals(2, fileGeneratorRepository.count());
     }
 
     /**
@@ -121,6 +124,7 @@ public class AnalysisDatabaseTest {
         Analysis savedAnalysis1 = repository.save(analysis1);
         Analysis savedAnalysis2 = repository.save(analysis1);
         assertEquals(1, repository.count());
+        assertEquals(1, fileGeneratorRepository.count());
         assertEquals(savedAnalysis1, savedAnalysis2);
     }
 
@@ -160,8 +164,10 @@ public class AnalysisDatabaseTest {
         repository.save(analysis1);
         repository.save(analysis2);
         assertEquals(2, repository.count());
+        assertEquals(2, fileGeneratorRepository.count());
         repository.delete(analysis1);
         assertEquals(1, repository.count());
+        assertEquals(1, fileGeneratorRepository.count());
         assertEquals(analysis2, repository.findAll().iterator().next());
     }
 
@@ -198,6 +204,10 @@ public class AnalysisDatabaseTest {
         assertEquals(2, savedAnalysis1.getFiles().size());
         assertThat(savedAnalysis1.getFiles(), containsInAnyOrder(vcfFile, cramFile));
 
+        // check that the fileGenerator repository also "contains" the saved analysis
+        assertEquals(1, fileGeneratorRepository.count());
+        assertEquals(fileGeneratorRepository.findAll().iterator().next(), savedAnalysis1);
+
         // check that files have been saved
         assertEquals(2, fileRepository.count());
         assertThat(fileRepository.findAll(), containsInAnyOrder(vcfFile, cramFile));
@@ -223,6 +233,11 @@ public class AnalysisDatabaseTest {
         assertEquals(1, savedAnalysis2.getFiles().size());
         assertThat(savedAnalysis1.getFiles(), contains(vcfFile));
         assertThat(savedAnalysis2.getFiles(), contains(vcfFile));
+
+        // check that the fileGenerator repository also "contains" the saved analysis
+        assertEquals(2, fileGeneratorRepository.count());
+        FileGenerator[] savedAnalysis = {savedAnalysis1, savedAnalysis2};
+        assertThat(fileGeneratorRepository.findAll(), containsInAnyOrder(savedAnalysis));
 
         // check that file have been saved
         assertEquals(1, fileRepository.count());
@@ -252,6 +267,11 @@ public class AnalysisDatabaseTest {
         assertEquals(2, savedAnalysis2.getFiles().size());
         assertThat(savedAnalysis1.getFiles(), containsInAnyOrder(vcfFile, cramFile));
         assertThat(savedAnalysis2.getFiles(), containsInAnyOrder(vcfFile, cramFile));
+
+        // check that the fileGenerator repository also "contains" the saved analysis
+        assertEquals(2, fileGeneratorRepository.count());
+        FileGenerator[] savedAnalysis = {savedAnalysis1, savedAnalysis2};
+        assertThat(fileGeneratorRepository.findAll(), containsInAnyOrder(savedAnalysis));
 
         // check that files have been saved
         assertEquals(2, fileRepository.count());
