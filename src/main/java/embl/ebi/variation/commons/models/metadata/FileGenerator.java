@@ -36,7 +36,7 @@ public abstract class FileGenerator extends AbstractPersistable<Long> {
     protected String alias;
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
-            name="FILE_GENERATOR_FILE",
+            name="file_generator_file",
             joinColumns = {@JoinColumn(name="file_generator_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name="file_id", referencedColumnName = "id")}
     )
