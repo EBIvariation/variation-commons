@@ -15,7 +15,9 @@
  */
 package embl.ebi.variation.commons.models.metadata.database;
 
+import embl.ebi.variation.commons.models.metadata.Analysis;
 import embl.ebi.variation.commons.models.metadata.DatabaseTestConfiguration;
+import embl.ebi.variation.commons.models.metadata.FileGenerator;
 import embl.ebi.variation.commons.models.metadata.Study;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +28,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.*;
 
@@ -36,6 +39,9 @@ public class StudyDatabaseTest {
 
     @Autowired
     StudyRepository repository;
+
+    @Autowired
+    AnalysisRepository analysisRepository;
 
     Study study1, study2;
 
@@ -147,4 +153,49 @@ public class StudyDatabaseTest {
         repository.save(savedStudy1);
         repository.findAll();
     }
+
+
+    /**
+     * Saving an study with associated analysis, should persist also them
+     */
+    @Test
+    public void addManyAnalysisToOneStudy() {
+        FileGenerator analysis1 = new Analysis("An1", "Analysis 1", "This is one analysis");
+        FileGenerator analysis2 = new Analysis("An2", "Analysis 2", "This is other analysis");
+        study1.addFileGenerator(analysis1);
+        study1.addFileGenerator(analysis2);
+        Study savedStudy1 = repository.save(study1);
+
+        // check that study has been saved
+        assertEquals(1, repository.count());
+        assertEquals(study1, savedStudy1);
+        assertThat(savedStudy1.getFileGenerators(), containsInAnyOrder(analysis1, analysis2));
+
+        // check that analysis have been saved
+        assertEquals(2, analysisRepository.count());
+        assertThat(analysisRepository.findAll(), containsInAnyOrder(analysis1, analysis2));
+    }
+
+    /**
+     * One analysis only can be associated to one study
+     */
+    @Test
+    public void addOneAnalsysToManyStudies() {
+        FileGenerator analysis1 = new Analysis("An1", "Analysis 1", "This is one analysis");
+        study1.addFileGenerator(analysis1);
+        study2.addFileGenerator(analysis1);
+        Study savedStudy1 = repository.save(study1);
+        Study savedStudy2 = repository.save(study2);
+
+        // check that study has been saved
+        assertEquals(2, repository.count());
+        assertEquals(study1, savedStudy1);
+        assertEquals(study2, savedStudy2);
+        //assertThat(savedStudy1.getFileGenerators(), containsInAnyOrder(analysis1, analysis2));
+
+        // check that analysis have been saved
+        assertEquals(2, analysisRepository.count());
+//        assertThat(analysisRepository.findAll(), containsInAnyOrder(analysis1, analysis2));
+    }
+
 }

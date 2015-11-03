@@ -42,7 +42,9 @@ public abstract class FileGenerator extends AbstractPersistable<Long> {
     )
     protected Set<File> files = new HashSet<>();
     @Transient protected Dataset dataset;
-    @Transient protected Study study;
+
+    @ManyToOne
+    protected Study study;
 
     public FileGenerator() {
     }

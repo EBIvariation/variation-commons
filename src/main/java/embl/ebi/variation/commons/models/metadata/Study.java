@@ -15,10 +15,7 @@
  */
 package embl.ebi.variation.commons.models.metadata;
 
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
@@ -46,7 +43,8 @@ public class Study extends AbstractPersistable<Long>{
     @Transient private Organisation centre;
     @Transient private Organisation broker;
 
-    @Transient private Set<FileGenerator> fileGenerators;
+    @OneToMany(cascade = CascadeType.PERSIST)
+    private Set<FileGenerator> fileGenerators;
 
     @Transient private Set<URI> uris;
     @Transient private Set<Publication> publications;
