@@ -15,10 +15,7 @@
  */
 package embl.ebi.variation.commons.models.metadata;
 
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
@@ -42,9 +39,12 @@ public class Study extends AbstractPersistable<Long>{
 
     private String type; // e.g. umbrella, pop genomics BUT separate column for study_type (aggregate, control set, case control)
 
-    private String studyAccession; // Bioproject ID?
-    @Transient private Organisation centre;
-    @Transient private Organisation broker;
+    private String studyAccession;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private Organisation centre;
+    @ManyToOne (cascade = CascadeType.PERSIST)
+    private Organisation broker;
 
     @Transient private Set<FileGenerator> fileGenerators;
 
@@ -127,7 +127,6 @@ public class Study extends AbstractPersistable<Long>{
 
     public void setCentre(Organisation centre) {
         this.centre = centre;
-        centre.addStudy(this); // should the study be adding itself to the centre, or the other way around? which is responsible?
     }
 
     public Scope getScope() {

@@ -60,7 +60,6 @@ public class OrganisationDatabaseTest {
 		assertEquals(organisation1.getName(), savedOrganisation.getName());
 		assertEquals(organisation1.getAddress(), savedOrganisation.getAddress());
 		assertNull(savedOrganisation.getEmail());
-		assertThat(savedOrganisation.getStudies(), empty());
 	}
 
 	/**

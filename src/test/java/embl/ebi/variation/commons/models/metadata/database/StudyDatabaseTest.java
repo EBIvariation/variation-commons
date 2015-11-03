@@ -16,11 +16,13 @@
 package embl.ebi.variation.commons.models.metadata.database;
 
 import embl.ebi.variation.commons.models.metadata.DatabaseTestConfiguration;
+import embl.ebi.variation.commons.models.metadata.Organisation;
 import embl.ebi.variation.commons.models.metadata.Study;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -37,7 +39,11 @@ public class StudyDatabaseTest {
     @Autowired
     StudyRepository repository;
 
+    @Autowired
+    OrganisationRepository organisationRepository;
+
     Study study1, study2;
+    Organisation organisation1, organisation2;
 
     @Before
     public void setUp() {
@@ -45,6 +51,9 @@ public class StudyDatabaseTest {
 
         study1 = new Study("study1", "studyA", "A study", Study.Material.OTHER, Study.Scope.OTHER);
         study2 = new Study("study2", "studyA", "A study", Study.Material.OTHER, Study.Scope.OTHER);
+
+        Organisation organisation1 = new Organisation("Sanger Institute", "Wellcome Genome Campus");
+        Organisation organisation2 = new Organisation("EBI", "Wellcome Genome Campus");
     }
 
     /**
@@ -138,7 +147,7 @@ public class StudyDatabaseTest {
      * Updating a study assigning the unique key from other must fail when serialising
      * @todo How to report this kind of errors?
      */
-    @Test(expected = JpaSystemException.class)
+    @Test(expected = DataIntegrityViolationException.class)
     public void testUpdateDuplicate() {
         Study savedStudy1 = repository.save(study1);
         Study savedStudy2 = repository.save(study2);
@@ -147,4 +156,24 @@ public class StudyDatabaseTest {
         repository.save(savedStudy1);
         repository.findAll();
     }
+
+
+    @Test
+    public void testAddCentreSaveOrganisation(){
+        study1.setCentre(organisation1);
+        testAddSaveOrganisationHelper(study1, organisation1);
+    }
+
+    @Test
+    public void testAddBrokerSaveOrganisation() {
+        study2.setBroker(organisation2);
+        testAddSaveOrganisationHelper(study2, organisation2);
+    }
+
+    private void testAddSaveOrganisationHelper(Study study, Organisation organisation){
+        assertEquals(organisation, study.getCentre());
+        Study savedStudy1 = repository.save(study);
+        assertEquals(savedStudy1.getCentre(), organisation);
+    }
+
 }
