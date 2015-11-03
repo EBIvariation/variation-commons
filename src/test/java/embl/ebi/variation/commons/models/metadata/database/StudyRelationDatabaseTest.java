@@ -70,7 +70,6 @@ public class StudyRelationDatabaseTest {
         checkChildStudiesInParent(parentStudy1, childStudies);
 
         Study savedParentStudy1 = repository.save(parentStudy1);
-        Study savedChildStudy1 = repository.save(childStudy1);
         checkChildStudiesInParent(savedParentStudy1, childStudies);
         assertEquals(2, repository.count());
     }
@@ -90,7 +89,6 @@ public class StudyRelationDatabaseTest {
         parentStudy1.setChildStudies(childStudies);
         checkParentStudiesInChildren(parentStudy1, childStudies);
 
-        Study savedParentStudy1 = repository.save(parentStudy1);
         Iterable<Study> savedChildStudies = repository.save(childStudies);
         checkParentStudiesInChildren(parentStudy1, savedChildStudies);
 
