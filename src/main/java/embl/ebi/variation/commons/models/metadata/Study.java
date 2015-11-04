@@ -56,7 +56,7 @@ public class Study extends AbstractPersistable<Long>{
     @ManyToOne (cascade = CascadeType.PERSIST)
     private Study parentStudy;
 
-    @OneToMany(targetEntity=Study.class, mappedBy = "parentStudy", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "parentStudy", cascade = CascadeType.PERSIST)
     private Set<Study> childStudies;
 
     public Study(){
