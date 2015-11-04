@@ -19,10 +19,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
@@ -38,7 +35,8 @@ public class File extends AbstractPersistable<Long> {
     private String name;
     private File.Type type;
     private String md5;
-    @Transient private Set<FileGenerator> fileGenerators;
+    @ManyToMany(mappedBy = "files")
+    private Set<FileGenerator> fileGenerators;
     @Transient private Set<Sample> samples;
 
     public File() {

@@ -18,13 +18,8 @@ package embl.ebi.variation.commons.models.metadata;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
+
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 /**
@@ -39,7 +34,13 @@ public abstract class FileGenerator extends AbstractPersistable<Long> {
     private static final long serialVersionUID = -5926609525556333330L;
     
     protected String alias;
-    @Transient protected Set<File> files = new HashSet<>();
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name="file_generator_file",
+            joinColumns = {@JoinColumn(name="file_generator_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name="file_id", referencedColumnName = "id")}
+    )
+    protected Set<File> files = new HashSet<>();
     @Transient protected Dataset dataset;
     @Transient protected Study study;
 
