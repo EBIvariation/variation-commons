@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -138,11 +139,10 @@ public class StudyDatabaseTest {
      * Updating a study assigning the unique key from other must fail when serialising
      * @todo How to report this kind of errors?
      */
-    @Test(expected = JpaSystemException.class)
+    @Test(expected = DataIntegrityViolationException.class)
     public void testUpdateDuplicate() {
         Study savedStudy1 = repository.save(study1);
         Study savedStudy2 = repository.save(study2);
-
         savedStudy1.setTitle(savedStudy2.getTitle());
         repository.save(savedStudy1);
         repository.findAll();

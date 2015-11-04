@@ -15,10 +15,7 @@
  */
 package embl.ebi.variation.commons.models.metadata;
 
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
@@ -43,16 +40,24 @@ public class Study extends AbstractPersistable<Long>{
     private String type; // e.g. umbrella, pop genomics BUT separate column for study_type (aggregate, control set, case control)
 
     private String studyAccession; // Bioproject ID?
-    @Transient private Organisation centre;
+    @Transient
+    private Organisation centre;
     @Transient private Organisation broker;
 
     @Transient private Set<FileGenerator> fileGenerators;
 
+//    @ManyToMany(targetEntity=URI.class)
     @Transient private Set<URI> uris;
+//    @ManyToMany(targetEntity=Publication.class)
     @Transient private Set<Publication> publications;
 
-    @Transient private Study parentStudy;
-    @Transient private Set<Study> childStudies;
+//    @Transient
+//    TODO giving this a manytoone relationship breaks StudyDatabaseTest.testUpdateDuplicate(). Makes it throw org.springframework.dao.DataIntegrityViolationException instead
+    @ManyToOne (cascade = CascadeType.PERSIST)
+    private Study parentStudy;
+
+    @OneToMany(mappedBy = "parentStudy", cascade = CascadeType.PERSIST)
+    private Set<Study> childStudies;
 
     public Study(){
         this.title = null;
@@ -232,6 +237,9 @@ public class Study extends AbstractPersistable<Long>{
     }
 
     void setParentStudy(Study parentStudy) {
+        if(this.equals(parentStudy)) {
+            throw new IllegalArgumentException("A study can't be its own parent study.");
+        }
         this.parentStudy = parentStudy;
     }
 
@@ -244,6 +252,9 @@ public class Study extends AbstractPersistable<Long>{
     }
 
     public void addChildStudy(Study childStudy) {
+        if(this.equals(childStudy)) {
+            throw new IllegalArgumentException("A study can't be its own child study.");
+        }
         childStudies.add(childStudy);
         childStudy.setParentStudy(this);
     }

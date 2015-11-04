@@ -7,6 +7,7 @@ import java.util.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.springframework.orm.jpa.JpaSystemException;
 
 /**
  * Created by tom on 07/10/15.
@@ -22,7 +23,7 @@ public class StudyTest {
         z = new Study("This is a title", "aliasA", "a great study", Study.Material.DNA, Study.Scope.MULTI_ISOLATE);
         notx = new Study("This is a different title", "aliasB", "an ok study", Study.Material.OTHER, Study.Scope.COMMUNITY);
     }
-    
+
     @Test
     public void testAddRun() {
         // the study x initially has no file generators
@@ -48,7 +49,8 @@ public class StudyTest {
 
         // add another run, array and analysis
         Run run2 = new Run("Run2");
-        x.addFileGenerator(run2);checkStudyHasFileGenerators(x, run1, run2);
+        x.addFileGenerator(run2);
+        checkStudyHasFileGenerators(x, run1, run2);
         checkStudyInFileGenerators(x, run1, run2);
     }
 
@@ -109,7 +111,7 @@ public class StudyTest {
         Analysis analysis2 = new Analysis("Analysis2", "Analysis2", "Description");
         x.addFileGenerator(analysis2);
         checkStudyHasFileGenerators(x, analysis1, analysis2);
-        checkStudyInFileGenerators(x,analysis1, analysis2);
+        checkStudyInFileGenerators(x, analysis1, analysis2);
     }
 
     @Test
@@ -151,7 +153,7 @@ public class StudyTest {
     }
 
     @Test
-    public void testSetStudyAccessionBadAccs(){
+    public void testSetStudyAccessionBadAccs() {
         Study study = new Study("Some study", "PRJEB123", "Study description", Study.Material.UNKNOWN, Study.Scope.UNKNOWN);
 
         assertThat(attemptSetAccession(study, "PRJR1234"), instanceOf(IllegalArgumentException.class));
@@ -170,7 +172,7 @@ public class StudyTest {
     }
 
     @Test
-    public void testSetStudyAccessionGoodAccs(){
+    public void testSetStudyAccessionGoodAccs() {
         Study study = new Study("Some study", "PRJEB123", "Study description", Study.Material.UNKNOWN, Study.Scope.UNKNOWN);
 
         assertEquals(attemptSetAccession(study, "PRJEB123"), null);
@@ -181,7 +183,7 @@ public class StudyTest {
         assertEquals(attemptSetAccession(study, "PRJEB632"), null);
     }
 
-    private Throwable attemptSetAccession(Study study,  String testAcc){
+    private Throwable attemptSetAccession(Study study, String testAcc) {
         Throwable e = null;
         try {
             study.setStudyAccession(testAcc);
@@ -192,11 +194,13 @@ public class StudyTest {
     }
 
     @Test
-    public void testAddPublication(){
+    public void testAddPublication() {
         Study study = new Study("Some study", "PRJEB123", "Study description", Study.Material.UNKNOWN, Study.Scope.UNKNOWN);
 
-        Publication publication1 = new Publication("test title", "test journal", "1", Arrays.asList("Mrs Example", "Mr Scientist", "Professor Java"), "1234", "Pubmed");
-        Publication publication2 = new Publication("this is a title", "some journal", "2", Arrays.asList("Dr Researcher", "Ms Biologist", "Mr Biologist"), "1235", "Pubmed");
+        Publication publication1 = new Publication("test title", "test journal", "1",
+                Arrays.asList("Mrs Example", "Mr Scientist", "Professor Java"), "1234", "Pubmed");
+        Publication publication2 = new Publication("this is a title", "some journal", "2",
+                Arrays.asList("Dr Researcher", "Ms Biologist", "Mr Biologist"), "1235", "Pubmed");
         study.addPublication(publication1);
         study.addPublication(publication2);
 
@@ -207,13 +211,13 @@ public class StudyTest {
         assertThat(study.getPublications(), hasSize(pubs.size()));
         assertThat(study.getPublications(), containsInAnyOrder(pubs.toArray()));
 
-        for (Publication publication: pubs) {
+        for (Publication publication : pubs) {
             assertThat(publication.getStudies(), containsInAnyOrder(study));
         }
     }
 
     @Test
-    public void testSetPublication(){
+    public void testSetPublication() {
         Study study = new Study("Some study", "PRJEB123", "Study description", Study.Material.UNKNOWN, Study.Scope.UNKNOWN);
 
         Publication publication1 = new Publication("test title", "test journal", "1", new ArrayList<String>(), "1234", "Pubmed");
@@ -227,13 +231,13 @@ public class StudyTest {
         assertThat(study.getPublications(), hasSize(pubs.size()));
         assertThat(study.getPublications(), containsInAnyOrder(pubs.toArray()));
 
-        for (Publication publication: pubs) {
+        for (Publication publication : pubs) {
             assertThat(publication.getStudies(), containsInAnyOrder(study));
         }
     }
 
     @Test
-    public void testAddCentre(){
+    public void testAddCentre() {
         Study study = new Study("Some study", "PRJEB123", "Study description", Study.Material.UNKNOWN, Study.Scope.UNKNOWN);
 
         Organisation organisation1 = new Organisation("EBI_test", "Hinxton");
@@ -242,9 +246,8 @@ public class StudyTest {
         assertEquals(study.getCentre(), organisation1);
     }
 
-
     @Test
-    public void testAddChildStudy(){
+    public void testAddChildStudy() {
         Study pStudy = new Study("Some study", "PRJEB12345", "Study description", Study.Material.UNKNOWN, Study.Scope.UNKNOWN);
 
         Study cStudy1 = new Study("Some study", "PRJEB2345", "Study description", Study.Material.UNKNOWN, Study.Scope.UNKNOWN);
@@ -264,7 +267,7 @@ public class StudyTest {
         pStudy.addChildStudy(cStudy2);
         testAddChildStudyHelper(pStudy, cStudies);
 
-        for(Study cStudy: cStudies){
+        for (Study cStudy : cStudies) {
             assertEquals(cStudy.getParentStudy(), pStudy);
         }
 
@@ -302,8 +305,8 @@ public class StudyTest {
     }
 
     /**
-     * 1. x, x.equals(x) must return true.
-     * 2. x and y, x.equals(y) must return true if and only if y.equals(x) returns true.
+     * 1. x, x.equals(x) must return true. 2. x and y, x.equals(y) must return
+     * true if and only if y.equals(x) returns true.
      */
     @Test
     public void testEquals_isReflexive_isSymmetric() {
@@ -312,9 +315,8 @@ public class StudyTest {
     }
 
     /**
-     * 1. x.equals(y) returns true
-     * 2. y.equals(z) returns true
-     * 3. x.equals(z) must return true
+     * 1. x.equals(y) returns true 2. y.equals(z) returns true 3. x.equals(z)
+     * must return true
      */
     @Test
     public void testEquals_isTransitive() {
@@ -348,7 +350,8 @@ public class StudyTest {
     }
 
     /**
-     * Objects that are equal using the equals method should return the same integer.
+     * Objects that are equal using the equals method should return the same
+     * integer.
      */
     @Test
     public void testHashcode_twoEqualsObjects_produceSameNumber() {
@@ -359,8 +362,8 @@ public class StudyTest {
     }
 
     /**
-     * A more optimal implementation of hashcode ensures
-     * that if the objects are unequal different integers are produced.
+     * A more optimal implementation of hashcode ensures that if the objects are
+     * unequal different integers are produced.
      *
      */
     @Test
@@ -368,7 +371,17 @@ public class StudyTest {
         int xhashcode = x.hashCode();
         int notxHashcode = notx.hashCode();
 
-        assertTrue("Equal object, return unequal hashcode test fails", !(xhashcode == notxHashcode));
+        assertNotEquals("Equal object, return unequal hashcode test fails", xhashcode, notxHashcode);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSelfChild() {
+        x.addChildStudy(x);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSelfParent() {
+        x.addChildStudy(x);
     }
 
 }
