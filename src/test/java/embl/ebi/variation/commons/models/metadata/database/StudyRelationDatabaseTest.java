@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package embl.ebi.variation.commons.models.metadata.database;
 
 import embl.ebi.variation.commons.models.metadata.DatabaseTestConfiguration;
 import embl.ebi.variation.commons.models.metadata.Study;
-import embl.ebi.variation.commons.models.metadata.database.StudyRepository;
+import java.util.Collection;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +46,7 @@ public class StudyRelationDatabaseTest {
     Study childStudy1, childStudy2, childStudy3, childStudy4, childStudy5, childStudy6;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         parentStudy1 = new Study("P Study 1", "P1", "Parent study number 1", Study.Material.DNA, Study.Scope.MULTI_ISOLATE);
         parentStudy2 = new Study("P Study 2", "P2", "Parent study number 2", Study.Material.DNA, Study.Scope.MULTI_ISOLATE);
 
@@ -59,23 +58,32 @@ public class StudyRelationDatabaseTest {
         childStudy6 = new Study("C Study 6", "C6", "Child study number 6", Study.Material.DNA, Study.Scope.MULTI_ISOLATE);
     }
 
+    /**
+     * Check parent study has no child studies.
+     */
     @Test
-    public void testParentToChild(){
-        // Check parent study has no child studies
-        checkChildStudiesInParent(parentStudy1, new HashSet<Study>());
-
-        Set<Study> childStudies = new HashSet<>();
-        childStudies.add(childStudy1);
-        parentStudy1.setChildStudies(childStudies);
-        checkChildStudiesInParent(parentStudy1, childStudies);
+    public void testNoChildren() {
+        Set<Study> emptyChildren = new HashSet<>();
+        checkChildStudiesInParent(parentStudy1, emptyChildren);
+        checkParentStudiesInChildren(parentStudy1, emptyChildren);
+    }
+    
+    @Test
+    public void testSingleChild() {
+        Set<Study> singleChildStudy = new HashSet<>();
+        singleChildStudy.add(childStudy1);
+        parentStudy1.setChildStudies(singleChildStudy);
+        checkChildStudiesInParent(parentStudy1, singleChildStudy);
+        checkParentStudiesInChildren(parentStudy1, singleChildStudy);
 
         Study savedParentStudy1 = repository.save(parentStudy1);
-        checkChildStudiesInParent(savedParentStudy1, childStudies);
+        checkChildStudiesInParent(savedParentStudy1, singleChildStudy);
+        checkParentStudiesInChildren(savedParentStudy1, singleChildStudy);
         assertEquals(2, repository.count());
     }
 
     @Test
-    public void testChildToParent(){
+    public void testMultipleChildren() {
         Set<Study> childStudies = new HashSet<>();
         childStudies.add(childStudy1);
         childStudies.add(childStudy2);
@@ -87,20 +95,62 @@ public class StudyRelationDatabaseTest {
         checkParentStudiesInChildren(null, childStudies);
 
         parentStudy1.setChildStudies(childStudies);
+        checkChildStudiesInParent(parentStudy1, childStudies);
         checkParentStudiesInChildren(parentStudy1, childStudies);
 
         Iterable<Study> savedChildStudies = repository.save(childStudies);
+        checkChildStudiesInParent(parentStudy1, new HashSet<>((Collection) savedChildStudies));
         checkParentStudiesInChildren(parentStudy1, savedChildStudies);
 
         assertEquals(7, repository.count());
     }
 
-    private void checkChildStudiesInParent(Study parentStudy, Set<Study> childStudies){
+    @Test
+    public void testMultilevelStudyHierarchy() {
+        Set<Study> children = new HashSet<>();
+        children.add(childStudy1);
+        children.add(childStudy2);
+        
+        Set<Study> grandchildren1 = new HashSet<>();
+        grandchildren1.add(childStudy3);
+        grandchildren1.add(childStudy4);
+        
+        Set<Study> grandchildren2 = new HashSet<>();
+        grandchildren2.add(childStudy5);
+        grandchildren2.add(childStudy6);
+
+        checkParentStudiesInChildren(null, children);
+        checkParentStudiesInChildren(null, grandchildren1);
+        checkParentStudiesInChildren(null, grandchildren2);
+
+        parentStudy1.setChildStudies(children);
+        childStudy1.setChildStudies(grandchildren1);
+        childStudy2.setChildStudies(grandchildren2);
+        
+        checkChildStudiesInParent(parentStudy1, children);
+        checkParentStudiesInChildren(parentStudy1, children);
+
+        checkChildStudiesInParent(childStudy1, grandchildren1);
+        checkParentStudiesInChildren(childStudy1, grandchildren1);
+
+        checkChildStudiesInParent(childStudy2, grandchildren2);
+        checkParentStudiesInChildren(childStudy2, grandchildren2);
+
+        
+        Study savedParentStudy = repository.save(parentStudy1);
+        checkChildStudiesInParent(savedParentStudy, children);
+        checkParentStudiesInChildren(savedParentStudy, children);
+        
+        assertEquals(7, repository.count());
+    }
+
+    
+    private void checkChildStudiesInParent(Study parentStudy, Set<Study> childStudies) {
         assertEquals(parentStudy.getChildStudies(), childStudies);
     }
 
-    private void checkParentStudiesInChildren(Study parentStudy, Iterable<Study> childStudies){
-        for(Study childStudy: childStudies){
+    private void checkParentStudiesInChildren(Study parentStudy, Iterable<Study> childStudies) {
+        for (Study childStudy : childStudies) {
             assertEquals(childStudy.getParentStudy(), parentStudy);
         }
     }
