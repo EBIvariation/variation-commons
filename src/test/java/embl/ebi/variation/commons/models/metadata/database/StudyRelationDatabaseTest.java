@@ -99,7 +99,7 @@ public class StudyRelationDatabaseTest {
         checkParentStudiesInChildren(parentStudy1, childStudies);
 
         Iterable<Study> savedChildStudies = repository.save(childStudies);
-        checkChildStudiesInParent(parentStudy1, new HashSet<>((Collection) savedChildStudies));
+        checkChildStudiesInParent(parentStudy1, new HashSet<>((Collection<Study>) savedChildStudies));
         checkParentStudiesInChildren(parentStudy1, savedChildStudies);
 
         assertEquals(7, repository.count());
