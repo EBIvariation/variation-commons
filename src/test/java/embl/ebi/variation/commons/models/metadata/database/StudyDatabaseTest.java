@@ -16,6 +16,7 @@
 package embl.ebi.variation.commons.models.metadata.database;
 
 import embl.ebi.variation.commons.models.metadata.DatabaseTestConfiguration;
+import embl.ebi.variation.commons.models.metadata.Organisation;
 import embl.ebi.variation.commons.models.metadata.Study;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +39,11 @@ public class StudyDatabaseTest {
     @Autowired
     StudyRepository repository;
 
+    @Autowired
+    OrganisationRepository organisationRepository;
+
     Study study1, study2;
+    Organisation organisation1, organisation2;
 
     @Before
     public void setUp() {
@@ -46,6 +51,9 @@ public class StudyDatabaseTest {
 
         study1 = new Study("study1", "studyA", "A study", Study.Material.OTHER, Study.Scope.OTHER);
         study2 = new Study("study2", "studyA", "A study", Study.Material.OTHER, Study.Scope.OTHER);
+
+        organisation1 = new Organisation("Sanger Institute", "Wellcome Genome Campus");
+        organisation2 = new Organisation("EBI", "Wellcome Genome Campus");
     }
 
     /**
@@ -136,8 +144,7 @@ public class StudyDatabaseTest {
     }
 
     /**
-     * Updating a study assigning the unique key from other must fail when serialising
-     * @todo How to report this kind of errors?
+     * Updating a study assigning the unique key from other must fail when serialising.
      */
     @Test(expected = DataIntegrityViolationException.class)
     public void testUpdateDuplicate() {
@@ -147,4 +154,23 @@ public class StudyDatabaseTest {
         repository.save(savedStudy1);
         repository.findAll();
     }
+
+
+    @Test
+    public void testSetCentreSaveOrganisation() {
+        study1.setCentre(organisation1);
+        assertEquals(organisation1, study1.getCentre());
+        
+        Study savedStudy1 = repository.save(study1);
+        assertEquals(savedStudy1.getCentre(), organisation1);
+    }
+
+    @Test
+    public void testSetBrokerSaveOrganisation() {
+        study2.setBroker(organisation2);
+        assertEquals(organisation2, study2.getBroker());
+        Study savedStudy1 = repository.save(study2);
+        assertEquals(savedStudy1.getBroker(), organisation2);
+    }
+
 }
