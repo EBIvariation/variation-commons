@@ -193,9 +193,10 @@ public class StudyDatabaseTest {
         assertEquals(study2, savedStudy2);
         //assertThat(savedStudy1.getFileGenerators(), containsInAnyOrder(analysis1, analysis2));
 
-        // check that analysis have been saved
-        assertEquals(2, analysisRepository.count());
-//        assertThat(analysisRepository.findAll(), containsInAnyOrder(analysis1, analysis2));
+        // check that just one analysis have been saved
+        assertEquals(1, analysisRepository.count());
+        Analysis savedAnalysis = analysisRepository.findAll().iterator().next();
+        assertEquals(savedAnalysis, analysis1);
     }
 
 }
