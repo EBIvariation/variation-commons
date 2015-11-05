@@ -27,7 +27,7 @@ import java.util.Set;
 
 @Entity
 @Table(indexes = {@Index(name = "study_unique", columnList = "title,material,scope,description,alias", unique = true)})
-public class Study extends AbstractPersistable<Long>{
+public class Study extends AbstractPersistable<Long> {
 
     private static final long serialVersionUid = 3947143813564096660L;
 
@@ -40,8 +40,11 @@ public class Study extends AbstractPersistable<Long>{
     private String type; // e.g. umbrella, pop genomics BUT separate column for study_type (aggregate, control set, case control)
 
     private String studyAccession; // Bioproject ID?
-    @Transient private Organisation centre;
-    @Transient private Organisation broker;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private Organisation centre;
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private Organisation broker;
 
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "study", fetch = FetchType.EAGER)
     private Set<FileGenerator> fileGenerators;
@@ -49,10 +52,13 @@ public class Study extends AbstractPersistable<Long>{
     @Transient private Set<URI> uris;
     @Transient private Set<Publication> publications;
 
-    @Transient private Study parentStudy;
-    @Transient private Set<Study> childStudies;
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private Study parentStudy;
 
-    public Study(){
+    @OneToMany(mappedBy = "parentStudy", cascade = CascadeType.PERSIST)
+    private Set<Study> childStudies;
+
+    public Study() {
         this.title = null;
         this.alias = null;
         this.description = null;
@@ -60,7 +66,7 @@ public class Study extends AbstractPersistable<Long>{
         this.scope = Scope.OTHER;
     }
 
-    public Study(Long id){
+    public Study(Long id) {
         this.setId(id);
     }
 
@@ -125,7 +131,6 @@ public class Study extends AbstractPersistable<Long>{
 
     public void setCentre(Organisation centre) {
         this.centre = centre;
-        centre.addStudy(this); // should the study be adding itself to the centre, or the other way around? which is responsible?
     }
 
     public Scope getScope() {
@@ -230,6 +235,9 @@ public class Study extends AbstractPersistable<Long>{
     }
 
     void setParentStudy(Study parentStudy) {
+        if (this.equals(parentStudy)) {
+            throw new IllegalArgumentException("A study can't be its own parent study.");
+        }
         this.parentStudy = parentStudy;
     }
 
@@ -242,6 +250,9 @@ public class Study extends AbstractPersistable<Long>{
     }
 
     public void addChildStudy(Study childStudy) {
+        if (this.equals(childStudy)) {
+            throw new IllegalArgumentException("A study can't be its own child study.");
+        }
         childStudies.add(childStudy);
         childStudy.setParentStudy(this);
     }
@@ -260,7 +271,7 @@ public class Study extends AbstractPersistable<Long>{
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "Study{" + "title=" + title + ", material=" + material + ", scope=" + scope + ", description=" + description + ", alias=" + alias + '}';
     }
 
