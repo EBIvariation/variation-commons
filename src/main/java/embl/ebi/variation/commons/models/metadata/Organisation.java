@@ -21,7 +21,6 @@ import java.util.*;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 /**
@@ -37,8 +36,6 @@ public class Organisation extends AbstractPersistable<Long> {
     private String email; // one or multiple emails?
     private String address; // one or multiple addresses?
 
-    @Transient private Set<Study> studies;
-
     public Organisation() {
         this.name = null;
         this.email = null;
@@ -52,7 +49,6 @@ public class Organisation extends AbstractPersistable<Long> {
     public Organisation(String name, String address) {
         setName(name);
         setAddress(address);
-        studies = new HashSet<>();
     }
 
     public String getName() {
@@ -84,22 +80,6 @@ public class Organisation extends AbstractPersistable<Long> {
     public final void setAddress(String address) {
         Objects.requireNonNull(address, "Address not specified");
         this.address = address;
-    }
-
-    public Set<Study> getStudies() {
-        return Collections.unmodifiableSet(studies);
-    }
-
-    // TODO between study and centre, who is responsible for the "adding" of the other?
-    // can a study exist without a centre? would a study be "spawned" from a centre, meaning centre would be adding the study
-//    public void setStudies(Set<Study> studies) {
-//        this.studies.clear();
-//        for(Study study: studies){
-//            addStudy(study);
-//        }
-//    }
-    void addStudy(Study study) {
-        studies.add(study);
     }
 
     @Override
