@@ -43,7 +43,7 @@ public class Study extends AbstractPersistable<Long>{
     @Transient private Organisation centre;
     @Transient private Organisation broker;
 
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "study", fetch = FetchType.EAGER)
     private Set<FileGenerator> fileGenerators;
 
     @Transient private Set<URI> uris;

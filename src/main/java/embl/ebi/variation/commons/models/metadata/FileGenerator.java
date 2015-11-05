@@ -44,6 +44,7 @@ public abstract class FileGenerator extends AbstractPersistable<Long> {
     @Transient protected Dataset dataset;
 
     @ManyToOne
+    @JoinColumn(name = "study_id")
     protected Study study;
 
     public FileGenerator() {
