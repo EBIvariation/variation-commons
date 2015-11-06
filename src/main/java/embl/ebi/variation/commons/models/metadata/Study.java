@@ -46,7 +46,7 @@ public class Study extends AbstractPersistable<Long> {
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Organisation broker;
 
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "study", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "study")
     private Set<FileGenerator> fileGenerators;
 
     @Transient private Set<URI> uris;
@@ -190,8 +190,8 @@ public class Study extends AbstractPersistable<Long> {
     }
 
     public void addFileGenerator(FileGenerator fileGenerator) {
-        fileGenerators.add(fileGenerator);
         fileGenerator.setStudy(this);
+        fileGenerators.add(fileGenerator);
     }
 
     public void setFileGenerators(Set<FileGenerator> fileGenerators) {

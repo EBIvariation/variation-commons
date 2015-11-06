@@ -189,15 +189,21 @@ public class StudyDatabaseTest {
     public void addOneAnalsysToManyStudies() {
         FileGenerator analysis1 = new Analysis("An1", "Analysis 1", "This is one analysis");
         study1.addFileGenerator(analysis1);
-        study2.addFileGenerator(analysis1);
         Study savedStudy1 = repository.save(study1);
+        study2.addFileGenerator(analysis1);
         Study savedStudy2 = repository.save(study2);
 
-        // check that study has been saved
+        // check that studies have been saved
         assertEquals(2, repository.count());
         assertEquals(study1, savedStudy1);
         assertEquals(study2, savedStudy2);
-        //assertThat(savedStudy1.getFileGenerators(), containsInAnyOrder(analysis1, analysis2));
+
+        // check that just study2 has a file generator, and that file generator is the analysis 1
+        Study studyFromRepository1 = repository.findOne(savedStudy1.getId());
+        Study studyFromRepository2 = repository.findOne(savedStudy2.getId());
+        assertEquals(studyFromRepository1.getFileGenerators().size(), 0);
+        assertEquals(studyFromRepository2.getFileGenerators().size(), 1);
+        assertEquals(studyFromRepository2.getFileGenerators().iterator().next(), analysis1);
 
         // check that just one analysis have been saved
         assertEquals(1, analysisRepository.count());
