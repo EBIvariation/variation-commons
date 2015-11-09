@@ -25,7 +25,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -209,6 +208,24 @@ public class StudyDatabaseTest {
         assertEquals(1, analysisRepository.count());
         Analysis savedAnalysis = analysisRepository.findAll().iterator().next();
         assertEquals(savedAnalysis, analysis1);
+    }
+
+    @Test
+    public void testDeleteStudyButNotAnalysys() {
+        FileGenerator analysis1 = new Analysis("An1", "Analysis 1", "This is one analysis");
+        FileGenerator analysis2 = new Analysis("An2", "Analysis 2", "This is other analysis");
+        study1.addFileGenerator(analysis1);
+        study1.addFileGenerator(analysis2);
+        Study savedStudy = repository.save(study1);
+
+        // check that study and analysys have been saved
+        assertEquals(1, repository.count());
+        assertEquals(2, analysisRepository.count());
+
+        // delete the study and check that the file generators have not been removed
+        repository.delete(savedStudy);
+        assertEquals(0, repository.count());
+        assertEquals(2, analysisRepository.count());
     }
 
     @Test

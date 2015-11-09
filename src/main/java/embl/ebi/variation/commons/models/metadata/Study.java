@@ -184,6 +184,13 @@ public class Study extends AbstractPersistable<Long> {
         return Collections.unmodifiableSet(fileGenerators);
     }
 
+    @PreRemove
+    private void preRemove() {
+        for (FileGenerator generator : fileGenerators) {
+            generator.unsetStudy();
+        }
+    }
+
     public void removeFileGenerator(FileGenerator fileGenerator) {
         fileGenerator.unsetStudy();
         fileGenerators.remove(fileGenerator);
