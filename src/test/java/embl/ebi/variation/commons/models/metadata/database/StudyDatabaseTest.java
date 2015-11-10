@@ -206,14 +206,14 @@ public class StudyDatabaseTest {
 
         // check that just one analysis have been saved
         assertEquals(1, analysisRepository.count());
-        Analysis savedAnalysis = analysisRepository.findAll().iterator().next();
+        FileGenerator savedAnalysis = analysisRepository.findAll().iterator().next();
         assertEquals(savedAnalysis, analysis1);
     }
 
     @Test
     public void testDeleteStudyButNotAnalysys() {
-        FileGenerator analysis1 = new Analysis("An1", "Analysis 1", "This is one analysis");
-        FileGenerator analysis2 = new Analysis("An2", "Analysis 2", "This is other analysis");
+        Analysis analysis1 = new Analysis("An1", "Analysis 1", "This is one analysis");
+        Analysis analysis2 = new Analysis("An2", "Analysis 2", "This is other analysis");
         study1.addFileGenerator(analysis1);
         study1.addFileGenerator(analysis2);
         Study savedStudy = repository.save(study1);
@@ -227,6 +227,36 @@ public class StudyDatabaseTest {
         assertEquals(0, repository.count());
         assertEquals(2, analysisRepository.count());
     }
+
+    @Test
+    public void testDeleteAnalysisButNotStudy() {
+        Analysis analysis1 = new Analysis("An1", "Analysis 1", "This is one analysis");
+        Analysis analysis2 = new Analysis("An2", "Analysis 2", "This is other analysis");
+        study1.addFileGenerator(analysis1);
+        study1.addFileGenerator(analysis2);
+        Study savedStudy = repository.save(study1);
+
+        // check that study and analysys have been saved
+        assertEquals(1, repository.count());
+        assertEquals(2, analysisRepository.count());
+
+        // delete and analysis
+        savedStudy.removeFileGenerator(analysis1);
+        analysisRepository.delete(analysis1);
+
+        assertEquals(1, analysisRepository.count());
+        assertEquals(1, repository.count());
+        assertEquals(1, savedStudy.getFileGenerators().size());
+
+        // delete and analysis and check that the study has been updated
+        savedStudy.removeFileGenerator(analysis2);
+        analysisRepository.delete(analysis2);
+
+        assertEquals(0, analysisRepository.count());
+        assertEquals(1, repository.count());
+        assertEquals(0, savedStudy.getFileGenerators().size());
+    }
+
 
     @Test
     public void testSetCentreSaveOrganisation() {
