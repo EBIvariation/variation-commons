@@ -45,6 +45,9 @@ public class StudyDatabaseTest {
     AnalysisRepository analysisRepository;
 
     @Autowired
+    FileGeneratorRepository fileGeneratorRepository;
+
+    @Autowired
     OrganisationRepository organisationRepository;
 
     Study study1, study2;
@@ -176,9 +179,11 @@ public class StudyDatabaseTest {
         assertEquals(study1, savedStudy1);
         assertThat(savedStudy1.getFileGenerators(), containsInAnyOrder(analysis1, analysis2));
 
-        // check that analysis have been saved
+        // check that analysis have been saved and that can be retrieved using Analisys and FileGenerator repositories
         assertEquals(2, analysisRepository.count());
         assertThat(analysisRepository.findAll(), containsInAnyOrder(analysis1, analysis2));
+        assertEquals(2, fileGeneratorRepository.count());
+        assertThat(fileGeneratorRepository.findAll(), containsInAnyOrder(analysis1, analysis2));
     }
 
     /**
@@ -204,10 +209,14 @@ public class StudyDatabaseTest {
         assertEquals(studyFromRepository2.getFileGenerators().size(), 1);
         assertEquals(studyFromRepository2.getFileGenerators().iterator().next(), analysis1);
 
-        // check that just one analysis have been saved
+        // check that just one analysis have been saved and that can be retrieved using Analysis
+        // and FileGenerator repositories
         assertEquals(1, analysisRepository.count());
-        FileGenerator savedAnalysis = analysisRepository.findAll().iterator().next();
+        Analysis savedAnalysis = analysisRepository.findAll().iterator().next();
         assertEquals(savedAnalysis, analysis1);
+        assertEquals(1, fileGeneratorRepository.count());
+        FileGenerator savedFileGenerator = fileGeneratorRepository.findAll().iterator().next();
+        assertEquals(savedFileGenerator, analysis1);
     }
 
     @Test
@@ -221,11 +230,13 @@ public class StudyDatabaseTest {
         // check that study and analysys have been saved
         assertEquals(1, repository.count());
         assertEquals(2, analysisRepository.count());
+        assertEquals(2, fileGeneratorRepository.count());
 
         // delete the study and check that the file generators have not been removed
         repository.delete(savedStudy);
         assertEquals(0, repository.count());
         assertEquals(2, analysisRepository.count());
+        assertEquals(2, fileGeneratorRepository.count());
     }
 
     @Test
@@ -253,6 +264,35 @@ public class StudyDatabaseTest {
         analysisRepository.delete(analysis2);
 
         assertEquals(0, analysisRepository.count());
+        assertEquals(1, repository.count());
+        assertEquals(0, savedStudy.getFileGenerators().size());
+    }
+
+    @Test
+    public void testDeleteAnalysisButNotStudyUsingFileGeneratorRepository() {
+        Analysis analysis1 = new Analysis("An1", "Analysis 1", "This is one analysis");
+        Analysis analysis2 = new Analysis("An2", "Analysis 2", "This is other analysis");
+        study1.addFileGenerator(analysis1);
+        study1.addFileGenerator(analysis2);
+        Study savedStudy = repository.save(study1);
+
+        // check that study and analysys have been saved
+        assertEquals(1, repository.count());
+        assertEquals(2, fileGeneratorRepository.count());
+
+        // delete and analysis
+        savedStudy.removeFileGenerator(analysis1);
+        fileGeneratorRepository.delete(analysis1);
+
+        assertEquals(1, fileGeneratorRepository.count());
+        assertEquals(1, repository.count());
+        assertEquals(1, savedStudy.getFileGenerators().size());
+
+        // delete and analysis and check that the study has been updated
+        savedStudy.removeFileGenerator(analysis2);
+        fileGeneratorRepository.delete(analysis2);
+
+        assertEquals(0, fileGeneratorRepository.count());
         assertEquals(1, repository.count());
         assertEquals(0, savedStudy.getFileGenerators().size());
     }
