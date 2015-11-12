@@ -190,7 +190,7 @@ public class StudyDatabaseTest {
      * One analysis only can be associated to one study
      */
     @Test
-    public void addOneAnalsysToManyStudies() {
+    public void addOneAnalisysToManyStudies() {
         FileGenerator analysis1 = new Analysis("An1", "Analysis 1", "This is one analysis");
         study1.addFileGenerator(analysis1);
         Study savedStudy1 = repository.save(study1);
