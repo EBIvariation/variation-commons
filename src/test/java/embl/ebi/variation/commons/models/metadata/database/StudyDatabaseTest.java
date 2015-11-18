@@ -15,7 +15,9 @@
  */
 package embl.ebi.variation.commons.models.metadata.database;
 
+import embl.ebi.variation.commons.models.metadata.Analysis;
 import embl.ebi.variation.commons.models.metadata.DatabaseTestConfiguration;
+import embl.ebi.variation.commons.models.metadata.FileGenerator;
 import embl.ebi.variation.commons.models.metadata.Organisation;
 import embl.ebi.variation.commons.models.metadata.Study;
 import org.junit.Before;
@@ -23,11 +25,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.*;
 
@@ -38,6 +40,12 @@ public class StudyDatabaseTest {
 
     @Autowired
     StudyRepository repository;
+
+    @Autowired
+    AnalysisRepository analysisRepository;
+
+    @Autowired
+    FileGeneratorRepository fileGeneratorRepository;
 
     @Autowired
     OrganisationRepository organisationRepository;
@@ -155,12 +163,146 @@ public class StudyDatabaseTest {
         repository.findAll();
     }
 
+    /**
+     * Saving an study with associated analysis, should persist also them
+     */
+    @Test
+    public void addManyAnalysisToOneStudy() {
+        FileGenerator analysis1 = new Analysis("An1", "Analysis 1", "This is one analysis");
+        FileGenerator analysis2 = new Analysis("An2", "Analysis 2", "This is other analysis");
+        study1.addFileGenerator(analysis1);
+        study1.addFileGenerator(analysis2);
+        Study savedStudy1 = repository.save(study1);
+
+        // check that study has been saved
+        assertEquals(1, repository.count());
+        assertEquals(study1, savedStudy1);
+        assertThat(savedStudy1.getFileGenerators(), containsInAnyOrder(analysis1, analysis2));
+
+        // check that analysis have been saved and that can be retrieved using Analisys and FileGenerator repositories
+        assertEquals(2, analysisRepository.count());
+        assertThat(analysisRepository.findAll(), containsInAnyOrder(analysis1, analysis2));
+        assertEquals(2, fileGeneratorRepository.count());
+        assertThat(fileGeneratorRepository.findAll(), containsInAnyOrder(analysis1, analysis2));
+    }
+
+    /**
+     * One analysis only can be associated to one study
+     */
+    @Test
+    public void addOneAnalisysToManyStudies() {
+        FileGenerator analysis1 = new Analysis("An1", "Analysis 1", "This is one analysis");
+        study1.addFileGenerator(analysis1);
+        Study savedStudy1 = repository.save(study1);
+        study2.addFileGenerator(analysis1);
+        Study savedStudy2 = repository.save(study2);
+
+        // check that studies have been saved
+        assertEquals(2, repository.count());
+        assertEquals(study1, savedStudy1);
+        assertEquals(study2, savedStudy2);
+
+        // check that just study2 has a file generator, and that file generator is the analysis 1
+        Study studyFromRepository1 = repository.findOne(savedStudy1.getId());
+        Study studyFromRepository2 = repository.findOne(savedStudy2.getId());
+        assertEquals(studyFromRepository1.getFileGenerators().size(), 0);
+        assertEquals(studyFromRepository2.getFileGenerators().size(), 1);
+        assertEquals(studyFromRepository2.getFileGenerators().iterator().next(), analysis1);
+
+        // check that just one analysis have been saved and that can be retrieved using Analysis
+        // and FileGenerator repositories
+        assertEquals(1, analysisRepository.count());
+        Analysis savedAnalysis = analysisRepository.findAll().iterator().next();
+        assertEquals(savedAnalysis, analysis1);
+        assertEquals(1, fileGeneratorRepository.count());
+        FileGenerator savedFileGenerator = fileGeneratorRepository.findAll().iterator().next();
+        assertEquals(savedFileGenerator, analysis1);
+    }
+
+    @Test
+    public void testDeleteStudyButNotAnalysys() {
+        Analysis analysis1 = new Analysis("An1", "Analysis 1", "This is one analysis");
+        Analysis analysis2 = new Analysis("An2", "Analysis 2", "This is other analysis");
+        study1.addFileGenerator(analysis1);
+        study1.addFileGenerator(analysis2);
+        Study savedStudy = repository.save(study1);
+
+        // check that study and analysys have been saved
+        assertEquals(1, repository.count());
+        assertEquals(2, analysisRepository.count());
+        assertEquals(2, fileGeneratorRepository.count());
+
+        // delete the study and check that the file generators have not been removed
+        repository.delete(savedStudy);
+        assertEquals(0, repository.count());
+        assertEquals(2, analysisRepository.count());
+        assertEquals(2, fileGeneratorRepository.count());
+    }
+
+    @Test
+    public void testDeleteAnalysisButNotStudy() {
+        Analysis analysis1 = new Analysis("An1", "Analysis 1", "This is one analysis");
+        Analysis analysis2 = new Analysis("An2", "Analysis 2", "This is other analysis");
+        study1.addFileGenerator(analysis1);
+        study1.addFileGenerator(analysis2);
+        Study savedStudy = repository.save(study1);
+
+        // check that study and analysys have been saved
+        assertEquals(1, repository.count());
+        assertEquals(2, analysisRepository.count());
+
+        // delete and analysis
+        savedStudy.removeFileGenerator(analysis1);
+        analysisRepository.delete(analysis1);
+
+        assertEquals(1, analysisRepository.count());
+        assertEquals(1, repository.count());
+        assertEquals(1, savedStudy.getFileGenerators().size());
+
+        // delete and analysis and check that the study has been updated
+        savedStudy.removeFileGenerator(analysis2);
+        analysisRepository.delete(analysis2);
+
+        assertEquals(0, analysisRepository.count());
+        assertEquals(1, repository.count());
+        assertEquals(0, savedStudy.getFileGenerators().size());
+    }
+
+    @Test
+    public void testDeleteAnalysisButNotStudyUsingFileGeneratorRepository() {
+        Analysis analysis1 = new Analysis("An1", "Analysis 1", "This is one analysis");
+        Analysis analysis2 = new Analysis("An2", "Analysis 2", "This is other analysis");
+        study1.addFileGenerator(analysis1);
+        study1.addFileGenerator(analysis2);
+        Study savedStudy = repository.save(study1);
+
+        // check that study and analysys have been saved
+        assertEquals(1, repository.count());
+        assertEquals(2, fileGeneratorRepository.count());
+
+        // delete and analysis
+        savedStudy.removeFileGenerator(analysis1);
+        fileGeneratorRepository.delete(analysis1);
+
+        assertEquals(1, fileGeneratorRepository.count());
+        assertEquals(1, repository.count());
+        assertEquals(1, savedStudy.getFileGenerators().size());
+
+        // delete and analysis and check that the study has been updated
+        savedStudy.removeFileGenerator(analysis2);
+        fileGeneratorRepository.delete(analysis2);
+
+        assertEquals(0, fileGeneratorRepository.count());
+        assertEquals(1, repository.count());
+        assertEquals(0, savedStudy.getFileGenerators().size());
+    }
+
 
     @Test
     public void testSetCentreSaveOrganisation() {
         study1.setCentre(organisation1);
         assertEquals(organisation1, study1.getCentre());
-        
+
         Study savedStudy1 = repository.save(study1);
         assertEquals(savedStudy1.getCentre(), organisation1);
     }
@@ -171,6 +313,6 @@ public class StudyDatabaseTest {
         assertEquals(organisation2, study2.getBroker());
         Study savedStudy1 = repository.save(study2);
         assertEquals(savedStudy1.getBroker(), organisation2);
-    }
 
+    }
 }

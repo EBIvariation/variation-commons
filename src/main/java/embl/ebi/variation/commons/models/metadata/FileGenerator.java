@@ -42,7 +42,10 @@ public abstract class FileGenerator extends AbstractPersistable<Long> {
     )
     protected Set<File> files = new HashSet<>();
     @Transient protected Dataset dataset;
-    @Transient protected Study study;
+
+    @ManyToOne
+    @JoinColumn(name = "study_id", foreignKey = @ForeignKey(name = "fk_study_id"), nullable = true)
+    protected Study study;
 
     public FileGenerator() {
     }
@@ -104,6 +107,9 @@ public abstract class FileGenerator extends AbstractPersistable<Long> {
     }
 
     void setStudy(Study study) {
+        if (this.study != null) {
+            this.study.removeFileGenerator(this);
+        }
         this.study = study;
     }
 
