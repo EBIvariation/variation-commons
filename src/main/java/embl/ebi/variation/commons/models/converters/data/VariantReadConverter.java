@@ -3,7 +3,6 @@ package embl.ebi.variation.commons.models.converters.data;
 import com.mongodb.DBObject;
 import org.opencb.biodata.models.variant.Variant;
 import org.opencb.opencga.storage.core.variant.VariantStorageManager;
-import org.opencb.opencga.storage.mongodb.variant.DBObjectToSamplesConverter;
 import org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantConverter;
 import org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantSourceEntryConverter;
 import org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantStatsConverter;
