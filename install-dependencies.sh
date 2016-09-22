@@ -2,5 +2,5 @@
 
 git clone -b hotfix/0.5 https://github.com/opencb/opencga.git
 cd opencga
-mvn install -DskipTests --settings ../.travis.settings.xml
+mvn install -DskipTests
 
