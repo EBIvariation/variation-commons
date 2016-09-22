@@ -16,10 +16,10 @@ import static org.junit.Assert.*;
 
 /**
  * Created by tom on 21/09/16.
+ *
+ * Heavily based upon org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantConverterTest
  */
 public class VariantReadConverterTest {
-
-    // Heavily based upon org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantConverterTest
 
     private BasicDBObject mongoVariant;
     private Variant variant;
