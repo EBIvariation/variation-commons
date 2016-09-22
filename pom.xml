@@ -62,11 +62,6 @@
             <version>2.0.8</version>
         </dependency>
         <dependency>
-            <groupId>org.opencb.biodata</groupId>
-            <artifactId>biodata-models</artifactId>
-            <version>0.4.5</version>
-        </dependency>
-        <dependency>
             <groupId>org.opencb.opencga</groupId>
             <artifactId>opencga-storage-mongodb</artifactId>
             <version>0.5.2</version>
