@@ -11,7 +11,7 @@ import org.springframework.core.convert.converter.Converter;
 /**
  * Created by tom on 21/09/16.
  */
-public class VariantReadConverter implements Converter<DBObject, Variant> {
+public class MongoDBObjectToVariantConverter implements Converter<DBObject, Variant> {
 
     @Override
     public Variant convert(DBObject dbObject) {

@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
  *
  * Heavily based upon org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantConverterTest
  */
-public class VariantReadConverterTest {
+public class MongoDBObjectToVariantConverterTest {
 
     private BasicDBObject mongoVariant;
     private Variant variant;
@@ -88,15 +88,15 @@ public class VariantReadConverterTest {
         mongoVariant.append("files", files);
 
         List<String> sampleNames = Lists.newArrayList("NA001", "NA002");
-        VariantReadConverter variantReadConverter = new VariantReadConverter();
-        Variant converted = variantReadConverter.convert(mongoVariant);
+        MongoDBObjectToVariantConverter mongoDBObjectToVariantConverter = new MongoDBObjectToVariantConverter();
+        Variant converted = mongoDBObjectToVariantConverter.convert(mongoVariant);
         assertEquals(variant, converted);
     }
 
     @Test
     public void testConvertToDataModelTypeWithoutFiles() {
-        VariantReadConverter variantReadConverter = new VariantReadConverter();
-        Variant converted = variantReadConverter.convert(mongoVariant);
+        MongoDBObjectToVariantConverter mongoDBObjectToVariantConverter = new MongoDBObjectToVariantConverter();
+        Variant converted = mongoDBObjectToVariantConverter.convert(mongoVariant);
         assertEquals(variant, converted);
     }
 
@@ -104,8 +104,8 @@ public class VariantReadConverterTest {
     public void testConvertToDataModelTypeNullIds() {
         mongoVariant.remove(DBObjectToVariantConverter.IDS_FIELD);
 
-        VariantReadConverter variantReadConverter = new VariantReadConverter();
-        Variant converted = variantReadConverter.convert(mongoVariant);
+        MongoDBObjectToVariantConverter mongoDBObjectToVariantConverter = new MongoDBObjectToVariantConverter();
+        Variant converted = mongoDBObjectToVariantConverter.convert(mongoVariant);
         assertNotNull(converted.getIds());
         assertTrue(converted.getIds().isEmpty());
 
@@ -117,8 +117,8 @@ public class VariantReadConverterTest {
     public void testConvertToDataModelTypeEmptyIds() {
         mongoVariant.put(DBObjectToVariantConverter.IDS_FIELD, new HashSet<String>());
 
-        VariantReadConverter variantReadConverter = new VariantReadConverter();
-        Variant converted = variantReadConverter.convert(mongoVariant);
+        MongoDBObjectToVariantConverter mongoDBObjectToVariantConverter = new MongoDBObjectToVariantConverter();
+        Variant converted = mongoDBObjectToVariantConverter.convert(mongoVariant);
         assertNotNull(converted.getIds());
         assertTrue(converted.getIds().isEmpty());
 
