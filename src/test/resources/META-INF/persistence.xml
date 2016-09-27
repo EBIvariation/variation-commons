@@ -4,12 +4,12 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 	
 	<persistence-unit name="jpa.metadata">
-		<class>embl.ebi.variation.commons.models.metadata.Analysis</class>
-		<class>embl.ebi.variation.commons.models.metadata.File</class>
-		<class>embl.ebi.variation.commons.models.metadata.FileGenerator</class>
-		<class>embl.ebi.variation.commons.models.metadata.Organisation</class>
-		<class>embl.ebi.variation.commons.models.metadata.Publication</class>
-		<class>embl.ebi.variation.commons.models.metadata.Study</class>
+		<class>uk.ac.ebi.eva.commons.models.metadata.Analysis</class>
+		<class>uk.ac.ebi.eva.commons.models.metadata.File</class>
+		<class>uk.ac.ebi.eva.commons.models.metadata.FileGenerator</class>
+		<class>uk.ac.ebi.eva.commons.models.metadata.Organisation</class>
+		<class>uk.ac.ebi.eva.commons.models.metadata.Publication</class>
+		<class>uk.ac.ebi.eva.commons.models.metadata.Study</class>
                 
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
