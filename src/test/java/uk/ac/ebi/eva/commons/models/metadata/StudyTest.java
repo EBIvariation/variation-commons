@@ -1,21 +1,15 @@
 package uk.ac.ebi.eva.commons.models.metadata;
 
+import org.junit.Before;
 import org.junit.Test;
-
-import java.util.*;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import org.junit.Before;
-import org.springframework.orm.jpa.JpaSystemException;
 
-import uk.ac.ebi.eva.commons.models.metadata.Analysis;
-import uk.ac.ebi.eva.commons.models.metadata.Array;
-import uk.ac.ebi.eva.commons.models.metadata.FileGenerator;
-import uk.ac.ebi.eva.commons.models.metadata.Organisation;
-import uk.ac.ebi.eva.commons.models.metadata.Publication;
-import uk.ac.ebi.eva.commons.models.metadata.Run;
-import uk.ac.ebi.eva.commons.models.metadata.Study;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by tom on 07/10/15.

@@ -2,9 +2,6 @@ package uk.ac.ebi.eva.commons.models.metadata;
 
 import org.junit.Test;
 
-import uk.ac.ebi.eva.commons.models.metadata.File;
-import uk.ac.ebi.eva.commons.models.metadata.Sample;
-
 import java.util.Set;
 
 import static org.junit.Assert.*;

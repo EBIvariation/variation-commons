@@ -1,14 +1,10 @@
 package uk.ac.ebi.eva.commons.models.metadata;
 
+import org.junit.Before;
 import org.junit.Test;
-
-import uk.ac.ebi.eva.commons.models.metadata.Publication;
 
 import java.util.Arrays;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
 
 /**
  * Created by tom on 15/10/15.

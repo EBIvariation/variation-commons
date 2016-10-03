@@ -20,9 +20,6 @@ import java.util.Date;
 
 import org.junit.Test;
 
-import uk.ac.ebi.eva.commons.models.metadata.Analysis;
-import uk.ac.ebi.eva.commons.models.metadata.Study;
-
 import static org.junit.Assert.*;
 import org.junit.Before;
 

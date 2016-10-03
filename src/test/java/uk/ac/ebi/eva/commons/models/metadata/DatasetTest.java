@@ -2,13 +2,6 @@ package uk.ac.ebi.eva.commons.models.metadata;
 
 import org.junit.Test;
 
-import uk.ac.ebi.eva.commons.models.metadata.Analysis;
-import uk.ac.ebi.eva.commons.models.metadata.Array;
-import uk.ac.ebi.eva.commons.models.metadata.Dataset;
-import uk.ac.ebi.eva.commons.models.metadata.FileGenerator;
-import uk.ac.ebi.eva.commons.models.metadata.Run;
-
-import java.util.Date;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.*;

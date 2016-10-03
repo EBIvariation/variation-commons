@@ -1,12 +1,10 @@
 package uk.ac.ebi.eva.commons.models.metadata;
 
+import org.junit.Before;
 import org.junit.Test;
-
-import uk.ac.ebi.eva.commons.models.metadata.Organisation;
 
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.*;
-import org.junit.Before;
 
 
 /**
