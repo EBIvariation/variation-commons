@@ -109,11 +109,7 @@ public class MongoDBObjectToVariantConverterTest {
 
         MongoDBObjectToVariantConverter mongoDBObjectToVariantConverter = new MongoDBObjectToVariantConverter();
         Variant converted = mongoDBObjectToVariantConverter.convert(mongoVariant);
-        assertNotNull(converted.getIds());
-        assertTrue(converted.getIds().isEmpty());
-
-        variant.setIds(new HashSet<String>());
-        assertEquals(variant, converted);
+        assertNull(converted.getIds());
     }
 
     @Test

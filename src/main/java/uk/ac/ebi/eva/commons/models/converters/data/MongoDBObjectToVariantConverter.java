@@ -17,7 +17,7 @@ public class MongoDBObjectToVariantConverter implements Converter<DBObject, Vari
     public Variant convert(DBObject dbObject) {
         DBObjectToVariantConverter converter =
                 new DBObjectToVariantConverter(
-                        new DBObjectToVariantSourceEntryConverter(VariantStorageManager.IncludeSrc.FULL),
+                        new DBObjectToVariantSourceEntryConverter(true),
                         new DBObjectToVariantStatsConverter()
                 );
         return converter.convertToDataModelType(dbObject);
