@@ -9,25 +9,26 @@ import org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantStatsConverte
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.converter.Converter;
+import uk.ac.ebi.eva.commons.models.metadata.VariantEntity;
 
 /**
  * Created by tom on 21/09/16.
  */
-public class MongoDBObjectToVariantConverter implements Converter<DBObject, Variant> {
+public class MongoDBObjectToVariantEntityConverter implements Converter<DBObject, VariantEntity> {
 
-    protected static Logger logger = LoggerFactory.getLogger(MongoDBObjectToVariantConverter.class);
+    protected static Logger logger = LoggerFactory.getLogger(MongoDBObjectToVariantEntityConverter.class);
 
     @Override
-    public Variant convert(DBObject dbObject) {
+    public VariantEntity convert(DBObject dbObject) {
 
-        logger.warn("INSIDE MongoDBObjectToVariantConverter.convert");
+        logger.warn("INSIDE MongoDBObjectToVariantEntityConverter.convert");
 
         DBObjectToVariantConverter converter =
                 new DBObjectToVariantConverter(
                         new DBObjectToVariantSourceEntryConverter(VariantStorageManager.IncludeSrc.NO),
                         new DBObjectToVariantStatsConverter()
                 );
-        return converter.convertToDataModelType(dbObject);
+        return new VariantEntity(converter.convertToDataModelType(dbObject));
     }
 
 }
