@@ -10,6 +10,7 @@ import org.opencb.biodata.models.variant.Variant;
 import org.opencb.biodata.models.variant.VariantSourceEntry;
 import org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantConverter;
 import org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantSourceEntryConverter;
+import uk.ac.ebi.eva.commons.models.metadata.VariantEntity;
 
 import java.util.*;
 
@@ -23,13 +24,13 @@ import static org.junit.Assert.*;
 public class MongoDBObjectToVariantConverterTest {
 
     private BasicDBObject mongoVariant;
-    private Variant variant;
+    private VariantEntity variant;
     protected VariantSourceEntry variantSourceEntry;
 
     @Before
     public void setUp() {
         //Setup variant
-        variant = new Variant("1", 1000, 1000, "A", "C");
+        variant = new VariantEntity("1", 1000, 1000, "A", "C");
         variant.setId("rs666");
 
         //Setup variantSourceEntry
@@ -106,8 +107,8 @@ public class MongoDBObjectToVariantConverterTest {
         mongoVariant.remove(DBObjectToVariantConverter.IDS_FIELD);
 
         MongoDBObjectToVariantEntityConverter mongoDBObjectToVariantConverter = new MongoDBObjectToVariantEntityConverter();
-        Variant converted = mongoDBObjectToVariantConverter.convert(mongoVariant);
-        assertNull(converted.getIds());
+        VariantEntity converted = mongoDBObjectToVariantConverter.convert(mongoVariant);
+        assertTrue(converted.getIds().isEmpty());
     }
 
     @Test

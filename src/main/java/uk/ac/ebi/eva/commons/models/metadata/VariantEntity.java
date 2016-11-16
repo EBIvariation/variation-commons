@@ -22,4 +22,10 @@ public class VariantEntity extends Variant {
         setSourceEntries(variant.getSourceEntries());
     }
 
+    public VariantEntity() {
+    }
+
+    public VariantEntity(String chromosome, int start, int end, String reference, String alternate) {
+        super(chromosome, start, end, reference, alternate);
+    }
 }
