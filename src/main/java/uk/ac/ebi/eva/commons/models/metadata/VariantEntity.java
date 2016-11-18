@@ -3,9 +3,6 @@ package uk.ac.ebi.eva.commons.models.metadata;
 import org.opencb.biodata.models.variant.Variant;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-/**
- * @author Tom Smith
- */
 @Document(collection = "variants")
 public class VariantEntity extends Variant {
 

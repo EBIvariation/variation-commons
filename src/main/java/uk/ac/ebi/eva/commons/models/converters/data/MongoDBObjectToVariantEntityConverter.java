@@ -11,18 +11,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.converter.Converter;
 import uk.ac.ebi.eva.commons.models.metadata.VariantEntity;
 
-/**
- * Created by tom on 21/09/16.
- */
 public class MongoDBObjectToVariantEntityConverter implements Converter<DBObject, VariantEntity> {
 
     protected static Logger logger = LoggerFactory.getLogger(MongoDBObjectToVariantEntityConverter.class);
 
     @Override
     public VariantEntity convert(DBObject dbObject) {
-
-        logger.warn("INSIDE MongoDBObjectToVariantEntityConverter.convert");
-
         DBObjectToVariantConverter converter =
                 new DBObjectToVariantConverter(
                         new DBObjectToVariantSourceEntryConverter(VariantStorageManager.IncludeSrc.NO),

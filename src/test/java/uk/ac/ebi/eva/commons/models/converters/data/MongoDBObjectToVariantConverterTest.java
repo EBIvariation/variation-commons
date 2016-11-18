@@ -16,11 +16,7 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by tom on 21/09/16.
- *
- * Heavily based upon org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantConverterTest
- */
+
 public class MongoDBObjectToVariantConverterTest {
 
     private BasicDBObject mongoVariant;
@@ -89,7 +85,6 @@ public class MongoDBObjectToVariantConverterTest {
         files.add(mongoFile);
         mongoVariant.append("files", files);
 
-        List<String> sampleNames = Lists.newArrayList("NA001", "NA002");
         MongoDBObjectToVariantEntityConverter mongoDBObjectToVariantConverter = new MongoDBObjectToVariantEntityConverter();
         Variant converted = mongoDBObjectToVariantConverter.convert(mongoVariant);
         assertEquals(variant, converted);
