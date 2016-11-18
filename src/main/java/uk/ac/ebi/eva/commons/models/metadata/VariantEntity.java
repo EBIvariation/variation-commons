@@ -3,6 +3,10 @@ package uk.ac.ebi.eva.commons.models.metadata;
 import org.opencb.biodata.models.variant.Variant;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+/**
+ * Subclass of org.opencb.biodata.models.variant.Variant.
+ * Purpose is to allow the specifying of collection name with @Document annotation.
+ */
 @Document(collection = "variants")
 public class VariantEntity extends Variant {
 
