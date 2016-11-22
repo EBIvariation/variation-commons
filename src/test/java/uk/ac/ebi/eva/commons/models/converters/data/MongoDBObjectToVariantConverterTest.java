@@ -16,7 +16,9 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 
-
+/**
+ * Heavily based upon org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantConverterTest
+ */
 public class MongoDBObjectToVariantConverterTest {
 
     private BasicDBObject mongoVariant;
