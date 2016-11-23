@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * Subclass of org.opencb.biodata.models.variant.Variant.
  * Purpose is to allow the specifying of collection name with @Document annotation.
  */
-@Document(collection = "variants")
+@Document(collection = "variants_1_2")
 public class VariantEntity extends Variant {
 
     public VariantEntity(Variant variant) {
