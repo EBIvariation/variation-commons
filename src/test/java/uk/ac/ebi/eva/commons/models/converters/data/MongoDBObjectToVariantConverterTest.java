@@ -4,34 +4,31 @@ import com.google.common.collect.Lists;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 
-import uk.ac.ebi.eva.commons.models.converters.data.MongoDBObjectToVariantConverter;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.opencb.biodata.models.variant.Variant;
 import org.opencb.biodata.models.variant.VariantSourceEntry;
 import org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantConverter;
 import org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantSourceEntryConverter;
+import uk.ac.ebi.eva.commons.models.metadata.VariantEntity;
 
 import java.util.*;
 
 import static org.junit.Assert.*;
 
 /**
- * Created by tom on 21/09/16.
- *
  * Heavily based upon org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantConverterTest
  */
 public class MongoDBObjectToVariantConverterTest {
 
     private BasicDBObject mongoVariant;
-    private Variant variant;
+    private VariantEntity variant;
     protected VariantSourceEntry variantSourceEntry;
 
     @Before
     public void setUp() {
         //Setup variant
-        variant = new Variant("1", 1000, 1000, "A", "C");
+        variant = new VariantEntity("1", 1000, 1000, "A", "C");
         variant.setId("rs666");
 
         //Setup variantSourceEntry
@@ -90,15 +87,14 @@ public class MongoDBObjectToVariantConverterTest {
         files.add(mongoFile);
         mongoVariant.append("files", files);
 
-        List<String> sampleNames = Lists.newArrayList("NA001", "NA002");
-        MongoDBObjectToVariantConverter mongoDBObjectToVariantConverter = new MongoDBObjectToVariantConverter();
+        MongoDBObjectToVariantEntityConverter mongoDBObjectToVariantConverter = new MongoDBObjectToVariantEntityConverter();
         Variant converted = mongoDBObjectToVariantConverter.convert(mongoVariant);
         assertEquals(variant, converted);
     }
 
     @Test
     public void testConvertToDataModelTypeWithoutFiles() {
-        MongoDBObjectToVariantConverter mongoDBObjectToVariantConverter = new MongoDBObjectToVariantConverter();
+        MongoDBObjectToVariantEntityConverter mongoDBObjectToVariantConverter = new MongoDBObjectToVariantEntityConverter();
         Variant converted = mongoDBObjectToVariantConverter.convert(mongoVariant);
         assertEquals(variant, converted);
     }
@@ -107,20 +103,16 @@ public class MongoDBObjectToVariantConverterTest {
     public void testConvertToDataModelTypeNullIds() {
         mongoVariant.remove(DBObjectToVariantConverter.IDS_FIELD);
 
-        MongoDBObjectToVariantConverter mongoDBObjectToVariantConverter = new MongoDBObjectToVariantConverter();
-        Variant converted = mongoDBObjectToVariantConverter.convert(mongoVariant);
-        assertNotNull(converted.getIds());
+        MongoDBObjectToVariantEntityConverter mongoDBObjectToVariantConverter = new MongoDBObjectToVariantEntityConverter();
+        VariantEntity converted = mongoDBObjectToVariantConverter.convert(mongoVariant);
         assertTrue(converted.getIds().isEmpty());
-
-        variant.setIds(new HashSet<String>());
-        assertEquals(variant, converted);
     }
 
     @Test
     public void testConvertToDataModelTypeEmptyIds() {
         mongoVariant.put(DBObjectToVariantConverter.IDS_FIELD, new HashSet<String>());
 
-        MongoDBObjectToVariantConverter mongoDBObjectToVariantConverter = new MongoDBObjectToVariantConverter();
+        MongoDBObjectToVariantEntityConverter mongoDBObjectToVariantConverter = new MongoDBObjectToVariantEntityConverter();
         Variant converted = mongoDBObjectToVariantConverter.convert(mongoVariant);
         assertNotNull(converted.getIds());
         assertTrue(converted.getIds().isEmpty());
