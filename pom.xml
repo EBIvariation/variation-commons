@@ -10,8 +10,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <spring.boot.version>1.2.6.RELEASE</spring.boot.version>
-        <biodata.version>0.4.5</biodata.version>
+        <spring.boot.version>1.4.2.RELEASE</spring.boot.version>
     </properties>
 
     <dependencyManagement>
@@ -65,7 +64,7 @@
         <dependency>
             <groupId>org.opencb.biodata</groupId>
             <artifactId>biodata-models</artifactId>
-            <version>${biodata.version}</version>
+            <version>0.4.5</version>
         </dependency>
 
 
