@@ -17,24 +17,18 @@
 package uk.ac.ebi.eva.commons.models.converters.data;
 
 import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import org.opencb.biodata.models.variant.Variant;
-import org.opencb.biodata.models.variant.VariantSourceEntry;
 import org.opencb.biodata.models.variant.annotation.VariantAnnotation;
-import org.opencb.commons.utils.CryptoUtils;
-import org.opencb.datastore.core.ComplexTypeConverter;
 import org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantAnnotationConverter;
 import org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantSourceEntryConverter;
 import org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantStatsConverter;
-import org.opencb.opencga.storage.mongodb.variant.VariantMongoDBWriter;
+import org.springframework.core.convert.converter.Converter;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  *
@@ -45,7 +39,7 @@ import java.util.Set;
  *      - In a DBObject, both an empty ids array or no ids property, converts to a Variant with an
  *              empty set of ids.
  */
-public class DBObjectToVariantConverter implements ComplexTypeConverter<Variant, DBObject> {
+public class DBObjectToVariantConverter implements Converter<DBObject, Variant> {
 
     public final static String CHROMOSOME_FIELD = "chr";
     public final static String START_FIELD = "start";
@@ -113,10 +107,9 @@ public class DBObjectToVariantConverter implements ComplexTypeConverter<Variant,
         this.variantAnnotationConverter = new DBObjectToVariantAnnotationConverter();
         this.statsConverter = statsConverter;
     }
-    
-    
+
     @Override
-    public Variant convertToDataModelType(DBObject object) {
+    public Variant convert(DBObject object) {
         String chromosome = (String) object.get(CHROMOSOME_FIELD);
         int start = (int) object.get(START_FIELD);
         int end = (int) object.get(END_FIELD);
@@ -169,96 +162,5 @@ public class DBObjectToVariantConverter implements ComplexTypeConverter<Variant,
         return variant;
     }
 
-    @Override
-    public DBObject convertToStorageType(Variant object) {
-        // Attributes easily calculated
-        BasicDBObject mongoVariant = new BasicDBObject("_id", buildStorageId(object))
-//                .append(IDS_FIELD, object.getIds())    //Do not include IDs.
-                .append(TYPE_FIELD, object.getType().name())
-                .append(CHROMOSOME_FIELD, object.getChromosome())
-                .append(START_FIELD, object.getStart())
-                .append(END_FIELD, object.getEnd())
-                .append(LENGTH_FIELD, object.getLength())
-                .append(REFERENCE_FIELD, object.getReference())
-                .append(ALTERNATE_FIELD, object.getAlternate());
-
-        // Internal fields used for query optimization (dictionary named "_at")
-        BasicDBObject _at = new BasicDBObject();
-        mongoVariant.append("_at", _at);
-        
-        // ChunkID (1k and 10k)
-        String chunkSmall = object.getChromosome() + "_" + object.getStart() / VariantMongoDBWriter.CHUNK_SIZE_SMALL + "_" + VariantMongoDBWriter.CHUNK_SIZE_SMALL / 1000 + "k";
-        String chunkBig = object.getChromosome() + "_" + object.getStart() / VariantMongoDBWriter.CHUNK_SIZE_BIG + "_" + VariantMongoDBWriter.CHUNK_SIZE_BIG / 1000 + "k";
-        BasicDBList chunkIds = new BasicDBList(); chunkIds.add(chunkSmall); chunkIds.add(chunkBig);
-        _at.append("chunkIds", chunkIds);
-        
-        // Transform HGVS: Map of lists -> List of map entries
-        BasicDBList hgvs = new BasicDBList();
-        for (Map.Entry<String, Set<String>> entry : object.getHgvs().entrySet()) {
-            for (String value : entry.getValue()) {
-                hgvs.add(new BasicDBObject(TYPE_FIELD, entry.getKey()).append(NAME_FIELD, value));
-            }
-        }
-        mongoVariant.append(HGVS_FIELD, hgvs);
-        
-        // Files
-        if (variantSourceEntryConverter != null) {
-            BasicDBList mongoFiles = new BasicDBList();
-            for (VariantSourceEntry archiveFile : object.getSourceEntries().values()) {
-                mongoFiles.add(variantSourceEntryConverter.convertToStorageType(archiveFile));
-            }
-            mongoVariant.append(FILES_FIELD, mongoFiles);
-        }
-        
-//        // Annotations
-//        if (variantAnnotationConverter != null) {
-//            if (object.getAnnotation() != null) {
-//                DBObject annotation = variantAnnotationConverter.convertToStorageType(object.getAnnotation());
-//                mongoVariant.append(ANNOTATION_FIELD, annotation);
-//            }
-//        }
-
-        // Statistics
-        if (statsConverter != null) {
-            List mongoStats = statsConverter.convertCohortsToStorageType(object.getSourceEntries());
-            mongoVariant.put(STATS_FIELD, mongoStats);
-        }
-        return mongoVariant;
-    }
-
-    public String buildStorageId(Variant v) {
-        return buildStorageId(v.getChromosome(), v.getStart(), v.getReference(), v.getAlternate());
-    }
-
-    public String buildStorageId(String chromosome, int start, String reference, String alternate) {
-        StringBuilder builder = new StringBuilder(chromosome);
-        builder.append("_");
-        builder.append(start);
-        builder.append("_");
-        if (reference.equals("-")) {
-
-        } else if (reference.length() < Variant.SV_THRESHOLD) {
-            builder.append(reference);
-        } else {
-            builder.append(new String(CryptoUtils.encryptSha1(reference)));
-        }
-        
-        builder.append("_");
-
-        if (alternate.equals("-")) {
-
-        } else if (alternate.length() < Variant.SV_THRESHOLD) {
-            builder.append(alternate);
-        } else {
-            builder.append(new String(CryptoUtils.encryptSha1(alternate)));
-        }
-            
-        return builder.toString();
-    }
-
-
-    public static String toShortFieldName(String longFieldName) {
-        return fieldsMap.get(longFieldName);
-    }
 
 }
