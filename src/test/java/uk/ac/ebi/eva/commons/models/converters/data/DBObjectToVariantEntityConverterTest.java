@@ -8,8 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.opencb.biodata.models.variant.Variant;
 import org.opencb.biodata.models.variant.VariantSourceEntry;
-import org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantConverter;
-import org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantSourceEntryConverter;
 import uk.ac.ebi.eva.commons.models.metadata.VariantEntity;
 
 import java.util.*;
@@ -19,7 +17,7 @@ import static org.junit.Assert.*;
 /**
  * Heavily based upon org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantConverterTest
  */
-public class MongoDBObjectToVariantConverterTest {
+public class DBObjectToVariantEntityConverterTest {
 
     private BasicDBObject mongoVariant;
     private VariantEntity variant;
