@@ -20,7 +20,6 @@ import com.mongodb.BasicDBList;
 import com.mongodb.DBObject;
 import org.opencb.biodata.models.variant.Variant;
 import org.opencb.biodata.models.variant.annotation.VariantAnnotation;
-import org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantAnnotationConverter;
 import org.springframework.core.convert.converter.Converter;
 
 import java.util.Collection;
@@ -144,7 +143,7 @@ public class DBObjectToVariantConverter implements Converter<DBObject, Variant> 
         // Annotations
         DBObject mongoAnnotation = (DBObject) object.get(ANNOTATION_FIELD);
         if (mongoAnnotation != null) {
-            VariantAnnotation annotation = variantAnnotationConverter.convertToDataModelType(mongoAnnotation);
+            VariantAnnotation annotation = variantAnnotationConverter.convert(mongoAnnotation);
             annotation.setChromosome(variant.getChromosome());
             annotation.setAlternativeAllele(variant.getAlternate());
             annotation.setReferenceAllele(variant.getReference());
