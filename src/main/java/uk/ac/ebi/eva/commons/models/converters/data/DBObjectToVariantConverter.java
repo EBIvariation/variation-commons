@@ -21,7 +21,6 @@ import com.mongodb.DBObject;
 import org.opencb.biodata.models.variant.Variant;
 import org.opencb.biodata.models.variant.annotation.VariantAnnotation;
 import org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantAnnotationConverter;
-import org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantSourceEntryConverter;
 import org.springframework.core.convert.converter.Converter;
 
 import java.util.Collection;
@@ -137,7 +136,7 @@ public class DBObjectToVariantConverter implements Converter<DBObject, Variant> 
             if (mongoFiles != null) {
                 for (Object o : mongoFiles) {
                     DBObject dbo = (DBObject) o;
-                    variant.addSourceEntry(variantSourceEntryConverter.convertToDataModelType(dbo));
+                    variant.addSourceEntry(variantSourceEntryConverter.convert(dbo));
                 }
             }
         }

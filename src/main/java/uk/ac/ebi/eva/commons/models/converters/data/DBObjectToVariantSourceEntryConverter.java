@@ -19,9 +19,9 @@ package uk.ac.ebi.eva.commons.models.converters.data;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import org.opencb.biodata.models.variant.VariantSourceEntry;
-import org.opencb.datastore.core.ComplexTypeConverter;
 import org.opencb.opencga.storage.core.variant.VariantStorageManager;
 import org.opencb.opencga.storage.mongodb.variant.DBObjectToSamplesConverter;
+import org.springframework.core.convert.converter.Converter;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class DBObjectToVariantSourceEntryConverter implements ComplexTypeConverter<VariantSourceEntry, DBObject> {
+public class DBObjectToVariantSourceEntryConverter implements Converter<DBObject, VariantSourceEntry> {
 
     public final static String FILEID_FIELD = "fid";
     public final static String STUDYID_FIELD = "sid";
@@ -70,7 +70,7 @@ public class DBObjectToVariantSourceEntryConverter implements ComplexTypeConvert
     }
 
     @Override
-    public VariantSourceEntry convertToDataModelType(DBObject object) {
+    public VariantSourceEntry convert(DBObject object) {
         String fileId = (String) object.get(FILEID_FIELD);
         String studyId = (String) object.get(STUDYID_FIELD);
         VariantSourceEntry file = new VariantSourceEntry(fileId, studyId);
@@ -121,68 +121,6 @@ public class DBObjectToVariantSourceEntryConverter implements ComplexTypeConvert
         }
         
         return file;
-    }
-
-    @Override
-    public DBObject convertToStorageType(VariantSourceEntry object) {
-        BasicDBObject mongoFile = new BasicDBObject(FILEID_FIELD, object.getFileId()).append(STUDYID_FIELD, object.getStudyId());
-
-        // Alternate alleles
-        if (object.getSecondaryAlternates().length > 0) {   // assuming secondaryAlternates doesn't contain the primary alternate
-            mongoFile.append(ALTERNATES_FIELD, object.getSecondaryAlternates());
-        }
-
-        // Attributes
-        if (object.getAttributes().size() > 0) {
-            BasicDBObject attrs = null;
-            for (Map.Entry<String, String> entry : object.getAttributes().entrySet()) {
-                Object value = entry.getValue();
-                if (entry.getKey().equals("src")) {
-                    if (VariantStorageManager.IncludeSrc.FULL.equals(includeSrc)) {
-                        try {
-                            value = org.opencb.commons.utils.StringUtils.gzip(entry.getValue());
-                        } catch (IOException ex) {
-                            Logger.getLogger(
-                                    org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantSourceEntryConverter.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    } else if (VariantStorageManager.IncludeSrc.FIRST_8_COLUMNS.equals(includeSrc)) {
-                        String[] fields = entry.getValue().split("\t");
-                        StringBuilder sb = new StringBuilder();
-                        sb.append(fields[0]);
-                        for (int i = 1; i < fields.length && i < 8; i++) {
-                            sb.append("\t").append(fields[i]);
-                        }
-                        try {
-                            value = org.opencb.commons.utils.StringUtils.gzip(sb.toString());
-                        } catch (IOException ex) {
-                            Logger.getLogger(
-                                    org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantSourceEntryConverter.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    } else {
-                        continue;
-                    }
-                }
-
-                if (attrs == null) {
-                    attrs = new BasicDBObject(entry.getKey().replace('.', CHARACTER_TO_REPLACE_DOTS), value);
-                } else {
-                    attrs.append(entry.getKey().replace('.', CHARACTER_TO_REPLACE_DOTS), value);
-                }
-            }
-
-            if (attrs != null) {
-                mongoFile.put(ATTRIBUTES_FIELD, attrs);
-            }
-        }
-
-//        if (samples != null && !samples.isEmpty()) {
-        if (samplesConverter != null) {
-            mongoFile.append(FORMAT_FIELD, object.getFormat()); // Useless field if genotypeCodes are not stored
-            mongoFile.put(SAMPLES_FIELD, samplesConverter.convertToStorageType(object));
-        }
-
-
-        return mongoFile;
     }
 
     public void setIncludeSrc(VariantStorageManager.IncludeSrc includeSrc) {
