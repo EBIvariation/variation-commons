@@ -135,9 +135,9 @@ public class DBObjectToSamplesConverter implements Converter<DBObject, VariantSo
     }
 
     public void setSampleIds(Map<String, Integer> sampleIds) {
-        this.sampleIds = sampleIds;
-        this.idSamples = new HashMap<>(sampleIds.size());
-        for (Map.Entry<String, Integer> entry : sampleIds.entrySet()) {
+        this.sampleIds = new HashMap<String, Integer>(sampleIds);
+        this.idSamples = new HashMap<>(this.sampleIds.size());
+        for (Map.Entry<String, Integer> entry : this.sampleIds.entrySet()) {
             idSamples.put(entry.getValue(), entry.getKey());
         }
         assert sampleIds.size() == idSamples.size();
