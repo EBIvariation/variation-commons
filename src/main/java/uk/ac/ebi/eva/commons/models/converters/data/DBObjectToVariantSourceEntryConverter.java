@@ -20,7 +20,6 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import org.opencb.biodata.models.variant.VariantSourceEntry;
 import org.opencb.opencga.storage.core.variant.VariantStorageManager;
-import org.opencb.opencga.storage.mongodb.variant.DBObjectToSamplesConverter;
 import org.springframework.core.convert.converter.Converter;
 
 import java.io.IOException;
