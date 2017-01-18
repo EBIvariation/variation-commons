@@ -1,3 +1,19 @@
+/*
+ * Copyright 2015-2016 OpenCB
+ * Copyright 2017 EMBL - European Bioinformatics Institute
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package uk.ac.ebi.eva.commons.models.converters.data;
 
 import com.mongodb.BasicDBObject;
@@ -6,15 +22,14 @@ import org.opencb.biodata.models.feature.Genotype;
 import org.opencb.biodata.models.variant.Variant;
 import org.opencb.biodata.models.variant.VariantSourceEntry;
 import org.opencb.biodata.models.variant.stats.VariantStats;
-import org.opencb.datastore.core.ComplexTypeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.convert.converter.Converter;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class DBObjectToVariantStatsConverter implements ComplexTypeConverter<VariantStats, DBObject> {
+public class DBObjectToVariantStatsConverter implements Converter<DBObject, VariantStats> {
 
     public final static String COHORT_ID = "cid";
     public final static String STUDY_ID = "sid";
@@ -32,7 +47,7 @@ public class DBObjectToVariantStatsConverter implements ComplexTypeConverter<Var
             .getLogger(org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantStatsConverter.class);
 
     @Override
-    public VariantStats convertToDataModelType(DBObject object) {
+    public VariantStats convert(DBObject object) {
         // Basic fields
         VariantStats stats = new VariantStats();
         stats.setMaf(((Double) object.get(MAF_FIELD)).floatValue());
@@ -53,26 +68,6 @@ public class DBObjectToVariantStatsConverter implements ComplexTypeConverter<Var
         return stats;
     }
 
-    @Override
-    public DBObject convertToStorageType(VariantStats vs) {
-        // Basic fields
-        BasicDBObject mongoStats = new BasicDBObject(MAF_FIELD, vs.getMaf());
-        mongoStats.append(MGF_FIELD, vs.getMgf());
-        mongoStats.append(MAFALLELE_FIELD, vs.getMafAllele());
-        mongoStats.append(MGFGENOTYPE_FIELD, vs.getMgfGenotype());
-        mongoStats.append(MISSALLELE_FIELD, vs.getMissingAlleles());
-        mongoStats.append(MISSGENOTYPE_FIELD, vs.getMissingGenotypes());
-
-        // Genotype counts
-        BasicDBObject genotypes = new BasicDBObject();
-        for (Map.Entry<Genotype, Integer> g : vs.getGenotypesCount().entrySet()) {
-            String genotypeStr = g.getKey().toString().replace(".", "-1");
-            genotypes.append(genotypeStr, g.getValue());
-        }
-        mongoStats.append(NUMGT_FIELD, genotypes);
-        return mongoStats;
-    }
-
     /**
      * As in mongo, a variant is {studies:[],stats:[]} but the data model is {studies:[stats:[]]} this method doesn't 
      * return anything. Instead, the sourceEntries within the variant is filled.
@@ -83,7 +78,7 @@ public class DBObjectToVariantStatsConverter implements ComplexTypeConverter<Var
         if (cohortsStats instanceof List) {
             List<DBObject> cohortStatsList = ((List) cohortsStats);
             for (DBObject vs : cohortStatsList) {
-                VariantStats variantStats = convertToDataModelType(vs);
+                VariantStats variantStats = convert(vs);
                 if (variant != null) {
                     variantStats.setRefAllele(variant.getReference());
                     variantStats.setAltAllele(variant.getAlternate());
@@ -106,42 +101,6 @@ public class DBObjectToVariantStatsConverter implements ComplexTypeConverter<Var
                 }
             }
         }
-    }
-
-    /**
-     * converts all the cohortstats within the sourceEntries
-     * @param sourceEntries for instance, you can pass in variant.getSourceEntries()
-     * @return list of VariantStats (as DBObjects)
-     */
-    public List<DBObject> convertCohortsToStorageType(Map<String, VariantSourceEntry> sourceEntries) {
-        List<DBObject> cohortsStatsList = new LinkedList<>();
-        for (String studyIdFileId : sourceEntries.keySet()) {
-            VariantSourceEntry sourceEntry = sourceEntries.get(studyIdFileId);
-            List<DBObject> list = convertCohortsToStorageType(sourceEntry.getCohortStats(), sourceEntry.getStudyId(), sourceEntry.getFileId());
-            cohortsStatsList.addAll(list);
-        }
-        return cohortsStatsList;
-    }
-
-    /**
-     * converts just some cohorts stats in one VariantSourceEntry.
-     * @param cohortStats for instance, you can pass in sourceEntry.getCohortStats()
-     * @param studyId of the source entry
-     * @param fileId of the source entry
-     * @return list of VariantStats (as DBObjects)
-     */
-    public List<DBObject> convertCohortsToStorageType(Map<String, VariantStats> cohortStats, String studyId, String fileId) {
-        List<DBObject> cohortsStatsList = new LinkedList<>();
-        VariantStats variantStats;
-        for (Map.Entry<String, VariantStats> variantStatsEntry : cohortStats.entrySet()) {
-            variantStats = variantStatsEntry.getValue();
-            DBObject variantStatsDBObject = convertToStorageType(variantStats);
-            variantStatsDBObject.put(org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantStatsConverter.COHORT_ID, variantStatsEntry.getKey());
-            variantStatsDBObject.put(org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantStatsConverter.STUDY_ID, studyId);
-            variantStatsDBObject.put(org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantStatsConverter.FILE_ID, fileId);
-            cohortsStatsList.add(variantStatsDBObject);
-        }
-        return cohortsStatsList;
     }
 }
 

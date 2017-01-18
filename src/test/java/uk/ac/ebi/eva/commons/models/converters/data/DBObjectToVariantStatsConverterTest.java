@@ -1,7 +1,22 @@
+/*
+ * Copyright 2015-2016 OpenCB
+ * Copyright 2017 EMBL - European Bioinformatics Institute
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package uk.ac.ebi.eva.commons.models.converters.data;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opencb.biodata.models.feature.Genotype;
@@ -39,33 +54,7 @@ public class DBObjectToVariantStatsConverterTest {
     @Test
     public void testConvertToDataModelType() {
         uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantStatsConverter converter = new uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantStatsConverter();
-        VariantStats converted = converter.convertToDataModelType(mongoStats);
+        VariantStats converted = converter.convert(mongoStats);
         assertEquals(stats, converted);
-    }
-    
-    @Test
-    public void testConvertToStorageType() {
-        uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantStatsConverter converter = new uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantStatsConverter();
-        DBObject converted = converter.convertToStorageType(stats);
-        
-        assertEquals(stats.getMaf(), (float) converted.get(
-                uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantStatsConverter.MAF_FIELD), 1e-6);
-        assertEquals(stats.getMgf(), (float) converted.get(
-                uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantStatsConverter.MGF_FIELD), 1e-6);
-        assertEquals(stats.getMafAllele(), converted.get(
-                uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantStatsConverter.MAFALLELE_FIELD));
-        assertEquals(stats.getMgfGenotype(), converted.get(
-                uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantStatsConverter.MGFGENOTYPE_FIELD));
-        
-        assertEquals(stats.getMissingAlleles(), converted.get(
-                uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantStatsConverter.MISSALLELE_FIELD));
-        assertEquals(stats.getMissingGenotypes(), converted.get(
-                uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantStatsConverter.MISSGENOTYPE_FIELD));
-        
-        assertEquals(100, ((DBObject) converted.get(
-                uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantStatsConverter.NUMGT_FIELD)).get("0/0"));
-        assertEquals(50, ((DBObject) converted.get(
-                uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantStatsConverter.NUMGT_FIELD)).get("0/1"));
-        assertEquals(10, ((DBObject) converted.get(DBObjectToVariantStatsConverter.NUMGT_FIELD)).get("1/1"));
     }
 }
