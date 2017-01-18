@@ -26,7 +26,6 @@ import org.opencb.biodata.models.variant.VariantSourceEntry;
 import org.opencb.opencga.storage.core.variant.VariantStorageManager;
 import org.opencb.opencga.storage.mongodb.variant.DBObjectToSamplesConverter;
 import org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantSourceEntryConverter;
-import org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantStatsConverter;
 
 import java.util.Arrays;
 import java.util.HashMap;

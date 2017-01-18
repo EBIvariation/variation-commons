@@ -22,7 +22,6 @@ import org.opencb.biodata.models.variant.Variant;
 import org.opencb.biodata.models.variant.annotation.VariantAnnotation;
 import org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantAnnotationConverter;
 import org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantSourceEntryConverter;
-import org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantStatsConverter;
 import org.springframework.core.convert.converter.Converter;
 
 import java.util.Collection;
