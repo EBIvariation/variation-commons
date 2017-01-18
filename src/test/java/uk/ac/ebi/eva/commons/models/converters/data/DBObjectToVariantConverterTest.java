@@ -16,7 +16,6 @@
  */
 package uk.ac.ebi.eva.commons.models.converters.data;
 
-import com.google.common.collect.Lists;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import org.junit.Before;
@@ -24,6 +23,7 @@ import org.junit.Test;
 import org.opencb.biodata.models.variant.Variant;
 import org.opencb.biodata.models.variant.VariantSourceEntry;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -101,8 +101,9 @@ public class DBObjectToVariantConverterTest {
         BasicDBList files = new BasicDBList();
         files.add(mongoFile);
         mongoVariant.append("files", files);
-
-        List<String> sampleNames = Lists.newArrayList("NA001", "NA002");
+        List<String> sampleNames = new ArrayList<String>();
+        sampleNames.add("NA001");
+        sampleNames.add("NA002");
         DBObjectToVariantConverter converter = new DBObjectToVariantConverter(
                 new DBObjectToVariantSourceEntryConverter(
                         VariantStorageManager.IncludeSrc.FULL,

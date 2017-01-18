@@ -16,13 +16,13 @@
  */
 package uk.ac.ebi.eva.commons.models.converters.data;
 
-import com.google.common.collect.Lists;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.opencb.biodata.models.variant.VariantSourceEntry;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -76,7 +76,10 @@ public class DBObjectToVariantSourceEntryConverterTest {
         sampleIds.put("NA002", 25);
         sampleIds.put("NA003", 35);
 
-        sampleNames = Lists.newArrayList("NA001", "NA002", "NA003");
+        sampleNames = new ArrayList<String>();
+        sampleNames.add("NA001");
+        sampleNames.add("NA002");
+        sampleNames.add("NA003");
 
 
         mongoFileWithIds = new BasicDBObject((this.mongoFile.toMap()));
