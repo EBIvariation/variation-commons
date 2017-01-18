@@ -64,14 +64,14 @@ public class DBObjectToVariantConverterTest {
 
         //Setup mongoVariant
         mongoVariant = new BasicDBObject("_id", "1_1000_A_C")
-                .append(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantConverter.IDS_FIELD, variant.getIds())
-                .append(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantConverter.TYPE_FIELD, variant.getType().name())
-                .append(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantConverter.CHROMOSOME_FIELD, variant.getChromosome())
-                .append(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantConverter.START_FIELD, variant.getStart())
-                .append(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantConverter.END_FIELD, variant.getStart())
-                .append(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantConverter.LENGTH_FIELD, variant.getLength())
-                .append(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantConverter.REFERENCE_FIELD, variant.getReference())
-                .append(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantConverter.ALTERNATE_FIELD, variant.getAlternate());
+                .append(DBObjectToVariantConverter.IDS_FIELD, variant.getIds())
+                .append(DBObjectToVariantConverter.TYPE_FIELD, variant.getType().name())
+                .append(DBObjectToVariantConverter.CHROMOSOME_FIELD, variant.getChromosome())
+                .append(DBObjectToVariantConverter.START_FIELD, variant.getStart())
+                .append(DBObjectToVariantConverter.END_FIELD, variant.getStart())
+                .append(DBObjectToVariantConverter.LENGTH_FIELD, variant.getLength())
+                .append(DBObjectToVariantConverter.REFERENCE_FIELD, variant.getReference())
+                .append(DBObjectToVariantConverter.ALTERNATE_FIELD, variant.getAlternate());
 
         BasicDBList chunkIds = new BasicDBList();
         chunkIds.add("1_1_1k");

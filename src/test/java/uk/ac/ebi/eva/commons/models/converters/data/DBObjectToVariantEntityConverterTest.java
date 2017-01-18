@@ -1,6 +1,5 @@
 package uk.ac.ebi.eva.commons.models.converters.data;
 
-import com.google.common.collect.Lists;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 
