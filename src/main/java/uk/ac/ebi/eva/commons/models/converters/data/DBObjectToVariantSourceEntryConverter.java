@@ -110,7 +110,7 @@ public class DBObjectToVariantSourceEntryConverter implements Converter<DBObject
         
         // Samples
         if (samplesConverter != null && object.containsField(SAMPLES_FIELD)) {
-            VariantSourceEntry fileWithSamplesData = samplesConverter.convertToDataModelType(object);
+            VariantSourceEntry fileWithSamplesData = samplesConverter.convert(object);
             
             // Add the samples to the Java object, combining the data structures
             // with the samples' names and the genotypes
