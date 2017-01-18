@@ -92,7 +92,7 @@ public class DBObjectToVariantSourceEntryConverterTest {
     @Test
     public void testConvertToDataModelTypeWithoutStats() {
         file.getSamplesData().clear(); // TODO Samples can't be tested easily, needs a running Mongo instance
-        List<String> sampleNames = null;
+        List<String> sampleNames = new ArrayList<String>();
 
         // Test with no stats converter provided
         DBObjectToVariantSourceEntryConverter converter = new DBObjectToVariantSourceEntryConverter(
