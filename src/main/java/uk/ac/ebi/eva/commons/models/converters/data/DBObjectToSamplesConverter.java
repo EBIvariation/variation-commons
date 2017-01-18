@@ -119,18 +119,16 @@ public class DBObjectToSamplesConverter implements Converter<DBObject, VariantSo
         return fileWithSamples;
     }
 
-
     public void setSamples(List<String> samples) {
         int i = 0;
-        int size = samples == null? 0 : samples.size();
+        assert samples != null;
+        int size = samples.size();
         sampleIds = new HashMap<>(size);
         idSamples = new HashMap<>(size);
-        if (samples != null) {
-            for (String sample : samples) {
-                sampleIds.put(sample, i);
-                idSamples.put(i, sample);
-                i++;
-            }
+        for (String sample : samples) {
+            sampleIds.put(sample, i);
+            idSamples.put(i, sample);
+            i++;
         }
     }
 
