@@ -16,7 +16,6 @@
 package uk.ac.ebi.eva.commons.models.converters.data;
 
 import com.mongodb.DBObject;
-import org.opencb.opencga.storage.core.variant.VariantStorageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.converter.Converter;

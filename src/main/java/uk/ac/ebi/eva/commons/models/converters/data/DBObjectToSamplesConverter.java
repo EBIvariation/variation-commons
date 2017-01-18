@@ -20,7 +20,6 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import org.opencb.biodata.models.variant.VariantSourceEntry;
 import org.opencb.datastore.core.QueryResult;
-import org.opencb.opencga.storage.core.variant.adaptors.VariantSourceDBAdaptor;
 import org.springframework.core.convert.converter.Converter;
 
 import java.util.HashMap;
@@ -37,7 +36,6 @@ public class DBObjectToSamplesConverter implements Converter<DBObject, VariantSo
 //    private List<String> samples;
     private Map<String, Integer> sampleIds;
     private Map<Integer, String> idSamples;
-    private VariantSourceDBAdaptor sourceDbAdaptor;
     private boolean compressDefaultGenotype;
 
     /**
@@ -48,7 +46,6 @@ public class DBObjectToSamplesConverter implements Converter<DBObject, VariantSo
     public DBObjectToSamplesConverter(boolean compressDefaultGenotype) {
         this.idSamples = null;
         this.sampleIds = null;
-        this.sourceDbAdaptor = null;
         this.compressDefaultGenotype = compressDefaultGenotype;
     }
 
@@ -77,17 +74,6 @@ public class DBObjectToSamplesConverter implements Converter<DBObject, VariantSo
 
     @Override
     public VariantSourceEntry convert(DBObject object) {
-        if (sourceDbAdaptor != null) { // Samples not set as constructor argument, need to query
-            QueryResult samplesBySource = sourceDbAdaptor.getSamplesBySource(
-                    object.get(FILEID_FIELD).toString(), null);
-            if(samplesBySource.getResult().isEmpty()) {
-                System.out.println("DBObjectToSamplesConverter.convert " + samplesBySource);
-                sampleIds = null;
-                idSamples = null;
-            } else {
-                setSamples((List<String>) samplesBySource.getResult().get(0));
-            }
-        }
         
         if (sampleIds == null || sampleIds.isEmpty()) {
             return new VariantSourceEntry(object.get(FILEID_FIELD).toString(), object.get(STUDYID_FIELD).toString());

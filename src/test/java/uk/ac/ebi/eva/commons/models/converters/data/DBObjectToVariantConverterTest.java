@@ -23,7 +23,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.opencb.biodata.models.variant.Variant;
 import org.opencb.biodata.models.variant.VariantSourceEntry;
-import org.opencb.opencga.storage.core.variant.VariantStorageManager;
 
 import java.util.Arrays;
 import java.util.HashMap;
