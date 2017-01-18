@@ -32,18 +32,18 @@ public class DBObjectToVariantStatsConverterTest {
     
     @BeforeClass
     public static void setUpClass() {
-        mongoStats = new BasicDBObject(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantStatsConverter.MAF_FIELD, 0.1);
-        mongoStats.append(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantStatsConverter.MGF_FIELD, 0.01);
-        mongoStats.append(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantStatsConverter.MAFALLELE_FIELD, "A");
-        mongoStats.append(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantStatsConverter.MGFGENOTYPE_FIELD, "A/A");
-        mongoStats.append(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantStatsConverter.MISSALLELE_FIELD, 10);
-        mongoStats.append(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantStatsConverter.MISSGENOTYPE_FIELD, 5);
+        mongoStats = new BasicDBObject(DBObjectToVariantStatsConverter.MAF_FIELD, 0.1);
+        mongoStats.append(DBObjectToVariantStatsConverter.MGF_FIELD, 0.01);
+        mongoStats.append(DBObjectToVariantStatsConverter.MAFALLELE_FIELD, "A");
+        mongoStats.append(DBObjectToVariantStatsConverter.MGFGENOTYPE_FIELD, "A/A");
+        mongoStats.append(DBObjectToVariantStatsConverter.MISSALLELE_FIELD, 10);
+        mongoStats.append(DBObjectToVariantStatsConverter.MISSGENOTYPE_FIELD, 5);
         
         BasicDBObject genotypes = new BasicDBObject();
         genotypes.append("0/0", 100);
         genotypes.append("0/1", 50);
         genotypes.append("1/1", 10);
-        mongoStats.append(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantStatsConverter.NUMGT_FIELD, genotypes);
+        mongoStats.append(DBObjectToVariantStatsConverter.NUMGT_FIELD, genotypes);
         
         stats = new VariantStats(null, -1, null, null, Variant.VariantType.SNV, 0.1f, 0.01f, "A", "A/A", 10, 5, -1, -1, -1, -1, -1);
         stats.addGenotype(new Genotype("0/0"), 100);
@@ -53,7 +53,7 @@ public class DBObjectToVariantStatsConverterTest {
     
     @Test
     public void testConvertToDataModelType() {
-        uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantStatsConverter converter = new uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantStatsConverter();
+        DBObjectToVariantStatsConverter converter = new DBObjectToVariantStatsConverter();
         VariantStats converted = converter.convert(mongoStats);
         assertEquals(stats, converted);
     }

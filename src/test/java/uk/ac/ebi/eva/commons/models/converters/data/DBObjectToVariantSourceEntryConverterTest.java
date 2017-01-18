@@ -59,17 +59,17 @@ public class DBObjectToVariantSourceEntryConverterTest {
         file.addSampleData("NA003", na003);
 
         // MongoDB object
-        mongoFile = new BasicDBObject(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantSourceEntryConverter.FILEID_FIELD, file.getFileId())
-                .append(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantSourceEntryConverter.STUDYID_FIELD, file.getStudyId());
-        mongoFile.append(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantSourceEntryConverter.ATTRIBUTES_FIELD,
+        mongoFile = new BasicDBObject(DBObjectToVariantSourceEntryConverter.FILEID_FIELD, file.getFileId())
+                .append(DBObjectToVariantSourceEntryConverter.STUDYID_FIELD, file.getStudyId());
+        mongoFile.append(DBObjectToVariantSourceEntryConverter.ATTRIBUTES_FIELD,
                          new BasicDBObject("QUAL", "0.01").append("AN", "2")
-                                                          .append("MAX" + uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantSourceEntryConverter.CHARACTER_TO_REPLACE_DOTS + "PROC", "2"));
-        mongoFile.append(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantSourceEntryConverter.FORMAT_FIELD, file.getFormat());
+                                                          .append("MAX" + DBObjectToVariantSourceEntryConverter.CHARACTER_TO_REPLACE_DOTS + "PROC", "2"));
+        mongoFile.append(DBObjectToVariantSourceEntryConverter.FORMAT_FIELD, file.getFormat());
         BasicDBObject genotypeCodes = new BasicDBObject();
         genotypeCodes.append("def", "0/0");
         genotypeCodes.append("0/1", Arrays.asList(1));
         genotypeCodes.append("1/1", Arrays.asList(2));
-        mongoFile.append(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantSourceEntryConverter.SAMPLES_FIELD, genotypeCodes);
+        mongoFile.append(DBObjectToVariantSourceEntryConverter.SAMPLES_FIELD, genotypeCodes);
 
         sampleIds = new HashMap<>();
         sampleIds.put("NA001", 15);
@@ -92,13 +92,13 @@ public class DBObjectToVariantSourceEntryConverterTest {
         List<String> sampleNames = null;
 
         // Test with no stats converter provided
-        uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantSourceEntryConverter converter = new uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantSourceEntryConverter(
+        DBObjectToVariantSourceEntryConverter converter = new DBObjectToVariantSourceEntryConverter(
                 VariantStorageManager.IncludeSrc.FULL, new DBObjectToSamplesConverter(sampleNames));
         VariantSourceEntry converted = converter.convert(mongoFile);
         assertEquals(file, converted);
 
         // Test with a stats converter provided but no stats object
-        converter = new uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantSourceEntryConverter(
+        converter = new DBObjectToVariantSourceEntryConverter(
                 VariantStorageManager.IncludeSrc.FULL, new DBObjectToSamplesConverter(sampleNames));
         converted = converter.convert(mongoFile);
         assertEquals(file, converted);
@@ -106,13 +106,13 @@ public class DBObjectToVariantSourceEntryConverterTest {
 
     @Test
     public void testConvertToDataTypeWithoutStatsWithSampleIds() {
-        uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantSourceEntryConverter converter;
+        DBObjectToVariantSourceEntryConverter converter;
         DBObject convertedMongo;
         VariantSourceEntry convertedFile;
 
 
         // Test with no stats converter provided
-        converter = new uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantSourceEntryConverter(
+        converter = new DBObjectToVariantSourceEntryConverter(
                 VariantStorageManager.IncludeSrc.FULL,
                 new DBObjectToSamplesConverter(true, sampleIds)
         );

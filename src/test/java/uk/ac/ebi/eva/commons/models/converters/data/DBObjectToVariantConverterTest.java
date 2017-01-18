@@ -103,7 +103,7 @@ public class DBObjectToVariantConverterTest {
         mongoVariant.append("files", files);
 
         List<String> sampleNames = Lists.newArrayList("NA001", "NA002");
-        uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantConverter converter = new uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantConverter(
+        DBObjectToVariantConverter converter = new DBObjectToVariantConverter(
                 new DBObjectToVariantSourceEntryConverter(
                         VariantStorageManager.IncludeSrc.FULL,
                         new DBObjectToSamplesConverter(sampleNames)),
@@ -115,17 +115,17 @@ public class DBObjectToVariantConverterTest {
 
     @Test
     public void testConvertToDataModelTypeWithoutFiles() {
-        uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantConverter converter = new uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantConverter();
+        DBObjectToVariantConverter converter = new DBObjectToVariantConverter();
         Variant converted = converter.convert(mongoVariant);
         assertEquals(variant, converted);
     }
 
-    /** @see uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantConverter ids policy   */
+    /** @see DBObjectToVariantConverter ids policy   */
     @Test
     public void testConvertToDataModelTypeNullIds() {
-        mongoVariant.remove(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantConverter.IDS_FIELD);
+        mongoVariant.remove(DBObjectToVariantConverter.IDS_FIELD);
 
-        uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantConverter converter = new uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantConverter();
+        DBObjectToVariantConverter converter = new DBObjectToVariantConverter();
         Variant converted = converter.convert(mongoVariant);
         assertNotNull(converted.getIds());
         assertTrue(converted.getIds().isEmpty());
@@ -134,12 +134,12 @@ public class DBObjectToVariantConverterTest {
         assertEquals(variant, converted);
     }
 
-    /** @see uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantConverter ids policy   */
+    /** @see DBObjectToVariantConverter ids policy   */
     @Test
     public void testConvertToDataModelTypeEmptyIds() {
-        mongoVariant.put(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantConverter.IDS_FIELD, new HashSet<String>());
+        mongoVariant.put(DBObjectToVariantConverter.IDS_FIELD, new HashSet<String>());
 
-        uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantConverter converter = new uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantConverter();
+        DBObjectToVariantConverter converter = new DBObjectToVariantConverter();
         Variant converted = converter.convert(mongoVariant);
         assertNotNull(converted.getIds());
         assertTrue(converted.getIds().isEmpty());
