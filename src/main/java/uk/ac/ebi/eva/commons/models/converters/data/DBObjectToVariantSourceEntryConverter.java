@@ -99,7 +99,7 @@ public class DBObjectToVariantSourceEntryConverter implements Converter<DBObject
                     file.addAttribute("src", org.opencb.commons.utils.StringUtils.gunzip(o));
                 } catch (IOException ex) {
                     Logger.getLogger(
-                            org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantSourceEntryConverter.class.getName()).log(Level.SEVERE, null, ex);
+                            uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantSourceEntryConverter.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }

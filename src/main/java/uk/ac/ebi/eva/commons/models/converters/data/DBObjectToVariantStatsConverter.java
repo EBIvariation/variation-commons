@@ -44,7 +44,7 @@ public class DBObjectToVariantStatsConverter implements Converter<DBObject, Vari
     public final static String NUMGT_FIELD = "numGt";
 
     protected static Logger logger = LoggerFactory
-            .getLogger(org.opencb.opencga.storage.mongodb.variant.DBObjectToVariantStatsConverter.class);
+            .getLogger(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantStatsConverter.class);
 
     @Override
     public VariantStats convert(DBObject object) {
