@@ -87,14 +87,14 @@ public class MongoDBObjectToVariantConverterTest {
         files.add(mongoFile);
         mongoVariant.append("files", files);
 
-        MongoDBObjectToVariantEntityConverter mongoDBObjectToVariantConverter = new MongoDBObjectToVariantEntityConverter();
+        DBObjectToVariantEntityConverter mongoDBObjectToVariantConverter = new DBObjectToVariantEntityConverter();
         Variant converted = mongoDBObjectToVariantConverter.convert(mongoVariant);
         assertEquals(variant, converted);
     }
 
     @Test
     public void testConvertToDataModelTypeWithoutFiles() {
-        MongoDBObjectToVariantEntityConverter mongoDBObjectToVariantConverter = new MongoDBObjectToVariantEntityConverter();
+        DBObjectToVariantEntityConverter mongoDBObjectToVariantConverter = new DBObjectToVariantEntityConverter();
         Variant converted = mongoDBObjectToVariantConverter.convert(mongoVariant);
         assertEquals(variant, converted);
     }
@@ -103,7 +103,7 @@ public class MongoDBObjectToVariantConverterTest {
     public void testConvertToDataModelTypeNullIds() {
         mongoVariant.remove(DBObjectToVariantConverter.IDS_FIELD);
 
-        MongoDBObjectToVariantEntityConverter mongoDBObjectToVariantConverter = new MongoDBObjectToVariantEntityConverter();
+        DBObjectToVariantEntityConverter mongoDBObjectToVariantConverter = new DBObjectToVariantEntityConverter();
         VariantEntity converted = mongoDBObjectToVariantConverter.convert(mongoVariant);
         assertTrue(converted.getIds().isEmpty());
     }
@@ -112,7 +112,7 @@ public class MongoDBObjectToVariantConverterTest {
     public void testConvertToDataModelTypeEmptyIds() {
         mongoVariant.put(DBObjectToVariantConverter.IDS_FIELD, new HashSet<String>());
 
-        MongoDBObjectToVariantEntityConverter mongoDBObjectToVariantConverter = new MongoDBObjectToVariantEntityConverter();
+        DBObjectToVariantEntityConverter mongoDBObjectToVariantConverter = new DBObjectToVariantEntityConverter();
         Variant converted = mongoDBObjectToVariantConverter.convert(mongoVariant);
         assertNotNull(converted.getIds());
         assertTrue(converted.getIds().isEmpty());
