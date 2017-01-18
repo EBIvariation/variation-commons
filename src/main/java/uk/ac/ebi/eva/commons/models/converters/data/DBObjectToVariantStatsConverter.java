@@ -43,8 +43,7 @@ public class DBObjectToVariantStatsConverter implements Converter<DBObject, Vari
     public final static String MISSGENOTYPE_FIELD = "missGt";
     public final static String NUMGT_FIELD = "numGt";
 
-    protected static Logger logger = LoggerFactory
-            .getLogger(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantStatsConverter.class);
+    protected static Logger logger = LoggerFactory.getLogger(DBObjectToVariantStatsConverter.class);
 
     @Override
     public VariantStats convert(DBObject object) {

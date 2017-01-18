@@ -66,8 +66,7 @@ public class DBObjectToVariantAnnotationConverter implements Converter<DBObject,
 
     private final ObjectWriter writer;
 
-    protected static Logger logger = LoggerFactory
-            .getLogger(uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantAnnotationConverter.class);
+    protected static Logger logger = LoggerFactory.getLogger(DBObjectToVariantAnnotationConverter.class);
 
     public DBObjectToVariantAnnotationConverter() {
         ObjectMapper jsonObjectMapper = new ObjectMapper();
