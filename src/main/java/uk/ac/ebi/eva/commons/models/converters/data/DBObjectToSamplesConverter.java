@@ -19,7 +19,6 @@ package uk.ac.ebi.eva.commons.models.converters.data;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import org.opencb.biodata.models.variant.VariantSourceEntry;
-import org.opencb.datastore.core.QueryResult;
 import org.springframework.core.convert.converter.Converter;
 
 import java.util.HashMap;
