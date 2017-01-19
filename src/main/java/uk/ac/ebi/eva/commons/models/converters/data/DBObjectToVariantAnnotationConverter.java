@@ -16,10 +16,6 @@
  */
 package uk.ac.ebi.eva.commons.models.converters.data;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.mongodb.BasicDBList;
 import com.mongodb.DBObject;
 import org.opencb.biodata.models.variant.annotation.ConsequenceType;
@@ -64,16 +60,7 @@ public class DBObjectToVariantAnnotationConverter implements Converter<DBObject,
 
     public static final String CLINICAL_DATA_FIELD = "clinicalData";
 
-    private final ObjectWriter writer;
-
     protected static Logger logger = LoggerFactory.getLogger(DBObjectToVariantAnnotationConverter.class);
-
-    public DBObjectToVariantAnnotationConverter() {
-        ObjectMapper jsonObjectMapper = new ObjectMapper();
-        jsonObjectMapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
-        jsonObjectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        writer = jsonObjectMapper.writer();
-    }
 
     @Override
     public VariantAnnotation convert(DBObject object) {
