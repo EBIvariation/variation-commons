@@ -163,13 +163,6 @@ public class DBObjectToVariantAnnotationConverter implements Converter<DBObject,
         }
         va.setXrefs(xrefs);
 
-
-        //Clinical Data
-        if (object.containsField(CLINICAL_DATA_FIELD)) {
-            DBObject clinicalData = ((DBObject) object.get(CLINICAL_DATA_FIELD));
-            va.setClinicalData(clinicalData.toMap());
-        }
-
         return va;
     }
 
