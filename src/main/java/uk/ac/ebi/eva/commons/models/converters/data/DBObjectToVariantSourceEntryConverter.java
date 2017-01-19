@@ -36,19 +36,14 @@ public class DBObjectToVariantSourceEntryConverter implements Converter<DBObject
     public final static String FORMAT_FIELD = "fm";
     public final static String SAMPLES_FIELD = "samp";
     static final char CHARACTER_TO_REPLACE_DOTS = (char) 163; // <-- £
-    
-    private VariantStorageManager.IncludeSrc includeSrc;
 
     private DBObjectToSamplesConverter samplesConverter;
 
     /**
      * Create a converter between VariantSourceEntry and DBObject entities when 
      * there is no need to provide a list of samples or statistics.
-     *
-     * @param includeSrc       If true, will include and gzip the "src" attribute in the DBObject
      */
-    public DBObjectToVariantSourceEntryConverter(VariantStorageManager.IncludeSrc includeSrc) {
-        this.includeSrc = includeSrc;
+    public DBObjectToVariantSourceEntryConverter() {
         this.samplesConverter = null;
     }
 
@@ -57,13 +52,10 @@ public class DBObjectToVariantSourceEntryConverter implements Converter<DBObject
      * Create a converter from VariantSourceEntry to DBObject entities. A
      * samples converter and a statistics converter may be provided in case those
      * should be processed during the conversion.
-     *  @param includeSrc       If true, will include and gzip the "src" attribute in the DBObject
      * @param samplesConverter The object used to convert the samples. If null, won't convert
      *
      */
-    public DBObjectToVariantSourceEntryConverter(VariantStorageManager.IncludeSrc includeSrc,
-                                                 DBObjectToSamplesConverter samplesConverter) {
-        this(includeSrc);
+    public DBObjectToVariantSourceEntryConverter(DBObjectToSamplesConverter samplesConverter) {
         this.samplesConverter = samplesConverter;
     }
 
@@ -119,9 +111,5 @@ public class DBObjectToVariantSourceEntryConverter implements Converter<DBObject
         }
         
         return file;
-    }
-
-    public void setIncludeSrc(VariantStorageManager.IncludeSrc includeSrc) {
-        this.includeSrc = includeSrc;
     }
 }

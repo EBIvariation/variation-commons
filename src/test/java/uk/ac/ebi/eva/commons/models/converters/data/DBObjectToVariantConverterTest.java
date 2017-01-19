@@ -106,7 +106,6 @@ public class DBObjectToVariantConverterTest {
         sampleNames.add("NA002");
         DBObjectToVariantConverter converter = new DBObjectToVariantConverter(
                 new DBObjectToVariantSourceEntryConverter(
-                        VariantStorageManager.IncludeSrc.FULL,
                         new DBObjectToSamplesConverter(sampleNames)),
                 new DBObjectToVariantStatsConverter());
         Variant converted = converter.convert(mongoVariant);

@@ -96,13 +96,13 @@ public class DBObjectToVariantSourceEntryConverterTest {
 
         // Test with no stats converter provided
         DBObjectToVariantSourceEntryConverter converter = new DBObjectToVariantSourceEntryConverter(
-                VariantStorageManager.IncludeSrc.FULL, new DBObjectToSamplesConverter(sampleNames));
+                new DBObjectToSamplesConverter(sampleNames));
         VariantSourceEntry converted = converter.convert(mongoFile);
         assertEquals(file, converted);
 
         // Test with a stats converter provided but no stats object
         converter = new DBObjectToVariantSourceEntryConverter(
-                VariantStorageManager.IncludeSrc.FULL, new DBObjectToSamplesConverter(sampleNames));
+                new DBObjectToSamplesConverter(sampleNames));
         converted = converter.convert(mongoFile);
         assertEquals(file, converted);
     }
@@ -116,7 +116,6 @@ public class DBObjectToVariantSourceEntryConverterTest {
 
         // Test with no stats converter provided
         converter = new DBObjectToVariantSourceEntryConverter(
-                VariantStorageManager.IncludeSrc.FULL,
                 new DBObjectToSamplesConverter(true, sampleIds)
         );
         convertedFile = converter.convert(mongoFileWithIds);
@@ -124,7 +123,6 @@ public class DBObjectToVariantSourceEntryConverterTest {
 
         // Test with a stats converter provided but no stats object
         converter = new DBObjectToVariantSourceEntryConverter(
-                VariantStorageManager.IncludeSrc.FULL,
                 new DBObjectToSamplesConverter(true, sampleIds)
         );
         convertedFile = converter.convert(mongoFileWithIds);
