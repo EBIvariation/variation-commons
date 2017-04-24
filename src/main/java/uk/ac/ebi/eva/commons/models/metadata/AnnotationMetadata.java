@@ -18,7 +18,7 @@ package uk.ac.ebi.eva.commons.models.metadata;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document
+@Document(collection = "#{mongoCollectionsAnnotationMetadata}")
 public class AnnotationMetadata {
 
     private String id;
