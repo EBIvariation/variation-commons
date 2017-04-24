@@ -69,4 +69,25 @@ public class AnnotationMetadata {
     public void setCacheVersion(String cacheVersion) {
         this.cacheVersion = cacheVersion;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AnnotationMetadata)) return false;
+
+        AnnotationMetadata that = (AnnotationMetadata) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (vepVersion != null ? !vepVersion.equals(that.vepVersion) : that.vepVersion != null) return false;
+        return cacheVersion != null ? cacheVersion.equals(that.cacheVersion) : that.cacheVersion == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (vepVersion != null ? vepVersion.hashCode() : 0);
+        result = 31 * result + (cacheVersion != null ? cacheVersion.hashCode() : 0);
+        return result;
+    }
 }
