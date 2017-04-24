@@ -31,6 +31,23 @@
            </dependency>
        </dependencies>
     </dependencyManagement>
+
+    <repositories>
+        <repository>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>eva-releases</id>
+          <url>https://oss.jfrog.org/artifactory/libs-release</url>
+        </repository>
+        <repository>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <id>eva-snapshots</id>
+          <url>https://oss.jfrog.org/artifactory/libs-snapshot</url>
+        </repository>
+    </repositories>
    
     <dependencies>
         <dependency>
@@ -64,7 +81,7 @@
         <dependency>
             <groupId>uk.ac.ebi.eva</groupId>
             <artifactId>opencga-storage-mongodb</artifactId>
-            <version>0.5.3</version>
+            <version>0.5.4</version>
         </dependency>
 
 
@@ -90,4 +107,14 @@
         </plugins>
     </build>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>eva-snapshots</id>
+            <url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
+        </snapshotRepository>
+        <repository>
+            <id>eva-releases</id>
+            <url>https://oss.jfrog.org/artifactory/oss-release-local</url>
+        </repository>
+    </distributionManagement>
 </project>
