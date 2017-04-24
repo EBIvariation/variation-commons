@@ -31,7 +31,7 @@ public class AnnotationMetadata {
     }
 
     public AnnotationMetadata(String vepVersion, String cacheVersion) {
-        this.id = vepVersion + "_" + cacheVersion;
+        setId(vepVersion, cacheVersion);
         this.vepVersion = vepVersion;
         this.cacheVersion = cacheVersion;
     }
@@ -40,6 +40,18 @@ public class AnnotationMetadata {
         this.id = id;
         this.vepVersion = vepVersion;
         this.cacheVersion = cacheVersion;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setId(String vepVersion, String cacheVersion) {
+        this.id = vepVersion + "_" + cacheVersion;
     }
 
     public String getVepVersion() {
