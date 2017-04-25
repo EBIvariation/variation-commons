@@ -15,8 +15,11 @@
  */
 package uk.ac.ebi.eva.commons.models.metadata;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 /**
  * @author Oliver Gierke
@@ -25,5 +28,15 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @EnableAutoConfiguration
+@PropertySource("classpath:application.properties")
 public class DatabaseTestConfiguration {
+
+    @Value("${mongo.collections.annotation.metadata}")
+    public String mongoCollectionsAnnotationMetadata;
+
+    @Bean
+    public String mongoCollectionsAnnotationMetadata() {
+        return mongoCollectionsAnnotationMetadata;
+    }
+
 }
