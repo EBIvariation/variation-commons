@@ -28,7 +28,7 @@ public class DbObjectToVariantGlobalStatsConverter implements Converter<DBObject
                 (int) statsObject.get(NUMTRANSITIONS_FIELD),
                 (int) statsObject.get(NUMTRANSVERSIONS_FIELD),
                 -1,
-                ((Integer) statsObject.get(MEANQUALITY_FIELD)).floatValue(),
+                ((Double) statsObject.get(MEANQUALITY_FIELD)).floatValue(),
                 null
         );
     }
