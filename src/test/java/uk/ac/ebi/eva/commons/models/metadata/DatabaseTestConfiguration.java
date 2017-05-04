@@ -26,7 +26,7 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource("classpath:application.properties")
 public class DatabaseTestConfiguration {
 
-    @Value("${mongo.collections.annotation.metadata}")
+    @Value("${db.collections.annotation-metadata.name}")
     public String mongoCollectionsAnnotationMetadata;
 
     @Bean
