@@ -21,11 +21,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-/**
- * @author Oliver Gierke
- * @see https://github.com/spring-projects/spring-data-examples
- * @todo Is it possible to move it to the subpackage 'database'?
- */
 @Configuration
 @EnableAutoConfiguration
 @PropertySource("classpath:application.properties")

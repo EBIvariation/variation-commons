@@ -18,13 +18,9 @@ package uk.ac.ebi.eva.commons.models.data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * Created by jmmut on 2016-08-16.
- *
  * This bean represents genomic features, such as genes or transcripts.
  *
  * Its first usage is for persisting information from GTF files into MongoDB.
- * 
- * @author Jose Miguel Mut Lopez &lt;jmmut@ebi.ac.uk&gt;
  */
 @Document(collection="features")
 public class FeatureCoordinates {
