@@ -92,9 +92,7 @@ public class DBObjectToVariantSourceEntryConverterTest {
     @Test
     public void testConvertToDataTypeWithoutStatsWithSampleIds() {
         DBObjectToVariantSourceEntryConverter converter;
-        DBObject convertedMongo;
         VariantSourceEntry convertedFile;
-
 
         // Test with no stats converter provided
         converter = new DBObjectToVariantSourceEntryConverter(
