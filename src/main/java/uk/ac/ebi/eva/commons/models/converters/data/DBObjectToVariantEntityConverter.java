@@ -29,7 +29,7 @@ public class DBObjectToVariantEntityConverter implements Converter<DBObject, Var
     public VariantEntity convert(DBObject dbObject) {
         DBObjectToVariantConverter converter =
                 new DBObjectToVariantConverter(
-                        new DBObjectToVariantSourceEntryConverter(new DBObjectToSamplesConverter(false)),
+                        new DBObjectToVariantSourceEntryConverter(new DBObjectToSamplesConverter()),
                         new DBObjectToVariantStatsConverter()
                 );
         return new VariantEntity(converter.convert(dbObject));
