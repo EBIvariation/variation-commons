@@ -74,9 +74,9 @@ public class DBObjectToSamplesConverter implements Converter<DBObject, VariantSo
     @Override
     public VariantSourceEntry convert(DBObject object) {
         
-        if (sampleIds == null || sampleIds.isEmpty()) {
-            return new VariantSourceEntry(object.get(FILEID_FIELD).toString(), object.get(STUDYID_FIELD).toString());
-        }
+//        if (sampleIds == null || sampleIds.isEmpty()) {
+//            return new VariantSourceEntry(object.get(FILEID_FIELD).toString(), object.get(STUDYID_FIELD).toString());
+//        }
         
         BasicDBObject mongoGenotypes = (BasicDBObject) object.get(SAMPLES_FIELD);
 //        int numSamples = idSamples.size();
@@ -85,34 +85,53 @@ public class DBObjectToSamplesConverter implements Converter<DBObject, VariantSo
         VariantSourceEntry fileWithSamples = new VariantSourceEntry(object.get(FILEID_FIELD).toString(), 
                 object.get(STUDYID_FIELD).toString());
 
+
+
         // Add the samples to the file
-        for (Map.Entry<String, Integer> entry : sampleIds.entrySet()) {
-            Map<String, String> sampleData = new HashMap<>(1);  //size == 1, only will contain GT field
-            fileWithSamples.addSampleData(entry.getKey(), sampleData);
-        }
-
-        // An array of genotypes is initialized with the most common one
-        String mostCommonGtString = mongoGenotypes.getString("def");
-        if(mostCommonGtString != null) {
-            for (Map.Entry<String, Map<String, String>> entry : fileWithSamples.getSamplesData().entrySet()) {
-                entry.getValue().put("GT", mostCommonGtString);
-            }
-        }
-
-        // Loop through the non-most commmon genotypes, and set their value
-        // in the position specified in the array, such as:
-        // "0|1" : [ 41, 311, 342, 358, 881, 898, 903 ]
-        // genotypes[41], genotypes[311], etc, will be set to "0|1"
-        for (Map.Entry<String, Object> dbo : mongoGenotypes.entrySet()) {
-            if (!dbo.getKey().equals("def")) {
-                String genotype = dbo.getKey().replace("-1", ".");
-                for (Integer sampleId : (List<Integer>) dbo.getValue()) {
-                    if (idSamples.containsKey(sampleId)) {
-                        fileWithSamples.getSamplesData().get(idSamples.get(sampleId)).put("GT", genotype);
-                    }
+        for (Object gtToIndexesObj: mongoGenotypes.entrySet()) {
+            Map.Entry<String, Object> gtToIndexes = (Map.Entry) gtToIndexesObj;
+            if (gtToIndexes.getKey().equals("def")) {
+                Map<String, String> sampleData = new HashMap<>(1);
+                sampleData.put("GT", (String) gtToIndexes.getValue());
+                fileWithSamples.addSampleData("def", sampleData);
+            } else {
+                String gtString = (String) gtToIndexes.getKey();
+                List<Integer> indexes = (List<Integer>) gtToIndexes.getValue();
+                for (Integer index : indexes) {
+                    Map<String, String> sampleData = new HashMap<>(1);
+                    sampleData.put("GT", gtString);
+                    fileWithSamples.addSampleData(Integer.toString(index), sampleData);
                 }
             }
         }
+
+//        for (Map.Entry<String, Integer> entry : mongoGenotypes.values()) {
+//            Map<String, String> sampleData = new HashMap<>(1);  //size == 1, only will contain GT field
+//            fileWithSamples.addSampleData(entry.getKey(), sampleData);
+//        }
+//
+//        // An array of genotypes is initialized with the most common one
+//        String mostCommonGtString = mongoGenotypes.getString("def");
+//        if(mostCommonGtString != null) {
+//            for (Map.Entry<String, Map<String, String>> entry : fileWithSamples.getSamplesData().entrySet()) {
+//                entry.getValue().put("GT", mostCommonGtString);
+//            }
+//        }
+//
+//        // Loop through the non-most commmon genotypes, and set their value
+//        // in the position specified in the array, such as:
+//        // "0|1" : [ 41, 311, 342, 358, 881, 898, 903 ]
+//        // genotypes[41], genotypes[311], etc, will be set to "0|1"
+//        for (Map.Entry<String, Object> dbo : mongoGenotypes.entrySet()) {
+//            if (!dbo.getKey().equals("def")) {
+//                String genotype = dbo.getKey().replace("-1", ".");
+//                for (Integer sampleId : (List<Integer>) dbo.getValue()) {
+//                    if (idSamples.containsKey(sampleId)) {
+//                        fileWithSamples.getSamplesData().get(idSamples.get(sampleId)).put("GT", genotype);
+//                    }
+//                }
+//            }
+//        }
 
 
         
