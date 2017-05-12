@@ -40,11 +40,11 @@ public class DBObjectToSamplesConverter implements Converter<DBObject, VariantSo
 
         // Add the samples to the file
         for (Map.Entry<String, Object> gtToIndexes: mongoGenotypes.entrySet()) {
-            if (gtToIndexes.getKey().equals("def")) {
+            String gtString = gtToIndexes.getKey();
+            if (gtString.equals("def")) {
                 fileWithSamples = addGenotypeToVariantSourceEntry(fileWithSamples, "def",
                                                                   (String) gtToIndexes.getValue());
             } else {
-                String gtString = gtToIndexes.getKey();
                 List<Integer> indexes = (List<Integer>) gtToIndexes.getValue();
                 for (Integer index : indexes) {
                     fileWithSamples = addGenotypeToVariantSourceEntry(fileWithSamples, Integer.toString(index),
