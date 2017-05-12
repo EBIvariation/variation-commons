@@ -48,15 +48,15 @@ public class DBObjectToVariantSourceEntryConverterTest {
         file.addAttribute("MAX.PROC", "2");
         file.setFormat("GT");
 
-        Map<String, String> na001 = new HashMap<>();
-        na001.put("GT", "0/0");
-        file.addSampleData("NA001", na001);
+        Map<String, String> def = new HashMap<>();
+        def.put("GT", "0/0");
+        file.addSampleData("def", def);
         Map<String, String> na002 = new HashMap<>();
         na002.put("GT", "0/1");
-        file.addSampleData("NA002", na002);
+        file.addSampleData("25", na002);
         Map<String, String> na003 = new HashMap<>();
         na003.put("GT", "1/1");
-        file.addSampleData("NA003", na003);
+        file.addSampleData("35", na003);
 
         // MongoDB object
         mongoFile = new BasicDBObject(DBObjectToVariantSourceEntryConverter.FILEID_FIELD, file.getFileId())
@@ -91,39 +91,19 @@ public class DBObjectToVariantSourceEntryConverterTest {
 
     @Test
     public void testConvertToDataModelTypeWithoutStats() {
-        file.getSamplesData().clear(); // TODO Samples can't be tested easily, needs a running Mongo instance
-        List<String> sampleNames = new ArrayList<String>();
-
-        // Test with no stats converter provided
-        DBObjectToVariantSourceEntryConverter converter = new DBObjectToVariantSourceEntryConverter(
-                new DBObjectToSamplesConverter(sampleNames));
-        VariantSourceEntry converted = converter.convert(mongoFile);
-        assertEquals(file, converted);
-
-        // Test with a stats converter provided but no stats object
-        converter = new DBObjectToVariantSourceEntryConverter(
-                new DBObjectToSamplesConverter(sampleNames));
-        converted = converter.convert(mongoFile);
-        assertEquals(file, converted);
-    }
-
-    @Test
-    public void testConvertToDataTypeWithoutStatsWithSampleIds() {
         DBObjectToVariantSourceEntryConverter converter;
-        DBObject convertedMongo;
         VariantSourceEntry convertedFile;
 
-
         // Test with no stats converter provided
         converter = new DBObjectToVariantSourceEntryConverter(
-                new DBObjectToSamplesConverter(true, sampleIds)
+                new DBObjectToSamplesConverter()
         );
         convertedFile = converter.convert(mongoFileWithIds);
         assertEquals(file, convertedFile);
 
         // Test with a stats converter provided but no stats object
         converter = new DBObjectToVariantSourceEntryConverter(
-                new DBObjectToSamplesConverter(true, sampleIds)
+                new DBObjectToSamplesConverter()
         );
         convertedFile = converter.convert(mongoFileWithIds);
         assertEquals(file, convertedFile);
