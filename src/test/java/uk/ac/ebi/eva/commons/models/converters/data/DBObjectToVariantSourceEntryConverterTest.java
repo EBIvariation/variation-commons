@@ -90,7 +90,7 @@ public class DBObjectToVariantSourceEntryConverterTest {
     }
 
     @Test
-    public void testConvertToDataTypeWithoutStatsWithSampleIds() {
+    public void testConvertToDataModelTypeWithoutStats() {
         DBObjectToVariantSourceEntryConverter converter;
         VariantSourceEntry convertedFile;
 

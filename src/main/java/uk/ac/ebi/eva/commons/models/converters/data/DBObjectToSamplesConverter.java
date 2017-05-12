@@ -33,20 +33,18 @@ public class DBObjectToSamplesConverter implements Converter<DBObject, VariantSo
 
     @Override
     public VariantSourceEntry convert(DBObject object) {
-        
         BasicDBObject mongoGenotypes = (BasicDBObject) object.get(SAMPLES_FIELD);
 
         VariantSourceEntry fileWithSamples = new VariantSourceEntry(object.get(FILEID_FIELD).toString(), 
                 object.get(STUDYID_FIELD).toString());
 
         // Add the samples to the file
-        for (Object gtToIndexesObj: mongoGenotypes.entrySet()) {
-            Map.Entry<String, Object> gtToIndexes = (Map.Entry) gtToIndexesObj;
+        for (Map.Entry<String, Object> gtToIndexes: mongoGenotypes.entrySet()) {
             if (gtToIndexes.getKey().equals("def")) {
                 fileWithSamples = addGenotypeToVariantSourceEntry(fileWithSamples, "def",
                                                                   (String) gtToIndexes.getValue());
             } else {
-                String gtString = (String) gtToIndexes.getKey();
+                String gtString = gtToIndexes.getKey();
                 List<Integer> indexes = (List<Integer>) gtToIndexes.getValue();
                 for (Integer index : indexes) {
                     fileWithSamples = addGenotypeToVariantSourceEntry(fileWithSamples, Integer.toString(index),
