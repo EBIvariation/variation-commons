@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.ac.ebi.eva.commons.models.data;
 
 import org.opencb.biodata.models.variant.VariantSource;
@@ -21,6 +20,7 @@ import org.opencb.biodata.models.variant.VariantStudy;
 import org.opencb.biodata.models.variant.stats.VariantGlobalStats;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import uk.ac.ebi.eva.commons.models.enums.Aggregation;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -92,7 +92,7 @@ public class VariantSourceEntity {
     private VariantStudy.StudyType type;
 
     @Field(value = AGGREGATION_FIELD)
-    private VariantSource.Aggregation aggregation;
+    private Aggregation aggregation;
 
     @Field(value = DATE_FIELD)
     private Date date;
@@ -110,9 +110,9 @@ public class VariantSourceEntity {
     }
 
     public VariantSourceEntity(String fileId, String fileName, String studyId, String studyName,
-            VariantStudy.StudyType type, VariantSource.Aggregation aggregation,
-            Map<String, Integer> samplesPosition, Map<String, Object> metadata,
-            VariantGlobalStats stats) {
+                               VariantStudy.StudyType type, Aggregation aggregation,
+                               Map<String, Integer> samplesPosition, Map<String, Object> metadata,
+                               VariantGlobalStats stats) {
         this.fileId = fileId;
         this.fileName = fileName;
         this.studyId = studyId;
@@ -123,11 +123,6 @@ public class VariantSourceEntity {
         this.metadata = metadata;
         this.stats = stats;
         this.date = Calendar.getInstance().getTime();
-    }
-
-    public VariantSourceEntity(VariantSource source) {
-        this(source.getFileId(), source.getFileName(), source.getStudyId(), source.getStudyName(), source.getType(),
-                source.getAggregation(), source.getSamplesPosition(), source.getMetadata(), source.getStats());
     }
 
     public String getFileId() {
@@ -170,11 +165,11 @@ public class VariantSourceEntity {
         this.type = type;
     }
 
-    public VariantSource.Aggregation getAggregation() {
+    public Aggregation getAggregation() {
         return aggregation;
     }
 
-    public void setAggregation(VariantSource.Aggregation aggregation) {
+    public void setAggregation(Aggregation aggregation) {
         this.aggregation = aggregation;
     }
 
