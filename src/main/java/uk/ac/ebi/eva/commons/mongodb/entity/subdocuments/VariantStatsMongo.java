@@ -15,17 +15,17 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.entity.subdocuments;
 
-import org.opencb.biodata.models.feature.Genotype;
 import org.springframework.data.mongodb.core.mapping.Field;
-import uk.ac.ebi.eva.commons.core.models.VariantStats;
+import uk.ac.ebi.eva.commons.core.models.IVariantStats;
+import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Mongo database representation of Variant Stats.
+ * Mongo database representation of VariantWithSamplesAndAnnotations Stats.
  */
-public class VariantStatsMongo {
+public class VariantStatsMongo implements IVariantStats {
 
     public final static String COHORT_ID = "cid";
 
@@ -77,25 +77,98 @@ public class VariantStatsMongo {
     @Field(NUMGT_FIELD)
     private Map<String, Integer> numGt;
 
-    public VariantStatsMongo(String studyId, String fileId, String cohortId, VariantStats stats) {
+    VariantStatsMongo() {
+        // Spring empty constructor
+    }
+
+    public VariantStatsMongo(String studyId, String fileId, String cohortId, IVariantStats stats) {
+        this(
+                studyId,
+                fileId,
+                cohortId,
+                stats.getMaf(),
+                stats.getMgf(),
+                stats.getMafAllele(),
+                stats.getMgfGenotype(),
+                stats.getMissingAlleles(),
+                stats.getMissingGenotypes(),
+                buildGenotypes(stats.getGenotypesCount()));
+    }
+
+    public VariantStatsMongo(String studyId, String fileId, String cohortId, float maf, float mgf, String mafAllele,
+                             String mgfGenotype, int missingAlleles, int missingGenotypes, Map<String, Integer> numGt) {
         this.studyId = studyId;
         this.fileId = fileId;
         this.cohortId = cohortId;
-        this.maf = stats.getMaf();
-        this.mgf = stats.getMgf();
-        this.mafAllele = stats.getMafAllele();
-        this.mgfGenotype = stats.getMgfGenotype();
-        this.missingAlleles = stats.getMissingAlleles();
-        this.missingGenotypes = stats.getMissingGenotypes();
-        this.numGt = buildGenotypes(stats.getGenotypesCount());
-
+        this.maf = maf;
+        this.mgf = mgf;
+        this.mafAllele = mafAllele;
+        this.mgfGenotype = mgfGenotype;
+        this.missingAlleles = missingAlleles;
+        this.missingGenotypes = missingGenotypes;
+        this.numGt = new LinkedHashMap<>();
+        if (numGt != null && !numGt.isEmpty()) {
+            this.numGt.putAll(numGt);
+        }
     }
 
-    private Map<String, Integer> buildGenotypes(Map<Genotype, Integer> genotypesCount) {
-        Map<String,Integer> genotypes = new HashMap<>();
+    private static Map<String, Integer> buildGenotypes(Map<Genotype, Integer> genotypesCount) {
+        Map<String, Integer> genotypes = new LinkedHashMap<>();
         for (Map.Entry<Genotype, Integer> g : genotypesCount.entrySet()) {
             String genotypeStr = g.getKey().toString().replace(".", "-1");
             genotypes.put(genotypeStr, g.getValue());
+        }
+        return genotypes;
+    }
+
+    public String getStudyId() {
+        return studyId;
+    }
+
+    public String getFileId() {
+        return fileId;
+    }
+
+    public String getCohortId() {
+        return cohortId;
+    }
+
+    @Override
+    public float getMaf() {
+        return maf;
+    }
+
+    @Override
+    public float getMgf() {
+        return mgf;
+    }
+
+    @Override
+    public String getMafAllele() {
+        return mafAllele;
+    }
+
+    @Override
+    public String getMgfGenotype() {
+        return mgfGenotype;
+    }
+
+    @Override
+    public int getMissingAlleles() {
+        return missingAlleles;
+    }
+
+    @Override
+    public int getMissingGenotypes() {
+        return missingGenotypes;
+    }
+
+    @Override
+    public Map<Genotype, Integer> getGenotypesCount() {
+        Map<Genotype, Integer> genotypes = new LinkedHashMap<>();
+        for (Map.Entry<String, Integer> g : numGt.entrySet()) {
+            String genotypeStr = g.getKey().toString().replace("-1", ".");
+            genotypes.put(new Genotype(genotypeStr), g.getValue());
         }
         return genotypes;
     }

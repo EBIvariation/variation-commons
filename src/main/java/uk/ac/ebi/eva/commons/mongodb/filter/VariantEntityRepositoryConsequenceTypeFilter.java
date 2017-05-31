@@ -18,8 +18,6 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.filter;
 
-import uk.ac.ebi.eva.commons.mongodb.repositories.VariantEntityRepository;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,9 +27,9 @@ public class VariantEntityRepositoryConsequenceTypeFilter extends VariantEntityR
 
     public VariantEntityRepositoryConsequenceTypeFilter(List<String> consequenceType) {
         super(FIELD,
-              consequenceType.stream()
-                             .map(c -> Integer.parseInt(c.replaceAll("[^\\d.]", ""), 10))  // parse integer from string
-                             .collect(Collectors.toList()),
-              VariantEntityRepository.RelationalOperator.IN);
+                consequenceType.stream()
+                        .map(c -> Integer.parseInt(c.replaceAll("[^\\d.]", ""), 10))  // parse integer from string
+                        .collect(Collectors.toList()),
+                RelationalOperator.IN);
     }
 }

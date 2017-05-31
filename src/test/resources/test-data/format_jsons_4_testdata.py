@@ -20,9 +20,10 @@ with open(sys.argv[1], "rt") as infile:
 
         for line in infile:
             json_dict = json.loads(line.rstrip())
-            for idx in range(len(json_dict["files"])):
-                if "src" in json_dict["files"][idx]["attrs"]:
-                    del json_dict["files"][idx]["attrs"]["src"]
+            if "files" in json_dict:
+                for idx in range(len(json_dict["files"])):
+                    if "src" in json_dict["files"][idx]["attrs"]:
+                        del json_dict["files"][idx]["attrs"]["src"]
             outfile.write(json.dumps(json_dict) + ",\n")
 
         outfile.write("]\n}")

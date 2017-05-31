@@ -18,16 +18,15 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.filter;
 
-import org.opencb.biodata.models.variant.Variant;
-import uk.ac.ebi.eva.commons.mongodb.repositories.VariantEntityRepository;
+import uk.ac.ebi.eva.commons.core.models.VariantType;
 
 import java.util.List;
 
-public class VariantEntityRepositoryTypeFilter extends VariantEntityRepositoryFilter<List<Variant.VariantType>> {
+public class VariantEntityRepositoryTypeFilter extends VariantEntityRepositoryFilter<List<VariantType>> {
 
     private static final String FIELD = VariantEntityRepositoryFilter.TYPE_FIELD;
 
-    public VariantEntityRepositoryTypeFilter(List<Variant.VariantType> types) {
-        super(FIELD, types, VariantEntityRepository.RelationalOperator.IN);
+    public VariantEntityRepositoryTypeFilter(List<VariantType> types) {
+        super(FIELD, types, RelationalOperator.IN);
     }
 }

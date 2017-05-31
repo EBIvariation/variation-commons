@@ -18,8 +18,6 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.filter;
 
-import uk.ac.ebi.eva.commons.mongodb.repositories.VariantEntityRepository;
-
 public abstract class VariantEntityRepositoryDoubleFilter extends VariantEntityRepositoryFilter<Double> {
 
     public VariantEntityRepositoryDoubleFilter(String field, String inputValue) {
@@ -30,20 +28,20 @@ public abstract class VariantEntityRepositoryDoubleFilter extends VariantEntityR
         return Double.parseDouble(relation.replaceAll("[^\\d.]", ""));
     }
 
-    protected static VariantEntityRepository.RelationalOperator getRelationalOperatorFromRelation(String relation) {
+    protected static RelationalOperator getRelationalOperatorFromRelation(String relation) {
         String relationalOperatorString = relation.replaceAll("[^<>=]", "");
 
         switch (relationalOperatorString) {
             case "=":
-                return VariantEntityRepository.RelationalOperator.EQ;
+                return RelationalOperator.EQ;
             case ">":
-                return VariantEntityRepository.RelationalOperator.GT;
+                return RelationalOperator.GT;
             case "<":
-                return VariantEntityRepository.RelationalOperator.LT;
+                return RelationalOperator.LT;
             case ">=":
-                return VariantEntityRepository.RelationalOperator.GTE;
+                return RelationalOperator.GTE;
             case "<=":
-                return VariantEntityRepository.RelationalOperator.LTE;
+                return RelationalOperator.LTE;
             default:
                 throw new IllegalArgumentException();
         }

@@ -17,23 +17,52 @@ package uk.ac.ebi.eva.commons.mongodb.entity.subdocuments;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Mongo database representation of HGVS field.
  */
 public class HgvsMongo {
 
-    private static final String TYPE_FIELD = "type";
+    public static final String TYPE_FIELD = "type";
 
-    private static final String NAME_FIELD = "name";
+    public static final String NAME_FIELD = "name";
 
     @Field(TYPE_FIELD)
-    private final String type;
+    private String type;
 
     @Field(NAME_FIELD)
-    private final String name;
+    private String name;
+
+    HgvsMongo(){
+        // Spring default empty constructor
+    }
 
     public HgvsMongo(String type, String name) {
         this.type = type;
         this.name = name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public static Set<HgvsMongo> createHgvsMongo(Map<String, Set<String>> hgvs) {
+        Set<HgvsMongo> hgvsMongo = new HashSet<>();
+        if(hgvs == null || hgvs.isEmpty()){
+            return hgvsMongo;
+        }
+        for (Map.Entry<String, Set<String>> entry : hgvs.entrySet()) {
+            for (String value : entry.getValue()) {
+                hgvsMongo.add(new HgvsMongo(entry.getKey(), value));
+            }
+        }
+        return hgvsMongo;
     }
 }

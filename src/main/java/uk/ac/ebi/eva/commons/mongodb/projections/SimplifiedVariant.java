@@ -17,7 +17,7 @@ package uk.ac.ebi.eva.commons.mongodb.projections;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
-import uk.ac.ebi.eva.commons.core.models.Variant;
+import uk.ac.ebi.eva.commons.core.models.VariantType;
 import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.HgvsMongo;
 import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantAt;
 
@@ -34,8 +34,8 @@ import static uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument.REFERENCE_FIE
 import static uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument.START_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument.TYPE_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument.buildVariantId;
-import static uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument.createHgvsMongo;
 import static uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument.generateAtField;
+import static uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.HgvsMongo.createHgvsMongo;
 
 /**
  * Simplified representation of variant to be used when inserting or updating a variant
@@ -46,7 +46,7 @@ public class SimplifiedVariant {
     private String id;
 
     @Field(TYPE_FIELD)
-    private Variant.VariantType variantType;
+    private VariantType variantType;
 
     @Field(CHROMOSOME_FIELD)
     private String chromosome;
@@ -72,7 +72,7 @@ public class SimplifiedVariant {
     @Field(HGVS_FIELD)
     private Set<HgvsMongo> hgvs;
 
-    public SimplifiedVariant(Variant.VariantType variantType, String chromosome, int start, int end, int length,
+    public SimplifiedVariant(VariantType variantType, String chromosome, int start, int end, int length,
                              String reference, String alternate, Map<String, Set<String>> hgvs) {
         this.id = buildVariantId(chromosome, start, reference, alternate);
         this.variantType = variantType;

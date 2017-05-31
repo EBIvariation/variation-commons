@@ -12,14 +12,14 @@
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the License.
+ * 11limitations under the License.
  */
 package uk.ac.ebi.eva.commons.core.models;
 
-import org.opencb.biodata.models.feature.AllelesCode;
-import org.opencb.biodata.models.feature.Genotype;
-import org.opencb.biodata.models.pedigree.Pedigree;
-import org.opencb.biodata.models.variant.stats.VariantHardyWeinbergStats;
+import uk.ac.ebi.eva.commons.core.models.genotype.AllelesCode;
+import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
+import uk.ac.ebi.eva.commons.core.models.pedigree.Pedigree;
+import uk.ac.ebi.eva.commons.core.models.stats.VariantHardyWeinbergStats;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,13 +33,13 @@ import java.util.Objects;
  * <p>
  * TODO Mendelian errors must be calculated
  */
-public class VariantStats {
+public class VariantStats implements IVariantStats {
 
     private String refAllele;
 
     private String altAllele;
 
-    private Variant.VariantType variantType;
+    private VariantType variantType;
 
     private int refAlleleCount;
 
@@ -85,23 +85,23 @@ public class VariantStats {
 
 
     public VariantStats() {
-        this(null, -1, null, null, Variant.VariantType.SNV, -1, -1, null, null, -1, -1, -1, -1, -1, -1, -1);
+        this(null, -1, null, null, VariantType.SNV, -1, -1, null, null, -1, -1, -1, -1, -1, -1, -1);
     }
 
-    public VariantStats(Variant variant) {
+    public VariantStats(VariantWithSamplesAndAnnotations variant) {
         this(null, -1,
              variant != null ? variant.getReference() : null,
              variant != null ? variant.getAlternate() : null,
-             variant != null ? variant.getType() : Variant.VariantType.SNV,
+             variant != null ? variant.getType() : VariantType.SNV,
              -1, -1, null, null, -1, -1, -1, -1, -1, -1, -1);
     }
 
-    public VariantStats(String referenceAllele, String alternateAllele, Variant.VariantType type) {
+    public VariantStats(String referenceAllele, String alternateAllele, VariantType type) {
         this(null, -1, referenceAllele, alternateAllele, type, -1, -1, null, null, -1, -1, -1, -1, -1, -1, -1);
     }
 
     public VariantStats(String chromosome, int position, String referenceAllele, String alternateAlleles,
-                        Variant.VariantType variantType, float maf, float mgf, String mafAllele, String mgfGenotype,
+                        VariantType variantType, float maf, float mgf, String mafAllele, String mgfGenotype,
                         int numMissingAlleles, int numMissingGenotypes, int numMendelErrors, float percentCasesDominant,
                         float percentControlsDominant, float percentCasesRecessive, float percentControlsRecessive) {
         this.refAllele = referenceAllele;
@@ -145,11 +145,11 @@ public class VariantStats {
         this.altAllele = altAllele;
     }
 
-    public Variant.VariantType getVariantType() {
+    public VariantType getVariantType() {
         return variantType;
     }
 
-    public void setVariantType(Variant.VariantType variantType) {
+    public void setVariantType(VariantType variantType) {
         this.variantType = variantType;
     }
 
@@ -185,6 +185,7 @@ public class VariantStats {
         this.altAlleleFreq = altAlleleFreq;
     }
 
+    @Override
     public String getMafAllele() {
         return mafAllele;
     }
@@ -193,6 +194,7 @@ public class VariantStats {
         this.mafAllele = mafAllele;
     }
 
+    @Override
     public String getMgfGenotype() {
         return mgfGenotype;
     }
@@ -201,6 +203,7 @@ public class VariantStats {
         this.mgfGenotype = mgfGenotype;
     }
 
+    @Override
     public Map<Genotype, Integer> getGenotypesCount() {
         return genotypesCount;
     }
@@ -251,6 +254,7 @@ public class VariantStats {
         this.genotypesFreq = genotypesFreq;
     }
 
+    @Override
     public float getMaf() {
         return maf;
     }
@@ -259,6 +263,7 @@ public class VariantStats {
         this.maf = maf;
     }
 
+    @Override
     public float getMgf() {
         return mgf;
     }
@@ -267,6 +272,7 @@ public class VariantStats {
         this.mgf = mgf;
     }
 
+    @Override
     public int getMissingAlleles() {
         return missingAlleles;
     }
@@ -275,6 +281,7 @@ public class VariantStats {
         this.missingAlleles = missingAlleles;
     }
 
+    @Override
     public int getMissingGenotypes() {
         return missingGenotypes;
     }
@@ -516,9 +523,9 @@ public class VariantStats {
      * @param variants The variants whose statistics will be calculated
      * @param ped Optional pedigree information to calculate some statistics
      */
-    public static void calculateStatsForVariantsList(List<Variant> variants, Pedigree ped) {
-        for (Variant variant : variants) {
-            for (VariantSourceEntry file : variant.getSourceEntries().values()) {
+    public static void calculateStatsForVariantsList(List<VariantWithSamplesAndAnnotations> variants, Pedigree ped) {
+        for (VariantWithSamplesAndAnnotations variant : variants) {
+            for (IVariantSourceEntry file : variant.getSourceEntries()) {
                 VariantStats stats = new VariantStats(variant)
                         .calculate(file.getSamplesData(), file.getAttributes(), ped);
                 file.setStats(stats); // TODO Correct?

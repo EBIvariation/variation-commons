@@ -13,27 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.ac.ebi.eva.commons.mongodb.entity;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "#{mongoCollectionsAnnotationMetadata}")
 public class AnnotationMetadata {
 
+    private static final String VEP_VERSION_FIELD = "vepv";
+
+    private static final String CACHE_VERSION_FIELD = "cachev";
+
+    @Id
     private String id;
 
+    @Field(VEP_VERSION_FIELD)
     private String vepVersion;
 
+    @Field(CACHE_VERSION_FIELD)
     private String cacheVersion;
 
     AnnotationMetadata() {
+        // Empty document constructor for spring-data
     }
 
     public AnnotationMetadata(String vepVersion, String cacheVersion) {
-        setId(vepVersion, cacheVersion);
-        this.vepVersion = vepVersion;
-        this.cacheVersion = cacheVersion;
+        this(generateId(vepVersion, cacheVersion), vepVersion, cacheVersion);
     }
 
     public AnnotationMetadata(String id, String vepVersion, String cacheVersion) {
@@ -50,8 +57,8 @@ public class AnnotationMetadata {
         this.id = id;
     }
 
-    public void setId(String vepVersion, String cacheVersion) {
-        this.id = vepVersion + "_" + cacheVersion;
+    static String generateId(String vepVersion, String cacheVersion) {
+        return vepVersion + "_" + cacheVersion;
     }
 
     public String getVepVersion() {

@@ -18,8 +18,6 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.filter;
 
-import uk.ac.ebi.eva.commons.mongodb.repositories.VariantEntityRepository;
-
 import java.util.List;
 
 public class VariantEntityRepositoryFileFilter extends VariantEntityRepositoryFilter<List<String>> {
@@ -27,6 +25,6 @@ public class VariantEntityRepositoryFileFilter extends VariantEntityRepositoryFi
     private static final String FIELD = VariantEntityRepositoryFilter.FILE_ID_FIELD;
 
     public VariantEntityRepositoryFileFilter(List<String> files) {
-        super(FIELD, files, VariantEntityRepository.RelationalOperator.IN);
+        super(FIELD, files, RelationalOperator.IN);
     }
 }

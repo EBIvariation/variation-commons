@@ -29,10 +29,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.eva.commons.configuration.MongoRepositoryTestConfiguration;
+import uk.ac.ebi.eva.commons.mongodb.services.VariantStudySummaryService;
 import uk.ac.ebi.eva.commons.mongodb.projections.VariantStudySummary;
-import uk.ac.ebi.eva.commons.mongodb.repositories.VariantStudySummaryRepository;
 
-import java.util.Iterator;
 import java.util.List;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
@@ -64,7 +63,7 @@ public class VariantStudySummaryRepositoryTest {
     private ApplicationContext applicationContext;
 
     @Autowired
-    private VariantStudySummaryRepository repository;
+    private VariantStudySummaryService service;
 
     @Rule
     public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb(TEST_DB);
@@ -80,7 +79,7 @@ public class VariantStudySummaryRepositoryTest {
     }
 
     private void assertFindBySecondNameOrId(String studyNameOrId) {
-        VariantStudySummary study = repository.findByStudyNameOrStudyId(studyNameOrId);
+        VariantStudySummary study = service.findByStudyNameOrStudyId(studyNameOrId);
         assertNotNull(study);
         assertEquals(SECOND_STUDY_ID, study.getStudyId());
         assertEquals(SECOND_STUDY_NAME, study.getStudyName());
@@ -89,13 +88,13 @@ public class VariantStudySummaryRepositoryTest {
 
     @Test
     public void testDoesntFindNonPresentStudies() throws Exception {
-        VariantStudySummary study = repository.findByStudyNameOrStudyId("wrongStudyId");
+        VariantStudySummary study = service.findByStudyNameOrStudyId("wrongStudyId");
         assertNull(study);
     }
 
     @Test
     public void testListStudies() {
-        List<VariantStudySummary> uniqueStudies = repository.findBy();
+        List<VariantStudySummary> uniqueStudies = service.findBy();
         assertEquals(EXPECTED_UNIQUE_STUDIES_COUNT, uniqueStudies.size());
     }
 

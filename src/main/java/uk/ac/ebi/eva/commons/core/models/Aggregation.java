@@ -15,6 +15,9 @@
  */
 package uk.ac.ebi.eva.commons.core.models;
 
+/**
+ * Types of aggregations used to load a study
+ */
 public enum Aggregation {
 
     NONE,

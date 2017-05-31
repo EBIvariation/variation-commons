@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Mongo database representation of a Variant AT field.
+ * Mongo database representation of a VariantWithSamplesAndAnnotations AT field.
  */
 public class VariantAt {
 

@@ -19,24 +19,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.MongoDbFactory;
-import org.springframework.data.mongodb.core.convert.CustomConversions;
 import org.springframework.data.mongodb.core.convert.DbRefResolver;
 import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-import uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantEntityConverter;
-import uk.ac.ebi.eva.commons.models.converters.data.DbObjectToVariantGlobalStatsConverter;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Configuration
 @EnableMongoRepositories(basePackages = "uk.ac.ebi.eva.commons.mongodb.repositories")
+@ComponentScan(basePackages = "uk.ac.ebi.eva.commons.mongodb.services")
 public class EvaRepositoriesConfiguration {
 
     @Autowired
@@ -62,14 +58,6 @@ public class EvaRepositoriesConfiguration {
     }
 
     @Bean
-    public CustomConversions customConversions() {
-        List<Converter<?, ?>> converters = new ArrayList<>();
-        converters.add(new DBObjectToVariantEntityConverter());
-        converters.add(new DbObjectToVariantGlobalStatsConverter());
-        return new CustomConversions(converters);
-    }
-
-    @Bean
     public MongoMappingContext mongoMappingContext() {
         MongoMappingContext mappingContext = new MongoMappingContext();
         mappingContext.setApplicationContext(applicationContext);
@@ -81,7 +69,6 @@ public class EvaRepositoriesConfiguration {
         DbRefResolver dbRefResolver = new DefaultDbRefResolver(mongoDbFactory);
         MappingMongoConverter mongoConverter = new MappingMongoConverter(dbRefResolver, mongoMappingContext());
 
-        mongoConverter.setCustomConversions(customConversions());
         mongoConverter.afterPropertiesSet();
 
         // TODO jmmut: see if this works if we want to exclude the _class

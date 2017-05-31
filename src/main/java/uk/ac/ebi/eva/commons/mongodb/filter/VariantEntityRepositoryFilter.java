@@ -19,7 +19,6 @@
 package uk.ac.ebi.eva.commons.mongodb.filter;
 
 import org.springframework.data.mongodb.core.query.Criteria;
-import uk.ac.ebi.eva.commons.mongodb.repositories.VariantEntityRepository;
 
 import java.util.Collection;
 
@@ -47,9 +46,9 @@ public abstract class VariantEntityRepositoryFilter<T> {
 
     private final String field;
     private final T value;
-    private final VariantEntityRepository.RelationalOperator operator;
+    private final RelationalOperator operator;
 
-    public VariantEntityRepositoryFilter(String field, T value, VariantEntityRepository.RelationalOperator operator) {
+    public VariantEntityRepositoryFilter(String field, T value, RelationalOperator operator) {
         this.field = field;
         this.value = value;
         this.operator = operator;

@@ -18,13 +18,13 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.filter;
 
-import org.opencb.biodata.models.variant.Variant;
+import uk.ac.ebi.eva.commons.core.models.VariantType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class for building filters for querying using the VariantEntityRepository
+ * Class for building filters for querying using the VariantRepository
  */
 public class FilterBuilder {
 
@@ -89,7 +89,7 @@ public class FilterBuilder {
         return this;
     }
 
-    public FilterBuilder withVariantTypes(List<Variant.VariantType> types) {
+    public FilterBuilder withVariantTypes(List<VariantType> types) {
         if (types != null && !types.isEmpty()) {
             filters.add(new VariantEntityRepositoryTypeFilter(types));
         }

@@ -19,21 +19,26 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import uk.ac.ebi.eva.commons.core.models.Variant;
+import uk.ac.ebi.eva.commons.core.models.IVariant;
+import uk.ac.ebi.eva.commons.core.models.VariantType;
+import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.AnnotationIndex;
 import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.HgvsMongo;
-import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantAnnotation;
 import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantAt;
 import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantSourceEntryMongo;
 import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantStatsMongo;
 
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * Mongo database representation of a Variant.
+ * Mongo database representation of a VariantWithSamplesAndAnnotations.
+ * <p>
+ * Ids set must never be null.
  */
-@Document
+@Document(collection = "variants_1_2")
 public class VariantDocument {
 
     private static final int CHUNK_SIZE_SMALL = 1000;
@@ -74,7 +79,7 @@ public class VariantDocument {
     private String id;
 
     @Field(TYPE_FIELD)
-    private Variant.VariantType variantType;
+    private VariantType type;
 
     @Field(CHROMOSOME_FIELD)
     private String chromosome;
@@ -110,55 +115,103 @@ public class VariantDocument {
     private Set<VariantStatsMongo> variantStatsMongo;
 
     @Field(ANNOTATION_FIELD)
-    private Set<VariantAnnotation> annotations;
+    private Set<AnnotationIndex> indexedAnnotations;
 
-    VariantDocument(){
+    VariantDocument() {
         // Empty document constructor for spring-data
+        this(
+                null,
+                null,
+                null,
+                -1,
+                -1,
+                -1,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
     }
 
-    public VariantDocument(Variant.VariantType variantType, String chromosome, int start, int end, int length,
-                           String reference, String alternate, Map<String, Set<String>> hgvs, Set<String> ids,
-                           Set<VariantSourceEntryMongo> variantSources) {
-        this.id = buildVariantId(chromosome, start, reference, alternate);
-        this.variantType = variantType;
+    public VariantDocument(IVariant variant) {
+        this(
+                buildVariantId(
+                        variant.getChromosome(),
+                        variant.getStart(),
+                        variant.getReference(),
+                        variant.getAlternate()),
+                variant.getType(),
+                variant.getChromosome(),
+                variant.getStart(),
+                variant.getEnd(),
+                variant.getLength(),
+                variant.getReference(),
+                variant.getAlternate(),
+                generateAtField(variant.getChromosome(), variant.getStart()),
+                HgvsMongo.createHgvsMongo(variant.getHgvs()),
+                variant.getIds(),
+                VariantSourceEntryMongo.createSourceEntries(variant.getSourceEntries()),
+                null,
+                null
+        );
+    }
+
+    public VariantDocument(VariantType type, String chromosome, int start, int end, int length, String reference,
+                           String alternate) {
+        this(
+                buildVariantId(chromosome, start, reference, alternate),
+                type,
+                chromosome,
+                start,
+                end,
+                length,
+                reference,
+                alternate,
+                generateAtField(chromosome, start),
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
+    public VariantDocument(String id, VariantType type, String chromosome, int start, int end, int length,
+                           String reference, String alternate, VariantAt at, Set<HgvsMongo> hgvs, Set<String> ids,
+                           Set<VariantSourceEntryMongo> variantSources, Set<VariantStatsMongo> variantStatsMongo,
+                           Set<AnnotationIndex> indexedAnnotations) {
+        this.id = id;
+        this.type = type;
         this.chromosome = chromosome;
         this.start = start;
         this.end = end;
         this.length = length;
         this.reference = reference;
         this.alternate = alternate;
-        this.at = generateAtField(chromosome, start);
-        if (hgvs != null) {
-            this.hgvs = createHgvsMongo(hgvs);
-        }
-        if (ids != null) {
-            this.ids = new HashSet<>(ids);
-        }
-        if (variantSources != null) {
-            this.variantSources = new HashSet<>(variantSources);
-        }
-    }
-
-    public VariantDocument(Variant.VariantType variantType, String chromosome, int start, int end, int length,
-                           String reference, String alternate, Set<HgvsMongo> hgvs, Set<String> ids,
-                           Set<VariantSourceEntryMongo> variantSources) {
-        this.id = buildVariantId(chromosome, start, reference, alternate);
-        this.variantType = variantType;
-        this.chromosome = chromosome;
-        this.start = start;
-        this.end = end;
-        this.length = length;
-        this.reference = reference;
-        this.alternate = alternate;
-        this.at = generateAtField(chromosome, start);
+        this.at = at;
+        this.hgvs = new LinkedHashSet<>();
         if (hgvs != null && !hgvs.isEmpty()) {
-            this.hgvs = new HashSet<>(hgvs);
+            this.hgvs.addAll(hgvs);
         }
+        this.ids = new LinkedHashSet<>();
         if (ids != null && !ids.isEmpty()) {
-            this.ids = new HashSet<>(ids);
+            this.ids.addAll(ids);
         }
+        this.variantSources = new LinkedHashSet<>();
         if (variantSources != null && !variantSources.isEmpty()) {
-            this.variantSources = new HashSet<>(variantSources);
+            this.variantSources.addAll(variantSources);
+        }
+        this.variantStatsMongo = new LinkedHashSet<>();
+        if (variantStatsMongo != null && !variantStatsMongo.isEmpty()) {
+            this.variantStatsMongo.addAll(variantStatsMongo);
+        }
+        this.indexedAnnotations = new LinkedHashSet<>();
+        if (indexedAnnotations != null && !indexedAnnotations.isEmpty()) {
+            this.indexedAnnotations.addAll(indexedAnnotations);
         }
     }
 
@@ -196,15 +249,78 @@ public class VariantDocument {
         return new VariantAt(chunkSmall, chunkBig);
     }
 
-    public static Set<HgvsMongo> createHgvsMongo(Map<String, Set<String>> hgvs) {
-        Set<HgvsMongo> hgvsMongo = new HashSet<>();
-        for (Map.Entry<String, Set<String>> entry : hgvs.entrySet()) {
-            for (String value : entry.getValue()) {
-                hgvsMongo.add(new HgvsMongo(entry.getKey(), value));
-            }
-        }
-        return hgvsMongo;
-
+    public String getId() {
+        return id;
     }
 
+    public VariantType getType() {
+        return type;
+    }
+
+    public String getChromosome() {
+        return chromosome;
+    }
+
+    public int getStart() {
+        return start;
+    }
+
+    public int getEnd() {
+        return end;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public String getReference() {
+        return reference;
+    }
+
+    public String getAlternate() {
+        return alternate;
+    }
+
+    public VariantAt getAt() {
+        return at;
+    }
+
+    public Map<String, Set<String>> getHgvs() {
+        Map<String, Set<String>> map = new LinkedHashMap<>();
+        for (HgvsMongo item : hgvs) {
+            map.putIfAbsent(item.getType(), new HashSet<>());
+            map.get(item.getType()).add(item.getName());
+        }
+        return map;
+    }
+
+    public Set<String> getIds() {
+        return ids;
+    }
+
+    public Set<VariantSourceEntryMongo> getSourceEntries() {
+        return variantSources;
+    }
+
+    public Set<VariantStatsMongo> getVariantStatsMongo() {
+        return variantStatsMongo;
+    }
+
+    public Set<AnnotationIndex> getIndexedAnnotations() {
+        return indexedAnnotations;
+    }
+
+    public Set<String> getAnnotationIds() {
+        Set<String> ids = new HashSet<>();
+        for (AnnotationIndex indexedAnnotation : indexedAnnotations) {
+            ids.add(AnnotationDocument.buildAnnotationId(
+                    chromosome,
+                    start,
+                    reference,
+                    alternate,
+                    indexedAnnotation.getVepVersion(),
+                    indexedAnnotation.getVepCacheVersion()));
+        }
+        return ids;
+    }
 }
