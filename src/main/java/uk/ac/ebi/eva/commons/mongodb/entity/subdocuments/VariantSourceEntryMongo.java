@@ -16,22 +16,28 @@
 package uk.ac.ebi.eva.commons.mongodb.entity.subdocuments;
 
 import com.mongodb.BasicDBObject;
-import org.opencb.biodata.models.feature.Genotype;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.mapping.Field;
+import uk.ac.ebi.eva.commons.core.models.IVariantSourceEntry;
+import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.core.utils.CompressionHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
- * Mongo database representation of Variant Source entry.
+ * Mongo database representation of VariantWithSamplesAndAnnotations Source entry.
  */
 public class VariantSourceEntryMongo {
+
+    private static final Logger logger = LoggerFactory.getLogger(VariantSourceEntryMongo.class);
 
     public final static char CHARACTER_TO_REPLACE_DOTS = (char) 163; // <-- £
 
@@ -47,6 +53,8 @@ public class VariantSourceEntryMongo {
 
     public final static String SAMPLES_FIELD = "samp";
 
+    public static final String DEFAULT = "def";
+
     @Field(FILEID_FIELD)
     private String fileId;
 
@@ -57,37 +65,53 @@ public class VariantSourceEntryMongo {
     private String[] alternates;
 
     @Field(ATTRIBUTES_FIELD)
-    private BasicDBObject attrs;
+    private BasicDBObject attributes;
 
     @Field(FORMAT_FIELD)
     private String format;
 
     @Field(SAMPLES_FIELD)
-    private BasicDBObject samp;
-
+    private Map<String, Object> samples;
 
     VariantSourceEntryMongo() {
         // Spring empty constructor
     }
 
+    public VariantSourceEntryMongo(IVariantSourceEntry variantSourceEntry) {
+        this(
+                variantSourceEntry.getFileId(),
+                variantSourceEntry.getStudyId(),
+                variantSourceEntry.getSecondaryAlternates(),
+                variantSourceEntry.getAttributes(),
+                variantSourceEntry.getFormat(),
+                variantSourceEntry.getSamplesData()
+        );
+    }
+
     public VariantSourceEntryMongo(String fileId, String studyId, String[] alternates, Map<String, String> attributes) {
+        this(fileId, studyId, alternates, attributes, null, null);
+    }
+
+    public VariantSourceEntryMongo(String fileId, String studyId, String[] alternates, Map<String, String>
+            attributes, String format, List<Map<String, String>> samplesData) {
         this.fileId = fileId;
         this.studyId = studyId;
         if (alternates != null && alternates.length > 0) {
             this.alternates = new String[alternates.length];
             System.arraycopy(alternates, 0, this.alternates, 0, alternates.length);
         }
-        attrs = buildAttributes(attributes);
 
-        this.format = null;
-        this.samp = null;
-    }
+        if (attributes != null) {
+            this.attributes = buildAttributes(attributes);
+        }
 
-    public VariantSourceEntryMongo(String fileId, String studyId, String[] alternates, Map<String, String>
-            attributes, String format, List<Map<String, String>> samplesData) {
-        this(fileId, studyId, alternates, attributes);
-        this.format = format;
-        this.samp = buildSampleData(samplesData);
+        if (format == null || samplesData == null || samplesData.isEmpty()) {
+            this.format = null;
+            this.samples = null;
+        } else {
+            this.format = format;
+            this.samples = buildSampleData(samplesData);
+        }
     }
 
     private BasicDBObject buildSampleData(List<Map<String, String>> samplesData) {
@@ -106,12 +130,11 @@ public class VariantSourceEntryMongo {
         for (Map.Entry<Genotype, List<Integer>> entry : genotypeCodes.entrySet()) {
             String genotypeStr = entry.getKey().toString().replace(".", "-1");
             if (longestList != null && entry.getKey().equals(longestList.getKey())) {
-                mongoSamples.append("def", genotypeStr);
+                mongoSamples.append(DEFAULT, genotypeStr);
             } else {
                 mongoSamples.append(genotypeStr, entry.getValue());
             }
         }
-
         return mongoSamples;
     }
 
@@ -158,7 +181,7 @@ public class VariantSourceEntryMongo {
                 try {
                     value = CompressionHelper.gzip(sb.toString());
                 } catch (IOException ex) {
-                    Logger.getLogger(VariantSourceEntryMongo.class.getName()).log(Level.SEVERE, null, ex);
+                    logger.error("Error compressing src field", ex);
                 }
             }
 
@@ -171,4 +194,79 @@ public class VariantSourceEntryMongo {
         return attrs;
     }
 
+    public String getFileId() {
+        return fileId;
+    }
+
+    public String getStudyId() {
+        return studyId;
+    }
+
+    public String[] getSecondaryAlternates() {
+        return alternates;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public Map<String, String> getAttributes() {
+        Map<String, String> temp = new HashMap<>();
+        if (attributes == null) {
+            return temp;
+        }
+        for (String key : attributes.keySet()) {
+            if (key.equals("src")) {
+                try {
+                    temp.put(key.replace(CHARACTER_TO_REPLACE_DOTS, '.'),
+                            CompressionHelper.unGzip((byte[]) attributes.get(key)));
+                } catch (IOException e) {
+                    logger.error("Error decompressing src field", e);
+                }
+            } else {
+                temp.put(key.replace(CHARACTER_TO_REPLACE_DOTS, '.'), (String) attributes.get(key));
+            }
+        }
+        return temp;
+    }
+
+    public Map<String, Object> getSamples() {
+        return samples;
+    }
+
+    public List<Map<String, String>> deflateSamplesData(int totalSamples) {
+        List<Map<String, String>> temp = new ArrayList<>();
+        if (totalSamples == 0 || samples == null) {
+            return temp;
+        }
+        HashMap<String, String> defaultValue = new HashMap<>();
+        defaultValue.put("GT", (String) samples.get(DEFAULT));
+        for (int i = 0; i < totalSamples; i++) {
+            temp.add(defaultValue);
+        }
+        for (String key : samples.keySet()) {
+            if (key.equals(DEFAULT)) {
+                continue;
+            }
+            HashMap<String, String> value = new HashMap<>();
+            value.put("GT", key);
+            for (int position : (ArrayList<Integer>) samples.get(key)) {
+                temp.set(position, value);
+            }
+        }
+        return temp;
+    }
+
+    /**
+     * Creates a new set of {@link VariantSourceEntryMongo} generated from a collection of {@link IVariantSourceEntry}
+     *
+     * @param sourceEntries
+     * @return
+     * @throws NullPointerException if collection is null
+     */
+    public static Set<VariantSourceEntryMongo> createSourceEntries(Collection<? extends IVariantSourceEntry>
+                                                                           sourceEntries) {
+        return sourceEntries.stream().map(a -> new VariantSourceEntryMongo(a)).collect(Collectors.toSet
+                ());
+    }
 }

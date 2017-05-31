@@ -13,14 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.ac.ebi.eva.commons.mongodb.projections;
 
 /**
- * Subset of fields from VariantSourceEntity. This is used to make an automatic MongoDB projection in
- * {@link uk.ac.ebi.eva.commons.mongodb.repositories.VariantStudySummaryRepository}
+ * Subset of fields from VariantSourceDocument. This is used to make an automatic MongoDB projection in
+ * {@link uk.ac.ebi.eva.commons.mongodb.services.VariantStudySummaryService}
  */
 public class VariantStudySummary implements Comparable {
+
+    public static final String STUDY_ID = "studyId";
+
+    public static final String STUDY_NAME = "studyName";
+
+    public static final String FILES_COUNT = "filesCount";
+
+    public static final String ID = "_id.";
 
     private String studyId;
 

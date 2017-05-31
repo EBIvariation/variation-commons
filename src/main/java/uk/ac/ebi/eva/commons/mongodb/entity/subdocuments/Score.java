@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.ac.ebi.eva.commons.mongodb.entity.subdocuments;
 
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -32,6 +31,10 @@ public class Score {
 
     @Field(value = SCORE_DESCRIPTION_FIELD)
     private String description;
+
+    Score() {
+        // Spring empty constructor
+    }
 
     public Score(Double score, String description) {
         this.score = score;

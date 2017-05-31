@@ -18,8 +18,6 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.filter;
 
-import uk.ac.ebi.eva.commons.mongodb.repositories.VariantEntityRepository;
-
 import java.util.List;
 
 public class VariantEntityRepositoryAlternateFilter extends VariantEntityRepositoryFilter<List<String>> {
@@ -27,6 +25,6 @@ public class VariantEntityRepositoryAlternateFilter extends VariantEntityReposit
     private static final String FIELD = VariantEntityRepositoryFilter.ALT_FIELD;
 
     public VariantEntityRepositoryAlternateFilter(List<String> alternates) {
-        super(FIELD, alternates, VariantEntityRepository.RelationalOperator.IN);
+        super(FIELD, alternates, RelationalOperator.IN);
     }
 }

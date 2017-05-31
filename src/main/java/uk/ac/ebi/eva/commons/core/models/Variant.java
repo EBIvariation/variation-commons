@@ -1,6 +1,5 @@
 /*
- * Copyright 2014-2016 EMBL - European Bioinformatics Institute
- * Copyright 2015 OpenCB
+ * Copyright 2017 EMBL - European Bioinformatics Institute
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,45 +15,21 @@
  */
 package uk.ac.ebi.eva.commons.core.models;
 
-import uk.ac.ebi.eva.commons.mongodb.entity.Annotation;
-
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
-/**
- * A mutation in the genome, defined as a change from a reference to an alternate allele in a certain position of
- * said genome.
- */
-public class Variant {
+public abstract class Variant implements IVariant{
 
     public static final int SV_THRESHOLD = 50;
 
     /**
-     * Type of variation, which depends mostly on its length.
-     * <ul>
-     * <li>SNVs involve a single nucleotide, without changes in length</li>
-     * <li>MNVs involve multiple nucleotides, without changes in length</li>
-     * <li>Indels are insertions or deletions of less than SV_THRESHOLD (50) nucleotides</li>
-     * <li>Structural variations are large changes of more than SV_THRESHOLD nucleotides</li>
-     * <li>Copy-number variations alter the number of copies of a region</li>
-     * </ul>
-     */
-    public enum VariantType {
-        SNV, MNV, INDEL, SV, CNV
-    }
-
-    /**
-     * Type of variation: single nucleotide, indel or structural variation.
-     */
-    private VariantType type;
-
-    /**
      * Chromosome where the genomic variation occurred.
      */
-    private String chromosome;
+    private final String chromosome;
 
     /**
      * Position where the genomic variation starts.
@@ -66,7 +41,7 @@ public class Variant {
      * deleted nucleotide is in position 6, the start is position 6</li>
      * </ul>
      */
-    private int start;
+    private final int start;
 
     /**
      * Position where the genomic variation ends.
@@ -78,93 +53,66 @@ public class Variant {
      * deleted nucleotide is in position 9, the end is position 9</li>
      * </ul>
      */
-    private int end;
-
-    /**
-     * Length of the genomic variation, which depends on the variation type.
-     * <ul>
-     * <li>SNVs have a length of 1 nucleotide</li>
-     * <li>Indels have the length of the largest allele</li>
-     * </ul>
-     */
-    private int length;
+    private final int end;
 
     /**
      * Reference allele.
      */
-    private String reference;
+    private final String reference;
 
     /**
      * Alternate allele.
      */
-    private String alternate;
+    private final String alternate;
 
     /**
      * Set of identifiers used for this genomic variation.
      */
-    private Set<String> ids;
+    private final Set<String> ids;
 
     /**
      * Unique identifier following the HGVS nomenclature.
      */
-    private Map<String, Set<String>> hgvs;
+    private final Map<String, Set<String>> hgvs;
 
     /**
      * Information specific to each file the variant was read from, such as samples or statistics.
      */
-    private Map<String, VariantSourceEntry> sourceEntries;
-
-    /**
-     * Annotations of the genomic variation.
-     */
-    private Set<Annotation> annotations;
-
-
-    public Variant() {
-        this("", -1, -1, "", "");
-    }
+    private final Map<String, IVariantSourceEntry> sourceEntries;
 
     public Variant(String chromosome, int start, int end, String reference, String alternate) {
         if (start > end && !(reference.equals("-"))) {
             throw new IllegalArgumentException("End position must be greater than the start position");
         }
 
-        this.chromosome = chromosome;
+        this.chromosome = (chromosome != null) ? chromosome : "";
         this.start = start;
         this.end = end;
         this.reference = (reference != null) ? reference : "";
         this.alternate = (alternate != null) ? alternate : "";
 
-        this.length = Math.max(this.reference.length(), this.alternate.length());
-        this.resetType();
-
         this.ids = new HashSet<>();
         this.hgvs = new HashMap<>();
-        if (this.type == VariantType.SNV) { // Generate HGVS code only for SNVs
+        if (getType() == VariantType.SNV) { // Generate HGVS code only for SNVs
             Set<String> hgvsCodes = new HashSet<>();
             hgvsCodes.add(chromosome + ":g." + start + reference + ">" + alternate);
             this.hgvs.put("genomic", hgvsCodes);
         }
+        sourceEntries = new HashMap<>();
+    }
 
-        this.sourceEntries = new HashMap<>();
+    public int getLength() {
+        return Math.max(this.reference.length(), this.alternate.length());
     }
 
     public VariantType getType() {
-        return type;
-    }
-
-    public void setType(VariantType type) {
-        this.type = type;
-    }
-
-    private void resetType() {
-        if (this.reference.length() == this.alternate.length()) {
-            if (this.length > 1) {
-                this.type = VariantType.MNV;
+        if (reference.length() == alternate.length()) {
+            if (getLength() > 1) {
+                return VariantType.MNV;
             } else {
-                this.type = VariantType.SNV;
+                return VariantType.SNV;
             }
-        } else if (this.length <= SV_THRESHOLD) {
+        } else if (getLength() <= SV_THRESHOLD) {
             /*
             * 3 possibilities for being an INDEL:
             * - The value of the ALT field is <DEL> or <INS>
@@ -172,9 +120,9 @@ public class Variant {
             * - The REF allele is . but the ALT is not
             * - The REF field length is different than the ALT field length
             */
-            this.type = VariantType.INDEL;
+            return VariantType.INDEL;
         } else {
-            this.type = VariantType.SV;
+            return VariantType.SV;
         }
     }
 
@@ -182,74 +130,33 @@ public class Variant {
         return chromosome;
     }
 
-    public final void setChromosome(String chromosome) {
-        if (chromosome == null || chromosome.length() == 0) {
-            throw new IllegalArgumentException("Chromosome must not be empty");
-        }
-    }
-
     public int getStart() {
         return start;
-    }
-
-    public final void setStart(int start) {
-        if (start < 0) {
-            throw new IllegalArgumentException("Start must be positive");
-        }
-        this.start = start;
     }
 
     public int getEnd() {
         return end;
     }
 
-    public final void setEnd(int end) {
-        if (end < 0) {
-            throw new IllegalArgumentException("End must be positive");
-        }
-        this.end = end;
-    }
-
-    public int getLength() {
-        return length;
-    }
-
-    public void setLength(int length) {
-        this.length = length;
-    }
-
     public String getReference() {
         return reference;
-    }
-
-    public void setReference(String reference) {
-        this.reference = reference;
-        this.length = Math.max(reference.length(), alternate.length());
     }
 
     public String getAlternate() {
         return alternate;
     }
 
-    public void setAlternate(String alternate) {
-        this.alternate = alternate;
-        this.length = Math.max(reference.length(), alternate.length());
-    }
-
-    public Set<String> getIds() {
-        return ids;
+    public void addId(String id) {
+        this.ids.add(id);
     }
 
     public void setIds(Set<String> ids) {
-        this.ids = ids;
+        this.ids.clear();
+        this.ids.addAll(ids);
     }
 
-    public Map<String, Set<String>> getHgvs() {
-        return hgvs;
-    }
-
-    public Set<String> getHgvs(String type) {
-        return hgvs.get(type);
+    public Set<String> getIds() {
+        return Collections.unmodifiableSet(ids);
     }
 
     public boolean addHgvs(String type, String value) {
@@ -260,33 +167,13 @@ public class Variant {
         return listByType.add(value);
     }
 
-    public Map<String, VariantSourceEntry> getSourceEntries() {
-        return sourceEntries;
-    }
-
-    public VariantSourceEntry getSourceEntry(String fileId, String studyId) {
-        return sourceEntries.get(composeId(studyId, fileId));
-    }
-
-    public void setSourceEntries(Map<String, VariantSourceEntry> sourceEntries) {
-        this.sourceEntries = sourceEntries;
-    }
-
-    public void addSourceEntry(VariantSourceEntry sourceEntry) {
-        this.sourceEntries.put(composeId(sourceEntry.getStudyId(), sourceEntry.getFileId()), sourceEntry);
-    }
-
-    public VariantStats getStats(String studyId, String fileId) {
-        VariantSourceEntry file = sourceEntries.get(composeId(studyId, fileId));
-        if (file == null) {
-            return null;
-        }
-        return file.getStats();
+    public Map<String, Set<String>> getHgvs() {
+        return Collections.unmodifiableMap(hgvs);
     }
 
     @Override
     public String toString() {
-        return "Variant{" +
+        return "VariantWithSamplesAndAnnotations{" +
                 "chromosome='" + chromosome + '\'' +
                 ", position=" + start + "-" + end +
                 ", reference='" + reference + '\'' +
@@ -295,60 +182,59 @@ public class Variant {
                 '}';
     }
 
+    public void addSourceEntry(IVariantSourceEntry sourceEntry) {
+        this.sourceEntries.put(getSourceEntryIndex(sourceEntry.getStudyId(), sourceEntry.getFileId()), sourceEntry);
+    }
+
+    public void addSourceEntries(Collection<? extends IVariantSourceEntry> variantSourceEntries){
+        this.sourceEntries.clear();
+        variantSourceEntries.forEach(variantSourceEntry ->
+                sourceEntries.put(getSourceEntryIndex(variantSourceEntry),variantSourceEntry));
+    }
+
+    private String getSourceEntryIndex(IVariantSourceEntry variantSourceEntries) {
+        return getSourceEntryIndex(variantSourceEntries.getStudyId(), variantSourceEntries.getFileId());
+    }
+
+    private String getSourceEntryIndex(String studyId, String fileId) {
+        return studyId + "_" + fileId;
+    }
+
+    public Collection<? extends IVariantSourceEntry> getSourceEntries() {
+        return Collections.unmodifiableCollection(sourceEntries.values());
+    }
+
+    public IVariantSourceEntry getSourceEntry(String fileId, String studyId) {
+        return sourceEntries.get(getSourceEntryIndex(studyId, fileId));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Variant)) return false;
+
+        Variant variant = (Variant) o;
+
+        if (start != variant.start) return false;
+        if (end != variant.end) return false;
+        if (!chromosome.equals(variant.chromosome)) return false;
+        if (!reference.equals(variant.reference)) return false;
+        if (!alternate.equals(variant.alternate)) return false;
+        if (!ids.equals(variant.ids)) return false;
+        if (!hgvs.equals(variant.hgvs)) return false;
+        return sourceEntries.equals(variant.sourceEntries);
+    }
+
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 37 * hash + Objects.hashCode(this.chromosome);
-        hash = 37 * hash + this.start;
-        hash = 37 * hash + this.end;
-        hash = 37 * hash + Objects.hashCode(this.reference);
-        hash = 37 * hash + Objects.hashCode(this.alternate);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Variant other = (Variant) obj;
-        if (!Objects.equals(this.chromosome, other.chromosome)) {
-            return false;
-        }
-        if (this.start != other.start) {
-            return false;
-        }
-        if (this.end != other.end) {
-            return false;
-        }
-        if (!Objects.equals(this.reference, other.reference)) {
-            return false;
-        }
-        if (!Objects.equals(this.alternate, other.alternate)) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * As the clone in the classes Map, Set and Annotation doesn't exist, this is a shallow clone.
-     *
-     * @return a shallow copy of this variant.
-     */
-    public Variant clone() {
-        Variant variant = new Variant(chromosome, start, end, reference, alternate);
-        variant.setIds(this.getIds());
-        variant.setSourceEntries(this.getSourceEntries());
-        variant.setType(this.getType());
-        variant.hgvs = variant.getHgvs();
-        variant.setLength(this.getLength());
-        return variant;
-    }
-
-    private String composeId(String studyId, String fileId) {
-        return studyId + "_" + fileId;
+        int result = chromosome.hashCode();
+        result = 31 * result + start;
+        result = 31 * result + end;
+        result = 31 * result + reference.hashCode();
+        result = 31 * result + alternate.hashCode();
+        result = 31 * result + ids.hashCode();
+        result = 31 * result + hgvs.hashCode();
+        result = 31 * result + sourceEntries.hashCode();
+        return result;
     }
 }
