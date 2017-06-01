@@ -31,8 +31,7 @@ import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @Configuration
-@EnableMongoRepositories(basePackages = "uk.ac.ebi.eva.commons.mongodb.repositories")
-@Import({MongoFactoriesConfiguration.class})
+@Import({EvaRepositoriesConfiguration.class})
 @PropertySource({"classpath:eva.properties"})
 public class MongoRepositoryTestConfiguration {
 
