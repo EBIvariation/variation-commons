@@ -27,6 +27,7 @@ import org.springframework.data.mongodb.core.convert.DbRefResolver;
 import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import uk.ac.ebi.eva.commons.models.converters.data.DBObjectToVariantEntityConverter;
 import uk.ac.ebi.eva.commons.models.converters.data.DbObjectToVariantGlobalStatsConverter;
 
@@ -35,7 +36,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-public class MongoFactoriesConfiguration {
+@EnableMongoRepositories(basePackages = "uk.ac.ebi.eva.commons.mongodb.repositories")
+public class EvaRepositoriesConfiguration {
 
     @Autowired
     private ApplicationContext applicationContext;
