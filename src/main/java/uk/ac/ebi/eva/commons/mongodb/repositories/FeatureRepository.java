@@ -26,7 +26,6 @@ import java.util.List;
  * This interface is used by Spring to create the query methods for features.
  * Spring creates the implementation automatically by looking at the method name.
  *
- * @author Jose Miguel Mut Lopez &lt;jmmut@ebi.ac.uk&gt;
  */
 public interface FeatureRepository extends MongoRepository<FeatureCoordinates, String> {
 
