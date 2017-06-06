@@ -23,26 +23,31 @@ import org.opencb.biodata.models.variant.Variant;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
-
 import uk.ac.ebi.eva.commons.models.metadata.VariantEntity;
 import uk.ac.ebi.eva.commons.mongodb.filter.VariantEntityRepositoryFilter;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Spring MongoRepository for VariantEntity class.
- *
+ * <p>
  * Methods include querying by id, and by region.
  */
 public interface VariantEntityRepository extends MongoRepository<VariantEntity, String>, VariantEntityRepositoryCustom {
 
-    enum RelationalOperator { EQ, GT, LT, GTE, LTE, IN }
+    enum RelationalOperator {EQ, GT, LT, GTE, LTE, IN}
 
     List<VariantEntity> findByIdsAndComplexFilters(String id, List<VariantEntityRepositoryFilter> filters,
                                                    List<String> exclude,
                                                    Pageable pageable);
 
     Long countByIdsAndComplexFilters(String id, List<VariantEntityRepositoryFilter> filters);
+
+    List<VariantEntity> findByGenesAndComplexFilters(List<String> geneIds, List<VariantEntityRepositoryFilter> filters,
+                                                     List<String> exclude, Pageable pageable);
+
+    Long countByGenesAndComplexFilters(List<String> geneIds, List<VariantEntityRepositoryFilter> filters);
 
     List<VariantEntity> findByRegionsAndComplexFilters(List<Region> regions,
                                                        List<VariantEntityRepositoryFilter> filters,
@@ -54,7 +59,16 @@ public interface VariantEntityRepository extends MongoRepository<VariantEntity, 
     List<VariantEntity> findByChromosomeAndStartAndReferenceAndAlternate(String chromosome, int start,
                                                                          String reference, String alternate);
 
-    List<String> findDistinctChromosomes();
+    @Query("{'chr': ?0, 'start': ?1, 'ref': ?2, 'alt': ?3, 'files.sid': {$in : ?4}}")
+    List<VariantEntity> findByChromosomeAndStartAndReferenceAndAlternateAndStudyIn(String chromosome, int start,
+                                                                                   String reference, String alternate,
+                                                                                   List<String> studyIds);
+
+    @Query("{'chr': ?0, 'start': ?1, 'ref': ?2, 'files.sid': {$in : ?3}}")
+    List<VariantEntity> findByChromosomeAndStartAndReferenceAndStudyIn(String chromosome, int start, String reference,
+                                                                       List<String> studyIds);
+
+    Set<String> findDistinctChromosomes();
 
     @Query("{'chr': ?0, 'start': ?1, 'ref': ?2}")
     List<VariantEntity> findByChromosomeAndStartAndReference(String chr, int start, String ref);
