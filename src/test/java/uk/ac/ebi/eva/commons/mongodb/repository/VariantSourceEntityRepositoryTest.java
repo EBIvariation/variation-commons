@@ -69,7 +69,7 @@ public class VariantSourceEntityRepositoryTest {
     @Test
     public void testFindAll() {
         List<VariantSourceEntity> variantSourceEntityList = repository.findAll();
-        assertEquals(3, variantSourceEntityList.size());
+        assertEquals(24, variantSourceEntityList.size());
     }
 
     @Test

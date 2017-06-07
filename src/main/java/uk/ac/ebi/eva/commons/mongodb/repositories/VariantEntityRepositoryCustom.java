@@ -20,11 +20,11 @@ package uk.ac.ebi.eva.commons.mongodb.repositories;
 
 import org.opencb.biodata.models.feature.Region;
 import org.springframework.data.domain.Pageable;
-
 import uk.ac.ebi.eva.commons.models.metadata.VariantEntity;
 import uk.ac.ebi.eva.commons.mongodb.filter.VariantEntityRepositoryFilter;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Interface to declare additional repository methods with a custom implementation,
@@ -36,7 +36,7 @@ interface VariantEntityRepositoryCustom {
      * Query for variants with a specified ID (eg. RS IDs), and whose attributes match those values specified in the
      * filters: study, consequence type, minor allele frequency and protein substitution scores (Polyphen and SIFT).
      *
-     * @param id Variant id
+     * @param id      Variant id
      * @param filters List of VariantEntityRepositoryFilter objects by which to filter the query
      * @param exclude List of strings, each matching a field in the variant Mongo documents. Fields specified in the
      *                list will be excluded from the returned document(s)
@@ -46,6 +46,12 @@ interface VariantEntityRepositoryCustom {
                                                    Pageable pageable);
 
     Long countByIdsAndComplexFilters(String id, List<VariantEntityRepositoryFilter> filters);
+
+    List<VariantEntity> findByGenesAndComplexFilters(List<String> geneIds, List<VariantEntityRepositoryFilter> filters,
+                                                     List<String> exclude, Pageable pageable);
+
+    Long countByGenesAndComplexFilters(List<String> geneIds, List<VariantEntityRepositoryFilter> filters);
+
 
     /**
      * Query for variants within a set of specified genomic regions, and whose attributes match those values specified
@@ -68,6 +74,6 @@ interface VariantEntityRepositoryCustom {
      *
      * @return List of chromosome names
      */
-    List<String> findDistinctChromosomes();
+    Set<String> findDistinctChromosomes();
 
 }
