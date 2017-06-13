@@ -34,6 +34,7 @@ public class VariantEntity extends Variant {
         setAlternate(variant.getAlternate());
         setReference(variant.getReference());
         setType(variant.getType());
+        setHgvs(variant.getHgvs());
         setAnnotation(variant.getAnnotation());
         setSourceEntries(variant.getSourceEntries());
     }
