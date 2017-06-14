@@ -20,9 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.eva.commons.core.models.Annotation;
-import uk.ac.ebi.eva.commons.core.models.IVariantSourceEntry;
 import uk.ac.ebi.eva.commons.core.models.Region;
-import uk.ac.ebi.eva.commons.core.models.VariantSourceEntry;
 import uk.ac.ebi.eva.commons.core.models.VariantSourceEntryWithSamples;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
 import uk.ac.ebi.eva.commons.core.models.VariantWithSamplesAndAnnotations;
@@ -34,8 +32,6 @@ import uk.ac.ebi.eva.commons.mongodb.repositories.AnnotationRepository;
 import uk.ac.ebi.eva.commons.mongodb.repositories.VariantRepository;
 import uk.ac.ebi.eva.commons.mongodb.repositories.VariantSourceRepository;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;

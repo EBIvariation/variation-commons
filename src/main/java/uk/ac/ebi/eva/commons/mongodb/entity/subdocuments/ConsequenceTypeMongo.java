@@ -18,7 +18,6 @@ package uk.ac.ebi.eva.commons.mongodb.entity.subdocuments;
 import org.springframework.data.mongodb.core.mapping.Field;
 import uk.ac.ebi.eva.commons.core.models.IConsequenceType;
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**

@@ -16,12 +16,12 @@
 package uk.ac.ebi.eva.commons.models.metadata;
 
 import org.apache.commons.validator.routines.EmailValidator;
+import org.springframework.data.jpa.domain.AbstractPersistable;
 
-import java.util.*;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
-import org.springframework.data.jpa.domain.AbstractPersistable;
+import java.util.Objects;
 
 /**
  * Created by tom on 12/10/15.
