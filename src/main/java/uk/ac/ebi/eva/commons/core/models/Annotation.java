@@ -58,12 +58,11 @@ public class Annotation implements IAnnotation {
         this.vepCacheVersion = vepCacheVersion;
         this.xrefs = new HashSet<>();
         if (xrefs != null) {
-            xrefs.stream().forEach(xref -> this.xrefs.add(new Xref(xref)));
+            xrefs.forEach(xref -> this.xrefs.add(new Xref(xref)));
         }
         this.consequenceTypes = new HashSet<>();
         if (consequenceTypes != null) {
-            consequenceTypes.stream()
-                    .forEach(consequence -> this.consequenceTypes.add(new ConsequenceType(consequence)));
+            consequenceTypes.forEach(consequence -> this.consequenceTypes.add(new ConsequenceType(consequence)));
         }
     }
 

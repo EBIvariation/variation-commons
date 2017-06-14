@@ -41,7 +41,7 @@ public class VariantSourceEntryWithSamples extends AbstractVariantSourceEntry im
                 variantSourceEntry.getFormat(),
                 variantSourceEntry.getCohortStats(),
                 variantSourceEntry.getAttributes(),
-                joinSamplesData(variantSourceEntry.getSamplesData(), sampleNames)
+                joinSamplesDataWithSampleNames(variantSourceEntry.getSamplesData(), sampleNames)
         );
     }
 
@@ -53,12 +53,12 @@ public class VariantSourceEntryWithSamples extends AbstractVariantSourceEntry im
                 variantSourceEntryMongo.getFormat(),
                 null,
                 variantSourceEntryMongo.getAttributes(),
-                joinSamplesData(variantSourceEntryMongo.deflateSamplesData(sampleNames.size()), sampleNames)
+                joinSamplesDataWithSampleNames(variantSourceEntryMongo.deflateSamplesData(sampleNames.size()), sampleNames)
         );
     }
 
     public VariantSourceEntryWithSamples(String fileId, String studyId, String[] secondaryAlternates, String format,
-                                         Map<String, VariantStats> cohortStats, Map<String, String> attributes,
+                                         Map<String, VariantStatistics> cohortStats, Map<String, String> attributes,
                                          LinkedHashMap<String, Map<String, String>> samplesData) {
         super(fileId, studyId, secondaryAlternates, format, cohortStats, attributes);
         this.samplesData = new LinkedHashMap<>();
@@ -75,8 +75,16 @@ public class VariantSourceEntryWithSamples extends AbstractVariantSourceEntry im
         return samplesData;
     }
 
-    private static LinkedHashMap<String, Map<String, String>> joinSamplesData(List<Map<String, String>> samplesData,
-                                                                              List<String> samples) {
+    /**
+     * Joins the list of sample data with their correspondent name from the sample list
+     *
+     * @param samplesData
+     * @param samples
+     * @return
+     */
+    private static LinkedHashMap<String, Map<String, String>> joinSamplesDataWithSampleNames(
+            List<Map<String, String>> samplesData,
+            List<String> samples) {
         LinkedHashMap<String, Map<String, String>> temp = new LinkedHashMap<>();
         int numberOfSamples = Math.min(samples.size(), samplesData.size());
         for (int i = 0; i < numberOfSamples; i++) {

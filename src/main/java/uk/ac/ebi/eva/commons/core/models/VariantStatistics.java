@@ -33,7 +33,7 @@ import java.util.Objects;
  * <p>
  * TODO Mendelian errors must be calculated
  */
-public class VariantStats implements IVariantStats {
+public class VariantStatistics implements IVariantStatistics {
 
     private String refAllele;
 
@@ -84,11 +84,11 @@ public class VariantStats implements IVariantStats {
     private VariantHardyWeinbergStats hw;
 
 
-    public VariantStats() {
+    public VariantStatistics() {
         this(null, -1, null, null, VariantType.SNV, -1, -1, null, null, -1, -1, -1, -1, -1, -1, -1);
     }
 
-    public VariantStats(VariantWithSamplesAndAnnotations variant) {
+    public VariantStatistics(VariantWithSamplesAndAnnotations variant) {
         this(null, -1,
              variant != null ? variant.getReference() : null,
              variant != null ? variant.getAlternate() : null,
@@ -96,14 +96,14 @@ public class VariantStats implements IVariantStats {
              -1, -1, null, null, -1, -1, -1, -1, -1, -1, -1);
     }
 
-    public VariantStats(String referenceAllele, String alternateAllele, VariantType type) {
+    public VariantStatistics(String referenceAllele, String alternateAllele, VariantType type) {
         this(null, -1, referenceAllele, alternateAllele, type, -1, -1, null, null, -1, -1, -1, -1, -1, -1, -1);
     }
 
-    public VariantStats(String chromosome, int position, String referenceAllele, String alternateAlleles,
-                        VariantType variantType, float maf, float mgf, String mafAllele, String mgfGenotype,
-                        int numMissingAlleles, int numMissingGenotypes, int numMendelErrors, float percentCasesDominant,
-                        float percentControlsDominant, float percentCasesRecessive, float percentControlsRecessive) {
+    public VariantStatistics(String chromosome, int position, String referenceAllele, String alternateAlleles,
+                             VariantType variantType, float maf, float mgf, String mafAllele, String mgfGenotype,
+                             int numMissingAlleles, int numMissingGenotypes, int numMendelErrors, float percentCasesDominant,
+                             float percentControlsDominant, float percentCasesRecessive, float percentControlsRecessive) {
         this.refAllele = referenceAllele;
         this.altAllele = alternateAlleles;
         this.variantType = variantType;
@@ -390,7 +390,7 @@ public class VariantStats implements IVariantStats {
 
     @Override
     public String toString() {
-        return "VariantStats{"
+        return "VariantStatistics{"
                 + "refAllele='" + refAllele + '\''
                 + ", altAllele='" + altAllele + '\''
                 + ", mafAllele='" + mafAllele + '\''
@@ -407,8 +407,8 @@ public class VariantStats implements IVariantStats {
                 + '}';
     }
 
-    public VariantStats calculate(List<Map<String, String>> samplesData, Map<String, String> attributes,
-                                  Pedigree pedigree) {
+    public VariantStatistics calculate(List<Map<String, String>> samplesData, Map<String, String> attributes,
+                                       Pedigree pedigree) {
         int[] allelesCount = new int[2];
         int totalAllelesCount = 0, totalGenotypesCount = 0;
 
@@ -526,7 +526,7 @@ public class VariantStats implements IVariantStats {
     public static void calculateStatsForVariantsList(List<VariantWithSamplesAndAnnotations> variants, Pedigree ped) {
         for (VariantWithSamplesAndAnnotations variant : variants) {
             for (IVariantSourceEntry file : variant.getSourceEntries()) {
-                VariantStats stats = new VariantStats(variant)
+                VariantStatistics stats = new VariantStatistics(variant)
                         .calculate(file.getSamplesData(), file.getAttributes(), ped);
                 file.setStats(stats); // TODO Correct?
             }
@@ -639,7 +639,7 @@ public class VariantStats implements IVariantStats {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final VariantStats other = (VariantStats) obj;
+        final VariantStatistics other = (VariantStatistics) obj;
         if (!Objects.equals(this.refAllele, other.refAllele)) {
             return false;
         }

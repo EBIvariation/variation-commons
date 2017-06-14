@@ -31,9 +31,9 @@ public interface IVariantSourceEntry {
 
     String getFormat();
 
-    void setStats(VariantStats stats);
+    void setStats(VariantStatistics stats);
 
-    Map<String, VariantStats> getCohortStats();
+    Map<String, VariantStatistics> getCohortStats();
 
     Map<String, String> getAttributes();
 

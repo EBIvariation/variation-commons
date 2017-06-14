@@ -18,11 +18,8 @@ package uk.ac.ebi.eva.commons.core.models;
 import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantSourceEntryMongo;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Entry that associates a variant and a file in a variant archive. It contains
@@ -54,7 +51,7 @@ public class VariantSourceEntry extends AbstractVariantSourceEntry implements IV
     }
 
     public VariantSourceEntry(String fileId, String studyId, String[] secondaryAlternates, String format,
-                              Map<String, VariantStats> cohortStats, Map<String, String> attributes,
+                              Map<String, VariantStatistics> cohortStats, Map<String, String> attributes,
                               List<Map<String, String>> samplesData) {
         super(fileId, studyId, secondaryAlternates, format, cohortStats, attributes);
         this.samplesData = new ArrayList<>();

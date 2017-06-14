@@ -106,6 +106,9 @@ public abstract class Variant implements IVariant{
     }
 
     public VariantType getType() {
+        if (this.alternate.equals(".")) {
+            return VariantType.NO_ALTERNATE;
+        }
         if (reference.length() == alternate.length()) {
             if (getLength() > 1) {
                 return VariantType.MNV;

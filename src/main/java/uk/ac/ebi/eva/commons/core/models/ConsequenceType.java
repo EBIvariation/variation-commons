@@ -22,7 +22,7 @@ import java.util.Set;
 /**
  * Basic implementation of consequence type model
  */
-public class ConsequenceType implements IConsequenceType{
+public class ConsequenceType implements IConsequenceType {
 
     private String geneName;
 
@@ -72,7 +72,7 @@ public class ConsequenceType implements IConsequenceType{
         this.relativePosition = relativePosition;
     }
 
-    public ConsequenceType(IConsequenceType consequenceType){
+    public ConsequenceType(IConsequenceType consequenceType) {
         this(
                 consequenceType.getGeneName(),
                 consequenceType.getEnsemblGeneId(),

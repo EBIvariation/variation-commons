@@ -219,7 +219,7 @@ public class VariantSourceEntryMongo {
             if (key.equals("src")) {
                 try {
                     temp.put(key.replace(CHARACTER_TO_REPLACE_DOTS, '.'),
-                            CompressionHelper.unGzip((byte[]) attributes.get(key)));
+                            CompressionHelper.gunzip((byte[]) attributes.get(key)));
                 } catch (IOException e) {
                     logger.error("Error decompressing src field", e);
                 }

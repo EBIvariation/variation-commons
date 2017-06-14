@@ -45,7 +45,7 @@ public class CompressionHelper {
         return retval;
     }
 
-    public static String unGzip(byte[] value) throws IOException {
+    public static String gunzip(byte[] value) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         byte[] buffer = new byte[1024];
         GZIPInputStream inputStream = new GZIPInputStream(new ByteArrayInputStream(value));

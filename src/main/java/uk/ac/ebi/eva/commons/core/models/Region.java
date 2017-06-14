@@ -24,16 +24,12 @@ public class Region {
     private int start;
     private int end;
 
-    public Region(){
-        this.chromosome = null;
-        this.start = 1;
-        this.end = Integer.MAX_VALUE;
+    public Region() {
+        this(null, 0, Integer.MAX_VALUE);
     }
 
     public Region(String chromosome, int start) {
-        this.chromosome = chromosome;
-        this.start = start;
-        this.end = Integer.MAX_VALUE;
+        this(chromosome, start, Integer.MAX_VALUE);
     }
 
     public Region(String chromosome, int start, int end) {
@@ -71,10 +67,10 @@ public class Region {
                 if (fields.length == 3) {
                     region = new Region(fields[0], Integer.parseInt(fields[1]), Integer.parseInt(fields[2]));
                 } else if (fields.length == 2) {
-                    region = new Region(fields[0], Integer.parseInt(fields[1]), Integer.MAX_VALUE);
+                    region = new Region(fields[0], Integer.parseInt(fields[1]));
                 }
             } else {
-                region = new Region(regionString, 0, Integer.MAX_VALUE);
+                region = new Region(regionString);
             }
         }
         return region;
@@ -95,7 +91,7 @@ public class Region {
                         regions.add(null);
                     }
                 } else {
-                    regions.add(new Region(regionString, 0, Integer.MAX_VALUE));
+                    regions.add(new Region(regionString));
                 }
             }
         }

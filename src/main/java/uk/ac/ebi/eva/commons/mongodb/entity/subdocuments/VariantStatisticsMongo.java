@@ -16,7 +16,7 @@
 package uk.ac.ebi.eva.commons.mongodb.entity.subdocuments;
 
 import org.springframework.data.mongodb.core.mapping.Field;
-import uk.ac.ebi.eva.commons.core.models.IVariantStats;
+import uk.ac.ebi.eva.commons.core.models.IVariantStatistics;
 import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 
 import java.util.LinkedHashMap;
@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * Mongo database representation of VariantWithSamplesAndAnnotations Stats.
  */
-public class VariantStatsMongo implements IVariantStats {
+public class VariantStatisticsMongo implements IVariantStatistics {
 
     public final static String COHORT_ID = "cid";
 
@@ -77,11 +77,11 @@ public class VariantStatsMongo implements IVariantStats {
     @Field(NUMGT_FIELD)
     private Map<String, Integer> numGt;
 
-    VariantStatsMongo() {
+    VariantStatisticsMongo() {
         // Spring empty constructor
     }
 
-    public VariantStatsMongo(String studyId, String fileId, String cohortId, IVariantStats stats) {
+    public VariantStatisticsMongo(String studyId, String fileId, String cohortId, IVariantStatistics stats) {
         this(
                 studyId,
                 fileId,
@@ -95,8 +95,8 @@ public class VariantStatsMongo implements IVariantStats {
                 buildGenotypes(stats.getGenotypesCount()));
     }
 
-    public VariantStatsMongo(String studyId, String fileId, String cohortId, float maf, float mgf, String mafAllele,
-                             String mgfGenotype, int missingAlleles, int missingGenotypes, Map<String, Integer> numGt) {
+    public VariantStatisticsMongo(String studyId, String fileId, String cohortId, float maf, float mgf, String mafAllele,
+                                  String mgfGenotype, int missingAlleles, int missingGenotypes, Map<String, Integer> numGt) {
         this.studyId = studyId;
         this.fileId = fileId;
         this.cohortId = cohortId;
