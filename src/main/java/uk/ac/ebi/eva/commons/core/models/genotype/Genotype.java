@@ -15,11 +15,11 @@
  */
 package uk.ac.ebi.eva.commons.core.models.genotype;
 
+import com.google.common.primitives.Ints;
+
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
 
 
 public class Genotype {
@@ -64,9 +64,9 @@ public class Genotype {
                 this.code = AllelesCode.ALLELES_MISSING;
                 this.allelesIdx[i] = -1;
             } else {
-                if (StringUtils.isNumeric(allele)) { // Accepts genotypes with form 0/0, 0/1, and so on
-                    this.allelesIdx[i] = Integer.parseInt(allele);
-
+                Integer alleleParsed = Ints.tryParse(allele);
+                if (alleleParsed != null) { // Accepts genotypes with form 0/0, 0/1, and so on
+                    this.allelesIdx[i] = alleleParsed;
                 } else { // Accepts genotypes with form A/A, A/T, and so on
                     if (allele.equalsIgnoreCase(reference)) {
                         this.allelesIdx[i] = 0;

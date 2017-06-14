@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Interface that describes the basic common information of the model variant
+ * Interface that describes the basic common information of the variant model
  */
 public interface IVariant {
 

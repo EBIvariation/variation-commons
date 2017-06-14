@@ -17,27 +17,37 @@ package uk.ac.ebi.eva.commons.core.models;
 
 /**
  * Type of variation, which depends mostly on its length.
- * <ul>
- * <li>SNVs involve a single nucleotide, without changes in length</li>
- * <li>MNVs involve multiple nucleotides, without changes in length</li>
- * <li>Indels are insertions or deletions of less than SV_THRESHOLD (50) nucleotides</li>
- * <li>Structural variations are large changes of more than SV_THRESHOLD nucleotides</li>
- * <li>Copy-number variations alter the number of copies of a region</li>
- * <li>No alternate alleles found mean that only the reference was reported</li>
- * </ul>
  */
 public enum VariantType {
 
+    /**
+     * SNVs involve a single nucleotide, without changes in length
+     */
     SNV,
 
+    /**
+     * MNVs involve multiple nucleotides, without changes in length
+     */
     MNV,
 
+    /**
+     * Indels are insertions or deletions of less than SV_THRESHOLD (50) nucleotides
+     */
     INDEL,
 
+    /**
+     * Structural variations are large changes of more than SV_THRESHOLD nucleotides
+     */
     SV,
 
+    /**
+     * Copy-number variations alter the number of copies of a region
+     */
     CNV,
 
-    NO_ALTERNATIVE
+    /**
+     * No alternate alleles found mean that only the reference was reported
+     */
+    NO_ALTERNATE
 
 }

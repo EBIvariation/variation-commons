@@ -15,8 +15,6 @@
  */
 package uk.ac.ebi.eva.commons.core.models;
 
-import uk.ac.ebi.eva.commons.mongodb.entity.AnnotationDocument;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;

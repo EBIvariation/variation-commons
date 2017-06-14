@@ -16,6 +16,7 @@
 package uk.ac.ebi.eva.commons.core.models;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -51,7 +52,7 @@ public abstract class AbstractVariantSourceEntry implements IVariantSourceEntry 
      * Statistics of the genomic variation, such as its alleles/genotypes count
      * or its minimum allele frequency, grouped by cohort name.
      */
-    private Map<String, VariantStats> cohortStats;
+    private Map<String, VariantStatistics> cohortStats;
 
     /**
      * Optional attributes that probably depend on the format of the file the
@@ -60,20 +61,20 @@ public abstract class AbstractVariantSourceEntry implements IVariantSourceEntry 
     private Map<String, String> attributes;
 
     public AbstractVariantSourceEntry(String fileId, String studyId, String[] secondaryAlternates, String format,
-                                      Map<String, VariantStats> cohortStats, Map<String, String> attributes) {
+                                      Map<String, VariantStatistics> cohortStats, Map<String, String> attributes) {
         this.fileId = fileId;
         this.studyId = studyId;
         if (secondaryAlternates != null) {
-            this.secondaryAlternates = Arrays.copyOfRange(secondaryAlternates, 0, secondaryAlternates.length);
-        }else{
+            this.secondaryAlternates = Arrays.copyOf(secondaryAlternates, secondaryAlternates.length);
+        } else {
             this.secondaryAlternates = new String[]{};
         }
         this.format = format;
-        this.cohortStats = new LinkedHashMap<>();
+        this.cohortStats = new HashMap<>();
         if (cohortStats != null) {
             this.cohortStats.putAll(cohortStats);
         }
-        this.attributes = new LinkedHashMap<>();
+        this.attributes = new HashMap<>();
         if (attributes != null) {
             this.attributes.putAll(attributes);
         }
@@ -117,29 +118,29 @@ public abstract class AbstractVariantSourceEntry implements IVariantSourceEntry 
     }
 
 
-    public VariantStats getStats() {
+    public VariantStatistics getStats() {
         return cohortStats.get(DEFAULT_COHORT);
     }
 
     @Override
-    public void setStats(VariantStats stats) {
+    public void setStats(VariantStatistics stats) {
         this.cohortStats = new LinkedHashMap<>(1);
         this.cohortStats.put(DEFAULT_COHORT, stats);
     }
 
-    public VariantStats getCohortStats(String cohortName) {
+    public VariantStatistics getCohortStats(String cohortName) {
         return cohortStats.get(cohortName);
     }
 
-    public void setCohortStats(String cohortName, VariantStats stats) {
+    public void setCohortStats(String cohortName, VariantStatistics stats) {
         this.cohortStats.put(cohortName, stats);
     }
 
-    public Map<String, VariantStats> getCohortStats() {
+    public Map<String, VariantStatistics> getCohortStats() {
         return cohortStats;
     }
 
-    public void setCohortStats(Map<String, VariantStats> cohortStats) {
+    public void setCohortStats(Map<String, VariantStatistics> cohortStats) {
         this.cohortStats = cohortStats;
     }
 

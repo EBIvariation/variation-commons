@@ -25,7 +25,7 @@ import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.AnnotationIndex;
 import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.HgvsMongo;
 import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantAt;
 import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantSourceEntryMongo;
-import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantStatsMongo;
+import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantStatisticsMongo;
 
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -112,7 +112,7 @@ public class VariantDocument {
     private Set<VariantSourceEntryMongo> variantSources;
 
     @Field(STATS_FIELD)
-    private Set<VariantStatsMongo> variantStatsMongo;
+    private Set<VariantStatisticsMongo> variantStatsMongo;
 
     @Field(ANNOTATION_FIELD)
     private Set<AnnotationIndex> indexedAnnotations;
@@ -182,7 +182,7 @@ public class VariantDocument {
 
     public VariantDocument(String id, VariantType type, String chromosome, int start, int end, int length,
                            String reference, String alternate, VariantAt at, Set<HgvsMongo> hgvs, Set<String> ids,
-                           Set<VariantSourceEntryMongo> variantSources, Set<VariantStatsMongo> variantStatsMongo,
+                           Set<VariantSourceEntryMongo> variantSources, Set<VariantStatisticsMongo> variantStatsMongo,
                            Set<AnnotationIndex> indexedAnnotations) {
         this.id = id;
         this.type = type;
@@ -302,7 +302,7 @@ public class VariantDocument {
         return variantSources;
     }
 
-    public Set<VariantStatsMongo> getVariantStatsMongo() {
+    public Set<VariantStatisticsMongo> getVariantStatsMongo() {
         return variantStatsMongo;
     }
 

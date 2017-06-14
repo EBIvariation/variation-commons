@@ -15,10 +15,6 @@
  */
 package uk.ac.ebi.eva.commons.core.models;
 
-import org.springframework.util.StringUtils;
-import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.XrefMongo;
-
-import java.util.HashSet;
 import java.util.Set;
 
 /**

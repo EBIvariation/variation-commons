@@ -61,11 +61,6 @@ public class MongoVariantConversionTest {
     @Autowired
     private MongoOperations mongoOperations;
 
-    @Test
-    public void test() {
-
-    }
-
     private VariantWithSamplesAndAnnotations buildBasicVariant() {
         VariantWithSamplesAndAnnotations variant = new VariantWithSamplesAndAnnotations(CHROMOSOME, START, END, REFERENCE, ALTERNATE);
         variant.setIds(Collections.singleton(RS_666));

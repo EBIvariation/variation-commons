@@ -16,14 +16,13 @@
 package uk.ac.ebi.eva.commons.core.models;
 
 import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
-import uk.ac.ebi.eva.commons.core.models.stats.VariantHardyWeinbergStats;
 
 import java.util.Map;
 
 /**
  * Interface that describes the basic common information of the variant stats model
  */
-public interface IVariantStats {
+public interface IVariantStatistics {
 
     String getMafAllele();
 

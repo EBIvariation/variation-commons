@@ -16,16 +16,28 @@
 package uk.ac.ebi.eva.commons.core.models;
 
 /**
- * Types of aggregations used to load a study
+ * Level of aggregation of the sample data in a variant source
  */
 public enum Aggregation {
 
+    /**
+     * Full listing of sample genotypes provided
+     */
     NONE,
 
+    /**
+     * Only aggregated fields AF, AC and AN as described in the VCF specification, are provided
+     */
     BASIC,
 
+    /**
+     * Only aggregated fields as in the Exome Variation Server (EVS) provided
+     */
     EVS,
 
+    /**
+     * Only aggregated fields as in the Exome Aggregation Consortium (ExAC) provided
+     */
     EXAC
 
 }
