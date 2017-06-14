@@ -15,10 +15,16 @@
  */
 package uk.ac.ebi.eva.commons.models.metadata;
 
-import javax.persistence.*;
-
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashSet;

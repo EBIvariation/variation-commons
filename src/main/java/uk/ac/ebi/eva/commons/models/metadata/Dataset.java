@@ -16,7 +16,8 @@
 
 package uk.ac.ebi.eva.commons.models.metadata;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by parce on 05/10/15.

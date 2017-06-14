@@ -16,9 +16,9 @@
 
 package uk.ac.ebi.eva.commons.models.metadata;
 
+import javax.persistence.Entity;
 import java.util.Date;
 import java.util.Objects;
-import javax.persistence.Entity;
 
 /**
  * Created by parce on 02/10/15.

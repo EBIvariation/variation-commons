@@ -28,7 +28,6 @@ import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @Configuration
 @Import({EvaRepositoriesConfiguration.class})

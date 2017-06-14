@@ -15,12 +15,24 @@
  */
 package uk.ac.ebi.eva.commons.models.metadata;
 
+import org.springframework.data.jpa.domain.AbstractPersistable;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.Inheritance;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import javax.persistence.*;
-
-import org.springframework.data.jpa.domain.AbstractPersistable;
 
 /**
  * Created by parce on 02/10/15.

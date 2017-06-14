@@ -29,8 +29,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.eva.commons.configuration.MongoRepositoryTestConfiguration;
-import uk.ac.ebi.eva.commons.mongodb.services.VariantStudySummaryService;
 import uk.ac.ebi.eva.commons.mongodb.projections.VariantStudySummary;
+import uk.ac.ebi.eva.commons.mongodb.services.VariantStudySummaryService;
 
 import java.util.List;
 

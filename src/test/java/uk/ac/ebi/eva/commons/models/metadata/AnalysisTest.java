@@ -16,12 +16,16 @@
 
 package uk.ac.ebi.eva.commons.models.metadata;
 
-import java.util.Date;
-
+import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-import org.junit.Before;
+import java.util.Date;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class AnalysisTest {
     
