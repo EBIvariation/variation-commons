@@ -15,13 +15,15 @@
  */
 package uk.ac.ebi.eva.commons.core.models;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Basic abstract implementation of Variant model with all the common elements for the current models.
+ */
 public abstract class Variant implements IVariant{
 
     public static final int SV_THRESHOLD = 50;
@@ -75,11 +77,6 @@ public abstract class Variant implements IVariant{
      */
     private final Map<String, Set<String>> hgvs;
 
-    /**
-     * Information specific to each file the variant was read from, such as samples or statistics.
-     */
-    private final Map<String, IVariantSourceEntry> sourceEntries;
-
     public Variant(String chromosome, int start, int end, String reference, String alternate) {
         if (start > end && !(reference.equals("-"))) {
             throw new IllegalArgumentException("End position must be greater than the start position");
@@ -98,7 +95,6 @@ public abstract class Variant implements IVariant{
             hgvsCodes.add(chromosome + ":g." + start + reference + ">" + alternate);
             this.hgvs.put("genomic", hgvsCodes);
         }
-        sourceEntries = new HashMap<>();
     }
 
     public int getLength() {
@@ -185,59 +181,4 @@ public abstract class Variant implements IVariant{
                 '}';
     }
 
-    public void addSourceEntry(IVariantSourceEntry sourceEntry) {
-        this.sourceEntries.put(getSourceEntryIndex(sourceEntry.getStudyId(), sourceEntry.getFileId()), sourceEntry);
-    }
-
-    public void addSourceEntries(Collection<? extends IVariantSourceEntry> variantSourceEntries){
-        this.sourceEntries.clear();
-        variantSourceEntries.forEach(variantSourceEntry ->
-                sourceEntries.put(getSourceEntryIndex(variantSourceEntry),variantSourceEntry));
-    }
-
-    private String getSourceEntryIndex(IVariantSourceEntry variantSourceEntries) {
-        return getSourceEntryIndex(variantSourceEntries.getStudyId(), variantSourceEntries.getFileId());
-    }
-
-    private String getSourceEntryIndex(String studyId, String fileId) {
-        return studyId + "_" + fileId;
-    }
-
-    public Collection<? extends IVariantSourceEntry> getSourceEntries() {
-        return Collections.unmodifiableCollection(sourceEntries.values());
-    }
-
-    public IVariantSourceEntry getSourceEntry(String fileId, String studyId) {
-        return sourceEntries.get(getSourceEntryIndex(studyId, fileId));
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Variant)) return false;
-
-        Variant variant = (Variant) o;
-
-        if (start != variant.start) return false;
-        if (end != variant.end) return false;
-        if (!chromosome.equals(variant.chromosome)) return false;
-        if (!reference.equals(variant.reference)) return false;
-        if (!alternate.equals(variant.alternate)) return false;
-        if (!ids.equals(variant.ids)) return false;
-        if (!hgvs.equals(variant.hgvs)) return false;
-        return sourceEntries.equals(variant.sourceEntries);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = chromosome.hashCode();
-        result = 31 * result + start;
-        result = 31 * result + end;
-        result = 31 * result + reference.hashCode();
-        result = 31 * result + alternate.hashCode();
-        result = 31 * result + ids.hashCode();
-        result = 31 * result + hgvs.hashCode();
-        result = 31 * result + sourceEntries.hashCode();
-        return result;
-    }
 }

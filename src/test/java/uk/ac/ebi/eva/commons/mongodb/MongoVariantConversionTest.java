@@ -26,6 +26,7 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import uk.ac.ebi.eva.commons.core.models.VariantSourceEntryWithSamples;
 import uk.ac.ebi.eva.commons.core.models.VariantWithSamplesAndAnnotations;
 import uk.ac.ebi.eva.commons.core.models.VariantSourceEntry;
 import uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument;
@@ -69,8 +70,11 @@ public class MongoVariantConversionTest {
 
     private VariantWithSamplesAndAnnotations buildVariantWithFiles() {
         VariantWithSamplesAndAnnotations variant = buildBasicVariant();
+        variant.addSourceEntry(buildVariantSourceEntryWithSamples());
+        return variant;
+    }
 
-        //Setup variantSourceEntry
+    private VariantSourceEntryWithSamples buildVariantSourceEntryWithSamples() {
         VariantSourceEntry variantSourceEntry = new VariantSourceEntry(FILE_ID, STUDY_ID);
         variantSourceEntry.addAttribute("QUAL", "0.01");
         variantSourceEntry.addAttribute("AN", "2");
@@ -84,9 +88,7 @@ public class MongoVariantConversionTest {
         na002.put("GT", "0/1");
         na002.put("DP", "5");
         variantSourceEntry.addSampleData(na002);
-        variant.addSourceEntry(variantSourceEntry);
-
-        return variant;
+        return new VariantSourceEntryWithSamples(variantSourceEntry, Arrays.asList("na001", "na002"));
     }
 
     private BasicDBObject buildMongoVariantWithFiles() {
