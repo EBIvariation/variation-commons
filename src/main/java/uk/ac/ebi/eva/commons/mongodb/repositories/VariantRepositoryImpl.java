@@ -18,10 +18,6 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.repositories;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,17 +29,13 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-
 import uk.ac.ebi.eva.commons.core.models.Region;
 import uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument;
-import uk.ac.ebi.eva.commons.mongodb.entity.VariantSourceDocument;
 import uk.ac.ebi.eva.commons.mongodb.filter.VariantEntityRepositoryFilter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -56,8 +48,6 @@ import java.util.Set;
 public class VariantRepositoryImpl implements VariantRepositoryCustom {
 
     private MongoTemplate mongoTemplate;
-
-    protected static Logger logger = LoggerFactory.getLogger(VariantRepositoryImpl.class);
 
     private final int MARGIN = 5000;
 
@@ -81,8 +71,8 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
 
     @Override
     public List<VariantDocument> findByGenesAndComplexFilters(List<String> geneIds,
-                                                            List<VariantEntityRepositoryFilter> filters,
-                                                            List<String> exclude, Pageable pageable) {
+                                                              List<VariantEntityRepositoryFilter> filters,
+                                                              List<String> exclude, Pageable pageable) {
         Query query = new Query(Criteria.where("annot.xrefs.id").in(geneIds));
         return findByComplexFiltersHelper(query, filters, exclude, pageable);
     }
@@ -132,77 +122,11 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
             exclude.forEach(e -> query.fields().exclude(e));
         }
 
-        List<VariantDocument> variantEntities = mongoTemplate.find(query, VariantDocument.class);
-
-//        variantEntities = updateVariantEntitiesSampleNames(variantEntities, studyFileIdsToPositionSamples);
-
-        return variantEntities;
+        return mongoTemplate.find(query, VariantDocument.class);
     }
 
-
-
-    //
-//    private List<VariantEntity> updateVariantEntitiesSampleNames(List<VariantEntity> variantEntities,
-//                                                                 Table<String, String, Map<String, String>>
-//                                                                         studyFileIdsToPositionSamples) {
-//
-//        return variantEntities.stream().map(
-//                variantEntity -> updateVariantEntitySampleNames(variantEntity, studyFileIdsToPositionSamples)
-//        ).collect(Collectors.toList());
-//    }
-//
-//    private VariantEntity updateVariantEntitySampleNames(VariantEntity variantEntity,
-//                                                         Table<String, String, Map<String, String>>
-//                                                                 studyFileIdsToPositionSamples) {
-//        Map<String, VariantSourceEntry> variantSourceEntryMap = variantEntity.getSourceEntries().entrySet().stream().collect(
-//                Collectors.toMap(
-//                        Map.Entry::getKey,
-//                        e -> updateVariantSourceEntrySampleNames(e.getValue(), studyFileIdsToPositionSamples)
-//                )
-//        );
-//        variantEntity.setSourceEntries(variantSourceEntryMap);
-//        return variantEntity;
-//    }
-//
-//    private VariantSourceEntry updateVariantSourceEntrySampleNames(VariantSourceEntry variantSourceEntry,
-//                                                                   Table<String, String, Map<String, String>>
-//                                                                           studyFileIdsToPositionSamples) {
-//        // Get samples data from that variant entry
-//        Map<String,Map<String,String>> samplesData = variantSourceEntry.getSamplesData();
-//        if ((samplesData == null) || (samplesData.size() == 0)) {
-//            return variantSourceEntry;
-//        }
-//
-//        // Get the default genotype string for that variant entry and remove it
-//        String defaultGt = samplesData.get("def").get("GT");
-//        samplesData.remove("def");
-//
-//        String studyId = variantSourceEntry.getStudyId();
-//        String fileId = variantSourceEntry.getFileId();
-//
-//        // Get the map of sample index to sample name for that study and file
-//        Map<String, String> indexesToNames = studyFileIdsToPositionSamples.get(studyId, fileId);
-//        for (Map.Entry<String, String> indexToName : indexesToNames.entrySet()) {
-//            String sampleIndex = indexToName.getKey();
-//            String sampleName = indexToName.getValue();
-//
-//            // New sample data ("GT" -> gtString)
-//            Map<String, String> sampleData = new HashMap<>(1);
-//            // If the sample index is already in the samplesData then remove it
-//            if (samplesData.containsKey(sampleIndex)) {
-//                sampleData = samplesData.remove(sampleIndex);
-//            } else {
-//                // If sample index not in samplesData then infer it has the default gt string
-//                sampleData.put("GT", defaultGt);
-//            }
-//            // Put the new sample data into samplesData
-//            samplesData.put(sampleName, sampleData);
-//        }
-//        return variantSourceEntry;
-//    }
-
     private void addFilterCriteriaToQuery(Query query, List<VariantEntityRepositoryFilter> filters) {
-        if (filters != null && filters.size() > 0){
+        if (filters != null && filters.size() > 0) {
             List<Criteria> criteriaList = getFiltersCriteria(filters);
             for (Criteria criteria : criteriaList) {
                 query.addCriteria(criteria);
