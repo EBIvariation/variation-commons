@@ -214,9 +214,7 @@ public class AnnotationDocument implements IAnnotation {
     }
 
     private void addConsequenceTypes(Set<ConsequenceTypeMongo> consequenceTypes) {
-        for (ConsequenceTypeMongo consequenceType : consequenceTypes) {
-            addConsequenceType(consequenceType);
-        }
+        consequenceTypes.forEach(this::addConsequenceType);
     }
 
     private void addConsequenceType(ConsequenceTypeMongo consequenceType) {

@@ -17,6 +17,7 @@ package uk.ac.ebi.eva.commons.mongodb.entity.subdocuments;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.util.Assert;
+import uk.ac.ebi.eva.commons.core.models.IXref;
 import uk.ac.ebi.eva.commons.mongodb.entity.AnnotationDocument;
 
 import java.util.ArrayList;
@@ -99,14 +100,10 @@ public class AnnotationIndex {
             addXrefIds(annotationIndex.getXrefIds());
         }
         if (annotationIndex.getSifts() != null) {
-            for (Double siftLimit : annotationIndex.getSifts()) {
-                concatenateSiftRange(siftLimit);
-            }
+            annotationIndex.getSifts().forEach(this::concatenateSiftRange);
         }
         if (annotationIndex.getPolyphens() != null) {
-            for (Double polyphenLimit : annotationIndex.getPolyphens()) {
-                concatenatePolyphenRange(polyphenLimit);
-            }
+            annotationIndex.getPolyphens().forEach(this::concatenatePolyphenRange);
         }
         if (annotationIndex.getSoAccessions() != null) {
             addsoAccessions(annotationIndex.getSoAccessions());
@@ -114,8 +111,8 @@ public class AnnotationIndex {
     }
 
     private void doConcatenate(AnnotationDocument annotation) {
-        for (uk.ac.ebi.eva.commons.core.models.IXref IXref : annotation.getXrefs()) {
-            addXrefId(IXref.getId());
+        for (IXref xref : annotation.getXrefs()) {
+            addXrefId(xref.getId());
         }
         for (ConsequenceTypeMongo consequenceType : annotation.getConsequenceTypes()) {
             final Score sift = consequenceType.getSift();

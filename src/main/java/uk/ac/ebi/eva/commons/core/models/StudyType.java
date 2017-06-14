@@ -43,7 +43,7 @@ public enum StudyType {
     private final String symbol;
     private static final Map<String, StudyType> stringToEnum = new HashMap();
 
-    private StudyType(String symbol) {
+    StudyType(String symbol) {
         this.symbol = symbol;
     }
 
@@ -56,11 +56,7 @@ public enum StudyType {
     }
 
     static {
-        StudyType[] values = values();
-        int length = values.length;
-
-        for (int var2 = 0; var2 < length; ++var2) {
-            StudyType op = values[var2];
+        for (StudyType op : values()) {
             stringToEnum.put(op.toString(), op);
         }
     }

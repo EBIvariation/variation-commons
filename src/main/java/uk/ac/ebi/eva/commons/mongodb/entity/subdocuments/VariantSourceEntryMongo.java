@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -118,7 +119,7 @@ public class VariantSourceEntryMongo {
         Map<Genotype, List<Integer>> genotypeCodes = classifySamplesByGenotype(samplesData);
 
         // Get the most common genotype
-        Map.Entry<Genotype, List<Integer>> longestList = getLongestGenotypeList(genotypeCodes);
+        Genotype mostCommonGenotype = getMostCommonGenotype(genotypeCodes);
 
         // In Mongo, samples are stored in a map, classified by their genotype.
         // The most common genotype will be marked as "default" and the specific
@@ -127,26 +128,30 @@ public class VariantSourceEntryMongo {
         // "0|1" : [ 41, 311, 342, 358, 881, 898, 903 ],
         // "1|0" : [ 262, 290, 300, 331, 343, 369, 374, 391, 879, 918, 930 ]
         BasicDBObject mongoSamples = new BasicDBObject();
-        for (Map.Entry<Genotype, List<Integer>> entry : genotypeCodes.entrySet()) {
-            String genotypeStr = entry.getKey().toString().replace(".", "-1");
-            if (longestList != null && entry.getKey().equals(longestList.getKey())) {
-                mongoSamples.append(DEFAULT, genotypeStr);
-            } else {
-                mongoSamples.append(genotypeStr, entry.getValue());
-            }
+        if (mostCommonGenotype != null) {
+            mongoSamples.append(DEFAULT, mostCommonGenotype.generateDatabaseString());
         }
+        genotypeCodes.forEach(
+                (genotype, sampleIndexes) -> {
+                    if (!Objects.equals(genotype, mostCommonGenotype)) {
+                        mongoSamples.append(genotype.generateDatabaseString(), sampleIndexes);
+                    }
+                }
+        );
         return mongoSamples;
     }
 
-    private Map.Entry<Genotype, List<Integer>> getLongestGenotypeList(Map<Genotype, List<Integer>> genotypeCodes) {
-        Map.Entry<Genotype, List<Integer>> longestList = null;
+    private Genotype getMostCommonGenotype(Map<Genotype, List<Integer>> genotypeCodes) {
+        Genotype mostCommonGenotype = null;
+        int maxSamplesInGenotype = 0;
         for (Map.Entry<Genotype, List<Integer>> entry : genotypeCodes.entrySet()) {
-            List<Integer> genotypeList = entry.getValue();
-            if (longestList == null || genotypeList.size() > longestList.getValue().size()) {
-                longestList = entry;
+            int samplesInGenotype = entry.getValue().size();
+            if (samplesInGenotype > maxSamplesInGenotype) {
+                mostCommonGenotype = entry.getKey();
+                maxSamplesInGenotype = samplesInGenotype;
             }
         }
-        return longestList;
+        return mostCommonGenotype;
     }
 
     private Map<Genotype, List<Integer>> classifySamplesByGenotype(List<Map<String, String>> samplesData) {
