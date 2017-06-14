@@ -49,7 +49,6 @@ public class CompressionHelper {
         StringBuilder stringBuilder = new StringBuilder();
         byte[] buffer = new byte[1024];
         GZIPInputStream inputStream = new GZIPInputStream(new ByteArrayInputStream(value));
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         int length;
         while ((length = inputStream.read(buffer)) > 0) {
             stringBuilder.append(Charset.forName("UTF-8").decode(ByteBuffer.wrap(buffer)), 0, length);

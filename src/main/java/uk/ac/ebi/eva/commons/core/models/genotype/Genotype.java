@@ -244,4 +244,7 @@ public class Genotype {
         return true;
     }
 
+    public String generateDatabaseString() {
+        return toString().replace(".", "-1");
+    }
 }
