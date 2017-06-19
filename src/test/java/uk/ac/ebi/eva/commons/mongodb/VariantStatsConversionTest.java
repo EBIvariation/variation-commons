@@ -29,11 +29,11 @@ import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
 import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantStatisticsMongo;
-import uk.ac.ebi.eva.commons.test.configurations.MongoOperationConfiguration;
+import uk.ac.ebi.eva.commons.test.configurations.MongoOperationsConfiguration;
 
 @RunWith(SpringRunner.class)
 @TestPropertySource({"classpath:test-mongo.properties"})
-@ContextConfiguration(classes = {MongoOperationConfiguration.class})
+@ContextConfiguration(classes = {MongoOperationsConfiguration.class})
 public class VariantStatsConversionTest {
 
     public static final String FILE_ID = "f1";

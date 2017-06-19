@@ -27,8 +27,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.eva.commons.configuration.MongoRepositoryTestConfiguration;
 import uk.ac.ebi.eva.commons.core.models.Region;
-import uk.ac.ebi.eva.commons.core.models.VariantSourceEntryWithSamples;
-import uk.ac.ebi.eva.commons.core.models.VariantWithSamplesAndAnnotations;
+import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
+import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,7 @@ import static org.junit.Assert.assertNotEquals;
         "/test-data/variants.json",
         "/test-data/annotations.json",
         "/test-data/files.json"})
-public class VariantWithAnnotationDocumentServiceTest {
+public class VariantWithAnnotationMongoServiceTest {
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -70,7 +70,7 @@ public class VariantWithAnnotationDocumentServiceTest {
 
         assertEquals(1, variantEntityList.size());
 
-        for (VariantSourceEntryWithSamples variantSourceEntry : variantEntityList.get(0).getSourceEntries()) {
+        for (VariantSourceEntryWithSampleNames variantSourceEntry : variantEntityList.get(0).getSourceEntries()) {
             if (!variantSourceEntry.getFileId().equals("ERZX00051")) {
                 continue;
             }

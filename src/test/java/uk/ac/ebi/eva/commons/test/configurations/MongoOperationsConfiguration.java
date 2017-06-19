@@ -19,7 +19,7 @@ import java.net.UnknownHostException;
 
 @Configuration
 @ImportAutoConfiguration(MongoAutoConfiguration.class)
-public class MongoOperationConfiguration {
+public class MongoOperationsConfiguration {
 
     private static final String DUMMY_STATIC = "dummy_test";
 

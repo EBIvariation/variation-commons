@@ -21,39 +21,39 @@ package uk.ac.ebi.eva.commons.mongodb.repositories;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
-import uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument;
+import uk.ac.ebi.eva.commons.mongodb.entity.VariantMongo;
 
 import java.util.List;
 
 /**
- * Spring MongoRepository for {@link VariantDocument} class.
+ * Spring MongoRepository for {@link VariantMongo} class.
  * <p>
  * Methods include querying by id, and by region.
  */
-public interface VariantRepository extends MongoRepository<VariantDocument, String>,
+public interface VariantRepository extends MongoRepository<VariantMongo, String>,
         VariantRepositoryCustom {
 
     @Query("{'chr': ?0, 'start': ?1, 'ref': ?2, 'alt': ?3}")
-    List<VariantDocument> findByChromosomeAndStartAndReferenceAndAlternate(String chromosome, int start,
-                                                                         String reference, String alternate);
+    List<VariantMongo> findByChromosomeAndStartAndReferenceAndAlternate(String chromosome, int start,
+                                                                        String reference, String alternate);
 
     @Query("{'chr': ?0, 'start': ?1, 'ref': ?2, 'alt': ?3, 'files.sid': {$in : ?4}}")
-    List<VariantDocument> findByChromosomeAndStartAndReferenceAndAlternateAndStudyIn(String chromosome, int start,
-                                                                                   String reference, String alternate,
-                                                                                   List<String> studyIds);
+    List<VariantMongo> findByChromosomeAndStartAndReferenceAndAlternateAndStudyIn(String chromosome, int start,
+                                                                                  String reference, String alternate,
+                                                                                  List<String> studyIds);
 
     @Query("{'chr': ?0, 'start': ?1, 'ref': ?2, 'files.sid': {$in : ?3}}")
-    List<VariantDocument> findByChromosomeAndStartAndReferenceAndStudyIn(String chromosome, int start, String reference,
-                                                                       List<String> studyIds);
+    List<VariantMongo> findByChromosomeAndStartAndReferenceAndStudyIn(String chromosome, int start, String reference,
+                                                                      List<String> studyIds);
 
     @Query("{'chr': ?0, 'start': ?1, 'ref': ?2}")
-    List<VariantDocument> findByChromosomeAndStartAndReference(String chr, int start, String ref);
+    List<VariantMongo> findByChromosomeAndStartAndReference(String chr, int start, String ref);
 
     @Query(value = "{'chr': ?0, 'start': ?1, 'alt': ?2, 'files.sid': {$in : ?3}}}")
-    List<VariantDocument> findByChromosomeAndStartAndAltAndStudyIn(String chr, int start, String alt,
-                                                                 List<String> studyIds);
+    List<VariantMongo> findByChromosomeAndStartAndAltAndStudyIn(String chr, int start, String alt,
+                                                                List<String> studyIds);
 
     @Query(value = "{'chr': ?0, 'start': ?1, 'type': ?2, 'files.sid': {$in : ?3}}}")
-    List<VariantDocument> findByChromosomeAndStartAndTypeAndStudyIn(String chr, int start, VariantType type,
-                                                                  List<String> studyIds);
+    List<VariantMongo> findByChromosomeAndStartAndTypeAndStudyIn(String chr, int start, VariantType type,
+                                                                 List<String> studyIds);
 }

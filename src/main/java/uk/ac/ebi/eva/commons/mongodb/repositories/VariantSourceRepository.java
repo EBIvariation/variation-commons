@@ -19,40 +19,40 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import uk.ac.ebi.eva.commons.mongodb.entity.VariantSourceDocument;
+import uk.ac.ebi.eva.commons.mongodb.entity.VariantSourceMongo;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Extension of Spring's MongoRepository for VariantSourceDocument class.
+ * Extension of Spring's MongoRepository for VariantSourceMongo class.
  * <p>
- * This interface queries the VariantSourceDocument collection- i.e. collection containing information on files.
+ * This interface queries the VariantSourceMongo collection- i.e. collection containing information on files.
  * <p>
- * Methods include: finding all "VariantSourceDocument"s in the collection, finding "VariantSourceDocument"s with either
+ * Methods include: finding all "VariantSourceMongo"s in the collection, finding "VariantSourceMongo"s with either
  * studyId matching given value, or studyName matching given value.
  */
-public interface VariantSourceRepository extends MongoRepository<VariantSourceDocument, String> {
+public interface VariantSourceRepository extends MongoRepository<VariantSourceMongo, String> {
 
-    List<VariantSourceDocument> findAll();
+    List<VariantSourceMongo> findAll();
 
-    List<VariantSourceDocument> findByStudyIdOrStudyName(String studyId, String studyName);
+    List<VariantSourceMongo> findByStudyIdOrStudyName(String studyId, String studyName);
 
-    List<VariantSourceDocument> findByStudyIdIn(List<String> studyIds, Pageable pageable);
+    List<VariantSourceMongo> findByStudyIdIn(List<String> studyIds, Pageable pageable);
 
     long countByStudyIdIn(List<String> studyIds);
 
-    List<VariantSourceDocument> findByFileIdIn(List<String> fileIds, Pageable pageable);
+    List<VariantSourceMongo> findByFileIdIn(List<String> fileIds, Pageable pageable);
 
     long countByFileIdIn(List<String> fileIds);
 
     default Table<String, String, List<String>> findAndIndexSamples() {
-        List<VariantSourceDocument> variantSourceEntities = findAll();
+        List<VariantSourceMongo> variantSourceEntities = findAll();
 
         Table<String, String, List<String>> studyFileIdsToPositionSamples = HashBasedTable.create();
-        for (VariantSourceDocument variantSourceDocument : variantSourceEntities) {
-            final Map<String, Integer> sampleNamesToPosition = variantSourceDocument.getSamplesPosition();
+        for (VariantSourceMongo variantSourceMongo : variantSourceEntities) {
+            final Map<String, Integer> sampleNamesToPosition = variantSourceMongo.getSamplesPosition();
             if (sampleNamesToPosition == null) {
                 continue;
             }
@@ -62,8 +62,8 @@ public interface VariantSourceRepository extends MongoRepository<VariantSourceDo
                 samples[entry.getValue()] = entry.getKey();
             }
 
-            String studyId = variantSourceDocument.getStudyId();
-            String fileId = variantSourceDocument.getFileId();
+            String studyId = variantSourceMongo.getStudyId();
+            String fileId = variantSourceMongo.getFileId();
 
             studyFileIdsToPositionSamples.put(studyId, fileId, Arrays.asList(samples));
         }

@@ -94,7 +94,7 @@ public class VariantStudySummaryRepositoryTest {
 
     @Test
     public void testListStudies() {
-        List<VariantStudySummary> uniqueStudies = service.findBy();
+        List<VariantStudySummary> uniqueStudies = service.findAll();
         assertEquals(EXPECTED_UNIQUE_STUDIES_COUNT, uniqueStudies.size());
     }
 

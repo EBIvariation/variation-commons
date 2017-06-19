@@ -29,10 +29,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Mongo database representation of a variant annotation.
+ * Mapped class for annotations collection in mongo
  */
 @Document(collection = "annotations")
-public class AnnotationDocument implements IAnnotation {
+public class AnnotationMongo implements IAnnotation {
 
     public static final String CHROMOSOME_FIELD = "chr";
 
@@ -72,7 +72,7 @@ public class AnnotationDocument implements IAnnotation {
     @Field(value = XREFS_FIELD)
     private Set<XrefMongo> xrefs;
 
-    AnnotationDocument() {
+    AnnotationMongo() {
         // Empty document constructor for spring-data
         this(
                 null,
@@ -86,8 +86,8 @@ public class AnnotationDocument implements IAnnotation {
         );
     }
 
-    public AnnotationDocument(String chromosome, int start, int end, String referenceAllele, String alternativeAllele,
-                              String vepVersion, String vepCacheVersion) {
+    public AnnotationMongo(String chromosome, int start, int end, String referenceAllele, String alternativeAllele,
+                           String vepVersion, String vepCacheVersion) {
         this(
                 buildAnnotationId(chromosome, start, referenceAllele, alternativeAllele, vepVersion, vepCacheVersion),
                 chromosome,
@@ -105,7 +105,7 @@ public class AnnotationDocument implements IAnnotation {
      *
      * @param annotation
      */
-    private AnnotationDocument(AnnotationDocument annotation) {
+    private AnnotationMongo(AnnotationMongo annotation) {
         this(
                 annotation.getId(),
                 annotation.getChromosome(),
@@ -118,8 +118,8 @@ public class AnnotationDocument implements IAnnotation {
         );
     }
 
-    public AnnotationDocument(String id, String chromosome, int start, int end, String vepVersion,
-                              String vepCacheVersion, Set<XrefMongo> xrefs, Set<ConsequenceTypeMongo> consequenceTypes) {
+    public AnnotationMongo(String id, String chromosome, int start, int end, String vepVersion,
+                           String vepCacheVersion, Set<XrefMongo> xrefs, Set<ConsequenceTypeMongo> consequenceTypes) {
         this.id = id;
         this.chromosome = chromosome;
         this.start = start;
@@ -177,7 +177,7 @@ public class AnnotationDocument implements IAnnotation {
 
     public static String buildAnnotationId(String chromosome, int start, String reference, String alternate,
                                            String vepVersion, String vepCacheVersion) {
-        StringBuilder builder = new StringBuilder(VariantDocument.buildVariantId(
+        StringBuilder builder = new StringBuilder(VariantMongo.buildVariantId(
                 chromosome, start,
                 reference,
                 alternate));
@@ -199,14 +199,13 @@ public class AnnotationDocument implements IAnnotation {
     }
 
     /**
-     * Concatenate two annotations in a new one. This method returns a new instance with the concatenated array of
-     * consequence types and computed xrefs.
+     * Concatenate two annotations into a new one.
      *
      * @param annotation
-     * @return
+     * @return A new instance with the concatenated array of consequence types and computed xrefs
      */
-    public AnnotationDocument concatenate(AnnotationDocument annotation) {
-        AnnotationDocument temp = new AnnotationDocument(this);
+    public AnnotationMongo concatenate(AnnotationMongo annotation) {
+        AnnotationMongo temp = new AnnotationMongo(this);
         if (annotation.getConsequenceTypes() != null) {
             temp.addConsequenceTypes(annotation.getConsequenceTypes());
         }

@@ -16,7 +16,7 @@
 package uk.ac.ebi.eva.commons.mongodb.repositories;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-import uk.ac.ebi.eva.commons.mongodb.entity.FeatureCoordinatesDocument;
+import uk.ac.ebi.eva.commons.mongodb.entity.FeatureCoordinatesMongo;
 
 import java.util.List;
 
@@ -27,8 +27,8 @@ import java.util.List;
  * Spring creates the implementation automatically by looking at the method name.
  *
  */
-public interface FeatureRepository extends MongoRepository<FeatureCoordinatesDocument, String> {
+public interface FeatureRepository extends MongoRepository<FeatureCoordinatesMongo, String> {
 
-    List<FeatureCoordinatesDocument> findByIdOrName(String id, String name);
+    List<FeatureCoordinatesMongo> findByIdOrName(String id, String name);
 
 }

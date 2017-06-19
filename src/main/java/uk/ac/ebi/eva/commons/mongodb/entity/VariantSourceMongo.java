@@ -19,19 +19,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import uk.ac.ebi.eva.commons.core.models.Aggregation;
 import uk.ac.ebi.eva.commons.core.models.StudyType;
-import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantGlobalStats;
+import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantGlobalStatsMongo;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
 /**
- * Represents a file (VariantSource) in a database.
- * <p>
- * TODO jmmut: VariantSource also has pedigree
+ * Mapped class for variant source collection in mongo
  */
 @Document(collection = "#{mongoCollectionsFiles}")
-public class VariantSourceDocument {
+public class VariantSourceMongo {
 
     public final static String FILEID_FIELD = "fid";
 
@@ -81,9 +79,9 @@ public class VariantSourceDocument {
     private Map<String, Object> metadata;
 
     @Field(value = STATISTICS_FIELD)
-    private VariantGlobalStats stats;
+    private VariantGlobalStatsMongo stats;
 
-    VariantSourceDocument() {
+    VariantSourceMongo() {
         //Empty spring constructor
         this(
                 null,
@@ -98,10 +96,10 @@ public class VariantSourceDocument {
         );
     }
 
-    public VariantSourceDocument(String fileId, String fileName, String studyId, String studyName,
-                                 StudyType type, Aggregation aggregation,
-                                 Map<String, Integer> samplesPosition, Map<String, Object> metadata,
-                                 VariantGlobalStats stats) {
+    public VariantSourceMongo(String fileId, String fileName, String studyId, String studyName,
+                              StudyType type, Aggregation aggregation,
+                              Map<String, Integer> samplesPosition, Map<String, Object> metadata,
+                              VariantGlobalStatsMongo stats) {
         this.fileId = fileId;
         this.fileName = fileName;
         this.studyId = studyId;
@@ -150,11 +148,11 @@ public class VariantSourceDocument {
         return metadata;
     }
 
-    public VariantGlobalStats getStats() {
+    public VariantGlobalStatsMongo getStats() {
         return stats;
     }
 
-    public void setStats(VariantGlobalStats stats) {
+    public void setStats(VariantGlobalStatsMongo stats) {
         this.stats = stats;
     }
 

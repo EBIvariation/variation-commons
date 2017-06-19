@@ -16,8 +16,8 @@
 package uk.ac.ebi.eva.commons.mongodb.repositories;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-import uk.ac.ebi.eva.commons.mongodb.entity.AnnotationDocument;
-import uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument;
+import uk.ac.ebi.eva.commons.mongodb.entity.AnnotationMongo;
+import uk.ac.ebi.eva.commons.mongodb.entity.VariantMongo;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -29,22 +29,22 @@ import java.util.Set;
 /**
  * Repository to access the annotation collection.
  */
-public interface AnnotationRepository extends MongoRepository<AnnotationDocument, String> {
+public interface AnnotationRepository extends MongoRepository<AnnotationMongo, String> {
 
-    Set<AnnotationDocument> findByIdIn(Collection<String> ids);
+    Set<AnnotationMongo> findByIdIn(Collection<String> ids);
 
-    default Set<AnnotationDocument> findAnnotationsOfVariants(List<VariantDocument> variants){
+    default Set<AnnotationMongo> findAnnotationsOfVariants(List<VariantMongo> variants){
         Set<String> ids = new HashSet<>();
-        for(VariantDocument variant: variants){
+        for(VariantMongo variant: variants){
             ids.addAll(variant.getAnnotationIds());
         }
         return findByIdIn(ids);
     }
 
-    default Map<String, Set<AnnotationDocument>> findAndIndexAnnotationsOfVariants(List<VariantDocument> variants){
-        Map<String, Set<AnnotationDocument>> indexedAnnotations = new HashMap<>();
-        Set<AnnotationDocument> annotations = findAnnotationsOfVariants(variants);
-        annotations.stream().forEach(annotation -> {
+    default Map<String, Set<AnnotationMongo>> findAndIndexAnnotationsOfVariants(List<VariantMongo> variants){
+        Map<String, Set<AnnotationMongo>> indexedAnnotations = new HashMap<>();
+        Set<AnnotationMongo> annotations = findAnnotationsOfVariants(variants);
+        annotations.forEach(annotation -> {
             String variantId = annotation.buildVariantId();
             indexedAnnotations.putIfAbsent(variantId, new HashSet<>());
             indexedAnnotations.get(variantId).add(annotation);
@@ -53,9 +53,9 @@ public interface AnnotationRepository extends MongoRepository<AnnotationDocument
     }
 
 
-    default AnnotationDocument findOne(String chromosome, int start, String referenceAllele, String alternativeAllele,
-                                       String vepVersion, String vepCacheVersion) {
-        return findOne(AnnotationDocument.buildAnnotationId(
+    default AnnotationMongo findOne(String chromosome, int start, String referenceAllele, String alternativeAllele,
+                                    String vepVersion, String vepCacheVersion) {
+        return findOne(AnnotationMongo.buildAnnotationId(
                 chromosome,
                 start,
                 referenceAllele,

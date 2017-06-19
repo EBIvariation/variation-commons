@@ -19,8 +19,11 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+/**
+ * Mapped class for annotations metadata collection in mongo
+ */
 @Document(collection = "#{mongoCollectionsAnnotationMetadata}")
-public class AnnotationMetadata {
+public class AnnotationMetadataMongo {
 
     private static final String VEP_VERSION_FIELD = "vepv";
 
@@ -35,15 +38,15 @@ public class AnnotationMetadata {
     @Field(CACHE_VERSION_FIELD)
     private String cacheVersion;
 
-    AnnotationMetadata() {
+    AnnotationMetadataMongo() {
         // Empty document constructor for spring-data
     }
 
-    public AnnotationMetadata(String vepVersion, String cacheVersion) {
+    public AnnotationMetadataMongo(String vepVersion, String cacheVersion) {
         this(generateId(vepVersion, cacheVersion), vepVersion, cacheVersion);
     }
 
-    public AnnotationMetadata(String id, String vepVersion, String cacheVersion) {
+    public AnnotationMetadataMongo(String id, String vepVersion, String cacheVersion) {
         this.id = id;
         this.vepVersion = vepVersion;
         this.cacheVersion = cacheVersion;
@@ -80,9 +83,9 @@ public class AnnotationMetadata {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof AnnotationMetadata)) return false;
+        if (!(o instanceof AnnotationMetadataMongo)) return false;
 
-        AnnotationMetadata that = (AnnotationMetadata) o;
+        AnnotationMetadataMongo that = (AnnotationMetadataMongo) o;
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (vepVersion != null ? !vepVersion.equals(that.vepVersion) : that.vepVersion != null) return false;

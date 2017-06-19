@@ -25,7 +25,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.eva.commons.configuration.MongoRepositoryTestConfiguration;
-import uk.ac.ebi.eva.commons.mongodb.entity.AnnotationMetadata;
+import uk.ac.ebi.eva.commons.mongodb.entity.AnnotationMetadataMongo;
 import uk.ac.ebi.eva.commons.mongodb.repositories.AnnotationMetadataRepository;
 
 import java.util.List;
@@ -37,7 +37,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class})
 @UsingDataSet(locations = {"/test-data/annotation_metadata.json"})
-public class AnnotationDocumentMetadataServiceTest {
+public class AnnotationMongoMetadataServiceTest {
 
     private static final String TEST_DB = "test-db";
 
@@ -52,30 +52,30 @@ public class AnnotationDocumentMetadataServiceTest {
 
     @Test
     public void testFindAllByOrderByCacheVersionDescVepVersionDescSize() throws Exception {
-        List<AnnotationMetadata> annotationMetadataList = repository.findAllByOrderByCacheVersionDescVepVersionDesc();
-        assertEquals(4, annotationMetadataList.size());
+        List<AnnotationMetadataMongo> annotationMetadataMongoList = repository.findAllByOrderByCacheVersionDescVepVersionDesc();
+        assertEquals(4, annotationMetadataMongoList.size());
     }
 
     @Test
     public void testFindAllByOrderByCacheVersionDescVepVersionDescCacheVersionOrder() throws Exception {
-        List<AnnotationMetadata> annotationMetadataList = repository.findAllByOrderByCacheVersionDescVepVersionDesc();
-        AnnotationMetadata prevAnnotationMetadata = annotationMetadataList.get(0);
-        for (AnnotationMetadata curAnnotationMetadata :
-                annotationMetadataList.subList(1, annotationMetadataList.size())) {
-            assertTrue(curAnnotationMetadata.getCacheVersion()
-                    .compareTo(prevAnnotationMetadata.getCacheVersion()) <= 0);
+        List<AnnotationMetadataMongo> annotationMetadataMongoList = repository.findAllByOrderByCacheVersionDescVepVersionDesc();
+        AnnotationMetadataMongo prevAnnotationMetadataMongo = annotationMetadataMongoList.get(0);
+        for (AnnotationMetadataMongo curAnnotationMetadataMongo :
+                annotationMetadataMongoList.subList(1, annotationMetadataMongoList.size())) {
+            assertTrue(curAnnotationMetadataMongo.getCacheVersion()
+                    .compareTo(prevAnnotationMetadataMongo.getCacheVersion()) <= 0);
         }
     }
 
     @Test
     public void testFindAllByOrderByCacheVersionDescVepVersionDescVepVersionOrder() throws Exception {
-        List<AnnotationMetadata> annotationMetadataList = repository.findAllByOrderByCacheVersionDescVepVersionDesc();
-        AnnotationMetadata prevAnnotationMetadata = annotationMetadataList.get(0);
-        for (AnnotationMetadata curAnnotationMetadata :
-                annotationMetadataList.subList(1, annotationMetadataList.size())) {
-            if (curAnnotationMetadata.getCacheVersion().equals(prevAnnotationMetadata.getCacheVersion())) {
-                assertTrue(curAnnotationMetadata.getCacheVersion()
-                        .compareTo(prevAnnotationMetadata.getCacheVersion()) <= 0);
+        List<AnnotationMetadataMongo> annotationMetadataMongoList = repository.findAllByOrderByCacheVersionDescVepVersionDesc();
+        AnnotationMetadataMongo prevAnnotationMetadataMongo = annotationMetadataMongoList.get(0);
+        for (AnnotationMetadataMongo curAnnotationMetadataMongo :
+                annotationMetadataMongoList.subList(1, annotationMetadataMongoList.size())) {
+            if (curAnnotationMetadataMongo.getCacheVersion().equals(prevAnnotationMetadataMongo.getCacheVersion())) {
+                assertTrue(curAnnotationMetadataMongo.getCacheVersion()
+                        .compareTo(prevAnnotationMetadataMongo.getCacheVersion()) <= 0);
             }
         }
     }

@@ -29,8 +29,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.eva.commons.configuration.MongoRepositoryTestConfiguration;
-import uk.ac.ebi.eva.commons.mongodb.entity.VariantSourceDocument;
-import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantGlobalStats;
+import uk.ac.ebi.eva.commons.mongodb.entity.VariantSourceMongo;
+import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantGlobalStatsMongo;
 import uk.ac.ebi.eva.commons.mongodb.repositories.VariantSourceRepository;
 
 import java.util.ArrayList;
@@ -67,22 +67,22 @@ public class VariantSourceRepositoryTest {
 
     @Test
     public void testFindAll() {
-        List<VariantSourceDocument> variantSourceDocumentList = repository.findAll();
-        assertEquals(24, variantSourceDocumentList.size());
+        List<VariantSourceMongo> variantSourceMongoList = repository.findAll();
+        assertEquals(24, variantSourceMongoList.size());
     }
 
     @Test
     public void testFindByStudyIdOrStudyName() {
-        List<VariantSourceDocument> variantSourceDocumentList = repository.findByStudyIdOrStudyName(FIRST_STUDY_ID, FIRST_STUDY_ID);
-        assertEquals(1, variantSourceDocumentList.size());
-        variantSourceDocumentList = repository.findByStudyIdOrStudyName(SECOND_STUDY_ID, SECOND_STUDY_ID);
-        assertEquals(2, variantSourceDocumentList.size());
+        List<VariantSourceMongo> variantSourceMongoList = repository.findByStudyIdOrStudyName(FIRST_STUDY_ID, FIRST_STUDY_ID);
+        assertEquals(1, variantSourceMongoList.size());
+        variantSourceMongoList = repository.findByStudyIdOrStudyName(SECOND_STUDY_ID, SECOND_STUDY_ID);
+        assertEquals(2, variantSourceMongoList.size());
     }
 
     @Test
     public void testFindByStudyIdOrStudyNameTestNonExistent() {
-        List<VariantSourceDocument> variantSourceDocumentList = repository.findByStudyIdOrStudyName("notARealId", "notARealId");
-        assertEquals(0, variantSourceDocumentList.size());
+        List<VariantSourceMongo> variantSourceMongoList = repository.findByStudyIdOrStudyName("notARealId", "notARealId");
+        assertEquals(0, variantSourceMongoList.size());
     }
 
     @Test
@@ -91,22 +91,22 @@ public class VariantSourceRepositoryTest {
         studyIds.add(SECOND_STUDY_ID);
 
         Pageable pageable = new PageRequest(0, 1);
-        List<VariantSourceDocument> variantSourceDocumentList = repository.findByStudyIdIn(studyIds, pageable);
-        assertEquals(1, variantSourceDocumentList.size());
+        List<VariantSourceMongo> variantSourceMongoList = repository.findByStudyIdIn(studyIds, pageable);
+        assertEquals(1, variantSourceMongoList.size());
 
         pageable = new PageRequest(0, 2);
-        variantSourceDocumentList = repository.findByStudyIdIn(studyIds, pageable);
-        assertEquals(2, variantSourceDocumentList.size());
+        variantSourceMongoList = repository.findByStudyIdIn(studyIds, pageable);
+        assertEquals(2, variantSourceMongoList.size());
 
         studyIds.add(FIRST_STUDY_ID);
 
         pageable = new PageRequest(1, 2);
-        variantSourceDocumentList = repository.findByStudyIdIn(studyIds, pageable);
-        assertEquals(1, variantSourceDocumentList.size());
+        variantSourceMongoList = repository.findByStudyIdIn(studyIds, pageable);
+        assertEquals(1, variantSourceMongoList.size());
 
         pageable = new PageRequest(2, 2);
-        variantSourceDocumentList = repository.findByStudyIdIn(studyIds, pageable);
-        assertEquals(0, variantSourceDocumentList.size());
+        variantSourceMongoList = repository.findByStudyIdIn(studyIds, pageable);
+        assertEquals(0, variantSourceMongoList.size());
     }
 
     @Test
@@ -129,12 +129,12 @@ public class VariantSourceRepositoryTest {
         fileIds.add(FIRST_FILE_ID);
 
         Pageable pageable = new PageRequest(0, 100);
-        List<VariantSourceDocument> variantSourceDocumentList = repository.findByFileIdIn(fileIds, pageable);
-        assertEquals(1, variantSourceDocumentList.size());
+        List<VariantSourceMongo> variantSourceMongoList = repository.findByFileIdIn(fileIds, pageable);
+        assertEquals(1, variantSourceMongoList.size());
 
-        for (VariantSourceDocument variantSourceDocument : variantSourceDocumentList) {
-            assertFalse(variantSourceDocument.getSamplesPosition().isEmpty());
-            assertEquals(FIRST_FILE_ID, variantSourceDocument.getFileId());
+        for (VariantSourceMongo variantSourceMongo : variantSourceMongoList) {
+            assertFalse(variantSourceMongo.getSamplesPosition().isEmpty());
+            assertEquals(FIRST_FILE_ID, variantSourceMongo.getFileId());
         }
     }
 
@@ -144,20 +144,20 @@ public class VariantSourceRepositoryTest {
         fileIds.add(FIRST_FILE_ID);
 
         Pageable pageable = new PageRequest(0, 100);
-        List<VariantSourceDocument> variantSourceDocumentList = repository.findByFileIdIn(fileIds, pageable);
-        assertEquals(1, variantSourceDocumentList.size());
+        List<VariantSourceMongo> variantSourceMongoList = repository.findByFileIdIn(fileIds, pageable);
+        assertEquals(1, variantSourceMongoList.size());
 
-        VariantSourceDocument variantSourceDocument = variantSourceDocumentList.get(0);
-        VariantGlobalStats variantGlobalStats = variantSourceDocument.getStats();
+        VariantSourceMongo variantSourceMongo = variantSourceMongoList.get(0);
+        VariantGlobalStatsMongo variantGlobalStatsMongo = variantSourceMongo.getStats();
 
-        assertNotEquals(0, variantGlobalStats.getSamplesCount());
-        assertNotEquals(0, variantGlobalStats.getVariantsCount());
-        assertNotEquals(0, variantGlobalStats.getSnpsCount());
-        assertNotEquals(0, variantGlobalStats.getIndelsCount());
-        assertNotEquals(0, variantGlobalStats.getPassCount());
-        assertNotEquals(0, variantGlobalStats.getTransitionsCount());
-        assertNotEquals(0, variantGlobalStats.getTransversionsCount());
-        assertNotEquals(0, variantGlobalStats.getMeanQuality());
+        assertNotEquals(0, variantGlobalStatsMongo.getSamplesCount());
+        assertNotEquals(0, variantGlobalStatsMongo.getVariantsCount());
+        assertNotEquals(0, variantGlobalStatsMongo.getSnpsCount());
+        assertNotEquals(0, variantGlobalStatsMongo.getIndelsCount());
+        assertNotEquals(0, variantGlobalStatsMongo.getPassCount());
+        assertNotEquals(0, variantGlobalStatsMongo.getTransitionsCount());
+        assertNotEquals(0, variantGlobalStatsMongo.getTransversionsCount());
+        assertNotEquals(0, variantGlobalStatsMongo.getMeanQuality());
     }
 
     @Test

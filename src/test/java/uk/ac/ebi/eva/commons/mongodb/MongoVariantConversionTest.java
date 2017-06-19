@@ -26,13 +26,13 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.ac.ebi.eva.commons.core.models.VariantSourceEntry;
-import uk.ac.ebi.eva.commons.core.models.VariantSourceEntryWithSamples;
-import uk.ac.ebi.eva.commons.core.models.VariantWithSamplesAndAnnotations;
-import uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument;
+import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
+import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
+import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotations;
+import uk.ac.ebi.eva.commons.mongodb.entity.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.HgvsMongo;
 import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantSourceEntryMongo;
-import uk.ac.ebi.eva.commons.test.configurations.MongoOperationConfiguration;
+import uk.ac.ebi.eva.commons.test.configurations.MongoOperationsConfiguration;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,7 +45,7 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @TestPropertySource({"classpath:test-mongo.properties"})
-@ContextConfiguration(classes = {MongoOperationConfiguration.class})
+@ContextConfiguration(classes = {MongoOperationsConfiguration.class})
 public class MongoVariantConversionTest {
 
     public static final int START = 1000;
@@ -62,10 +62,23 @@ public class MongoVariantConversionTest {
     @Autowired
     private MongoOperations mongoOperations;
 
-    private VariantWithSamplesAndAnnotations buildBasicVariant() {
-        VariantWithSamplesAndAnnotations variant = new VariantWithSamplesAndAnnotations(CHROMOSOME, START, END, REFERENCE, ALTERNATE);
-        variant.setIds(Collections.singleton(RS_666));
-        return variant;
+    @Test
+    public void testConvertVariantWithFiles() {
+        VariantMongo variant = new VariantMongo(buildVariantWithFiles());
+        DBObject dbObject = (DBObject) mongoOperations.getConverter().convertToMongoType(variant);
+
+        testBasicMongoVariant(dbObject);
+
+        BasicDBList variantSources = (BasicDBList) dbObject.get(VariantMongo.FILES_FIELD);
+        Assert.assertNotNull(variantSources);
+        Assert.assertEquals(1, variantSources.size());
+        BasicDBObject variantSource = (BasicDBObject) variantSources.get(0);
+        Assert.assertNotNull(variantSource);
+        Assert.assertEquals(FILE_ID, variantSource.get(VariantSourceEntryMongo.FILEID_FIELD));
+        Assert.assertEquals(STUDY_ID, variantSource.get(VariantSourceEntryMongo.STUDYID_FIELD));
+        Assert.assertEquals(FORMAT, variantSource.get(VariantSourceEntryMongo.FORMAT_FIELD));
+        Assert.assertEquals(2, ((BasicDBObject) variantSource.get(VariantSourceEntryMongo.ATTRIBUTES_FIELD)).size());
+        Assert.assertEquals(2, ((BasicDBObject) variantSource.get(VariantSourceEntryMongo.SAMPLES_FIELD)).size());
     }
 
     private VariantWithSamplesAndAnnotations buildVariantWithFiles() {
@@ -74,7 +87,13 @@ public class MongoVariantConversionTest {
         return variant;
     }
 
-    private VariantSourceEntryWithSamples buildVariantSourceEntryWithSamples() {
+    private VariantWithSamplesAndAnnotations buildBasicVariant() {
+        VariantWithSamplesAndAnnotations variant = new VariantWithSamplesAndAnnotations(CHROMOSOME, START, END, REFERENCE, ALTERNATE);
+        variant.setIds(Collections.singleton(RS_666));
+        return variant;
+    }
+
+    private VariantSourceEntryWithSampleNames buildVariantSourceEntryWithSamples() {
         VariantSourceEntry variantSourceEntry = new VariantSourceEntry(FILE_ID, STUDY_ID);
         variantSourceEntry.addAttribute("QUAL", "0.01");
         variantSourceEntry.addAttribute("AN", "2");
@@ -88,7 +107,35 @@ public class MongoVariantConversionTest {
         na002.put("GT", "0/1");
         na002.put("DP", "5");
         variantSourceEntry.addSampleData(na002);
-        return new VariantSourceEntryWithSamples(variantSourceEntry, Arrays.asList("na001", "na002"));
+        return new VariantSourceEntryWithSampleNames(variantSourceEntry, Arrays.asList("na001", "na002"));
+    }
+
+    private void testBasicMongoVariant(DBObject dbObject) {
+        Assert.assertEquals(CHROMOSOME, dbObject.get(VariantMongo.CHROMOSOME_FIELD));
+        Assert.assertEquals(START, dbObject.get(VariantMongo.START_FIELD));
+        Assert.assertEquals(END, dbObject.get(VariantMongo.END_FIELD));
+        Assert.assertEquals(REFERENCE, dbObject.get(VariantMongo.REFERENCE_FIELD));
+        Assert.assertEquals(ALTERNATE, dbObject.get(VariantMongo.ALTERNATE_FIELD));
+        Assert.assertTrue(((BasicDBList) dbObject.get(VariantMongo.IDS_FIELD)).contains(RS_666));
+    }
+
+    @Test
+    public void testInverseConvertVariantWithFiles() {
+        BasicDBObject mongoVariant = buildMongoVariantWithFiles();
+        VariantMongo variant = mongoOperations.getConverter().read(VariantMongo.class, mongoVariant);
+        Assert.assertEquals(VARIANT_ID, variant.getId());
+        Assert.assertEquals(CHROMOSOME, variant.getChromosome());
+        Assert.assertEquals(START, variant.getStart());
+        Assert.assertEquals(END, variant.getEnd());
+        Assert.assertEquals(REFERENCE, variant.getReference());
+        Assert.assertEquals(ALTERNATE, variant.getAlternate());
+        Assert.assertTrue(variant.getIds().contains(RS_666));
+        Assert.assertNotNull(variant.getSourceEntries());
+        Assert.assertFalse(variant.getSourceEntries().isEmpty());
+        VariantSourceEntryMongo sourceEntry = variant.getSourceEntries().iterator().next();
+        Assert.assertNotNull(sourceEntry.getAttributes());
+        Assert.assertEquals(2, sourceEntry.getAttributes().keySet().size());
+        Assert.assertEquals(2, sourceEntry.getSamples().size());
     }
 
     private BasicDBObject buildMongoVariantWithFiles() {
@@ -106,7 +153,7 @@ public class MongoVariantConversionTest {
         mongoFile.append(VariantSourceEntryMongo.SAMPLES_FIELD, genotypeCodes);
         BasicDBList files = new BasicDBList();
         files.add(mongoFile);
-        mongoVariant.append(VariantDocument.FILES_FIELD, files);
+        mongoVariant.append(VariantMongo.FILES_FIELD, files);
 
         return mongoVariant;
     }
@@ -114,76 +161,29 @@ public class MongoVariantConversionTest {
     private BasicDBObject buildMongoBasicVariant() {
         VariantWithSamplesAndAnnotations variant = new VariantWithSamplesAndAnnotations(CHROMOSOME, START, END, REFERENCE, ALTERNATE);
         BasicDBObject mongoVariant = new BasicDBObject("_id", VARIANT_ID)
-                .append(VariantDocument.IDS_FIELD, Collections.singleton(RS_666))
-                .append(VariantDocument.TYPE_FIELD, variant.getType().name())
-                .append(VariantDocument.CHROMOSOME_FIELD, CHROMOSOME)
-                .append(VariantDocument.START_FIELD, START)
-                .append(VariantDocument.END_FIELD, END)
-                .append(VariantDocument.LENGTH_FIELD, variant.getLength())
-                .append(VariantDocument.REFERENCE_FIELD, REFERENCE)
-                .append(VariantDocument.ALTERNATE_FIELD, ALTERNATE);
+                .append(VariantMongo.IDS_FIELD, Collections.singleton(RS_666))
+                .append(VariantMongo.TYPE_FIELD, variant.getType().name())
+                .append(VariantMongo.CHROMOSOME_FIELD, CHROMOSOME)
+                .append(VariantMongo.START_FIELD, START)
+                .append(VariantMongo.END_FIELD, END)
+                .append(VariantMongo.LENGTH_FIELD, variant.getLength())
+                .append(VariantMongo.REFERENCE_FIELD, REFERENCE)
+                .append(VariantMongo.ALTERNATE_FIELD, ALTERNATE);
 
         BasicDBList chunkIds = new BasicDBList();
         chunkIds.add("1_1_1k");
         chunkIds.add("1_0_10k");
-        mongoVariant.append(VariantDocument.AT_FIELD, new BasicDBObject("chunkIds", chunkIds));
+        mongoVariant.append(VariantMongo.AT_FIELD, new BasicDBObject("chunkIds", chunkIds));
 
         BasicDBList hgvs = new BasicDBList();
         hgvs.add(new BasicDBObject(HgvsMongo.TYPE_FIELD, "genomic").append(HgvsMongo.NAME_FIELD, "1:g.1000A>C"));
-        mongoVariant.append(VariantDocument.HGVS_FIELD, hgvs);
+        mongoVariant.append(VariantMongo.HGVS_FIELD, hgvs);
         return mongoVariant;
     }
 
     @Test
-    public void testConvertVariantWithFiles() {
-        VariantDocument variant = new VariantDocument(buildVariantWithFiles());
-        DBObject dbObject = (DBObject) mongoOperations.getConverter().convertToMongoType(variant);
-
-        testBasicMongoVariant(dbObject);
-
-        BasicDBList variantSources = (BasicDBList) dbObject.get(VariantDocument.FILES_FIELD);
-        Assert.assertNotNull(variantSources);
-        Assert.assertEquals(1, variantSources.size());
-        BasicDBObject variantSource = (BasicDBObject) variantSources.get(0);
-        Assert.assertNotNull(variantSource);
-        Assert.assertEquals(FILE_ID, variantSource.get(VariantSourceEntryMongo.FILEID_FIELD));
-        Assert.assertEquals(STUDY_ID, variantSource.get(VariantSourceEntryMongo.STUDYID_FIELD));
-        Assert.assertEquals(FORMAT, variantSource.get(VariantSourceEntryMongo.FORMAT_FIELD));
-        Assert.assertEquals(2, ((BasicDBObject) variantSource.get(VariantSourceEntryMongo.ATTRIBUTES_FIELD)).size());
-        Assert.assertEquals(2, ((BasicDBObject) variantSource.get(VariantSourceEntryMongo.SAMPLES_FIELD)).size());
-    }
-
-    private void testBasicMongoVariant(DBObject dbObject) {
-        Assert.assertEquals(CHROMOSOME, dbObject.get(VariantDocument.CHROMOSOME_FIELD));
-        Assert.assertEquals(START, dbObject.get(VariantDocument.START_FIELD));
-        Assert.assertEquals(END, dbObject.get(VariantDocument.END_FIELD));
-        Assert.assertEquals(REFERENCE, dbObject.get(VariantDocument.REFERENCE_FIELD));
-        Assert.assertEquals(ALTERNATE, dbObject.get(VariantDocument.ALTERNATE_FIELD));
-        Assert.assertTrue(((BasicDBList) dbObject.get(VariantDocument.IDS_FIELD)).contains(RS_666));
-    }
-
-    @Test
-    public void testInverseConvertVariantWithFiles() {
-        BasicDBObject mongoVariant = buildMongoVariantWithFiles();
-        VariantDocument variant = mongoOperations.getConverter().read(VariantDocument.class, mongoVariant);
-        Assert.assertEquals(VARIANT_ID, variant.getId());
-        Assert.assertEquals(CHROMOSOME, variant.getChromosome());
-        Assert.assertEquals(START, variant.getStart());
-        Assert.assertEquals(END, variant.getEnd());
-        Assert.assertEquals(REFERENCE, variant.getReference());
-        Assert.assertEquals(ALTERNATE, variant.getAlternate());
-        Assert.assertTrue(variant.getIds().contains(RS_666));
-        Assert.assertNotNull(variant.getSourceEntries());
-        Assert.assertFalse(variant.getSourceEntries().isEmpty());
-        VariantSourceEntryMongo sourceEntry = variant.getSourceEntries().iterator().next();
-        Assert.assertNotNull(sourceEntry.getAttributes());
-        Assert.assertEquals(2, sourceEntry.getAttributes().keySet().size());
-        Assert.assertEquals(2, sourceEntry.getSamples().size());
-    }
-
-    @Test
     public void testConvertVariantWithoutFiles() {
-        VariantDocument variant = new VariantDocument(buildVariantWithFiles());
+        VariantMongo variant = new VariantMongo(buildVariantWithFiles());
         DBObject dbObject = (DBObject) mongoOperations.getConverter().convertToMongoType(variant);
         testBasicMongoVariant(dbObject);
     }
@@ -191,7 +191,7 @@ public class MongoVariantConversionTest {
     @Test
     public void testInverseConvertVariantWithoutFiles() {
         BasicDBObject mongoVariant = buildMongoBasicVariant();
-        VariantDocument variant = mongoOperations.getConverter().read(VariantDocument.class, mongoVariant);
+        VariantMongo variant = mongoOperations.getConverter().read(VariantMongo.class, mongoVariant);
         Assert.assertEquals(VARIANT_ID, variant.getId());
         Assert.assertEquals(CHROMOSOME, variant.getChromosome());
         Assert.assertEquals(START, variant.getStart());
@@ -204,27 +204,27 @@ public class MongoVariantConversionTest {
     }
 
     /**
-     * @see VariantDocument ids policy
+     * @see VariantMongo ids policy
      */
     @Test
     public void testConvertToDataModelTypeNullIds() {
         BasicDBObject mongoVariant = buildMongoBasicVariant();
-        mongoVariant.remove(VariantDocument.IDS_FIELD);
+        mongoVariant.remove(VariantMongo.IDS_FIELD);
 
-        VariantDocument variant = mongoOperations.getConverter().read(VariantDocument.class, mongoVariant);
+        VariantMongo variant = mongoOperations.getConverter().read(VariantMongo.class, mongoVariant);
         assertNotNull(variant.getIds());
         assertTrue(variant.getIds().isEmpty());
     }
 
     /**
-     * @see VariantDocument ids policy
+     * @see VariantMongo ids policy
      */
     @Test
     public void testConvertToDataModelTypeEmptyIds() {
         BasicDBObject mongoVariant = buildMongoBasicVariant();
-        mongoVariant.put(VariantDocument.IDS_FIELD, new HashSet<String>());
+        mongoVariant.put(VariantMongo.IDS_FIELD, new HashSet<String>());
 
-        VariantDocument variant = mongoOperations.getConverter().read(VariantDocument.class, mongoVariant);
+        VariantMongo variant = mongoOperations.getConverter().read(VariantMongo.class, mongoVariant);
         assertNotNull(variant.getIds());
         assertTrue(variant.getIds().isEmpty());
     }

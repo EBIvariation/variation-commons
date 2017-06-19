@@ -19,22 +19,22 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
 import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.HgvsMongo;
-import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantAt;
+import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantAtMongo;
 
 import java.util.Map;
 import java.util.Set;
 
-import static uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument.ALTERNATE_FIELD;
-import static uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument.AT_FIELD;
-import static uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument.CHROMOSOME_FIELD;
-import static uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument.END_FIELD;
-import static uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument.HGVS_FIELD;
-import static uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument.LENGTH_FIELD;
-import static uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument.REFERENCE_FIELD;
-import static uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument.START_FIELD;
-import static uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument.TYPE_FIELD;
-import static uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument.buildVariantId;
-import static uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument.generateAtField;
+import static uk.ac.ebi.eva.commons.mongodb.entity.VariantMongo.ALTERNATE_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entity.VariantMongo.AT_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entity.VariantMongo.CHROMOSOME_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entity.VariantMongo.END_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entity.VariantMongo.HGVS_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entity.VariantMongo.LENGTH_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entity.VariantMongo.REFERENCE_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entity.VariantMongo.START_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entity.VariantMongo.TYPE_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entity.VariantMongo.buildVariantId;
+import static uk.ac.ebi.eva.commons.mongodb.entity.VariantMongo.generateAtField;
 import static uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.HgvsMongo.createHgvsMongo;
 
 /**
@@ -67,7 +67,7 @@ public class SimplifiedVariant {
     private String alternate;
 
     @Field(AT_FIELD)
-    private VariantAt at;
+    private VariantAtMongo at;
 
     @Field(HGVS_FIELD)
     private Set<HgvsMongo> hgvs;

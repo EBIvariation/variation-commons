@@ -25,10 +25,10 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.ac.ebi.eva.commons.core.models.VariantSourceEntry;
-import uk.ac.ebi.eva.commons.core.models.VariantSourceEntryWithSamples;
+import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
+import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
 import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantSourceEntryMongo;
-import uk.ac.ebi.eva.commons.test.configurations.MongoOperationConfiguration;
+import uk.ac.ebi.eva.commons.test.configurations.MongoOperationsConfiguration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +44,7 @@ import static uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantSourceEnt
 
 @RunWith(SpringRunner.class)
 @TestPropertySource({"classpath:test-mongo.properties"})
-@ContextConfiguration(classes = {MongoOperationConfiguration.class})
+@ContextConfiguration(classes = {MongoOperationsConfiguration.class})
 public class VariantSourceEntryConversionTest {
 
     public static final String FILE_ID = "f1";
@@ -52,6 +52,17 @@ public class VariantSourceEntryConversionTest {
     public static final String FORMAT = "GT";
     @Autowired
     private MongoOperations mongoOperations;
+
+    @Test
+    public void testConvertVariantSourceEntryWithoutStatsToMongo() {
+        VariantSourceEntryMongo variantSourceEntryMongo = new VariantSourceEntryMongo(createVariantSourceEntry());
+        DBObject converted = (DBObject) mongoOperations.getConverter().convertToMongoType(variantSourceEntryMongo);
+        Assert.assertEquals(FILE_ID, converted.get(FILEID_FIELD));
+        Assert.assertEquals(STUDY_ID, converted.get(STUDYID_FIELD));
+        Assert.assertEquals(FORMAT, converted.get(FORMAT_FIELD));
+        Assert.assertEquals(3, ((BasicDBObject) converted.get(ATTRIBUTES_FIELD)).size());
+        Assert.assertEquals(3, ((BasicDBObject) converted.get(SAMPLES_FIELD)).size());
+    }
 
     private VariantSourceEntry createVariantSourceEntry() {
         VariantSourceEntry file = new VariantSourceEntry(FILE_ID, STUDY_ID);
@@ -71,6 +82,19 @@ public class VariantSourceEntryConversionTest {
         file.addSampleData(na003);
 
         return file;
+    }
+
+    @Test
+    public void testConvertMongoVariantSourceEntry() {
+        VariantSourceEntryMongo variantSource = mongoOperations.getConverter().read(VariantSourceEntryMongo.class,
+                createMongoVariantSourceEntry());
+        // We cannot check equality because it has a map String object that can contain arrays. This defaults to
+        // reference comparison in that case instead of checking same elements in both sides.
+        Assert.assertEquals(FILE_ID, variantSource.getFileId());
+        Assert.assertEquals(STUDY_ID, variantSource.getStudyId());
+        Assert.assertEquals(FORMAT, variantSource.getFormat());
+        Assert.assertEquals(3, variantSource.getAttributes().size());
+        Assert.assertEquals(3, variantSource.getSamples().size());
     }
 
     private BasicDBObject createMongoVariantSourceEntry() {
@@ -95,30 +119,6 @@ public class VariantSourceEntryConversionTest {
     }
 
     @Test
-    public void testConvertVariantSourceEntryWithoutStatsToMongo() {
-        VariantSourceEntryMongo variantSourceEntryMongo = new VariantSourceEntryMongo(createVariantSourceEntry());
-        DBObject converted = (DBObject) mongoOperations.getConverter().convertToMongoType(variantSourceEntryMongo);
-        Assert.assertEquals(FILE_ID, converted.get(FILEID_FIELD));
-        Assert.assertEquals(STUDY_ID, converted.get(STUDYID_FIELD));
-        Assert.assertEquals(FORMAT, converted.get(FORMAT_FIELD));
-        Assert.assertEquals(3, ((BasicDBObject) converted.get(ATTRIBUTES_FIELD)).size());
-        Assert.assertEquals(3, ((BasicDBObject) converted.get(SAMPLES_FIELD)).size());
-    }
-
-    @Test
-    public void testConvertMongoVariantSourceEntry() {
-        VariantSourceEntryMongo variantSource = mongoOperations.getConverter().read(VariantSourceEntryMongo.class,
-                createMongoVariantSourceEntry());
-        // We cannot check equality because it has a map String object that can contain arrays. This defaults to
-        // reference comparison in that case instead of checking same elements in both sides.
-        Assert.assertEquals(FILE_ID, variantSource.getFileId());
-        Assert.assertEquals(STUDY_ID, variantSource.getStudyId());
-        Assert.assertEquals(FORMAT, variantSource.getFormat());
-        Assert.assertEquals(3, variantSource.getAttributes().size());
-        Assert.assertEquals(3, variantSource.getSamples().size());
-    }
-
-    @Test
     public void testConvertFromVariantSourceEntryMongoToVariantSourceEntry(){
         VariantSourceEntryMongo variantSourceEntryMongo = new VariantSourceEntryMongo(createVariantSourceEntry());
 
@@ -134,16 +134,16 @@ public class VariantSourceEntryConversionTest {
         Assert.assertEquals(3, variantSourceEntry.getAttributes().size());
         Assert.assertEquals(3, variantSourceEntry.getSamplesData().size());
 
-        VariantSourceEntryWithSamples variantSourceEntryWithSamples = new VariantSourceEntryWithSamples(
+        VariantSourceEntryWithSampleNames variantSourceEntryWithSampleNames = new VariantSourceEntryWithSampleNames(
                 variantSourceEntry, sampleNames);
-        Assert.assertEquals(FILE_ID, variantSourceEntryWithSamples.getFileId());
-        Assert.assertEquals(STUDY_ID, variantSourceEntryWithSamples.getStudyId());
-        Assert.assertEquals(FORMAT, variantSourceEntryWithSamples.getFormat());
-        Assert.assertEquals(3, variantSourceEntryWithSamples.getAttributes().size());
-        Assert.assertEquals(3, variantSourceEntryWithSamples.getSamplesDataMap().size());
-        Assert.assertEquals("0/0", variantSourceEntryWithSamples.getSamplesDataMap().get("NA001").get("GT"));
-        Assert.assertEquals("0/1", variantSourceEntryWithSamples.getSamplesDataMap().get("NA002").get("GT"));
-        Assert.assertEquals("1/1", variantSourceEntryWithSamples.getSamplesDataMap().get("NA003").get("GT"));
+        Assert.assertEquals(FILE_ID, variantSourceEntryWithSampleNames.getFileId());
+        Assert.assertEquals(STUDY_ID, variantSourceEntryWithSampleNames.getStudyId());
+        Assert.assertEquals(FORMAT, variantSourceEntryWithSampleNames.getFormat());
+        Assert.assertEquals(3, variantSourceEntryWithSampleNames.getAttributes().size());
+        Assert.assertEquals(3, variantSourceEntryWithSampleNames.getSamplesDataMap().size());
+        Assert.assertEquals("0/0", variantSourceEntryWithSampleNames.getSamplesDataMap().get("NA001").get("GT"));
+        Assert.assertEquals("0/1", variantSourceEntryWithSampleNames.getSamplesDataMap().get("NA002").get("GT"));
+        Assert.assertEquals("1/1", variantSourceEntryWithSampleNames.getSamplesDataMap().get("NA003").get("GT"));
     }
 
 

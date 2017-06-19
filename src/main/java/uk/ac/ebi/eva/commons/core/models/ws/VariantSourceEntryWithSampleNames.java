@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.eva.commons.core.models;
+package uk.ac.ebi.eva.commons.core.models.ws;
 
+import uk.ac.ebi.eva.commons.core.models.AbstractVariantSourceEntry;
+import uk.ac.ebi.eva.commons.core.models.IVariantSourceEntry;
+import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
 import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantSourceEntryMongo;
 
 import java.util.ArrayList;
@@ -22,7 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class VariantSourceEntryWithSamples extends AbstractVariantSourceEntry implements IVariantSourceEntry {
+public class VariantSourceEntryWithSampleNames extends AbstractVariantSourceEntry implements IVariantSourceEntry {
 
     /**
      * Genotypes and other sample-related information. The keys are the names
@@ -33,7 +36,7 @@ public class VariantSourceEntryWithSamples extends AbstractVariantSourceEntry im
      */
     private LinkedHashMap<String, Map<String, String>> samplesData;
 
-    public VariantSourceEntryWithSamples(IVariantSourceEntry variantSourceEntry, List<String> sampleNames) {
+    public VariantSourceEntryWithSampleNames(IVariantSourceEntry variantSourceEntry, List<String> sampleNames) {
         this(
                 variantSourceEntry.getFileId(),
                 variantSourceEntry.getStudyId(),
@@ -45,7 +48,7 @@ public class VariantSourceEntryWithSamples extends AbstractVariantSourceEntry im
         );
     }
 
-    public VariantSourceEntryWithSamples(VariantSourceEntryMongo variantSourceEntryMongo, List<String> sampleNames) {
+    public VariantSourceEntryWithSampleNames(VariantSourceEntryMongo variantSourceEntryMongo, List<String> sampleNames) {
         this(
                 variantSourceEntryMongo.getFileId(),
                 variantSourceEntryMongo.getStudyId(),
@@ -57,9 +60,9 @@ public class VariantSourceEntryWithSamples extends AbstractVariantSourceEntry im
         );
     }
 
-    public VariantSourceEntryWithSamples(String fileId, String studyId, String[] secondaryAlternates, String format,
-                                         Map<String, VariantStatistics> cohortStats, Map<String, String> attributes,
-                                         LinkedHashMap<String, Map<String, String>> samplesData) {
+    public VariantSourceEntryWithSampleNames(String fileId, String studyId, String[] secondaryAlternates, String format,
+                                             Map<String, VariantStatistics> cohortStats, Map<String, String> attributes,
+                                             LinkedHashMap<String, Map<String, String>> samplesData) {
         super(fileId, studyId, secondaryAlternates, format, cohortStats, attributes);
         this.samplesData = new LinkedHashMap<>();
         if (samplesData != null) {

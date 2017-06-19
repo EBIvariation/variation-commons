@@ -271,7 +271,6 @@ public class VariantSourceEntryMongo {
      */
     public static Set<VariantSourceEntryMongo> createSourceEntries(Collection<? extends IVariantSourceEntry>
                                                                            sourceEntries) {
-        return sourceEntries.stream().map(a -> new VariantSourceEntryMongo(a)).collect(Collectors.toSet
-                ());
+        return sourceEntries.stream().map(VariantSourceEntryMongo::new).collect(Collectors.toSet());
     }
 }

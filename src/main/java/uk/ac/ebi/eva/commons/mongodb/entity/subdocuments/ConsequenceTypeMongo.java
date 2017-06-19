@@ -84,10 +84,10 @@ public class ConsequenceTypeMongo implements IConsequenceType {
     private String codon;
 
     @Field(value = SIFT_FIELD)
-    private Score sift;
+    private ScoreMongo sift;
 
     @Field(value = POLYPHEN_FIELD)
-    private Score polyphen;
+    private ScoreMongo polyphen;
 
     @Field(value = SO_ACCESSION_FIELD)
     private Set<Integer> soAccessions;
@@ -101,7 +101,7 @@ public class ConsequenceTypeMongo implements IConsequenceType {
 
     public ConsequenceTypeMongo(String geneName, String ensemblGeneId, String ensemblTranscriptId, String strand,
                                 String biotype, Integer cDnaPosition, Integer cdsPosition, Integer aaPosition,
-                                String aaChange, String codon, Score sift, Score polyphen, Set<Integer> soAccessions,
+                                String aaChange, String codon, ScoreMongo sift, ScoreMongo polyphen, Set<Integer> soAccessions,
                                 Integer relativePosition) {
         this.geneName = geneName;
         this.ensemblGeneId = ensemblGeneId;
@@ -247,20 +247,20 @@ public class ConsequenceTypeMongo implements IConsequenceType {
     }
 
     @Override
-    public Score getSift() {
+    public ScoreMongo getSift() {
         return sift;
     }
 
-    public void setSift(Score sift) {
+    public void setSift(ScoreMongo sift) {
         this.sift = sift;
     }
 
     @Override
-    public Score getPolyphen() {
+    public ScoreMongo getPolyphen() {
         return polyphen;
     }
 
-    public void setPolyphen(Score polyphen) {
+    public void setPolyphen(ScoreMongo polyphen) {
         this.polyphen = polyphen;
     }
 

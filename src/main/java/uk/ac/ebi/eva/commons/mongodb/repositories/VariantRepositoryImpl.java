@@ -30,7 +30,7 @@ import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import uk.ac.ebi.eva.commons.core.models.Region;
-import uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument;
+import uk.ac.ebi.eva.commons.mongodb.entity.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.filter.VariantEntityRepositoryFilter;
 
 import java.util.ArrayList;
@@ -57,9 +57,9 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
     }
 
     @Override
-    public List<VariantDocument> findByIdsAndComplexFilters(String id, List<VariantEntityRepositoryFilter> filters,
-                                                            List<String> exclude, Pageable pageable) {
-        Query query = new Query(Criteria.where(VariantDocument.IDS_FIELD).is(id));
+    public List<VariantMongo> findByIdsAndComplexFilters(String id, List<VariantEntityRepositoryFilter> filters,
+                                                         List<String> exclude, Pageable pageable) {
+        Query query = new Query(Criteria.where(VariantMongo.IDS_FIELD).is(id));
         return findByComplexFiltersHelper(query, filters, exclude, pageable);
     }
 
@@ -70,9 +70,9 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
     }
 
     @Override
-    public List<VariantDocument> findByGenesAndComplexFilters(List<String> geneIds,
-                                                              List<VariantEntityRepositoryFilter> filters,
-                                                              List<String> exclude, Pageable pageable) {
+    public List<VariantMongo> findByGenesAndComplexFilters(List<String> geneIds,
+                                                           List<VariantEntityRepositoryFilter> filters,
+                                                           List<String> exclude, Pageable pageable) {
         Query query = new Query(Criteria.where("annot.xrefs.id").in(geneIds));
         return findByComplexFiltersHelper(query, filters, exclude, pageable);
     }
@@ -84,9 +84,9 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
     }
 
     @Override
-    public List<VariantDocument> findByRegionsAndComplexFilters(List<Region> regions,
-                                                                List<VariantEntityRepositoryFilter> filters,
-                                                                List<String> exclude, Pageable pageable) {
+    public List<VariantMongo> findByRegionsAndComplexFilters(List<Region> regions,
+                                                             List<VariantEntityRepositoryFilter> filters,
+                                                             List<String> exclude, Pageable pageable) {
         Query query = new Query();
         Criteria criteria = getRegionsCriteria(regions);
         query.addCriteria(criteria);
@@ -101,18 +101,18 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
 
     @Override
     public Set<String> findDistinctChromosomes() {
-        return new HashSet<>(mongoTemplate.getCollection(mongoTemplate.getCollectionName(VariantDocument.class))
-                .distinct(VariantDocument.CHROMOSOME_FIELD));
+        return new HashSet<>(mongoTemplate.getCollection(mongoTemplate.getCollectionName(VariantMongo.class))
+                .distinct(VariantMongo.CHROMOSOME_FIELD));
     }
 
-    private List<VariantDocument> findByComplexFiltersHelper(Query query, List<VariantEntityRepositoryFilter> filters,
-                                                             List<String> exclude, Pageable pageable) {
+    private List<VariantMongo> findByComplexFiltersHelper(Query query, List<VariantEntityRepositoryFilter> filters,
+                                                          List<String> exclude, Pageable pageable) {
 
         addFilterCriteriaToQuery(query, filters);
 
         ArrayList<String> sortProperties = new ArrayList<String>();
-        sortProperties.add(VariantDocument.CHROMOSOME_FIELD);
-        sortProperties.add(VariantDocument.START_FIELD);
+        sortProperties.add(VariantMongo.CHROMOSOME_FIELD);
+        sortProperties.add(VariantMongo.START_FIELD);
         query.with(new Sort(Sort.Direction.ASC, sortProperties));
 
         Pageable pageable1 = (pageable != null) ? pageable : new PageRequest(0, 10);
@@ -122,7 +122,7 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
             exclude.forEach(e -> query.fields().exclude(e));
         }
 
-        return mongoTemplate.find(query, VariantDocument.class);
+        return mongoTemplate.find(query, VariantMongo.class);
     }
 
     private void addFilterCriteriaToQuery(Query query, List<VariantEntityRepositoryFilter> filters) {
@@ -145,7 +145,7 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
         );
 
         AggregationResults<VariantAggregationCount> aggregationResults =
-                mongoTemplate.aggregate(aggregation, VariantDocument.class, VariantAggregationCount.class);
+                mongoTemplate.aggregate(aggregation, VariantMongo.class, VariantAggregationCount.class);
 
         return aggregationResults.getMappedResults().size() > 0
                 ? aggregationResults.getMappedResults().get(0).getCount() : 0;
@@ -171,9 +171,9 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
         List<Criteria> orRegionCriteria = new ArrayList<>();
 
         regions.forEach(region -> orRegionCriteria.add(
-                Criteria.where(VariantDocument.CHROMOSOME_FIELD).is(region.getChromosome())
-                        .and(VariantDocument.START_FIELD).lte(region.getEnd()).gt(region.getStart() - MARGIN)
-                        .and(VariantDocument.END_FIELD).gte(region.getStart()).lt(region.getEnd() + MARGIN)));
+                Criteria.where(VariantMongo.CHROMOSOME_FIELD).is(region.getChromosome())
+                        .and(VariantMongo.START_FIELD).lte(region.getEnd()).gt(region.getStart() - MARGIN)
+                        .and(VariantMongo.END_FIELD).gte(region.getStart()).lt(region.getEnd() + MARGIN)));
 
         return new Criteria().orOperator(orRegionCriteria.toArray(new Criteria[orRegionCriteria.size()]));
     }

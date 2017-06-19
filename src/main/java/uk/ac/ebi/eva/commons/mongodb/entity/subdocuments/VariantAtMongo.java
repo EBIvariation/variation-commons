@@ -23,18 +23,18 @@ import java.util.Set;
 /**
  * Mongo database representation of a VariantWithSamplesAndAnnotations AT field.
  */
-public class VariantAt {
+public class VariantAtMongo {
 
     private static final String CHUNK_IDS_FIELD = "chunkIds";
 
     @Field(CHUNK_IDS_FIELD)
     private Set<String> chunkIds;
 
-    VariantAt(){
+    VariantAtMongo(){
         //Empty constructor for spring
     }
 
-    public VariantAt(String chunkSmall, String chunkBig) {
+    public VariantAtMongo(String chunkSmall, String chunkBig) {
         chunkIds = new HashSet<>();
         chunkIds.add(chunkSmall);
         chunkIds.add(chunkBig);

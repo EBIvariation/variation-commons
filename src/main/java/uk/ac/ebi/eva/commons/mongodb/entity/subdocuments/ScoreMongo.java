@@ -16,11 +16,12 @@
 package uk.ac.ebi.eva.commons.mongodb.entity.subdocuments;
 
 import org.springframework.data.mongodb.core.mapping.Field;
+import uk.ac.ebi.eva.commons.core.models.IScore;
 
 /**
- * Mongo database representation of a score / description pair of values.
+ * Mongo database representation of a score and its description.
  */
-public class Score {
+public class ScoreMongo implements IScore {
 
     public final static String SCORE_SCORE_FIELD = "sc";
 
@@ -32,19 +33,25 @@ public class Score {
     @Field(value = SCORE_DESCRIPTION_FIELD)
     private String description;
 
-    Score() {
+    ScoreMongo() {
         // Spring empty constructor
     }
 
-    public Score(Double score, String description) {
+    public ScoreMongo(IScore score) {
+        this(score.getScore(), score.getDescription());
+    }
+
+    public ScoreMongo(Double score, String description) {
         this.score = score;
         this.description = description;
     }
 
+    @Override
     public Double getScore() {
         return score;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
@@ -54,10 +61,10 @@ public class Score {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Score score1 = (Score) o;
+        ScoreMongo scoreMongo1 = (ScoreMongo) o;
 
-        if (score != null ? !score.equals(score1.score) : score1.score != null) return false;
-        return description != null ? description.equals(score1.description) : score1.description == null;
+        if (score != null ? !score.equals(scoreMongo1.score) : scoreMongo1.score != null) return false;
+        return description != null ? description.equals(scoreMongo1.description) : scoreMongo1.description == null;
     }
 
     @Override

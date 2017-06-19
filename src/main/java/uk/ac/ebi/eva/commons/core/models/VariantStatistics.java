@@ -20,6 +20,7 @@ import uk.ac.ebi.eva.commons.core.models.genotype.AllelesCode;
 import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.core.models.pedigree.Pedigree;
 import uk.ac.ebi.eva.commons.core.models.stats.VariantHardyWeinbergStats;
+import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotations;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -90,10 +91,10 @@ public class VariantStatistics implements IVariantStatistics {
 
     public VariantStatistics(VariantWithSamplesAndAnnotations variant) {
         this(null, -1,
-             variant != null ? variant.getReference() : null,
-             variant != null ? variant.getAlternate() : null,
-             variant != null ? variant.getType() : VariantType.SNV,
-             -1, -1, null, null, -1, -1, -1, -1, -1, -1, -1);
+                variant != null ? variant.getReference() : null,
+                variant != null ? variant.getAlternate() : null,
+                variant != null ? variant.getType() : VariantType.SNV,
+                -1, -1, null, null, -1, -1, -1, -1, -1, -1, -1);
     }
 
     public VariantStatistics(String referenceAllele, String alternateAllele, VariantType type) {
@@ -410,10 +411,13 @@ public class VariantStatistics implements IVariantStatistics {
     public VariantStatistics calculate(List<Map<String, String>> samplesData, Map<String, String> attributes,
                                        Pedigree pedigree) {
         int[] allelesCount = new int[2];
-        int totalAllelesCount = 0, totalGenotypesCount = 0;
+        int totalAllelesCount = 0;
+        int totalGenotypesCount = 0;
 
-        float controlsDominant = 0, casesDominant = 0;
-        float controlsRecessive = 0, casesRecessive = 0;
+        float controlsDominant = 0;
+        int casesDominant = 0;
+        float controlsRecessive = 0;
+        int casesRecessive = 0;
 
         this.setNumSamples(samplesData.size());
         this.setMissingAlleles(0);
@@ -521,7 +525,7 @@ public class VariantStatistics implements IVariantStatistics {
      * patterns can only be calculated if pedigree information is provided.
      *
      * @param variants The variants whose statistics will be calculated
-     * @param ped Optional pedigree information to calculate some statistics
+     * @param ped      Optional pedigree information to calculate some statistics
      */
     public static void calculateStatsForVariantsList(List<VariantWithSamplesAndAnnotations> variants, Pedigree ped) {
         for (VariantWithSamplesAndAnnotations variant : variants) {
@@ -697,7 +701,7 @@ public class VariantStatistics implements IVariantStatistics {
         if (Float.floatToIntBits(this.casesPercentRecessive) != Float.floatToIntBits(other.casesPercentRecessive)) {
             return false;
         }
-        if (Float.floatToIntBits(this.controlsPercentRecessive) 
+        if (Float.floatToIntBits(this.controlsPercentRecessive)
                 != Float.floatToIntBits(other.controlsPercentRecessive)) {
             return false;
         }
