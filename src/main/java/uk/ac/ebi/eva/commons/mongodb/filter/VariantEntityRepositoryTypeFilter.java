@@ -27,6 +27,6 @@ public class VariantEntityRepositoryTypeFilter extends VariantEntityRepositoryFi
     private static final String FIELD = VariantEntityRepositoryFilter.TYPE_FIELD;
 
     public VariantEntityRepositoryTypeFilter(List<VariantType> types) {
-        super(FIELD, types, RelationalOperator.IN);
+        super(FIELD, false,types, RelationalOperator.IN);
     }
 }

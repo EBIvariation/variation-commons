@@ -23,6 +23,6 @@ public class VariantEntityRepositorySiftFilter extends VariantEntityRepositoryDo
     private static final String FIELD = VariantEntityRepositoryFilter.SIFT_FIELD;
 
     public VariantEntityRepositorySiftFilter(String sift) {
-        super(FIELD, sift);
+        super(FIELD, true, sift);
     }
 }
