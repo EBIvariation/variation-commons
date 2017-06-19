@@ -36,14 +36,13 @@ public class VariantRepositoryFilterTest {
     @Test
     public void getCriteriaGt() throws Exception {
         VariantEntityRepositoryFilter filter = new VariantEntityRepositoryPolyphenFilter(">0.5");
-        assertEquals(Criteria.where(VariantEntityRepositoryFilter.POLYPHEN_FIELD).elemMatch(new Criteria().gt(0.5)),
-                filter.getCriteria());
+        assertEquals(Criteria.where(VariantEntityRepositoryFilter.POLYPHEN_FIELD).gt(0.5), filter.getCriteria());
     }
 
     @Test
     public void getCriteriaLt() throws Exception {
         VariantEntityRepositoryFilter filter = new VariantEntityRepositorySiftFilter("<0.9");
-        assertEquals(Criteria.where(VariantEntityRepositoryFilter.SIFT_FIELD).elemMatch(new Criteria().lt(0.9)),
+        assertEquals(Criteria.where(VariantEntityRepositoryFilter.SIFT_FIELD).lt(0.9),
                 filter.getCriteria());
     }
 
@@ -56,8 +55,7 @@ public class VariantRepositoryFilterTest {
     @Test
     public void getCriteriaLte() throws Exception {
         VariantEntityRepositoryFilter filter = new VariantEntityRepositoryPolyphenFilter("<=0.856");
-        assertEquals(Criteria.where(VariantEntityRepositoryFilter.POLYPHEN_FIELD).elemMatch(new Criteria().lte(0.856)),
-                filter.getCriteria());
+        assertEquals(Criteria.where(VariantEntityRepositoryFilter.POLYPHEN_FIELD).lte(0.856), filter.getCriteria());
     }
 
     @Test

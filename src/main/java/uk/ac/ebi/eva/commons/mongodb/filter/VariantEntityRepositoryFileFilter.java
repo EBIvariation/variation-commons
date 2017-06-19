@@ -25,6 +25,6 @@ public class VariantEntityRepositoryFileFilter extends VariantEntityRepositoryFi
     private static final String FIELD = VariantEntityRepositoryFilter.FILE_ID_FIELD;
 
     public VariantEntityRepositoryFileFilter(List<String> files) {
-        super(FIELD, false, files, RelationalOperator.IN);
+        super(FIELD, files, RelationalOperator.IN);
     }
 }

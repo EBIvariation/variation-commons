@@ -23,6 +23,6 @@ public class VariantEntityRepositoryPolyphenFilter extends VariantEntityReposito
     private static final String FIELD = VariantEntityRepositoryFilter.POLYPHEN_FIELD;
 
     public VariantEntityRepositoryPolyphenFilter(String polyphen) {
-        super(FIELD, true, polyphen);
+        super(FIELD, polyphen);
     }
 }

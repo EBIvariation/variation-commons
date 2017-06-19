@@ -20,8 +20,8 @@ package uk.ac.ebi.eva.commons.mongodb.filter;
 
 public abstract class VariantEntityRepositoryDoubleFilter extends VariantEntityRepositoryFilter<Double> {
 
-    public VariantEntityRepositoryDoubleFilter(String field, boolean useElemMatch, String inputValue) {
-        super(field, useElemMatch, getValueFromRelation(inputValue), getRelationalOperatorFromRelation(inputValue));
+    public VariantEntityRepositoryDoubleFilter(String field, String inputValue) {
+        super(field, getValueFromRelation(inputValue), getRelationalOperatorFromRelation(inputValue));
     }
 
     protected static Double getValueFromRelation(String relation) {
