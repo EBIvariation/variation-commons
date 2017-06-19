@@ -26,7 +26,7 @@ public class VariantEntityRepositoryConsequenceTypeFilter extends VariantEntityR
     private static final String FIELD = VariantEntityRepositoryFilter.CONSEQUENCE_TYPE_SO_FIELD;
 
     public VariantEntityRepositoryConsequenceTypeFilter(List<String> consequenceType) {
-        super(FIELD,
+        super(FIELD, true,
                 consequenceType.stream()
                         .map(c -> Integer.parseInt(c.replaceAll("[^\\d.]", ""), 10))  // parse integer from string
                         .collect(Collectors.toList()),

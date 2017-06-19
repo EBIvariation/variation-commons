@@ -206,8 +206,6 @@ public class VariantRepositoryTest {
         assertTrue(variantEntityList.size() == 0);
     }
 
-    // TODO test won't work until query is modified to support the new database structure
-    @Ignore
     @Test
     public void testRegionIsFoundWithConsequenceType() {
         List<String> cts = new ArrayList<>();
@@ -263,7 +261,6 @@ public class VariantRepositoryTest {
     }
 
     // TODO test won't work until query is modified to support the new database structure
-    @Ignore
     @Test
     public void testRegionIsFoundWithPolyphenGreaterThan() {
         String chr = "11";
@@ -277,8 +274,6 @@ public class VariantRepositoryTest {
         testFiltersHelperRegion(regions, filters, exclude, 4);
     }
 
-    // TODO test won't work until query is modified to support the new database structure
-    @Ignore
     @Test
     public void testRegionIsFoundWithSiftLessThan() {
         String chr = "11";
