@@ -16,7 +16,7 @@
 package uk.ac.ebi.eva.commons.mongodb.projections;
 
 /**
- * Subset of fields from VariantSourceDocument. This is used to make an automatic MongoDB projection in
+ * Subset of fields from VariantSourceMongo. This is used to make an automatic MongoDB projection in
  * {@link uk.ac.ebi.eva.commons.mongodb.services.VariantStudySummaryService}
  */
 public class VariantStudySummary implements Comparable {
@@ -27,7 +27,7 @@ public class VariantStudySummary implements Comparable {
 
     public static final String FILES_COUNT = "filesCount";
 
-    public static final String ID = "_id.";
+    public static final String ID = "_id";
 
     private String studyId;
 

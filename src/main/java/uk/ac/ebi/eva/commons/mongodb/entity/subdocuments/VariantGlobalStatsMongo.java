@@ -18,9 +18,9 @@ package uk.ac.ebi.eva.commons.mongodb.entity.subdocuments;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
- * Mongo database representation of VariantGlobalStats
+ * Mongo database representation of VariantGlobalStatsMongo
  */
-public class VariantGlobalStats {
+public class VariantGlobalStatsMongo {
 
     public final static String STATISTICS_NUMSAMPLES_FIELD = "nSamp";
 
@@ -67,12 +67,12 @@ public class VariantGlobalStats {
     @Field(STATISTICS_MEANQUALITY_FIELD)
     private float meanQuality;
 
-    VariantGlobalStats() {
+    VariantGlobalStatsMongo() {
         // Spring empty constructor
     }
 
-    public VariantGlobalStats(int variantsCount, int samplesCount, int snpsCount, int indelsCount, int structuralCount,
-                              int passCount, int transitionsCount, int transversionsCount, float meanQuality) {
+    public VariantGlobalStatsMongo(int variantsCount, int samplesCount, int snpsCount, int indelsCount, int structuralCount,
+                                   int passCount, int transitionsCount, int transversionsCount, float meanQuality) {
         this.variantsCount = variantsCount;
         this.samplesCount = samplesCount;
         this.snpsCount = snpsCount;
@@ -123,9 +123,9 @@ public class VariantGlobalStats {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof VariantGlobalStats)) return false;
+        if (!(o instanceof VariantGlobalStatsMongo)) return false;
 
-        VariantGlobalStats that = (VariantGlobalStats) o;
+        VariantGlobalStatsMongo that = (VariantGlobalStatsMongo) o;
 
         if (variantsCount != that.variantsCount) return false;
         if (samplesCount != that.samplesCount) return false;

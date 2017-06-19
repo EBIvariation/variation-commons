@@ -22,9 +22,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Basic abstract implementation of Variant model with all the common elements for the current models.
+ * Basic abstract implementation of AbstractVariant model with all the common elements for the current models.
  */
-public abstract class Variant implements IVariant{
+public abstract class AbstractVariant implements IVariant{
 
     public static final int SV_THRESHOLD = 50;
 
@@ -77,7 +77,7 @@ public abstract class Variant implements IVariant{
      */
     private final Map<String, Set<String>> hgvs;
 
-    public Variant(String chromosome, int start, int end, String reference, String alternate) {
+    public AbstractVariant(String chromosome, int start, int end, String reference, String alternate) {
         if (start > end && !(reference.equals("-"))) {
             throw new IllegalArgumentException("End position must be greater than the start position");
         }

@@ -19,7 +19,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import uk.ac.ebi.eva.commons.core.models.IXref;
 
 /**
- * Mongo database representation of XrefMongo field in a genomic variant annotation
+ * Mongo database representation of an Xref in a genomic variant annotation
  */
 public class XrefMongo implements IXref {
 

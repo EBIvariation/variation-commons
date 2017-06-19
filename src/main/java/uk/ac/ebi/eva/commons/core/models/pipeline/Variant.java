@@ -13,61 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.eva.commons.core.models;
+package uk.ac.ebi.eva.commons.core.models.pipeline;
+
+import uk.ac.ebi.eva.commons.core.models.AbstractVariant;
+import uk.ac.ebi.eva.commons.core.models.IVariantSourceEntry;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
- * A mutation in the genome, defined as a change from a reference to an alternate allele in a certain position of
- * said genome.
+ * Basic implementation to implement a variant attuned to use in the pipeline
  */
-public class VariantWithSamplesAndAnnotations extends Variant {
+public class Variant extends AbstractVariant {
 
     /**
      * Information specific to each file the variant was read from, such as samples or statistics.
      */
-    private final Map<String, VariantSourceEntryWithSamples> sourceEntries;
+    private final Map<String, VariantSourceEntry> sourceEntries;
 
-    /**
-     * Annotations of the genomic variation.
-     */
-    private final Set<Annotation> annotations;
-
-    public VariantWithSamplesAndAnnotations(String chromosome, int start, int end, String reference, String alternate) {
+    public Variant(String chromosome, int start, int end, String reference, String alternate) {
         super(chromosome, start, end, reference, alternate);
         sourceEntries = new HashMap<>();
-        annotations = new HashSet<>();
     }
 
-    public void addAnnotation(Annotation annotation){
-        this.annotations.add(annotation);
+    public void addSourceEntry(VariantSourceEntry sourceEntry) {
+        this.sourceEntries.put(getSourceEntryIndex(sourceEntry.getStudyId(),
+                sourceEntry.getFileId()), sourceEntry);
     }
 
-    public void setAnnotations(Set<Annotation> annotations){
-        this.annotations.clear();
-        this.annotations.addAll(annotations);
-    }
-
-    public Set<Annotation> getAnnotations(){
-        return Collections.unmodifiableSet(annotations);
-    }
-
-    public void addSourceEntry(VariantSourceEntryWithSamples sourceEntry) {
-        this.sourceEntries.put(getSourceEntryIndex(sourceEntry.getStudyId(), sourceEntry.getFileId()), sourceEntry);
-    }
-
-    public void addSourceEntries(Collection<VariantSourceEntryWithSamples> variantSourceEntries) {
+    public void addSourceEntries(Collection<VariantSourceEntry> variantSourceEntries) {
         this.sourceEntries.clear();
         variantSourceEntries.forEach(variantSourceEntry ->
                 sourceEntries.put(getSourceEntryIndex(variantSourceEntry), variantSourceEntry));
     }
 
-    private String getSourceEntryIndex(VariantSourceEntryWithSamples variantSourceEntries) {
+    private String getSourceEntryIndex(IVariantSourceEntry variantSourceEntries) {
         return getSourceEntryIndex(variantSourceEntries.getStudyId(), variantSourceEntries.getFileId());
     }
 
@@ -76,12 +58,11 @@ public class VariantWithSamplesAndAnnotations extends Variant {
     }
 
     @Override
-    public Collection<VariantSourceEntryWithSamples> getSourceEntries() {
+    public Collection<VariantSourceEntry> getSourceEntries() {
         return Collections.unmodifiableCollection(sourceEntries.values());
     }
 
-    public VariantSourceEntryWithSamples getSourceEntry(String fileId, String studyId) {
+    public VariantSourceEntry getSourceEntry(String fileId, String studyId) {
         return sourceEntries.get(getSourceEntryIndex(studyId, fileId));
     }
-
 }

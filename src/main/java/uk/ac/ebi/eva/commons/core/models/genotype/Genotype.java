@@ -16,6 +16,8 @@
 package uk.ac.ebi.eva.commons.core.models.genotype;
 
 import com.google.common.primitives.Ints;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -23,6 +25,8 @@ import java.util.regex.Pattern;
 
 
 public class Genotype {
+
+    private static Logger logger = LoggerFactory.getLogger(Genotype.class);
 
     private String reference;
     private String alternate;
@@ -74,7 +78,7 @@ public class Genotype {
                         this.allelesIdx[i] = 1;
                     } else {
                         if (allele.isEmpty()) {
-                            System.out.println("Empty allele: REF=" + reference + ",ALT=" + alternate);
+                            logger.error("Empty allele: REF=" + reference + ",ALT=" + alternate);
                         }
                         this.allelesIdx[i] = 2; // TODO What happens with more than 2 alternate alleles? Difficult situation
                     }

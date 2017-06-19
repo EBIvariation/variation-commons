@@ -15,7 +15,7 @@
  */
 package uk.ac.ebi.eva.commons.core.models;
 
-import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.Score;
+import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.ScoreMongo;
 
 import java.util.Set;
 
@@ -44,9 +44,9 @@ public class ConsequenceType implements IConsequenceType {
 
     private String codon;
 
-    private Score sift;
+    private ScoreMongo sift;
 
-    private Score polyphen;
+    private ScoreMongo polyphen;
 
     private Set<Integer> soAccessions;
 
@@ -54,7 +54,7 @@ public class ConsequenceType implements IConsequenceType {
 
     public ConsequenceType(String geneName, String ensemblGeneId, String ensemblTranscriptId, String strand,
                            String biotype, Integer cDnaPosition, Integer cdsPosition, Integer aaPosition,
-                           String aaChange, String codon, Score sift, Score polyphen, Set<Integer> soAccessions,
+                           String aaChange, String codon, ScoreMongo sift, ScoreMongo polyphen, Set<Integer> soAccessions,
                            Integer relativePosition) {
         this.geneName = geneName;
         this.ensemblGeneId = ensemblGeneId;
@@ -142,12 +142,12 @@ public class ConsequenceType implements IConsequenceType {
     }
 
     @Override
-    public Score getSift() {
+    public ScoreMongo getSift() {
         return sift;
     }
 
     @Override
-    public Score getPolyphen() {
+    public ScoreMongo getPolyphen() {
         return polyphen;
     }
 

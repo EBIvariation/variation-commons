@@ -17,16 +17,16 @@ package uk.ac.ebi.eva.commons.mongodb.projections;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
-import uk.ac.ebi.eva.commons.mongodb.entity.AnnotationDocument;
+import uk.ac.ebi.eva.commons.mongodb.entity.AnnotationMongo;
 
-import static uk.ac.ebi.eva.commons.mongodb.entity.AnnotationDocument.CHROMOSOME_FIELD;
-import static uk.ac.ebi.eva.commons.mongodb.entity.AnnotationDocument.END_FIELD;
-import static uk.ac.ebi.eva.commons.mongodb.entity.AnnotationDocument.START_FIELD;
-import static uk.ac.ebi.eva.commons.mongodb.entity.AnnotationDocument.VEP_CACHE_VERSION_FIELD;
-import static uk.ac.ebi.eva.commons.mongodb.entity.AnnotationDocument.VEP_VERSION_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entity.AnnotationMongo.CHROMOSOME_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entity.AnnotationMongo.END_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entity.AnnotationMongo.START_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entity.AnnotationMongo.VEP_CACHE_VERSION_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entity.AnnotationMongo.VEP_VERSION_FIELD;
 
 /**
- * Simplified form of {@link AnnotationDocument} used to improve the update of annotations in mongo.
+ * Simplified form of {@link AnnotationMongo} used to improve the update of annotations in mongo.
  */
 public class SimplifiedAnnotation {
 
@@ -48,7 +48,7 @@ public class SimplifiedAnnotation {
     @Field(value = VEP_CACHE_VERSION_FIELD)
     private String vepCacheVersion;
 
-    public SimplifiedAnnotation(AnnotationDocument annotation) {
+    public SimplifiedAnnotation(AnnotationMongo annotation) {
         this.id = annotation.getId();
         this.chromosome = annotation.getChromosome();
         this.start = annotation.getStart();

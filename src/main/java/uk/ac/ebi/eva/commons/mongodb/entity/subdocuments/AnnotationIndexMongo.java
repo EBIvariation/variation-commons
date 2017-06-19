@@ -18,7 +18,7 @@ package uk.ac.ebi.eva.commons.mongodb.entity.subdocuments;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.util.Assert;
 import uk.ac.ebi.eva.commons.core.models.IXref;
-import uk.ac.ebi.eva.commons.mongodb.entity.AnnotationDocument;
+import uk.ac.ebi.eva.commons.mongodb.entity.AnnotationMongo;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,7 +30,7 @@ import java.util.Set;
 /**
  * Lite version of genomic variant annotation generated using Ensembl VEP for indexing purposes.
  */
-public class AnnotationIndex {
+public class AnnotationIndexMongo {
 
     public static final String VEP_VERSION_FIELD = "vepv";
 
@@ -57,12 +57,12 @@ public class AnnotationIndex {
     private List<Double> polyphens;
 
     @Field(value = SO_ACCESSION_FIELD)
-    private Set<Integer> soAccessions = new HashSet<>();
+    private Set<Integer> soAccessions;
 
     @Field(value = XREFS_FIELD)
-    private Set<String> xrefIds = new HashSet<>();
+    private Set<String> xrefIds;
 
-    AnnotationIndex() {
+    AnnotationIndexMongo() {
         // Spring empty constructor
     }
 
@@ -73,59 +73,81 @@ public class AnnotationIndex {
      * @param vepCacheVersion
      * @throws IllegalArgumentException If {@param vepVersion} or {@param vepCacheVersion} are null or empty values.
      */
-    public AnnotationIndex(String vepVersion, String vepCacheVersion) {
+    public AnnotationIndexMongo(String vepVersion, String vepCacheVersion) {
         Assert.hasText(vepVersion);
         Assert.hasText(vepCacheVersion);
         this.vepVersion = vepVersion;
         this.vepCacheVersion = vepCacheVersion;
+        this.soAccessions = new HashSet<>();
+        this.xrefIds = new HashSet<>();
     }
 
     /**
      * Private copy constructor
      *
-     * @param annotationIndex
+     * @param annotationIndexMongo
      */
-    private AnnotationIndex(AnnotationIndex annotationIndex) {
-        this(annotationIndex.getVepVersion(), annotationIndex.getVepCacheVersion());
-        doConcatenate(annotationIndex);
+    private AnnotationIndexMongo(AnnotationIndexMongo annotationIndexMongo) {
+        this(annotationIndexMongo.getVepVersion(), annotationIndexMongo.getVepCacheVersion());
+        doConcatenate(annotationIndexMongo);
     }
 
-    public AnnotationIndex(AnnotationDocument annotation) {
+    public AnnotationIndexMongo(AnnotationMongo annotation) {
         this(annotation.getVepVersion(), annotation.getVepCacheVersion());
         doConcatenate(annotation);
     }
 
-    private void doConcatenate(AnnotationIndex annotationIndex) {
-        if (annotationIndex.getXrefIds() != null) {
-            addXrefIds(annotationIndex.getXrefIds());
+    public AnnotationIndexMongo concatenate(AnnotationMongo annotation) {
+        AnnotationIndexMongo temp = new AnnotationIndexMongo(this);
+        temp.doConcatenate(annotation);
+        return temp;
+    }
+
+    /**
+     * Concatenate two VariantAnnotations in a new one. This method returns a new instance of AnnotationIndexMongo with
+     * the concatenation of xrefIds and soAccessions. Polyphen and SIFT scores ranges need to be recalculated to store
+     * the minimum and maximum across the 2 AnnotationIndex objects.
+     *
+     * @param annotation
+     * @return
+     */
+    public AnnotationIndexMongo concatenate(AnnotationIndexMongo annotation) {
+        AnnotationIndexMongo temp = new AnnotationIndexMongo(this);
+        temp.doConcatenate(annotation);
+        return temp;
+    }
+
+    private void doConcatenate(AnnotationIndexMongo annotationIndexMongo) {
+        if (annotationIndexMongo.getXrefIds() != null) {
+            addXrefIds(annotationIndexMongo.getXrefIds());
         }
-        if (annotationIndex.getSifts() != null) {
-            annotationIndex.getSifts().forEach(this::concatenateSiftRange);
+        if (annotationIndexMongo.getSifts() != null) {
+            annotationIndexMongo.getSifts().forEach(this::concatenateSiftRange);
         }
-        if (annotationIndex.getPolyphens() != null) {
-            annotationIndex.getPolyphens().forEach(this::concatenatePolyphenRange);
+        if (annotationIndexMongo.getPolyphens() != null) {
+            annotationIndexMongo.getPolyphens().forEach(this::concatenatePolyphenRange);
         }
-        if (annotationIndex.getSoAccessions() != null) {
-            addsoAccessions(annotationIndex.getSoAccessions());
+        if (annotationIndexMongo.getSoAccessions() != null) {
+            addSoAccessions(annotationIndexMongo.getSoAccessions());
         }
     }
 
-    private void doConcatenate(AnnotationDocument annotation) {
+    private void doConcatenate(AnnotationMongo annotation) {
         for (IXref xref : annotation.getXrefs()) {
             addXrefId(xref.getId());
         }
         for (ConsequenceTypeMongo consequenceType : annotation.getConsequenceTypes()) {
-            final Score sift = consequenceType.getSift();
+            final ScoreMongo sift = consequenceType.getSift();
             if (sift != null) {
                 concatenateSiftRange(sift.getScore());
             }
-            final Score polyphen = consequenceType.getPolyphen();
+            final ScoreMongo polyphen = consequenceType.getPolyphen();
             if (polyphen != null) {
                 concatenatePolyphenRange(polyphen.getScore());
             }
             final Set<Integer> soAccessions = consequenceType.getSoAccessions();
             if (soAccessions != null) {
-                addsoAccessions(soAccessions);
+                addSoAccessions(soAccessions);
             }
         }
     }
@@ -190,7 +212,7 @@ public class AnnotationIndex {
         xrefIds.addAll(ids);
     }
 
-    private void addsoAccessions(Set<Integer> soAccessions) {
+    private void addSoAccessions(Set<Integer> soAccessions) {
         if (this.soAccessions == null) {
             this.soAccessions = new HashSet<>();
         }
@@ -219,25 +241,5 @@ public class AnnotationIndex {
 
     public String getVepCacheVersion() {
         return vepCacheVersion;
-    }
-
-    public AnnotationIndex concatenate(AnnotationDocument annotation) {
-        AnnotationIndex temp = new AnnotationIndex(this);
-        temp.doConcatenate(annotation);
-        return temp;
-    }
-
-    /**
-     * Concatenate two VariantAnnotations in a new one. This method returns a new instance of AnnotationIndex with
-     * the concatenation of xrefIds and soAccessions. This concatenation also has new values for the ranges of
-     * polyphen and sift values to include the values expressend in the concatenated AnnotationIndex.
-     *
-     * @param annotation
-     * @return
-     */
-    public AnnotationIndex concatenate(AnnotationIndex annotation) {
-        AnnotationIndex temp = new AnnotationIndex(this);
-        temp.doConcatenate(annotation);
-        return temp;
     }
 }

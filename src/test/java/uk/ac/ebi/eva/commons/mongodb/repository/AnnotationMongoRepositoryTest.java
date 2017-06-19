@@ -25,8 +25,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.eva.commons.configuration.MongoRepositoryTestConfiguration;
-import uk.ac.ebi.eva.commons.mongodb.entity.AnnotationDocument;
-import uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument;
+import uk.ac.ebi.eva.commons.mongodb.entity.AnnotationMongo;
+import uk.ac.ebi.eva.commons.mongodb.entity.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.repositories.AnnotationRepository;
 import uk.ac.ebi.eva.commons.mongodb.repositories.VariantRepository;
 
@@ -46,7 +46,7 @@ import static org.junit.Assert.assertTrue;
 @UsingDataSet(locations = {
         "/test-data/variants.json",
         "/test-data/annotations.json"})
-public class AnnotationDocumentRepositoryTest {
+public class AnnotationMongoRepositoryTest {
 
     public static final String TEST_DB = "test-db";
 
@@ -64,14 +64,14 @@ public class AnnotationDocumentRepositoryTest {
 
     @Test
     public void testFindOne() {
-        AnnotationDocument annotation = repository.findOne("9", 10099, "A", "T", "78", "78");
+        AnnotationMongo annotation = repository.findOne("9", 10099, "A", "T", "78", "78");
         assertNotNull(annotation);
         assertEquals(7, annotation.getConsequenceTypes().size());
     }
 
     @Test
     public void testFindMultiple() {
-        Set<AnnotationDocument> annotations = repository.findByIdIn(
+        Set<AnnotationMongo> annotations = repository.findByIdIn(
                 Arrays.asList("9_10099_A_T_78_78", "11_190010_G_A_78_78", "11_190013_C_T_78_78"));
         assertNotNull(annotations);
         assertEquals(3, annotations.size());
@@ -79,22 +79,22 @@ public class AnnotationDocumentRepositoryTest {
 
     @Test
     public void testFindAnnotationsOfVariants() {
-        List<VariantDocument> documents = new ArrayList<>();
+        List<VariantMongo> documents = new ArrayList<>();
         documents.add(variantRepository.findOne("9_10099_A_T"));
         documents.add(variantRepository.findOne("11_190020_G_A"));
         documents.add(variantRepository.findOne("11_190010_G_A"));
-        Set<AnnotationDocument> annotations = repository.findAnnotationsOfVariants(documents);
+        Set<AnnotationMongo> annotations = repository.findAnnotationsOfVariants(documents);
         assertNotNull(annotations);
         assertEquals(3, annotations.size());
     }
 
     @Test
     public void testAndIndex() {
-        List<VariantDocument> documents = new ArrayList<>();
+        List<VariantMongo> documents = new ArrayList<>();
         documents.add(variantRepository.findOne("9_10099_A_T"));
         documents.add(variantRepository.findOne("11_190020_G_A"));
         documents.add(variantRepository.findOne("11_190010_G_A"));
-        Map<String, Set<AnnotationDocument>> annotations = repository.findAndIndexAnnotationsOfVariants(documents);
+        Map<String, Set<AnnotationMongo>> annotations = repository.findAndIndexAnnotationsOfVariants(documents);
         assertNotNull(annotations);
         assertEquals(3, annotations.size());
         assertTrue(annotations.containsKey("9_10099_A_T"));

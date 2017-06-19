@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 EMBL - European Bioinformatics Institute
+ * Copyright 2017 EMBL - European Bioinformatics Institute
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
-import uk.ac.ebi.eva.commons.mongodb.entity.VariantSourceDocument;
+import uk.ac.ebi.eva.commons.mongodb.entity.VariantSourceMongo;
 import uk.ac.ebi.eva.commons.mongodb.projections.VariantStudySummary;
 
 import java.util.List;
@@ -34,7 +34,7 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.matc
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.project;
 
 /**
- * Mongo persistence service that returns VariantStudySummary projections
+ * Mongo persistence service that returns {@link VariantStudySummary} projections
  */
 @Service
 public class VariantStudySummaryService {
@@ -53,15 +53,14 @@ public class VariantStudySummaryService {
      * @see #groupAndCount
      * @see #projectAndFlatten
      */
-    //TODO FIND A GOOD NAME
-    public List<VariantStudySummary> findBy() {
+    public List<VariantStudySummary> findAll() {
         Aggregation aggregation = Aggregation.newAggregation(
                 groupAndCount(),
                 projectAndFlatten()
         );
 
         AggregationResults<VariantStudySummary> studies = mongoTemplate.aggregate(aggregation,
-                VariantSourceDocument.class,
+                VariantSourceMongo.class,
                 VariantStudySummary.class);
 
         return studies.getMappedResults();
@@ -84,21 +83,24 @@ public class VariantStudySummaryService {
      */
     private ProjectionOperation projectAndFlatten() {
         return project(VariantStudySummary.FILES_COUNT)
-                .and(VariantStudySummary.ID + VariantStudySummary.STUDY_ID).as(VariantStudySummary.STUDY_ID)
-                .and(VariantStudySummary.ID + VariantStudySummary.STUDY_NAME).as(VariantStudySummary.STUDY_NAME);
+                .and(VariantStudySummary.ID + "." + VariantStudySummary.STUDY_ID)
+                .as(VariantStudySummary.STUDY_ID)
+                .and(VariantStudySummary.ID + "." + VariantStudySummary.STUDY_NAME)
+                .as(VariantStudySummary.STUDY_NAME);
     }
 
     /**
      * the equivalent intended query is:
      * db.files.aggregate([
-     *  {$match : { $or:[{"sid" : "studyNameOrId"} , {"sname": "studyNameOrId"}]} },
-     *  {$group:{_id: {studyId:"$sid",studyName:"$sname"}, filesCount:{$sum:1}}},
-     *  {$project:{"studyId" : "$_id.studyId", "studyName" : "$_id.studyName", "_id" : 0, "filesCount":"$filesCount" }}
-     *  ])
+     * {$match : { $or:[{"sid" : "studyNameOrId"} , {"sname": "studyNameOrId"}]} },
+     * {$group:{_id: {studyId:"$sid",studyName:"$sname"}, filesCount:{$sum:1}}},
+     * {$project:{"studyId" : "$_id.studyId", "studyName" : "$_id.studyName", "_id" : 0, "filesCount":"$filesCount" }}
+     * ])
      * See also the inner explanation of those 3 stages
-     *  @see #matchByNameOrId
-     *  @see #groupAndCount
-     *  @see #projectAndFlatten
+     *
+     * @see #matchByNameOrId
+     * @see #groupAndCount
+     * @see #projectAndFlatten
      */
     public VariantStudySummary findByStudyNameOrStudyId(String studyNameOrId) {
         Aggregation aggregation = Aggregation.newAggregation(
@@ -108,7 +110,7 @@ public class VariantStudySummaryService {
         );
 
         AggregationResults<VariantStudySummary> studies = mongoTemplate.aggregate(aggregation,
-                VariantSourceDocument.class,
+                VariantSourceMongo.class,
                 VariantStudySummary.class);
 
         VariantStudySummary variantStudySummary;

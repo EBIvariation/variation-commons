@@ -17,7 +17,6 @@
 package uk.ac.ebi.eva.commons.core.models.pedigree;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,35 +99,25 @@ public class Pedigree {
     public List<Family> getFamiliesTDT() {
 
         List<Family> families = new ArrayList<>();
-        Individual ind;
-
-        for (Map.Entry<String, Individual> entry : this.individuals.entrySet()) {
-            ind = entry.getValue();
-            if (ind.getFather() != null && ind.getMother() != null) {
-                addIndividualToFamily(ind, ind.getFather(), ind.getMother(), families);
+        individuals.forEach((s, individual) -> {
+            if (individual.getFather() != null && individual.getMother() != null) {
+                addIndividualToFamily(individual, individual.getFather(), individual.getMother(), families);
             }
-        }
+        });
         return families;
     }
 
-    private void addIndividualToFamily(Individual ind, Individual father, Individual mother, List<Family> families) {
-        boolean b = false;
-
-        Iterator<Family> it = families.iterator();
-        Family fam;
-
-        while (it.hasNext() && !b) {
-            fam = it.next();
-            if (fam.getFather().equals(father) && fam.getMother().equals(mother)) {
-                fam.addChild(ind);
-                b = true;
+    private static void addIndividualToFamily(Individual individual, Individual father, Individual mother,
+                                              List<Family> families) {
+        for (Family family : families) {
+            if (family.getFather().equals(father) && family.getMother().equals(mother)) {
+                family.addChild(individual);
+                return;
             }
         }
-        if (!b) {
-            fam = new Family(father, mother);
-            fam.addChild(ind);
-            families.add(fam);
-        }
+        Family family = new Family(father, mother);
+        family.addChild(individual);
+        families.add(family);
     }
 
 }

@@ -20,12 +20,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
- * This bean represents genomic features, such as genes or transcripts.
- * <p>
- * Its first usage is for persisting information from GTF files into MongoDB.
+ * Mapped class for feature collection in mongo
  */
 @Document(collection = "features")
-public class FeatureCoordinatesDocument {
+public class FeatureCoordinatesMongo {
 
     //TODO check if these are the intended names for the database structure
     private static final String NAME_FIELD = "name";
@@ -56,11 +54,11 @@ public class FeatureCoordinatesDocument {
     @Field(END_FIELD)
     private int end;
 
-    FeatureCoordinatesDocument() {
+    FeatureCoordinatesMongo() {
         // Spring empty constructor
     }
 
-    public FeatureCoordinatesDocument(String id, String name, String feature, String chromosome, int start, int end) {
+    public FeatureCoordinatesMongo(String id, String name, String feature, String chromosome, int start, int end) {
         this.id = id;
         this.name = name;
         this.feature = feature;

@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.eva.commons.core.models;
+package uk.ac.ebi.eva.commons.core.models.pipeline;
 
+import uk.ac.ebi.eva.commons.core.models.AbstractVariantSourceEntry;
+import uk.ac.ebi.eva.commons.core.models.IVariantSourceEntry;
+import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
 import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantSourceEntryMongo;
 
 import java.util.ArrayList;

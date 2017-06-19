@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 EMBL - European Bioinformatics Institute
+ * Copyright 2017 EMBL - European Bioinformatics Institute
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.eva.commons.core.models.Annotation;
 import uk.ac.ebi.eva.commons.core.models.Region;
-import uk.ac.ebi.eva.commons.core.models.VariantSourceEntryWithSamples;
+import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
-import uk.ac.ebi.eva.commons.core.models.VariantWithSamplesAndAnnotations;
-import uk.ac.ebi.eva.commons.mongodb.entity.AnnotationDocument;
-import uk.ac.ebi.eva.commons.mongodb.entity.VariantDocument;
+import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotations;
+import uk.ac.ebi.eva.commons.mongodb.entity.AnnotationMongo;
+import uk.ac.ebi.eva.commons.mongodb.entity.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantSourceEntryMongo;
 import uk.ac.ebi.eva.commons.mongodb.filter.VariantEntityRepositoryFilter;
 import uk.ac.ebi.eva.commons.mongodb.repositories.AnnotationRepository;
@@ -55,45 +55,45 @@ public class VariantWithAnnotationsService {
         return convert(variantRepository.findByGenesAndComplexFilters(geneIds, filters, exclude, pageable));
     }
 
-    private List<VariantWithSamplesAndAnnotations> convert(List<VariantDocument> variantDocuments) {
+    private List<VariantWithSamplesAndAnnotations> convert(List<VariantMongo> variantMongos) {
         Table<String, String, List<String>> studyFileIdsToSamples = variantSourceRepository.findAndIndexSamples();
-        Map<String, Set<AnnotationDocument>> indexedAnnotations = annotationRepository
-                .findAndIndexAnnotationsOfVariants(variantDocuments);
+        Map<String, Set<AnnotationMongo>> indexedAnnotations = annotationRepository
+                .findAndIndexAnnotationsOfVariants(variantMongos);
 
-        return variantDocuments.stream()
+        return variantMongos.stream()
                 .map(variant -> convert(variant, studyFileIdsToSamples, indexedAnnotations.get(variant.getId())))
                 .collect(Collectors.toList());
     }
 
-    private static VariantWithSamplesAndAnnotations convert(VariantDocument variantDocument,
+    private static VariantWithSamplesAndAnnotations convert(VariantMongo variantMongo,
                                                             Table<String, String, List<String>> sampleNames,
-                                                            Set<AnnotationDocument> annotations) {
+                                                            Set<AnnotationMongo> annotations) {
         VariantWithSamplesAndAnnotations variant = new VariantWithSamplesAndAnnotations(
-                variantDocument.getChromosome(),
-                variantDocument.getStart(),
-                variantDocument.getEnd(),
-                variantDocument.getReference(),
-                variantDocument.getAlternate());
-        variant.setIds(variantDocument.getIds());
-        variant.addSourceEntries(convert(variantDocument.getSourceEntries(), sampleNames));
+                variantMongo.getChromosome(),
+                variantMongo.getStart(),
+                variantMongo.getEnd(),
+                variantMongo.getReference(),
+                variantMongo.getAlternate());
+        variant.setIds(variantMongo.getIds());
+        variant.addSourceEntries(convert(variantMongo.getSourceEntries(), sampleNames));
         variant.setAnnotations(convert(annotations));
         return variant;
     }
 
-    private static Set<Annotation> convert(Set<AnnotationDocument> annotations) {
-        return annotations.stream().map(annotation -> new Annotation(annotation)).collect(Collectors.toSet());
+    private static Set<Annotation> convert(Set<AnnotationMongo> annotations) {
+        return annotations.stream().map(Annotation::new).collect(Collectors.toSet());
     }
 
-    private static List<VariantSourceEntryWithSamples> convert(Set<VariantSourceEntryMongo> sourceEntries,
-                                                               Table<String, String, List<String>> sampleNames) {
+    private static List<VariantSourceEntryWithSampleNames> convert(Set<VariantSourceEntryMongo> sourceEntries,
+                                                                   Table<String, String, List<String>> sampleNames) {
         return sourceEntries.stream()
                 .map(entry -> convert(entry, sampleNames.get(entry.getStudyId(), entry.getFileId())))
                 .collect(Collectors.toList());
     }
 
-    private static VariantSourceEntryWithSamples convert(VariantSourceEntryMongo sourceEntryMongo,
-                                                         List<String> samples) {
-        return new VariantSourceEntryWithSamples(sourceEntryMongo, samples);
+    private static VariantSourceEntryWithSampleNames convert(VariantSourceEntryMongo sourceEntryMongo,
+                                                             List<String> samples) {
+        return new VariantSourceEntryWithSampleNames(sourceEntryMongo, samples);
     }
 
     public Long countByGenesAndComplexFilters(List<String> geneIds, List<VariantEntityRepositoryFilter> filters) {

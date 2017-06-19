@@ -16,21 +16,21 @@
 package uk.ac.ebi.eva.commons.mongodb.repositories;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-import uk.ac.ebi.eva.commons.mongodb.entity.AnnotationMetadata;
+import uk.ac.ebi.eva.commons.mongodb.entity.AnnotationMetadataMongo;
 
 import java.util.List;
 
 /**
- * Spring MongoRepository for querying collection of AnnotationMetadata documents
+ * Spring MongoRepository for querying collection of AnnotationMetadataMongo documents
  */
-public interface AnnotationMetadataRepository extends MongoRepository<AnnotationMetadata, String> {
+public interface AnnotationMetadataRepository extends MongoRepository<AnnotationMetadataMongo, String> {
 
     /**
-     * Query for all AnnotationMetadata from collection, ordered first by cache version descending and then vep version
+     * Query for all AnnotationMetadataMongo from collection, ordered first by cache version descending and then vep version
      * descending.
      *
-     * @return List of AnnotationMetadata objects
+     * @return List of AnnotationMetadataMongo objects
      */
-    List<AnnotationMetadata> findAllByOrderByCacheVersionDescVepVersionDesc();
+    List<AnnotationMetadataMongo> findAllByOrderByCacheVersionDescVepVersionDesc();
 
 }

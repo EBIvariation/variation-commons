@@ -166,10 +166,9 @@ public class VariantStatisticsMongo implements IVariantStatistics {
     @Override
     public Map<Genotype, Integer> getGenotypesCount() {
         Map<Genotype, Integer> genotypes = new LinkedHashMap<>();
-        for (Map.Entry<String, Integer> g : numGt.entrySet()) {
-            String genotypeStr = g.getKey().toString().replace("-1", ".");
-            genotypes.put(new Genotype(genotypeStr), g.getValue());
-        }
+        numGt.forEach((genotype, count) -> {
+            genotypes.put(new Genotype(genotype.replace("-1", ".")), count);
+        });
         return genotypes;
     }
 }
