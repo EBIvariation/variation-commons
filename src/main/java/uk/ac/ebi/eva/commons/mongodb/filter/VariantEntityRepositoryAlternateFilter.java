@@ -25,6 +25,6 @@ public class VariantEntityRepositoryAlternateFilter extends VariantEntityReposit
     private static final String FIELD = VariantEntityRepositoryFilter.ALT_FIELD;
 
     public VariantEntityRepositoryAlternateFilter(List<String> alternates) {
-        super(FIELD, false, alternates, RelationalOperator.IN);
+        super(FIELD, alternates, RelationalOperator.IN);
     }
 }

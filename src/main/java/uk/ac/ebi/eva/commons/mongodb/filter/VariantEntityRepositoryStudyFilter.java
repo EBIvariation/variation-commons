@@ -25,6 +25,6 @@ public class VariantEntityRepositoryStudyFilter extends VariantEntityRepositoryF
     private static final String FIELD = VariantEntityRepositoryFilter.STUDY_ID_FIELD;
 
     public VariantEntityRepositoryStudyFilter(List<String> studies) {
-        super(FIELD, false, studies, RelationalOperator.IN);
+        super(FIELD, studies, RelationalOperator.IN);
     }
 }

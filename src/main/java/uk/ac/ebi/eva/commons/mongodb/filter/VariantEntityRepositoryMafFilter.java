@@ -23,6 +23,6 @@ public class VariantEntityRepositoryMafFilter extends VariantEntityRepositoryDou
     private static final String FIELD = VariantEntityRepositoryFilter.MAF_FIELD;
 
     public VariantEntityRepositoryMafFilter(String maf) {
-        super(FIELD, false, maf);
+        super(FIELD, maf);
     }
 }
