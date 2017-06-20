@@ -54,7 +54,7 @@ public class FileTest {
     }
 
     private void checkFileInSamples(File file, Sample... samples) {
-        for (Sample sample: samples) {
+        for (Sample sample : samples) {
             Set<File> sampleFiles = sample.getFiles();
             assertThat(sampleFiles, hasSize(1));
             assertThat(sampleFiles, contains(file));

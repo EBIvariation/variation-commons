@@ -19,5 +19,5 @@ import org.springframework.data.repository.CrudRepository;
 import uk.ac.ebi.eva.commons.models.metadata.Organisation;
 
 public interface OrganisationRepository extends CrudRepository<Organisation, Long> {
-    
+
 }

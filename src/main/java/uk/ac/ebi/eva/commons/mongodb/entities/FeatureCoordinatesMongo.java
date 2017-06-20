@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.eva.commons.mongodb.entity;
+package uk.ac.ebi.eva.commons.mongodb.entities;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import uk.ac.ebi.eva.commons.core.models.IFeatureCoordinates;
 
 /**
  * Mapped class for feature collection in mongo
  */
 @Document(collection = "features")
-public class FeatureCoordinatesMongo {
+public class FeatureCoordinatesMongo implements IFeatureCoordinates {
 
     //TODO check if these are the intended names for the database structure
     private static final String NAME_FIELD = "name";

@@ -29,7 +29,7 @@ import java.util.Objects;
 @Entity
 @Table(indexes = {@Index(name = "organisation_unique", columnList = "name,address", unique = true)})
 public class Organisation extends AbstractPersistable<Long> {
-    
+
     private static final long serialVersionUID = -8470868229663325878L;
 
     private String name;

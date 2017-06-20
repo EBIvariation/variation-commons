@@ -19,5 +19,5 @@ import org.springframework.data.repository.CrudRepository;
 import uk.ac.ebi.eva.commons.models.metadata.Analysis;
 
 public interface AnalysisRepository extends CrudRepository<Analysis, Long> {
-    
+
 }

@@ -36,11 +36,11 @@ public class FilterBuilder {
                                                                                  List<String> studies,
                                                                                  List<String> consequenceType) {
         return this.withMaf(maf)
-                   .withPolyphenScore(polyphenScore)
-                   .withSiftScore(siftScore)
-                   .withStudies(studies)
-                   .withConsequenceType(consequenceType)
-                   .build();
+                .withPolyphenScore(polyphenScore)
+                .withSiftScore(siftScore)
+                .withStudies(studies)
+                .withConsequenceType(consequenceType)
+                .build();
     }
 
     public List<VariantEntityRepositoryFilter> build() {

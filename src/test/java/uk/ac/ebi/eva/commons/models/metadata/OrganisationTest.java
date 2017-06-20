@@ -24,9 +24,9 @@ public class OrganisationTest {
         z = new Organisation("Sanger", "Wellcome Genome Campus");
         notx = new Organisation("Uni of Cam", "Cambridge");
     }
-    
+
     @Test
-    public void testSetEmailGoodEmails(){
+    public void testSetEmailGoodEmails() {
         Organisation testOrganisation = new Organisation("Sanger", "Wellcome Genome Campus");
 
         assertEquals(attemptSetEmail(testOrganisation, null), null);
@@ -38,7 +38,7 @@ public class OrganisationTest {
     }
 
     @Test
-    public void testSetEmailBadEmails(){
+    public void testSetEmailBadEmails() {
         Organisation testOrganisation = new Organisation("Sanger", "Wellcome Genome Campus");
 
         assertThat(attemptSetEmail(testOrganisation, "notanemail"), instanceOf(IllegalArgumentException.class));
@@ -50,7 +50,7 @@ public class OrganisationTest {
         assertThat(attemptSetEmail(testOrganisation, "gmail.com"), instanceOf(IllegalArgumentException.class));
     }
 
-    private Throwable attemptSetEmail(Organisation organisation,  String email){
+    private Throwable attemptSetEmail(Organisation organisation, String email) {
         Throwable e = null;
         try {
             organisation.setEmail(email);
@@ -71,7 +71,6 @@ public class OrganisationTest {
 
     /**
      * x.equals(WrongType) must return false;
-     *
      */
     @Test
     public void testPassIncompatibleType_isFalse() {
@@ -80,7 +79,6 @@ public class OrganisationTest {
 
     /**
      * x.equals(null) must return false;
-     *
      */
     @Test
     public void testNullReference_isFalse() {
@@ -148,7 +146,6 @@ public class OrganisationTest {
     /**
      * A more optimal implementation of hashcode ensures
      * that if the objects are unequal different integers are produced.
-     *
      */
     @Test
     public void testHashcode_twoUnEqualObjects_produceDifferentNumber() {

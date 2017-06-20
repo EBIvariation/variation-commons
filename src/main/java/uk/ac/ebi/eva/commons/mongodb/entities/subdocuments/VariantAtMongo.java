@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.eva.commons.mongodb.entity.subdocuments;
+package uk.ac.ebi.eva.commons.mongodb.entities.subdocuments;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -30,7 +30,7 @@ public class VariantAtMongo {
     @Field(CHUNK_IDS_FIELD)
     private Set<String> chunkIds;
 
-    VariantAtMongo(){
+    VariantAtMongo() {
         //Empty constructor for spring
     }
 

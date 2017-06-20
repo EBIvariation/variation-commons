@@ -117,7 +117,7 @@ public abstract class AbstractVariantSourceEntry implements IVariantSourceEntry 
         this.format = format;
     }
 
-
+    @Override
     public VariantStatistics getStats() {
         return cohortStats.get(DEFAULT_COHORT);
     }

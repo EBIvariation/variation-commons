@@ -15,30 +15,18 @@
  */
 package uk.ac.ebi.eva.commons.core.models;
 
-import java.util.List;
-import java.util.Map;
+public interface IFeatureCoordinates {
 
-/**
- * Interface that describes the basic common information of the variant source entry model
- */
-public interface IVariantSourceEntry {
+    String getId();
 
-    String getFileId();
+    String getName();
 
-    String getStudyId();
+    String getFeature();
 
-    String[] getSecondaryAlternates();
+    String getChromosome();
 
-    String getFormat();
+    int getStart();
 
-    VariantStatistics getStats();
-
-    void setStats(VariantStatistics stats);
-
-    Map<String, VariantStatistics> getCohortStats();
-
-    Map<String, String> getAttributes();
-
-    List<Map<String, String>> getSamplesData();
+    int getEnd();
 
 }

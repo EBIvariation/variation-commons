@@ -15,7 +15,7 @@
  */
 package uk.ac.ebi.eva.commons.core.models;
 
-import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.ScoreMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.ScoreMongo;
 
 import java.util.Set;
 

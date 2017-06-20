@@ -21,7 +21,7 @@ package uk.ac.ebi.eva.commons.mongodb.repositories;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
-import uk.ac.ebi.eva.commons.mongodb.entity.VariantMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 
 import java.util.List;
 

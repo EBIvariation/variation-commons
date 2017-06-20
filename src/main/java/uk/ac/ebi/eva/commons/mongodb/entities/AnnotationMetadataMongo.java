@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.eva.commons.mongodb.entity;
+package uk.ac.ebi.eva.commons.mongodb.entities;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import uk.ac.ebi.eva.commons.core.models.IAnnotationMetadata;
 
 /**
  * Mapped class for annotations metadata collection in mongo
  */
 @Document(collection = "#{mongoCollectionsAnnotationMetadata}")
-public class AnnotationMetadataMongo {
+public class AnnotationMetadataMongo implements IAnnotationMetadata {
 
     private static final String VEP_VERSION_FIELD = "vepv";
 

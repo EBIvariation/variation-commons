@@ -16,16 +16,15 @@
 package uk.ac.ebi.eva.commons.mongodb.repositories;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-import uk.ac.ebi.eva.commons.mongodb.entity.FeatureCoordinatesMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.FeatureCoordinatesMongo;
 
 import java.util.List;
 
 /**
  * This interface documents how features can be queried.
- *
+ * <p>
  * This interface is used by Spring to create the query methods for features.
  * Spring creates the implementation automatically by looking at the method name.
- *
  */
 public interface FeatureRepository extends MongoRepository<FeatureCoordinatesMongo, String> {
 

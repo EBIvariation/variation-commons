@@ -42,18 +42,19 @@ import java.util.Set;
 @DiscriminatorColumn(name = "type")
 @Table(uniqueConstraints = {@UniqueConstraint(name = "alias_unique", columnNames = "alias")})
 public abstract class FileGenerator extends AbstractPersistable<Long> {
-    
+
     private static final long serialVersionUID = -5926609525556333330L;
-    
+
     protected String alias;
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
-            name="file_generator_file",
-            joinColumns = {@JoinColumn(name="file_generator_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name="file_id", referencedColumnName = "id")}
+            name = "file_generator_file",
+            joinColumns = {@JoinColumn(name = "file_generator_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "file_id", referencedColumnName = "id")}
     )
     protected Set<File> files = new HashSet<>();
-    @Transient protected Dataset dataset;
+    @Transient
+    protected Dataset dataset;
 
     @ManyToOne
     @JoinColumn(name = "study_id", foreignKey = @ForeignKey(name = "fk_study_id"), nullable = true)
@@ -65,11 +66,11 @@ public abstract class FileGenerator extends AbstractPersistable<Long> {
     public FileGenerator(Long id) {
         this.setId(id);
     }
-    
+
     protected FileGenerator(String alias) {
         this(alias, new HashSet<File>());
     }
-    
+
     protected FileGenerator(String alias, Set<File> files) {
         setAlias(alias);
         setFiles(files);

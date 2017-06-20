@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.eva.commons.mongodb.entity.subdocuments;
+package uk.ac.ebi.eva.commons.mongodb.entities.subdocuments;
 
 import org.springframework.data.mongodb.core.mapping.Field;
+import uk.ac.ebi.eva.commons.core.models.IVariantGlobalStats;
 
 /**
  * Mongo database representation of VariantGlobalStatsMongo
  */
-public class VariantGlobalStatsMongo {
+public class VariantGlobalStatsMongo implements IVariantGlobalStats {
 
     public final static String STATISTICS_NUMSAMPLES_FIELD = "nSamp";
 
@@ -84,38 +85,47 @@ public class VariantGlobalStatsMongo {
         this.meanQuality = meanQuality;
     }
 
+    @Override
     public int getVariantsCount() {
         return variantsCount;
     }
 
+    @Override
     public int getSamplesCount() {
         return samplesCount;
     }
 
+    @Override
     public int getSnpsCount() {
         return snpsCount;
     }
 
+    @Override
     public int getIndelsCount() {
         return indelsCount;
     }
 
+    @Override
     public int getStructuralCount() {
         return structuralCount;
     }
 
+    @Override
     public int getPassCount() {
         return passCount;
     }
 
+    @Override
     public int getTransitionsCount() {
         return transitionsCount;
     }
 
+    @Override
     public int getTransversionsCount() {
         return transversionsCount;
     }
 
+    @Override
     public float getMeanQuality() {
         return meanQuality;
     }

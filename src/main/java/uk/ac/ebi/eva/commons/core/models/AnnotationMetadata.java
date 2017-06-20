@@ -15,30 +15,31 @@
  */
 package uk.ac.ebi.eva.commons.core.models;
 
-import java.util.List;
-import java.util.Map;
-
 /**
- * Interface that describes the basic common information of the variant source entry model
+ * Base implementation of {@link IAnnotationMetadata}
  */
-public interface IVariantSourceEntry {
+public class AnnotationMetadata implements IAnnotationMetadata {
 
-    String getFileId();
+    private String vepVersion;
 
-    String getStudyId();
+    private String cacheVersion;
 
-    String[] getSecondaryAlternates();
+    public AnnotationMetadata(IAnnotationMetadata annotationMetadata) {
+        this(annotationMetadata.getVepVersion(), annotationMetadata.getCacheVersion());
+    }
 
-    String getFormat();
+    public AnnotationMetadata(String vepVersion, String cacheVersion) {
+        this.vepVersion = vepVersion;
+        this.cacheVersion = cacheVersion;
+    }
 
-    VariantStatistics getStats();
+    @Override
+    public String getVepVersion() {
+        return vepVersion;
+    }
 
-    void setStats(VariantStatistics stats);
-
-    Map<String, VariantStatistics> getCohortStats();
-
-    Map<String, String> getAttributes();
-
-    List<Map<String, String>> getSamplesData();
-
+    @Override
+    public String getCacheVersion() {
+        return cacheVersion;
+    }
 }

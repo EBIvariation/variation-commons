@@ -54,7 +54,7 @@ public class VariantWithAnnotationMongoServiceTest {
     public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test-db");
 
     @Autowired
-    private VariantWithAnnotationsService service;
+    private VariantWithSamplesAndAnnotationsService service;
 
     @Test
     public void testAnnotationService() {

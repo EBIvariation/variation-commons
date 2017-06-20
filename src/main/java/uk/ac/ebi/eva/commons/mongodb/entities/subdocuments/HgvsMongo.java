@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.eva.commons.mongodb.entity.subdocuments;
+package uk.ac.ebi.eva.commons.mongodb.entities.subdocuments;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -36,7 +36,7 @@ public class HgvsMongo {
     @Field(NAME_FIELD)
     private String name;
 
-    HgvsMongo(){
+    HgvsMongo() {
         // Spring default empty constructor
     }
 
@@ -55,7 +55,7 @@ public class HgvsMongo {
 
     public static Set<HgvsMongo> createHgvsMongo(Map<String, Set<String>> hgvs) {
         Set<HgvsMongo> hgvsMongo = new HashSet<>();
-        if(hgvs == null || hgvs.isEmpty()){
+        if (hgvs == null || hgvs.isEmpty()) {
             return hgvsMongo;
         }
         for (Map.Entry<String, Set<String>> entry : hgvs.entrySet()) {

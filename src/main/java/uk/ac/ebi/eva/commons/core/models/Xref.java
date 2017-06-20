@@ -25,8 +25,12 @@ public class Xref implements IXref {
     private String src;
 
     public Xref(IXref xref) {
-        this.id = xref.getId();
-        this.src = xref.getSrc();
+        this(xref.getId(), xref.getSrc());
+    }
+
+    public Xref(String id, String src) {
+        this.id = id;
+        this.src = src;
     }
 
     @Override

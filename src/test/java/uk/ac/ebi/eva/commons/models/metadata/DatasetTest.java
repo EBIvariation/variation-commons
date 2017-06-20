@@ -60,7 +60,7 @@ public class DatasetTest {
         checkDatasetInFileGenerators(dataset, run1, array1, analysis1);
         // add again the same analysis object to the dataset
         dataset.addFileGenerator(analysis1);
-        checkDatasetHasFileGenerators(dataset, run1, array1,  analysis1);
+        checkDatasetHasFileGenerators(dataset, run1, array1, analysis1);
         checkDatasetInFileGenerators(dataset, run1, array1, analysis1);
         // add again the same analysis in a different object instance
         Analysis anotherAnalysis1 = new Analysis("Analysis1", "Analysis1", "Description", null, null, null, false, null);
