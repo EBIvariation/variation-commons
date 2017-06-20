@@ -101,7 +101,6 @@ public class PublicationDatabaseTest {
     }
 
 
-
     /**
      * Two different publications are both inserted into the database.
      */
@@ -190,6 +189,7 @@ public class PublicationDatabaseTest {
 
     /**
      * Updating a publication assigning the unique key from other must fail when serialising
+     *
      * @todo How to report this kind of errors?
      */
     @Test(expected = JpaSystemException.class)

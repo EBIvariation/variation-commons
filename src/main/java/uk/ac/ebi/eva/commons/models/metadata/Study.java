@@ -55,8 +55,10 @@ public class Study extends AbstractPersistable<Long> {
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "study")
     private Set<FileGenerator> fileGenerators;
 
-    @Transient private Set<URI> uris;
-    @Transient private Set<Publication> publications;
+    @Transient
+    private Set<URI> uris;
+    @Transient
+    private Set<Publication> publications;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Study parentStudy;
@@ -99,7 +101,7 @@ public class Study extends AbstractPersistable<Long> {
         } else {
             throw new IllegalArgumentException(
                     "Study accession must begin with a prefix from the following: (PRJEA, PRJEB, PRJNA), "
-                    + "followed by multiple numerical digits.");
+                            + "followed by multiple numerical digits.");
             // TODO openpojo tester throws exception with this
         }
     }

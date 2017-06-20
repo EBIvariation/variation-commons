@@ -47,16 +47,16 @@ public class VariantWithSamplesAndAnnotations extends AbstractVariant {
         annotations = new HashSet<>();
     }
 
-    public void addAnnotation(Annotation annotation){
+    public void addAnnotation(Annotation annotation) {
         this.annotations.add(annotation);
     }
 
-    public void setAnnotations(Set<Annotation> annotations){
+    public void setAnnotations(Set<Annotation> annotations) {
         this.annotations.clear();
         this.annotations.addAll(annotations);
     }
 
-    public Set<Annotation> getAnnotations(){
+    public Set<Annotation> getAnnotations() {
         return Collections.unmodifiableSet(annotations);
     }
 
@@ -83,6 +83,7 @@ public class VariantWithSamplesAndAnnotations extends AbstractVariant {
         return Collections.unmodifiableCollection(sourceEntries.values());
     }
 
+    @Override
     public VariantSourceEntryWithSampleNames getSourceEntry(String fileId, String studyId) {
         return sourceEntries.get(getSourceEntryIndex(studyId, fileId));
     }

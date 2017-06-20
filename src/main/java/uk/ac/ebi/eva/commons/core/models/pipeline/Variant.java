@@ -62,6 +62,7 @@ public class Variant extends AbstractVariant {
         return Collections.unmodifiableCollection(sourceEntries.values());
     }
 
+    @Override
     public VariantSourceEntry getSourceEntry(String fileId, String studyId) {
         return sourceEntries.get(getSourceEntryIndex(studyId, fileId));
     }

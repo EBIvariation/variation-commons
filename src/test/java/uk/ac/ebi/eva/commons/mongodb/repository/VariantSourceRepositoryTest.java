@@ -29,8 +29,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.eva.commons.configuration.MongoRepositoryTestConfiguration;
-import uk.ac.ebi.eva.commons.mongodb.entity.VariantSourceMongo;
-import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantGlobalStatsMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantGlobalStatsMongo;
 import uk.ac.ebi.eva.commons.mongodb.repositories.VariantSourceRepository;
 
 import java.util.ArrayList;

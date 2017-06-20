@@ -41,7 +41,7 @@ public class MongoRepositoryTestConfiguration {
 
     @Bean
     public MongoTemplate mongoTemplate(MongoDbFactory mongoDbFactory,
-            MappingMongoConverter mappingMongoConverter) throws Exception {
+                                       MappingMongoConverter mappingMongoConverter) throws Exception {
         return new MongoTemplate(mongoDbFactory, mappingMongoConverter);
     }
 

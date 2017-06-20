@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.eva.commons.mongodb.entity;
+package uk.ac.ebi.eva.commons.mongodb.entities;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import uk.ac.ebi.eva.commons.core.models.Aggregation;
+import uk.ac.ebi.eva.commons.core.models.IVariantSource;
 import uk.ac.ebi.eva.commons.core.models.StudyType;
-import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantGlobalStatsMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantGlobalStatsMongo;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -29,7 +30,7 @@ import java.util.Map;
  * Mapped class for variant source collection in mongo
  */
 @Document(collection = "#{mongoCollectionsFiles}")
-public class VariantSourceMongo {
+public class VariantSourceMongo implements IVariantSource {
 
     public final static String FILEID_FIELD = "fid";
 

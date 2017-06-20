@@ -27,7 +27,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
-import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantSourceEntryMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
 import uk.ac.ebi.eva.commons.test.configurations.MongoOperationsConfiguration;
 
 import java.util.ArrayList;
@@ -36,11 +36,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantSourceEntryMongo.ATTRIBUTES_FIELD;
-import static uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantSourceEntryMongo.FILEID_FIELD;
-import static uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantSourceEntryMongo.FORMAT_FIELD;
-import static uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantSourceEntryMongo.SAMPLES_FIELD;
-import static uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantSourceEntryMongo.STUDYID_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo.ATTRIBUTES_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo.FILEID_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo.FORMAT_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo.SAMPLES_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo.STUDYID_FIELD;
 
 @RunWith(SpringRunner.class)
 @TestPropertySource({"classpath:test-mongo.properties"})
@@ -119,7 +119,7 @@ public class VariantSourceEntryConversionTest {
     }
 
     @Test
-    public void testConvertFromVariantSourceEntryMongoToVariantSourceEntry(){
+    public void testConvertFromVariantSourceEntryMongoToVariantSourceEntry() {
         VariantSourceEntryMongo variantSourceEntryMongo = new VariantSourceEntryMongo(createVariantSourceEntry());
 
         List<String> sampleNames = new ArrayList<String>();
@@ -145,7 +145,6 @@ public class VariantSourceEntryConversionTest {
         Assert.assertEquals("0/1", variantSourceEntryWithSampleNames.getSamplesDataMap().get("NA002").get("GT"));
         Assert.assertEquals("1/1", variantSourceEntryWithSampleNames.getSamplesDataMap().get("NA003").get("GT"));
     }
-
 
 
 }

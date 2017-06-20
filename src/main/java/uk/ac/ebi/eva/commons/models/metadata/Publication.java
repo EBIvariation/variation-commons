@@ -34,7 +34,7 @@ import java.util.Set;
  */
 @Entity
 @Table(indexes = {@Index(name = "publication_unique", columnList = "title,journal,volume", unique = true)})
-public class Publication extends AbstractPersistable<Long>  {
+public class Publication extends AbstractPersistable<Long> {
 
     private static final long serialVersionUID = 8055335219199952073L;
 
@@ -50,9 +50,10 @@ public class Publication extends AbstractPersistable<Long>  {
     private Calendar publicationDate;
     @ElementCollection
     private List<String> authors;
-    @Transient private Set<Study> studies;
+    @Transient
+    private Set<Study> studies;
 
-    
+
     public Publication(String title, String journal, String volume) {
         this(title, journal, volume, null, null, null);
     }
@@ -161,7 +162,7 @@ public class Publication extends AbstractPersistable<Long>  {
         return null;
     }
 
-    public void addAuthor(String author){
+    public void addAuthor(String author) {
         authors.add(author);
     }
 
@@ -173,11 +174,11 @@ public class Publication extends AbstractPersistable<Long>  {
         return Collections.unmodifiableSet(studies);
     }
 
-    void removeStudy(Study study){
+    void removeStudy(Study study) {
         studies.remove(study);
     }
 
-    void addStudy(Study study){
+    void addStudy(Study study) {
         studies.add(study);
     }
 
@@ -185,9 +186,9 @@ public class Publication extends AbstractPersistable<Long>  {
     public boolean equals(Object e) {
         if (e == this) {
             return true;
-        }else if (!(e instanceof Publication)) {
+        } else if (!(e instanceof Publication)) {
             return false;
-        }else{
+        } else {
             return (
                     Objects.equals(((Publication) e).getTitle(), title) &&
                             Objects.equals(((Publication) e).getJournal(), journal) &&

@@ -67,7 +67,7 @@ public class StudyRelationDatabaseTest {
         checkChildStudiesInParent(parentStudy1, emptyChildren);
         checkParentStudiesInChildren(parentStudy1, emptyChildren);
     }
-    
+
     @Test
     public void testSingleChild() {
         Set<Study> singleChildStudy = new HashSet<>();
@@ -110,11 +110,11 @@ public class StudyRelationDatabaseTest {
         Set<Study> children = new HashSet<>();
         children.add(childStudy1);
         children.add(childStudy2);
-        
+
         Set<Study> grandchildren1 = new HashSet<>();
         grandchildren1.add(childStudy3);
         grandchildren1.add(childStudy4);
-        
+
         Set<Study> grandchildren2 = new HashSet<>();
         grandchildren2.add(childStudy5);
         grandchildren2.add(childStudy6);
@@ -126,7 +126,7 @@ public class StudyRelationDatabaseTest {
         parentStudy1.setChildStudies(children);
         childStudy1.setChildStudies(grandchildren1);
         childStudy2.setChildStudies(grandchildren2);
-        
+
         checkChildStudiesInParent(parentStudy1, children);
         checkParentStudiesInChildren(parentStudy1, children);
 
@@ -136,15 +136,15 @@ public class StudyRelationDatabaseTest {
         checkChildStudiesInParent(childStudy2, grandchildren2);
         checkParentStudiesInChildren(childStudy2, grandchildren2);
 
-        
+
         Study savedParentStudy = repository.save(parentStudy1);
         checkChildStudiesInParent(savedParentStudy, children);
         checkParentStudiesInChildren(savedParentStudy, children);
-        
+
         assertEquals(7, repository.count());
     }
 
-    
+
     private void checkChildStudiesInParent(Study parentStudy, Set<Study> childStudies) {
         assertEquals(parentStudy.getChildStudies(), childStudies);
     }

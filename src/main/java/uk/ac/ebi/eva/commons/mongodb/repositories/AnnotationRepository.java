@@ -16,8 +16,8 @@
 package uk.ac.ebi.eva.commons.mongodb.repositories;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-import uk.ac.ebi.eva.commons.mongodb.entity.AnnotationMongo;
-import uk.ac.ebi.eva.commons.mongodb.entity.VariantMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,15 +33,15 @@ public interface AnnotationRepository extends MongoRepository<AnnotationMongo, S
 
     Set<AnnotationMongo> findByIdIn(Collection<String> ids);
 
-    default Set<AnnotationMongo> findAnnotationsOfVariants(List<VariantMongo> variants){
+    default Set<AnnotationMongo> findAnnotationsOfVariants(List<VariantMongo> variants) {
         Set<String> ids = new HashSet<>();
-        for(VariantMongo variant: variants){
+        for (VariantMongo variant : variants) {
             ids.addAll(variant.getAnnotationIds());
         }
         return findByIdIn(ids);
     }
 
-    default Map<String, Set<AnnotationMongo>> findAndIndexAnnotationsOfVariants(List<VariantMongo> variants){
+    default Map<String, Set<AnnotationMongo>> findAndIndexAnnotationsOfVariants(List<VariantMongo> variants) {
         Map<String, Set<AnnotationMongo>> indexedAnnotations = new HashMap<>();
         Set<AnnotationMongo> annotations = findAnnotationsOfVariants(variants);
         annotations.forEach(annotation -> {

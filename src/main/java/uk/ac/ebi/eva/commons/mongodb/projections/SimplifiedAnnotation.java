@@ -17,13 +17,13 @@ package uk.ac.ebi.eva.commons.mongodb.projections;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
-import uk.ac.ebi.eva.commons.mongodb.entity.AnnotationMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo;
 
-import static uk.ac.ebi.eva.commons.mongodb.entity.AnnotationMongo.CHROMOSOME_FIELD;
-import static uk.ac.ebi.eva.commons.mongodb.entity.AnnotationMongo.END_FIELD;
-import static uk.ac.ebi.eva.commons.mongodb.entity.AnnotationMongo.START_FIELD;
-import static uk.ac.ebi.eva.commons.mongodb.entity.AnnotationMongo.VEP_CACHE_VERSION_FIELD;
-import static uk.ac.ebi.eva.commons.mongodb.entity.AnnotationMongo.VEP_VERSION_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo.CHROMOSOME_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo.END_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo.START_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo.VEP_CACHE_VERSION_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo.VEP_VERSION_FIELD;
 
 /**
  * Simplified form of {@link AnnotationMongo} used to improve the update of annotations in mongo.

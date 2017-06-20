@@ -15,30 +15,29 @@
  */
 package uk.ac.ebi.eva.commons.core.models;
 
-import java.util.List;
+import java.util.Date;
 import java.util.Map;
 
-/**
- * Interface that describes the basic common information of the variant source entry model
- */
-public interface IVariantSourceEntry {
+public interface IVariantSource {
 
     String getFileId();
 
+    String getFileName();
+
     String getStudyId();
 
-    String[] getSecondaryAlternates();
+    String getStudyName();
 
-    String getFormat();
+    StudyType getType();
 
-    VariantStatistics getStats();
+    Aggregation getAggregation();
 
-    void setStats(VariantStatistics stats);
+    Date getDate();
 
-    Map<String, VariantStatistics> getCohortStats();
+    Map<String, Integer> getSamplesPosition();
 
-    Map<String, String> getAttributes();
+    Map<String, Object> getMetadata();
 
-    List<Map<String, String>> getSamplesData();
+    IVariantGlobalStats getStats();
 
 }

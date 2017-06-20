@@ -60,7 +60,7 @@ public class AnalysisDatabaseTest {
     public void setUp() {
         analysis1 = new Analysis("analysis1", "Analysis 1 title", "Analysis 1 description");
         analysis2 = new Analysis("analysis2", "Analysis 2 title", "Analysis 2 description");
-        
+
         analysis3 = new Analysis("analysis3", "Analysis 3 title", "Analysis 3 description", "EMBL-EBI", "Illumina", "EVA", true, new Date());
     }
 

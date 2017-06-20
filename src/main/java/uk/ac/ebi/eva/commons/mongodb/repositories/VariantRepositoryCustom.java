@@ -20,7 +20,7 @@ package uk.ac.ebi.eva.commons.mongodb.repositories;
 
 import org.springframework.data.domain.Pageable;
 import uk.ac.ebi.eva.commons.core.models.Region;
-import uk.ac.ebi.eva.commons.mongodb.entity.VariantMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.filter.VariantEntityRepositoryFilter;
 
 import java.util.List;

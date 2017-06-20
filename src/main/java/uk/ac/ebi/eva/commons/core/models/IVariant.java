@@ -44,4 +44,6 @@ public interface IVariant {
 
     Collection<? extends IVariantSourceEntry> getSourceEntries();
 
+    IVariantSourceEntry getSourceEntry(String fileId, String studyId);
+
 }

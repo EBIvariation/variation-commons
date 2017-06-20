@@ -18,7 +18,7 @@ package uk.ac.ebi.eva.commons.models.metadata;
 
 /**
  * Created by parce on 05/10/15.
- * 
+ *
  * @TODO Come back to this class for further design
  */
 public class Array extends FileGenerator {
@@ -26,15 +26,15 @@ public class Array extends FileGenerator {
     public Array(String alias) {
         super(alias);
     }
-    
+
     @Override
     public boolean equals(Object e) {
         if (e == this) {
             return true;
-        }else if (!(e instanceof Array)) {
+        } else if (!(e instanceof Array)) {
             return false;
-        }else {
-            return ((Array)e).getAlias().equals(alias);
+        } else {
+            return ((Array) e).getAlias().equals(alias);
         }
     }
 

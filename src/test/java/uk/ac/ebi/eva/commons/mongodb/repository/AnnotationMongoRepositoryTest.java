@@ -25,8 +25,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.eva.commons.configuration.MongoRepositoryTestConfiguration;
-import uk.ac.ebi.eva.commons.mongodb.entity.AnnotationMongo;
-import uk.ac.ebi.eva.commons.mongodb.entity.VariantMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.repositories.AnnotationRepository;
 import uk.ac.ebi.eva.commons.mongodb.repositories.VariantRepository;
 

@@ -297,7 +297,6 @@ public class StudyTest {
 
     /**
      * x.equals(WrongType) must return false;
-     *
      */
     @Test
     public void testPassIncompatibleType_isFalse() {
@@ -306,7 +305,6 @@ public class StudyTest {
 
     /**
      * x.equals(null) must return false;
-     *
      */
     @Test
     public void testNullReference_isFalse() {
@@ -373,7 +371,6 @@ public class StudyTest {
     /**
      * A more optimal implementation of hashcode ensures that if the objects are
      * unequal different integers are produced.
-     *
      */
     @Test
     public void testHashcode_twoUnEqualObjects_produceDifferentNumber() {

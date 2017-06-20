@@ -21,12 +21,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.eva.commons.core.models.Annotation;
 import uk.ac.ebi.eva.commons.core.models.Region;
-import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
+import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotations;
-import uk.ac.ebi.eva.commons.mongodb.entity.AnnotationMongo;
-import uk.ac.ebi.eva.commons.mongodb.entity.VariantMongo;
-import uk.ac.ebi.eva.commons.mongodb.entity.subdocuments.VariantSourceEntryMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
 import uk.ac.ebi.eva.commons.mongodb.filter.VariantEntityRepositoryFilter;
 import uk.ac.ebi.eva.commons.mongodb.repositories.AnnotationRepository;
 import uk.ac.ebi.eva.commons.mongodb.repositories.VariantRepository;
@@ -37,8 +37,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Mongo persistence service to retrieve {@link VariantWithSamplesAndAnnotations}
+ */
 @Service
-public class VariantWithAnnotationsService {
+public class VariantWithSamplesAndAnnotationsService {
 
     @Autowired
     private VariantRepository variantRepository;

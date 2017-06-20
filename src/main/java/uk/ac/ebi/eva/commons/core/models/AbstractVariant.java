@@ -24,7 +24,7 @@ import java.util.Set;
 /**
  * Basic abstract implementation of AbstractVariant model with all the common elements for the current models.
  */
-public abstract class AbstractVariant implements IVariant{
+public abstract class AbstractVariant implements IVariant {
 
     public static final int SV_THRESHOLD = 50;
 
