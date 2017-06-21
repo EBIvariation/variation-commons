@@ -1,8 +1,5 @@
 package uk.ac.ebi.eva.commons.models.metadata.database;
 
-import uk.ac.ebi.eva.commons.models.metadata.DatabaseTestConfiguration;
-import uk.ac.ebi.eva.commons.models.metadata.Publication;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,11 +8,21 @@ import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ebi.eva.commons.models.metadata.DatabaseTestConfiguration;
+import uk.ac.ebi.eva.commons.models.metadata.Publication;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by parce on 20/10/15.
@@ -92,7 +99,6 @@ public class PublicationDatabaseTest {
         assertEquals(publication3.getPublicationDate(), savedPublication.getPublicationDate());
         assertThat(savedPublication.getStudies(), empty());
     }
-
 
 
     /**
@@ -183,6 +189,7 @@ public class PublicationDatabaseTest {
 
     /**
      * Updating a publication assigning the unique key from other must fail when serialising
+     *
      * @todo How to report this kind of errors?
      */
     @Test(expected = JpaSystemException.class)

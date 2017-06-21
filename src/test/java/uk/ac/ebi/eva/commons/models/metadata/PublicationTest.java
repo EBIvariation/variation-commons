@@ -4,7 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by tom on 15/10/15.
@@ -12,7 +15,7 @@ import static org.junit.Assert.*;
 public class PublicationTest {
 
     Publication x, y, z, notx;
-    
+
     @Before
     public void setUp() {
         x = new Publication("A good article", "PlosOne", "2", Arrays.asList("Mrs Example", "Mr Scientist", "Professor Java"), "1234", "Pubmed");
@@ -31,7 +34,6 @@ public class PublicationTest {
 
     /**
      * x.equals(WrongType) must return false;
-     *
      */
     @Test
     public void testPassIncompatibleType_isFalse() {
@@ -40,7 +42,6 @@ public class PublicationTest {
 
     /**
      * x.equals(null) must return false;
-     *
      */
     @Test
     public void testNullReference_isFalse() {
@@ -108,7 +109,6 @@ public class PublicationTest {
     /**
      * A more optimal implementation of hashcode ensures that if the objects are
      * unequal different integers are produced.
-     *
      */
     @Test
     public void testHashcode_twoUnEqualObjects_produceDifferentNumber() {

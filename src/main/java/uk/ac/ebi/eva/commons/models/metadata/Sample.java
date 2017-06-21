@@ -21,6 +21,7 @@ import java.util.Set;
 
 /**
  * Created by parce on 06/10/15.
+ *
  * @TODO review how to connect with biosamples
  */
 public class Sample {
@@ -166,7 +167,7 @@ public class Sample {
 
     void setFiles(Set<File> files) {
         this.files.clear();
-        for (File f: files) {
+        for (File f : files) {
             addFile(f);
         }
     }
@@ -179,10 +180,10 @@ public class Sample {
     public boolean equals(Object object) {
         if (object == this) {
             return true;
-        }else if (!(object instanceof Sample)) {
+        } else if (!(object instanceof Sample)) {
             return false;
-        }else {
-            return ((Sample)object).getAccession() == accession;
+        } else {
+            return ((Sample) object).getAccession() == accession;
         }
     }
 

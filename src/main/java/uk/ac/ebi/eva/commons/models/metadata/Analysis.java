@@ -16,20 +16,20 @@
 
 package uk.ac.ebi.eva.commons.models.metadata;
 
+import javax.persistence.Entity;
 import java.util.Date;
 import java.util.Objects;
-import javax.persistence.Entity;
 
 /**
  * Created by parce on 02/10/15.
- * 
+ *
  * @TODO Experiment type: Choose 1 of the following "whole genome sequencing", "Exome sequencing", "Genotyping by array", "Curation"
  * @TODO Link with Dataset class
  * @TODO Link with Organisation class?
  */
 @Entity
 public class Analysis extends FileGenerator {
-    
+
     private static final long serialVersionUID = 4570425497988698833L;
 
     private String title;
@@ -46,13 +46,13 @@ public class Analysis extends FileGenerator {
     public Analysis(Long id) {
         super(id);
     }
-    
+
     public Analysis(String alias, String title, String description) {
         this(alias, title, description, null, null, null, false, null);
     }
-    
+
     public Analysis(String alias, String title, String description, String centre,
-            String platform, String software, boolean imputation, Date date) {
+                    String platform, String software, boolean imputation, Date date) {
         super(alias);
         this.setTitle(title);
         this.setDescription(description);
@@ -62,7 +62,7 @@ public class Analysis extends FileGenerator {
         this.imputation = imputation;
         this.date = date;
     }
-    
+
     public String getTitle() {
         return title;
     }

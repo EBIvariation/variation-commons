@@ -15,10 +15,16 @@
  */
 package uk.ac.ebi.eva.commons.models.metadata;
 
-import javax.persistence.*;
-
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashSet;
@@ -49,8 +55,10 @@ public class Study extends AbstractPersistable<Long> {
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "study")
     private Set<FileGenerator> fileGenerators;
 
-    @Transient private Set<URI> uris;
-    @Transient private Set<Publication> publications;
+    @Transient
+    private Set<URI> uris;
+    @Transient
+    private Set<Publication> publications;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Study parentStudy;
@@ -93,7 +101,7 @@ public class Study extends AbstractPersistable<Long> {
         } else {
             throw new IllegalArgumentException(
                     "Study accession must begin with a prefix from the following: (PRJEA, PRJEB, PRJNA), "
-                    + "followed by multiple numerical digits.");
+                            + "followed by multiple numerical digits.");
             // TODO openpojo tester throws exception with this
         }
     }
