@@ -25,6 +25,11 @@ public class Family {
     private final Individual mother;
     private final Set<Individual> children;
 
+    Family() {
+        //Spring empty constructor
+        this(null, null);
+    }
+
     public Family(Individual father, Individual mother) {
         this.father = father;
         this.mother = mother;

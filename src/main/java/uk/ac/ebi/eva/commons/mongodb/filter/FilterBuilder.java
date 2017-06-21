@@ -28,13 +28,13 @@ import java.util.List;
  */
 public class FilterBuilder {
 
-    private List<VariantEntityRepositoryFilter> filters = new ArrayList<>();
+    private List<VariantRepositoryFilter> filters = new ArrayList<>();
 
-    public List<VariantEntityRepositoryFilter> getVariantEntityRepositoryFilters(String maf,
-                                                                                 String polyphenScore,
-                                                                                 String siftScore,
-                                                                                 List<String> studies,
-                                                                                 List<String> consequenceType) {
+    public List<VariantRepositoryFilter> getVariantEntityRepositoryFilters(String maf,
+                                                                           String polyphenScore,
+                                                                           String siftScore,
+                                                                           List<String> studies,
+                                                                           List<String> consequenceType) {
         return this.withMaf(maf)
                 .withPolyphenScore(polyphenScore)
                 .withSiftScore(siftScore)
@@ -43,62 +43,62 @@ public class FilterBuilder {
                 .build();
     }
 
-    public List<VariantEntityRepositoryFilter> build() {
+    public List<VariantRepositoryFilter> build() {
         return filters;
     }
 
     public FilterBuilder withMaf(String maf) {
         if (maf != null && !maf.isEmpty()) {
-            filters.add(new VariantEntityRepositoryMafFilter(maf));
+            filters.add(new VariantRepositoryMafFilter(maf));
         }
         return this;
     }
 
     public FilterBuilder withPolyphenScore(String polyphenScore) {
         if (polyphenScore != null && !polyphenScore.isEmpty()) {
-            filters.add(new VariantEntityRepositoryPolyphenFilter(polyphenScore));
+            filters.add(new VariantRepositoryPolyphenFilter(polyphenScore));
         }
         return this;
     }
 
     public FilterBuilder withSiftScore(String siftScore) {
         if (siftScore != null && !siftScore.isEmpty()) {
-            filters.add(new VariantEntityRepositorySiftFilter(siftScore));
+            filters.add(new VariantRepositorySiftFilter(siftScore));
         }
         return this;
     }
 
     public FilterBuilder withStudies(List<String> studies) {
         if (studies != null && !studies.isEmpty()) {
-            filters.add(new VariantEntityRepositoryStudyFilter(studies));
+            filters.add(new VariantRepositoryStudyFilter(studies));
         }
         return this;
     }
 
     public FilterBuilder withConsequenceType(List<String> consequenceType) {
         if (consequenceType != null && !consequenceType.isEmpty()) {
-            filters.add(new VariantEntityRepositoryConsequenceTypeFilter(consequenceType));
+            filters.add(new VariantRepositoryConsequenceTypeFilter(consequenceType));
         }
         return this;
     }
 
     public FilterBuilder withFiles(List<String> files) {
         if (files != null && !files.isEmpty()) {
-            filters.add(new VariantEntityRepositoryFileFilter(files));
+            filters.add(new VariantRepositoryFileFilter(files));
         }
         return this;
     }
 
     public FilterBuilder withVariantTypes(List<VariantType> types) {
         if (types != null && !types.isEmpty()) {
-            filters.add(new VariantEntityRepositoryTypeFilter(types));
+            filters.add(new VariantRepositoryTypeFilter(types));
         }
         return this;
     }
 
     public FilterBuilder withAlternates(List<String> alternates) {
         if (alternates != null && !alternates.isEmpty()) {
-            filters.add(new VariantEntityRepositoryAlternateFilter(alternates));
+            filters.add(new VariantRepositoryAlternateFilter(alternates));
         }
         return this;
     }

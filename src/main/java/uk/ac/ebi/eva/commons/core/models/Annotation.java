@@ -37,6 +37,11 @@ public class Annotation implements IAnnotation {
 
     private Set<Xref> xrefs;
 
+    Annotation() {
+        //Empty spring constructor
+        this(null, -1, -1, null, null, null, null);
+    }
+
     public Annotation(IAnnotation annotation) {
         this(
                 annotation.getChromosome(),

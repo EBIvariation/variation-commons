@@ -37,6 +37,19 @@ public class VariantSourceEntry extends AbstractVariantSourceEntry implements IV
      */
     private final List<Map<String, String>> samplesData;
 
+    VariantSourceEntry() {
+        //Spring empty constructor
+        this(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
     public VariantSourceEntry(String fileId, String studyId) {
         this(fileId, studyId, null, null, null, null, null);
     }
@@ -86,4 +99,21 @@ public class VariantSourceEntry extends AbstractVariantSourceEntry implements IV
         return this.samplesData.size() - 1;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof VariantSourceEntry)) return false;
+        if (!super.equals(o)) return false;
+
+        VariantSourceEntry that = (VariantSourceEntry) o;
+
+        return samplesData != null ? samplesData.equals(that.samplesData) : that.samplesData == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (samplesData != null ? samplesData.hashCode() : 0);
+        return result;
+    }
 }

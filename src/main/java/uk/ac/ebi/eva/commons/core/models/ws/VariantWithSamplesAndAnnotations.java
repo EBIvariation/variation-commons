@@ -41,6 +41,10 @@ public class VariantWithSamplesAndAnnotations extends AbstractVariant {
      */
     private final Set<Annotation> annotations;
 
+    VariantWithSamplesAndAnnotations() {
+        this(null, -1, -1, null, null);
+    }
+
     public VariantWithSamplesAndAnnotations(String chromosome, int start, int end, String reference, String alternate) {
         super(chromosome, start, end, reference, alternate);
         sourceEntries = new HashMap<>();
@@ -88,4 +92,24 @@ public class VariantWithSamplesAndAnnotations extends AbstractVariant {
         return sourceEntries.get(getSourceEntryIndex(studyId, fileId));
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof VariantWithSamplesAndAnnotations)) return false;
+        if (!super.equals(o)) return false;
+
+        VariantWithSamplesAndAnnotations that = (VariantWithSamplesAndAnnotations) o;
+
+        if (sourceEntries != null ? !sourceEntries.equals(that.sourceEntries) : that.sourceEntries != null)
+            return false;
+        return annotations != null ? annotations.equals(that.annotations) : that.annotations == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (sourceEntries != null ? sourceEntries.hashCode() : 0);
+        result = 31 * result + (annotations != null ? annotations.hashCode() : 0);
+        return result;
+    }
 }

@@ -27,25 +27,25 @@ public class VariantRepositoryDoubleFilterTest {
 
     @Test
     public void getValueFromRelation() throws Exception {
-        assertEquals(new Double(0.5), VariantEntityRepositoryDoubleFilter.getValueFromRelation("=0.5"));
-        assertEquals(new Double(0.12), VariantEntityRepositoryDoubleFilter.getValueFromRelation(">0.12"));
-        assertEquals(new Double(0.134), VariantEntityRepositoryDoubleFilter.getValueFromRelation(">=0.134"));
-        assertEquals(new Double(1.1), VariantEntityRepositoryDoubleFilter.getValueFromRelation("<1.1"));
-        assertEquals(new Double(0.5), VariantEntityRepositoryDoubleFilter.getValueFromRelation("<=0.5"));
+        assertEquals(new Double(0.5), VariantRepositoryDoubleFilter.getValueFromRelation("=0.5"));
+        assertEquals(new Double(0.12), VariantRepositoryDoubleFilter.getValueFromRelation(">0.12"));
+        assertEquals(new Double(0.134), VariantRepositoryDoubleFilter.getValueFromRelation(">=0.134"));
+        assertEquals(new Double(1.1), VariantRepositoryDoubleFilter.getValueFromRelation("<1.1"));
+        assertEquals(new Double(0.5), VariantRepositoryDoubleFilter.getValueFromRelation("<=0.5"));
     }
 
     @Test
     public void getRelationalOperatorFromRelation() throws Exception {
         assertEquals(RelationalOperator.EQ,
-                VariantEntityRepositoryDoubleFilter.getRelationalOperatorFromRelation("=0.5"));
+                VariantRepositoryDoubleFilter.getRelationalOperatorFromRelation("=0.5"));
         assertEquals(RelationalOperator.GT,
-                VariantEntityRepositoryDoubleFilter.getRelationalOperatorFromRelation(">0.12"));
+                VariantRepositoryDoubleFilter.getRelationalOperatorFromRelation(">0.12"));
         assertEquals(RelationalOperator.GTE,
-                VariantEntityRepositoryDoubleFilter.getRelationalOperatorFromRelation(">=0.134"));
+                VariantRepositoryDoubleFilter.getRelationalOperatorFromRelation(">=0.134"));
         assertEquals(RelationalOperator.LT,
-                VariantEntityRepositoryDoubleFilter.getRelationalOperatorFromRelation("<1.1"));
+                VariantRepositoryDoubleFilter.getRelationalOperatorFromRelation("<1.1"));
         assertEquals(RelationalOperator.LTE,
-                VariantEntityRepositoryDoubleFilter.getRelationalOperatorFromRelation("<=0.5"));
+                VariantRepositoryDoubleFilter.getRelationalOperatorFromRelation("<=0.5"));
     }
 
 }

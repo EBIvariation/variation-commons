@@ -29,41 +29,41 @@ import static org.junit.Assert.assertEquals;
 public class VariantRepositoryFilterTest {
     @Test
     public void getCriteriaEq() throws Exception {
-        VariantEntityRepositoryFilter filter = new VariantEntityRepositoryMafFilter("=0.1");
-        assertEquals(Criteria.where(VariantEntityRepositoryFilter.MAF_FIELD).is(0.1), filter.getCriteria());
+        VariantRepositoryFilter filter = new VariantRepositoryMafFilter("=0.1");
+        assertEquals(Criteria.where(VariantRepositoryFilter.MAF_FIELD).is(0.1), filter.getCriteria());
     }
 
     @Test
     public void getCriteriaGt() throws Exception {
-        VariantEntityRepositoryFilter filter = new VariantEntityRepositoryPolyphenFilter(">0.5");
-        assertEquals(Criteria.where(VariantEntityRepositoryFilter.POLYPHEN_FIELD).gt(0.5), filter.getCriteria());
+        VariantRepositoryFilter filter = new VariantRepositoryPolyphenFilter(">0.5");
+        assertEquals(Criteria.where(VariantRepositoryFilter.POLYPHEN_FIELD).gt(0.5), filter.getCriteria());
     }
 
     @Test
     public void getCriteriaLt() throws Exception {
-        VariantEntityRepositoryFilter filter = new VariantEntityRepositorySiftFilter("<0.9");
-        assertEquals(Criteria.where(VariantEntityRepositoryFilter.SIFT_FIELD).lt(0.9),
+        VariantRepositoryFilter filter = new VariantRepositorySiftFilter("<0.9");
+        assertEquals(Criteria.where(VariantRepositoryFilter.SIFT_FIELD).lt(0.9),
                 filter.getCriteria());
     }
 
     @Test
     public void getCriteriaGte() throws Exception {
-        VariantEntityRepositoryFilter filter = new VariantEntityRepositoryMafFilter(">=0.12");
-        assertEquals(Criteria.where(VariantEntityRepositoryFilter.MAF_FIELD).gte(0.12), filter.getCriteria());
+        VariantRepositoryFilter filter = new VariantRepositoryMafFilter(">=0.12");
+        assertEquals(Criteria.where(VariantRepositoryFilter.MAF_FIELD).gte(0.12), filter.getCriteria());
     }
 
     @Test
     public void getCriteriaLte() throws Exception {
-        VariantEntityRepositoryFilter filter = new VariantEntityRepositoryPolyphenFilter("<=0.856");
-        assertEquals(Criteria.where(VariantEntityRepositoryFilter.POLYPHEN_FIELD).lte(0.856), filter.getCriteria());
+        VariantRepositoryFilter filter = new VariantRepositoryPolyphenFilter("<=0.856");
+        assertEquals(Criteria.where(VariantRepositoryFilter.POLYPHEN_FIELD).lte(0.856), filter.getCriteria());
     }
 
     @Test
     public void getCriteriaIn() throws Exception {
         List<String> studies = new ArrayList<>();
         studies.add("PRJEB123");
-        VariantEntityRepositoryFilter filter = new VariantEntityRepositoryStudyFilter(studies);
-        Criteria expected = Criteria.where(VariantEntityRepositoryFilter.STUDY_ID_FIELD).in(studies);
+        VariantRepositoryFilter filter = new VariantRepositoryStudyFilter(studies);
+        Criteria expected = Criteria.where(VariantRepositoryFilter.STUDY_ID_FIELD).in(studies);
         Criteria test = filter.getCriteria();
         assertEquals(expected, test);
     }

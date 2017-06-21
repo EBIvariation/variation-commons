@@ -31,7 +31,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import uk.ac.ebi.eva.commons.core.models.Region;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
-import uk.ac.ebi.eva.commons.mongodb.filter.VariantEntityRepositoryFilter;
+import uk.ac.ebi.eva.commons.mongodb.filter.VariantRepositoryFilter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -57,35 +57,35 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
     }
 
     @Override
-    public List<VariantMongo> findByIdsAndComplexFilters(String id, List<VariantEntityRepositoryFilter> filters,
+    public List<VariantMongo> findByIdsAndComplexFilters(String id, List<VariantRepositoryFilter> filters,
                                                          List<String> exclude, Pageable pageable) {
         Query query = new Query(Criteria.where(VariantMongo.IDS_FIELD).is(id));
         return findByComplexFiltersHelper(query, filters, exclude, pageable);
     }
 
     @Override
-    public Long countByIdsAndComplexFilters(String id, List<VariantEntityRepositoryFilter> filters) {
+    public Long countByIdsAndComplexFilters(String id, List<VariantRepositoryFilter> filters) {
         Criteria criteria = Criteria.where("ids").is(id);
         return countByComplexFiltersHelper(criteria, filters);
     }
 
     @Override
     public List<VariantMongo> findByGenesAndComplexFilters(List<String> geneIds,
-                                                           List<VariantEntityRepositoryFilter> filters,
+                                                           List<VariantRepositoryFilter> filters,
                                                            List<String> exclude, Pageable pageable) {
         Query query = new Query(Criteria.where("annot.xrefs.id").in(geneIds));
         return findByComplexFiltersHelper(query, filters, exclude, pageable);
     }
 
     @Override
-    public Long countByGenesAndComplexFilters(List<String> geneIds, List<VariantEntityRepositoryFilter> filters) {
+    public Long countByGenesAndComplexFilters(List<String> geneIds, List<VariantRepositoryFilter> filters) {
         Criteria criteria = Criteria.where("annot.xrefs.id").in(geneIds);
         return countByComplexFiltersHelper(criteria, filters);
     }
 
     @Override
     public List<VariantMongo> findByRegionsAndComplexFilters(List<Region> regions,
-                                                             List<VariantEntityRepositoryFilter> filters,
+                                                             List<VariantRepositoryFilter> filters,
                                                              List<String> exclude, Pageable pageable) {
         Query query = new Query();
         Criteria criteria = getRegionsCriteria(regions);
@@ -94,7 +94,7 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
     }
 
     @Override
-    public Long countByRegionsAndComplexFilters(List<Region> regions, List<VariantEntityRepositoryFilter> filters) {
+    public Long countByRegionsAndComplexFilters(List<Region> regions, List<VariantRepositoryFilter> filters) {
         Criteria criteria = getRegionsCriteria(regions);
         return countByComplexFiltersHelper(criteria, filters);
     }
@@ -105,7 +105,7 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
                 .distinct(VariantMongo.CHROMOSOME_FIELD));
     }
 
-    private List<VariantMongo> findByComplexFiltersHelper(Query query, List<VariantEntityRepositoryFilter> filters,
+    private List<VariantMongo> findByComplexFiltersHelper(Query query, List<VariantRepositoryFilter> filters,
                                                           List<String> exclude, Pageable pageable) {
 
         addFilterCriteriaToQuery(query, filters);
@@ -125,7 +125,7 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
         return mongoTemplate.find(query, VariantMongo.class);
     }
 
-    private void addFilterCriteriaToQuery(Query query, List<VariantEntityRepositoryFilter> filters) {
+    private void addFilterCriteriaToQuery(Query query, List<VariantRepositoryFilter> filters) {
         if (filters != null && filters.size() > 0) {
             List<Criteria> criteriaList = getFiltersCriteria(filters);
             for (Criteria criteria : criteriaList) {
@@ -134,7 +134,7 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
         }
     }
 
-    private long countByComplexFiltersHelper(Criteria existingCriteria, List<VariantEntityRepositoryFilter> filters) {
+    private long countByComplexFiltersHelper(Criteria existingCriteria, List<VariantRepositoryFilter> filters) {
         List<Criteria> criteriaList = getFiltersCriteria(filters);
         criteriaList.add(existingCriteria);
         Criteria criteria = new Criteria().andOperator(criteriaList.toArray(new Criteria[criteriaList.size()]));
@@ -159,9 +159,9 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
         }
     }
 
-    private List<Criteria> getFiltersCriteria(List<VariantEntityRepositoryFilter> filters) {
+    private List<Criteria> getFiltersCriteria(List<VariantRepositoryFilter> filters) {
         List<Criteria> criteriaList = new ArrayList<>();
-        for (VariantEntityRepositoryFilter filter : filters) {
+        for (VariantRepositoryFilter filter : filters) {
             criteriaList.add(filter.getCriteria());
         }
         return criteriaList;

@@ -22,11 +22,11 @@ import uk.ac.ebi.eva.commons.core.models.VariantType;
 
 import java.util.List;
 
-public class VariantEntityRepositoryTypeFilter extends VariantEntityRepositoryFilter<List<VariantType>> {
+public class VariantRepositoryTypeFilter extends VariantRepositoryFilter<List<VariantType>> {
 
-    private static final String FIELD = VariantEntityRepositoryFilter.TYPE_FIELD;
+    private static final String FIELD = VariantRepositoryFilter.TYPE_FIELD;
 
-    public VariantEntityRepositoryTypeFilter(List<VariantType> types) {
+    public VariantRepositoryTypeFilter(List<VariantType> types) {
         super(FIELD, types, RelationalOperator.IN);
     }
 }

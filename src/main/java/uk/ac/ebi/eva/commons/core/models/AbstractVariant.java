@@ -97,15 +97,14 @@ public abstract class AbstractVariant implements IVariant {
         }
     }
 
-    public int getLength() {
+        public int getLength() {
         return Math.max(this.reference.length(), this.alternate.length());
     }
 
     public VariantType getType() {
         if (this.alternate.equals(".")) {
             return VariantType.NO_ALTERNATE;
-        }
-        if (reference.length() == alternate.length()) {
+        } else if (reference.length() == alternate.length()) {
             if (getLength() > 1) {
                 return VariantType.MNV;
             } else {
@@ -181,4 +180,31 @@ public abstract class AbstractVariant implements IVariant {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AbstractVariant)) return false;
+
+        AbstractVariant that = (AbstractVariant) o;
+
+        if (start != that.start) return false;
+        if (end != that.end) return false;
+        if (chromosome != null ? !chromosome.equals(that.chromosome) : that.chromosome != null) return false;
+        if (reference != null ? !reference.equals(that.reference) : that.reference != null) return false;
+        if (alternate != null ? !alternate.equals(that.alternate) : that.alternate != null) return false;
+        if (ids != null ? !ids.equals(that.ids) : that.ids != null) return false;
+        return hgvs != null ? hgvs.equals(that.hgvs) : that.hgvs == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = chromosome != null ? chromosome.hashCode() : 0;
+        result = 31 * result + start;
+        result = 31 * result + end;
+        result = 31 * result + (reference != null ? reference.hashCode() : 0);
+        result = 31 * result + (alternate != null ? alternate.hashCode() : 0);
+        result = 31 * result + (ids != null ? ids.hashCode() : 0);
+        result = 31 * result + (hgvs != null ? hgvs.hashCode() : 0);
+        return result;
+    }
 }

@@ -22,7 +22,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 
 import java.util.Collection;
 
-public abstract class VariantEntityRepositoryFilter<T> {
+public abstract class VariantRepositoryFilter<T> {
 
     public final static String ANNOTATION_FIELD = "annot";
     public final static String STATISTICS_FIELD = "st";
@@ -47,7 +47,7 @@ public abstract class VariantEntityRepositoryFilter<T> {
     private final T value;
     private final RelationalOperator operator;
 
-    public VariantEntityRepositoryFilter(String field, T value, RelationalOperator operator) {
+    public VariantRepositoryFilter(String field, T value, RelationalOperator operator) {
         this.field = field;
         this.value = value;
         this.operator = operator;
@@ -84,11 +84,11 @@ public abstract class VariantEntityRepositoryFilter<T> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof VariantEntityRepositoryFilter)) {
+        if (!(o instanceof VariantRepositoryFilter)) {
             return false;
         }
 
-        VariantEntityRepositoryFilter<?> that = (VariantEntityRepositoryFilter<?>) o;
+        VariantRepositoryFilter<?> that = (VariantRepositoryFilter<?>) o;
 
         if (!field.equals(that.field)) {
             return false;

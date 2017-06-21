@@ -21,7 +21,7 @@ package uk.ac.ebi.eva.commons.mongodb.repositories;
 import org.springframework.data.domain.Pageable;
 import uk.ac.ebi.eva.commons.core.models.Region;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
-import uk.ac.ebi.eva.commons.mongodb.filter.VariantEntityRepositoryFilter;
+import uk.ac.ebi.eva.commons.mongodb.filter.VariantRepositoryFilter;
 
 import java.util.List;
 import java.util.Set;
@@ -37,21 +37,21 @@ interface VariantRepositoryCustom {
      * filters: study, consequence type, minor allele frequency and protein substitution scores (Polyphen and SIFT).
      *
      * @param id
-     * @param filters List of VariantEntityRepositoryFilter objects by which to filter the query
+     * @param filters List of VariantRepositoryFilter objects by which to filter the query
      * @param exclude List of strings, each matching a field in the variant Mongo documents. Fields specified in the
      *                list will be excluded from the returned document(s)
      * @return VariantEntities whose values are within the bounds of the filters
      */
-    List<VariantMongo> findByIdsAndComplexFilters(String id, List<VariantEntityRepositoryFilter> filters,
+    List<VariantMongo> findByIdsAndComplexFilters(String id, List<VariantRepositoryFilter> filters,
                                                   List<String> exclude,
                                                   Pageable pageable);
 
-    Long countByIdsAndComplexFilters(String id, List<VariantEntityRepositoryFilter> filters);
+    Long countByIdsAndComplexFilters(String id, List<VariantRepositoryFilter> filters);
 
-    List<VariantMongo> findByGenesAndComplexFilters(List<String> geneIds, List<VariantEntityRepositoryFilter> filters,
+    List<VariantMongo> findByGenesAndComplexFilters(List<String> geneIds, List<VariantRepositoryFilter> filters,
                                                     List<String> exclude, Pageable pageable);
 
-    Long countByGenesAndComplexFilters(List<String> geneIds, List<VariantEntityRepositoryFilter> filters);
+    Long countByGenesAndComplexFilters(List<String> geneIds, List<VariantRepositoryFilter> filters);
 
 
     /**
@@ -60,15 +60,15 @@ interface VariantRepositoryCustom {
      * SIFT).
      *
      * @param regions List of region objects to invlude in query
-     * @param filters List of VariantEntityRepositoryFilter objects by which to filter the query
+     * @param filters List of VariantRepositoryFilter objects by which to filter the query
      * @param exclude List of strings, each matching a field in the variant Mongo documents. Fields specified in the
      *                list will be excluded from the returned document(s)
      * @return VariantEntities whose values are within the bounds of the filters
      */
-    List<VariantMongo> findByRegionsAndComplexFilters(List<Region> regions, List<VariantEntityRepositoryFilter> filters,
+    List<VariantMongo> findByRegionsAndComplexFilters(List<Region> regions, List<VariantRepositoryFilter> filters,
                                                       List<String> exclude, Pageable pageable);
 
-    Long countByRegionsAndComplexFilters(List<Region> regions, List<VariantEntityRepositoryFilter> filters);
+    Long countByRegionsAndComplexFilters(List<Region> regions, List<VariantRepositoryFilter> filters);
 
     /**
      * Query for distinct chromosomes for variants in the collection

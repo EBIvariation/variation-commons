@@ -27,7 +27,7 @@ import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotations;
 import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
-import uk.ac.ebi.eva.commons.mongodb.filter.VariantEntityRepositoryFilter;
+import uk.ac.ebi.eva.commons.mongodb.filter.VariantRepositoryFilter;
 import uk.ac.ebi.eva.commons.mongodb.repositories.AnnotationRepository;
 import uk.ac.ebi.eva.commons.mongodb.repositories.VariantRepository;
 import uk.ac.ebi.eva.commons.mongodb.repositories.VariantSourceRepository;
@@ -53,7 +53,7 @@ public class VariantWithSamplesAndAnnotationsService {
     private VariantSourceRepository variantSourceRepository;
 
     public List<VariantWithSamplesAndAnnotations> findByGenesAndComplexFilters(List<String> geneIds,
-                                                                               List<VariantEntityRepositoryFilter> filters,
+                                                                               List<VariantRepositoryFilter> filters,
                                                                                List<String> exclude, Pageable pageable) {
         return convert(variantRepository.findByGenesAndComplexFilters(geneIds, filters, exclude, pageable));
     }
@@ -99,27 +99,27 @@ public class VariantWithSamplesAndAnnotationsService {
         return new VariantSourceEntryWithSampleNames(sourceEntryMongo, samples);
     }
 
-    public Long countByGenesAndComplexFilters(List<String> geneIds, List<VariantEntityRepositoryFilter> filters) {
+    public Long countByGenesAndComplexFilters(List<String> geneIds, List<VariantRepositoryFilter> filters) {
         return variantRepository.countByGenesAndComplexFilters(geneIds, filters);
     }
 
     public List<VariantWithSamplesAndAnnotations> findByRegionsAndComplexFilters(List<Region> regions,
-                                                                                 List<VariantEntityRepositoryFilter> filters,
+                                                                                 List<VariantRepositoryFilter> filters,
                                                                                  List<String> exclude, Pageable pageable) {
         return convert(variantRepository.findByRegionsAndComplexFilters(regions, filters, exclude, pageable));
     }
 
-    public Long countByRegionsAndComplexFilters(List<Region> regions, List<VariantEntityRepositoryFilter> filters) {
+    public Long countByRegionsAndComplexFilters(List<Region> regions, List<VariantRepositoryFilter> filters) {
         return variantRepository.countByRegionsAndComplexFilters(regions, filters);
     }
 
     public List<VariantWithSamplesAndAnnotations> findByIdsAndComplexFilters(String id,
-                                                                             List<VariantEntityRepositoryFilter> filters,
+                                                                             List<VariantRepositoryFilter> filters,
                                                                              List<String> exclude, Pageable pageable) {
         return convert(variantRepository.findByIdsAndComplexFilters(id, filters, exclude, pageable));
     }
 
-    public Long countByIdsAndComplexFilters(String id, List<VariantEntityRepositoryFilter> filters) {
+    public Long countByIdsAndComplexFilters(String id, List<VariantRepositoryFilter> filters) {
         return variantRepository.countByIdsAndComplexFilters(id, filters);
     }
 

@@ -45,6 +45,10 @@ public class VariantSource implements IVariantSource {
 
     private VariantGlobalStats stats;
 
+    VariantSource() {
+        this(null, null, null, null, null, null, null, null, null, null);
+    }
+
     public VariantSource(IVariantSource variantSource) {
         this(
                 variantSource.getFileId(),

@@ -33,6 +33,17 @@ public class Variant extends AbstractVariant {
      */
     private final Map<String, VariantSourceEntry> sourceEntries;
 
+    Variant() {
+        //Spring empty constructor
+        this(
+                null,
+                -1,
+                -1,
+                null,
+                null
+        );
+    }
+
     public Variant(String chromosome, int start, int end, String reference, String alternate) {
         super(chromosome, start, end, reference, alternate);
         sourceEntries = new HashMap<>();
@@ -65,5 +76,23 @@ public class Variant extends AbstractVariant {
     @Override
     public VariantSourceEntry getSourceEntry(String fileId, String studyId) {
         return sourceEntries.get(getSourceEntryIndex(studyId, fileId));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Variant)) return false;
+        if (!super.equals(o)) return false;
+
+        Variant variant = (Variant) o;
+
+        return sourceEntries != null ? sourceEntries.equals(variant.sourceEntries) : variant.sourceEntries == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (sourceEntries != null ? sourceEntries.hashCode() : 0);
+        return result;
     }
 }

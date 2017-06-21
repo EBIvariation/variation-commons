@@ -131,8 +131,8 @@ public class ConsequenceTypeMongo implements IConsequenceType {
                 consequenceType.getAaPosition(),
                 consequenceType.getAaChange(),
                 consequenceType.getCodon(),
-                consequenceType.getSift(),
-                consequenceType.getPolyphen(),
+                new ScoreMongo(consequenceType.getSift()),
+                new ScoreMongo(consequenceType.getPolyphen()),
                 consequenceType.getSoAccessions(),
                 consequenceType.getRelativePosition()
         );

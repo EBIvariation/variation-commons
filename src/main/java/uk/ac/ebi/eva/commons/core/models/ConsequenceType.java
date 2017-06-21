@@ -15,8 +15,6 @@
  */
 package uk.ac.ebi.eva.commons.core.models;
 
-import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.ScoreMongo;
-
 import java.util.Set;
 
 /**
@@ -44,17 +42,37 @@ public class ConsequenceType implements IConsequenceType {
 
     private String codon;
 
-    private ScoreMongo sift;
+    private Score sift;
 
-    private ScoreMongo polyphen;
+    private Score polyphen;
 
     private Set<Integer> soAccessions;
 
     private Integer relativePosition;
 
+    ConsequenceType() {
+        //Spring empty constructor
+        this(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
     public ConsequenceType(String geneName, String ensemblGeneId, String ensemblTranscriptId, String strand,
                            String biotype, Integer cDnaPosition, Integer cdsPosition, Integer aaPosition,
-                           String aaChange, String codon, ScoreMongo sift, ScoreMongo polyphen, Set<Integer> soAccessions,
+                           String aaChange, String codon, IScore sift, IScore polyphen, Set<Integer> soAccessions,
                            Integer relativePosition) {
         this.geneName = geneName;
         this.ensemblGeneId = ensemblGeneId;
@@ -66,8 +84,12 @@ public class ConsequenceType implements IConsequenceType {
         this.aaPosition = aaPosition;
         this.aaChange = aaChange;
         this.codon = codon;
-        this.sift = sift;
-        this.polyphen = polyphen;
+        if (sift != null) {
+            this.sift = new Score(sift);
+        }
+        if(polyphen!=null) {
+            this.polyphen = new Score(polyphen);
+        }
         this.soAccessions = soAccessions;
         this.relativePosition = relativePosition;
     }
@@ -142,12 +164,12 @@ public class ConsequenceType implements IConsequenceType {
     }
 
     @Override
-    public ScoreMongo getSift() {
+    public Score getSift() {
         return sift;
     }
 
     @Override
-    public ScoreMongo getPolyphen() {
+    public Score getPolyphen() {
         return polyphen;
     }
 
