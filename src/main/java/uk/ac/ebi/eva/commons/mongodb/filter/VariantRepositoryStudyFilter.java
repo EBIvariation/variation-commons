@@ -20,11 +20,11 @@ package uk.ac.ebi.eva.commons.mongodb.filter;
 
 import java.util.List;
 
-public class VariantEntityRepositoryAlternateFilter extends VariantEntityRepositoryFilter<List<String>> {
+public class VariantRepositoryStudyFilter extends VariantRepositoryFilter<List<String>> {
 
-    private static final String FIELD = VariantEntityRepositoryFilter.ALT_FIELD;
+    private static final String FIELD = VariantRepositoryFilter.STUDY_ID_FIELD;
 
-    public VariantEntityRepositoryAlternateFilter(List<String> alternates) {
-        super(FIELD, alternates, RelationalOperator.IN);
+    public VariantRepositoryStudyFilter(List<String> studies) {
+        super(FIELD, studies, RelationalOperator.IN);
     }
 }

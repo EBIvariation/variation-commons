@@ -24,6 +24,11 @@ public class Xref implements IXref {
 
     private String src;
 
+    Xref() {
+        //Spring empty constructor
+        this(null, null);
+    }
+
     public Xref(IXref xref) {
         this(xref.getId(), xref.getSrc());
     }

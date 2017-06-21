@@ -46,6 +46,19 @@ public class Individual implements Comparable<Individual> {
 
     private Set<Individual> children;
 
+    Individual() {
+        //Spring empty constructor
+        this(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
     public Individual(String id, String family, Individual father, Individual mother, String sex, String phenotype, String[] fields) {
         this.id = id;
         this.family = family;

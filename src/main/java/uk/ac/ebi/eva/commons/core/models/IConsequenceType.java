@@ -15,8 +15,6 @@
  */
 package uk.ac.ebi.eva.commons.core.models;
 
-import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.ScoreMongo;
-
 import java.util.Set;
 
 public interface IConsequenceType {
@@ -45,8 +43,8 @@ public interface IConsequenceType {
 
     Set<Integer> getSoAccessions();
 
-    ScoreMongo getSift();
+    IScore getSift();
 
-    ScoreMongo getPolyphen();
+    IScore getPolyphen();
 
 }

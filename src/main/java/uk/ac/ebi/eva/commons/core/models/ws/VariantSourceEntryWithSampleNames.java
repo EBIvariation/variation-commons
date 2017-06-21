@@ -36,6 +36,10 @@ public class VariantSourceEntryWithSampleNames extends AbstractVariantSourceEntr
      */
     private LinkedHashMap<String, Map<String, String>> samplesData;
 
+    VariantSourceEntryWithSampleNames() {
+        this(null, null, null, null, null, null, null);
+    }
+
     public VariantSourceEntryWithSampleNames(IVariantSourceEntry variantSourceEntry, List<String> sampleNames) {
         this(
                 variantSourceEntry.getFileId(),
@@ -94,5 +98,23 @@ public class VariantSourceEntryWithSampleNames extends AbstractVariantSourceEntr
             temp.put(samples.get(i), samplesData.get(i));
         }
         return temp;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof VariantSourceEntryWithSampleNames)) return false;
+        if (!super.equals(o)) return false;
+
+        VariantSourceEntryWithSampleNames that = (VariantSourceEntryWithSampleNames) o;
+
+        return samplesData != null ? samplesData.equals(that.samplesData) : that.samplesData == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (samplesData != null ? samplesData.hashCode() : 0);
+        return result;
     }
 }

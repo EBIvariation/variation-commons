@@ -24,6 +24,11 @@ public class AnnotationMetadata implements IAnnotationMetadata {
 
     private String cacheVersion;
 
+    AnnotationMetadata() {
+        //Spring empty constructor
+        this(null, null);
+    }
+
     public AnnotationMetadata(IAnnotationMetadata annotationMetadata) {
         this(annotationMetadata.getVepVersion(), annotationMetadata.getCacheVersion());
     }

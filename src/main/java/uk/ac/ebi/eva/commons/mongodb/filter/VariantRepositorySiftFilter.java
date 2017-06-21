@@ -18,18 +18,11 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.filter;
 
-import java.util.List;
-import java.util.stream.Collectors;
+public class VariantRepositorySiftFilter extends VariantRepositoryDoubleFilter {
 
-public class VariantEntityRepositoryConsequenceTypeFilter extends VariantEntityRepositoryFilter<List<Integer>> {
+    private static final String FIELD = VariantRepositoryFilter.SIFT_FIELD;
 
-    private static final String FIELD = VariantEntityRepositoryFilter.CONSEQUENCE_TYPE_SO_FIELD;
-
-    public VariantEntityRepositoryConsequenceTypeFilter(List<String> consequenceType) {
-        super(FIELD,
-                consequenceType.stream()
-                        .map(c -> Integer.parseInt(c.replaceAll("[^\\d.]", ""), 10))  // parse integer from string
-                        .collect(Collectors.toList()),
-                RelationalOperator.IN);
+    public VariantRepositorySiftFilter(String sift) {
+        super(FIELD, sift);
     }
 }

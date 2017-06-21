@@ -32,6 +32,10 @@ public class FeatureCoordinates implements IFeatureCoordinates {
 
     private int end;
 
+    FeatureCoordinates() {
+        this(null,null,null,null,-1,-1);
+    }
+
     public FeatureCoordinates(IFeatureCoordinates featureCoordinates) {
         this(
                 featureCoordinates.getId(),

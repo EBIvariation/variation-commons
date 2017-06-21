@@ -18,13 +18,11 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.filter;
 
-import java.util.List;
+public class VariantRepositoryMafFilter extends VariantRepositoryDoubleFilter {
 
-public class VariantEntityRepositoryStudyFilter extends VariantEntityRepositoryFilter<List<String>> {
+    private static final String FIELD = VariantRepositoryFilter.MAF_FIELD;
 
-    private static final String FIELD = VariantEntityRepositoryFilter.STUDY_ID_FIELD;
-
-    public VariantEntityRepositoryStudyFilter(List<String> studies) {
-        super(FIELD, studies, RelationalOperator.IN);
+    public VariantRepositoryMafFilter(String maf) {
+        super(FIELD, maf);
     }
 }
