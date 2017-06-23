@@ -47,4 +47,23 @@ public class Xref implements IXref {
     public String getSrc() {
         return src;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Xref)) return false;
+
+        Xref xref = (Xref) o;
+
+        if (id != null ? !id.equals(xref.id) : xref.id != null) return false;
+        return src != null ? src.equals(xref.src) : xref.src == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (src != null ? src.hashCode() : 0);
+        return result;
+    }
 }
