@@ -105,4 +105,35 @@ public class Annotation implements IAnnotation {
     public Set<Xref> getXrefs() {
         return xrefs;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Annotation)) return false;
+
+        Annotation that = (Annotation) o;
+
+        if (start != that.start) return false;
+        if (end != that.end) return false;
+        if (chromosome != null ? !chromosome.equals(that.chromosome) : that.chromosome != null) return false;
+        if (vepVersion != null ? !vepVersion.equals(that.vepVersion) : that.vepVersion != null) return false;
+        if (vepCacheVersion != null ? !vepCacheVersion.equals(that.vepCacheVersion) : that.vepCacheVersion != null)
+            return false;
+        if (consequenceTypes != null ? !consequenceTypes.equals(that.consequenceTypes) : that.consequenceTypes != null)
+            return false;
+        return xrefs != null ? xrefs.equals(that.xrefs) : that.xrefs == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = chromosome != null ? chromosome.hashCode() : 0;
+        result = 31 * result + start;
+        result = 31 * result + end;
+        result = 31 * result + (vepVersion != null ? vepVersion.hashCode() : 0);
+        result = 31 * result + (vepCacheVersion != null ? vepCacheVersion.hashCode() : 0);
+        result = 31 * result + (consequenceTypes != null ? consequenceTypes.hashCode() : 0);
+        result = 31 * result + (xrefs != null ? xrefs.hashCode() : 0);
+        return result;
+    }
 }
