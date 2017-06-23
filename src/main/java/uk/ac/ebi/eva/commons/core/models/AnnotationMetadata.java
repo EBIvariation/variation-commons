@@ -47,4 +47,23 @@ public class AnnotationMetadata implements IAnnotationMetadata {
     public String getCacheVersion() {
         return cacheVersion;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AnnotationMetadata)) return false;
+
+        AnnotationMetadata that = (AnnotationMetadata) o;
+
+        if (vepVersion != null ? !vepVersion.equals(that.vepVersion) : that.vepVersion != null) return false;
+        return cacheVersion != null ? cacheVersion.equals(that.cacheVersion) : that.cacheVersion == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = vepVersion != null ? vepVersion.hashCode() : 0;
+        result = 31 * result + (cacheVersion != null ? cacheVersion.hashCode() : 0);
+        return result;
+    }
 }
