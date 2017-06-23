@@ -60,13 +60,13 @@ public class VariantSource implements IVariantSource {
                 variantSource.getDate(),
                 variantSource.getSamplesPosition(),
                 variantSource.getMetadata(),
-                new VariantGlobalStats(variantSource.getStats())
+                variantSource.getStats()
         );
     }
 
     public VariantSource(String fileId, String fileName, String studyId, String studyName, StudyType type,
                          Aggregation aggregation, Date date, Map<String, Integer> samplesPosition,
-                         Map<String, Object> metadata, VariantGlobalStats stats) {
+                         Map<String, Object> metadata, IVariantGlobalStats stats) {
         this.fileId = fileId;
         this.fileName = fileName;
         this.studyId = studyId;
@@ -76,7 +76,9 @@ public class VariantSource implements IVariantSource {
         this.date = date;
         this.samplesPosition = samplesPosition;
         this.metadata = metadata;
-        this.stats = stats;
+        if (stats != null) {
+            this.stats = new VariantGlobalStats(stats);
+        }
     }
 
     @Override
