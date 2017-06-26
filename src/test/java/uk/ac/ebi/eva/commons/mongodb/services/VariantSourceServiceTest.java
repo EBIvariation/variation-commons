@@ -12,17 +12,22 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import uk.ac.ebi.eva.commons.configuration.MongoRepositoryTestConfiguration;
+import uk.ac.ebi.eva.commons.core.models.Aggregation;
+import uk.ac.ebi.eva.commons.core.models.StudyType;
 import uk.ac.ebi.eva.commons.core.models.VariantSource;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantGlobalStatsMongo;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class})
@@ -43,7 +48,29 @@ public class VariantSourceServiceTest {
     @Test
     public void testConvert() {
         List<VariantSourceMongo> variantSourceMongos = new ArrayList<>();
+
+        String fileId = "fileId";
+        String fileName = "fileName";
+        String studyId = "studyId";
+        String studyName = "studyName";
+        StudyType type = StudyType.CONTROL;
+        Aggregation aggregation = Aggregation.NONE;
+        Date date = new Date(1);
+        Map<String, Integer> samplesPosition = new HashMap<>();
+        Map<String, Object> metadata = new HashMap<>();
+        VariantGlobalStatsMongo stats = new VariantGlobalStatsMongo(1, 1, 1, 0, 0, 1, 1, 0, 1);
+
+        VariantSourceMongo variantSourceMongo = new VariantSourceMongo(fileId, fileName, studyId, studyName, type,
+                                                                       aggregation, samplesPosition, metadata, stats);
+        VariantSource variantSource = new VariantSource(fileId, fileName, studyId, studyName, type, aggregation, date,
+                                                        samplesPosition, metadata, stats);
+
+        variantSourceMongo.setDate(variantSource.getDate());
+
+        variantSourceMongos.add(variantSourceMongo);
         List<VariantSource> variantSources = service.convert(variantSourceMongos);
+
+        assertEquals(variantSource, variantSources.get(0));
     }
 
     @Test(expected = NullPointerException.class)

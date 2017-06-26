@@ -141,6 +141,10 @@ public class VariantSourceMongo implements IVariantSource {
         return date;
     }
 
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     public Map<String, Integer> getSamplesPosition() {
         return samplesPosition;
     }
