@@ -44,10 +44,11 @@ public class VariantSourceServiceTest {
     public void testConvert() {
         List<VariantSourceMongo> variantSourceMongos = new ArrayList<>();
         List<VariantSource> variantSources = service.convert(variantSourceMongos);
-        assertNotNull(variantSources);
+    }
 
-        variantSources = service.convert(null);
-        assertNull(variantSources);
+    @Test(expected = NullPointerException.class)
+    public void testConvertNull() {
+        service.convert(null);
     }
 
     @Test
