@@ -45,7 +45,7 @@ import static org.junit.Assert.assertNotEquals;
         "/test-data/variants.json",
         "/test-data/annotations.json",
         "/test-data/files.json"})
-public class VariantWithAnnotationMongoServiceTest {
+public class VariantWithSamplesAndAnnotationsServiceTest {
 
     @Autowired
     private ApplicationContext applicationContext;

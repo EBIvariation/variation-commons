@@ -56,8 +56,6 @@ public class VariantSourceServiceTest {
 
     @Test
     public void testConvert() {
-        List<VariantSourceMongo> variantSourceMongos = new ArrayList<>();
-
         String fileId = "fileId";
         String fileName = "fileName";
         String studyId = "studyId";
@@ -76,6 +74,7 @@ public class VariantSourceServiceTest {
 
         variantSourceMongo.setDate(variantSource.getDate());
 
+        List<VariantSourceMongo> variantSourceMongos = new ArrayList<>();
         variantSourceMongos.add(variantSourceMongo);
         List<VariantSource> variantSources = service.convert(variantSourceMongos);
 
@@ -97,7 +96,9 @@ public class VariantSourceServiceTest {
     public void testFindByStudyIdOrStudyName() {
         List<VariantSource> variantSourceMongoList = service.findByStudyIdOrStudyName(FIRST_STUDY_ID, FIRST_STUDY_ID);
         assertEquals(1, variantSourceMongoList.size());
+        assertEquals(FIRST_STUDY_ID, variantSourceMongoList.get(0).getStudyId());
         variantSourceMongoList = service.findByStudyIdOrStudyName(SECOND_STUDY_ID, SECOND_STUDY_ID);
+        assertEquals(SECOND_STUDY_ID, variantSourceMongoList.get(0).getStudyId());
         assertEquals(2, variantSourceMongoList.size());
     }
 
