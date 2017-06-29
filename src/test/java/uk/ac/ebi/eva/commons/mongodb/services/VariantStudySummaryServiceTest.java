@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.eva.commons.mongodb.repository;
+package uk.ac.ebi.eva.commons.mongodb.services;
 
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
@@ -30,7 +30,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.eva.commons.configuration.MongoRepositoryTestConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.projections.VariantStudySummary;
-import uk.ac.ebi.eva.commons.mongodb.services.VariantStudySummaryService;
 
 import java.util.List;
 
@@ -42,9 +41,9 @@ import static org.junit.Assert.assertNull;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class})
 @UsingDataSet(locations = {"/test-data/files.json"})
-public class VariantStudySummaryRepositoryTest {
+public class VariantStudySummaryServiceTest {
 
-    protected static Logger logger = LoggerFactory.getLogger(VariantStudySummaryRepositoryTest.class);
+    protected static Logger logger = LoggerFactory.getLogger(VariantStudySummaryServiceTest.class);
 
     private static final String FIRST_STUDY_NAME = "firstStudyName";
     private static final String SECOND_STUDY_NAME = "secondStudyName";
