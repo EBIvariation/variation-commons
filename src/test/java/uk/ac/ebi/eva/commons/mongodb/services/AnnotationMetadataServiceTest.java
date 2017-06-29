@@ -24,9 +24,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import uk.ac.ebi.eva.commons.configuration.MongoRepositoryTestConfiguration;
-import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMetadataMongo;
-import uk.ac.ebi.eva.commons.mongodb.repositories.AnnotationMetadataRepository;
+import uk.ac.ebi.eva.commons.core.models.AnnotationMetadata;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class})
 @UsingDataSet(locations = {"/test-data/annotation_metadata.json"})
-public class AnnotationMongoMetadataServiceTest {
+public class AnnotationMetadataServiceTest {
 
     private static final String TEST_DB = "test-db";
 
@@ -45,37 +45,37 @@ public class AnnotationMongoMetadataServiceTest {
     private ApplicationContext applicationContext;
 
     @Autowired
-    private AnnotationMetadataRepository repository;
+    private AnnotationMetadataService service;
 
     @Rule
     public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb(TEST_DB);
 
     @Test
     public void testFindAllByOrderByCacheVersionDescVepVersionDescSize() throws Exception {
-        List<AnnotationMetadataMongo> annotationMetadataMongoList = repository.findAllByOrderByCacheVersionDescVepVersionDesc();
+        List<AnnotationMetadata> annotationMetadataMongoList = service.findAllByOrderByCacheVersionDescVepVersionDesc();
         assertEquals(4, annotationMetadataMongoList.size());
     }
 
     @Test
     public void testFindAllByOrderByCacheVersionDescVepVersionDescCacheVersionOrder() throws Exception {
-        List<AnnotationMetadataMongo> annotationMetadataMongoList = repository.findAllByOrderByCacheVersionDescVepVersionDesc();
-        AnnotationMetadataMongo prevAnnotationMetadataMongo = annotationMetadataMongoList.get(0);
-        for (AnnotationMetadataMongo curAnnotationMetadataMongo :
-                annotationMetadataMongoList.subList(1, annotationMetadataMongoList.size())) {
-            assertTrue(curAnnotationMetadataMongo.getCacheVersion()
-                    .compareTo(prevAnnotationMetadataMongo.getCacheVersion()) <= 0);
+        List<AnnotationMetadata> annotationMetadataList = service.findAllByOrderByCacheVersionDescVepVersionDesc();
+        AnnotationMetadata prevAnnotationMetadata = annotationMetadataList.get(0);
+        for (AnnotationMetadata curAnnotationMetadata :
+                annotationMetadataList.subList(1, annotationMetadataList.size())) {
+            assertTrue(curAnnotationMetadata.getCacheVersion()
+                    .compareTo(prevAnnotationMetadata.getCacheVersion()) <= 0);
         }
     }
 
     @Test
     public void testFindAllByOrderByCacheVersionDescVepVersionDescVepVersionOrder() throws Exception {
-        List<AnnotationMetadataMongo> annotationMetadataMongoList = repository.findAllByOrderByCacheVersionDescVepVersionDesc();
-        AnnotationMetadataMongo prevAnnotationMetadataMongo = annotationMetadataMongoList.get(0);
-        for (AnnotationMetadataMongo curAnnotationMetadataMongo :
-                annotationMetadataMongoList.subList(1, annotationMetadataMongoList.size())) {
-            if (curAnnotationMetadataMongo.getCacheVersion().equals(prevAnnotationMetadataMongo.getCacheVersion())) {
+        List<AnnotationMetadata> annotationMetadataList = service.findAllByOrderByCacheVersionDescVepVersionDesc();
+        AnnotationMetadata prevAnnotationMetadata = annotationMetadataList.get(0);
+        for (AnnotationMetadata curAnnotationMetadataMongo :
+                annotationMetadataList.subList(1, annotationMetadataList.size())) {
+            if (curAnnotationMetadataMongo.getCacheVersion().equals(prevAnnotationMetadata.getCacheVersion())) {
                 assertTrue(curAnnotationMetadataMongo.getCacheVersion()
-                        .compareTo(prevAnnotationMetadataMongo.getCacheVersion()) <= 0);
+                        .compareTo(prevAnnotationMetadata.getCacheVersion()) <= 0);
             }
         }
     }
