@@ -31,7 +31,7 @@ public class VariantAtMongo {
     private Set<String> chunkIds;
 
     VariantAtMongo() {
-        //Empty constructor for spring
+        chunkIds = new HashSet<>();
     }
 
     public VariantAtMongo(String chunkSmall, String chunkBig) {

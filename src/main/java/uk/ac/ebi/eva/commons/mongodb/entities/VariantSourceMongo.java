@@ -24,6 +24,7 @@ import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantGlobalStatsMon
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -107,8 +108,14 @@ public class VariantSourceMongo implements IVariantSource {
         this.studyName = studyName;
         this.type = type;
         this.aggregation = aggregation;
-        this.samplesPosition = samplesPosition;
-        this.metadata = metadata;
+        this.samplesPosition = new HashMap<>();
+        if (samplesPosition != null && !samplesPosition.isEmpty()) {
+            this.samplesPosition.putAll(samplesPosition);
+        }
+        this.metadata = new HashMap<>();
+        if (metadata != null && !metadata.isEmpty()) {
+            this.metadata.putAll(metadata);
+        }
         this.stats = stats;
         this.date = Calendar.getInstance().getTime();
     }
