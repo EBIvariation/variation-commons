@@ -18,6 +18,7 @@ package uk.ac.ebi.eva.commons.mongodb.entities.subdocuments;
 import org.springframework.data.mongodb.core.mapping.Field;
 import uk.ac.ebi.eva.commons.core.models.IConsequenceType;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -96,7 +97,7 @@ public class ConsequenceTypeMongo implements IConsequenceType {
     private Integer relativePosition;
 
     ConsequenceTypeMongo() {
-        // Spring empty constructor
+        this(null, null, null, null, null, null, null, null, null, null, null, null, null, null);
     }
 
     public ConsequenceTypeMongo(String geneName, String ensemblGeneId, String ensemblTranscriptId, String strand,
@@ -115,7 +116,10 @@ public class ConsequenceTypeMongo implements IConsequenceType {
         this.codon = codon;
         this.sift = sift;
         this.polyphen = polyphen;
-        this.soAccessions = soAccessions;
+        this.soAccessions = new HashSet<>();
+        if (soAccessions != null && !soAccessions.isEmpty()) {
+            this.soAccessions.addAll(soAccessions);
+        }
         this.relativePosition = relativePosition;
     }
 

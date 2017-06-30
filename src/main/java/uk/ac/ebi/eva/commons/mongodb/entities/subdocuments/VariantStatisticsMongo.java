@@ -78,7 +78,7 @@ public class VariantStatisticsMongo implements IVariantStatistics {
     private Map<String, Integer> numGt;
 
     VariantStatisticsMongo() {
-        // Spring empty constructor
+        this(null, null, null, -1, -1, null, null, -1, -1, null);
     }
 
     public VariantStatisticsMongo(String studyId, String fileId, String cohortId, IVariantStatistics stats) {

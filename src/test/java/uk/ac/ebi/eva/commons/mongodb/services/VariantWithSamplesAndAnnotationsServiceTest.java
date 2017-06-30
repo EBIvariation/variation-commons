@@ -57,7 +57,7 @@ public class VariantWithSamplesAndAnnotationsServiceTest {
     private VariantWithSamplesAndAnnotationsService service;
 
     @Test
-    public void testAnnotationService() {
+    public void testFindByRegionsAndComplexFilters() {
         String chr = "11";
         int start = 190062;
         int end = 190064;
