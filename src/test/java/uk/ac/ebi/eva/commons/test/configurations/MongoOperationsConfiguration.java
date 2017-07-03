@@ -24,6 +24,16 @@ public class MongoOperationsConfiguration {
     private static final String DUMMY_STATIC = "dummy_test";
 
     @Bean
+    public String mongoCollectionsFiles() {
+        return "non-existent-files";
+    }
+
+    @Bean
+    public String mongoCollectionsVariants() {
+        return "non-existent-variants";
+    }
+
+    @Bean
     public MongoMappingContext mongoMappingContext() {
         return new MongoMappingContext();
     }

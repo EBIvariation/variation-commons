@@ -31,7 +31,7 @@ import java.util.Set;
 /**
  * Mapped class for annotations collection in mongo
  */
-@Document(collection = "annotations")
+@Document(collection = "#{mongoCollectionsAnnotations}")
 public class AnnotationMongo implements IAnnotation {
 
     public static final String CHROMOSOME_FIELD = "chr";
