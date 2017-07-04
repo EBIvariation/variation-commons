@@ -32,6 +32,7 @@ import uk.ac.ebi.eva.commons.mongodb.repositories.AnnotationRepository;
 import uk.ac.ebi.eva.commons.mongodb.repositories.VariantRepository;
 import uk.ac.ebi.eva.commons.mongodb.repositories.VariantSourceRepository;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -64,7 +65,8 @@ public class VariantWithSamplesAndAnnotationsService {
                 .findAndIndexAnnotationsOfVariants(variantMongos);
 
         return variantMongos.stream()
-                .map(variant -> convert(variant, studyFileIdsToSamples, indexedAnnotations.get(variant.getId())))
+                .map(variant -> convert(variant, studyFileIdsToSamples,
+                                        indexedAnnotations.getOrDefault(variant.getId(), new HashSet<>())))
                 .collect(Collectors.toList());
     }
 
