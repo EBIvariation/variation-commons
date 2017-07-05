@@ -52,13 +52,14 @@ public class VariantSourceEntryWithSampleNames extends AbstractVariantSourceEntr
         );
     }
 
-    public VariantSourceEntryWithSampleNames(VariantSourceEntryMongo variantSourceEntryMongo, List<String> sampleNames) {
+    public VariantSourceEntryWithSampleNames(VariantSourceEntryMongo variantSourceEntryMongo, List<String> sampleNames,
+                                             Map<String, VariantStatistics> cohortIdToVariantStatsMongoMap) {
         this(
                 variantSourceEntryMongo.getFileId(),
                 variantSourceEntryMongo.getStudyId(),
                 variantSourceEntryMongo.getSecondaryAlternates(),
                 variantSourceEntryMongo.getFormat(),
-                null,
+                cohortIdToVariantStatsMongoMap,
                 variantSourceEntryMongo.getAttributes(),
                 joinSamplesDataWithSampleNamesHelper(variantSourceEntryMongo, sampleNames)
         );
