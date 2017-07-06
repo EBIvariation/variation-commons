@@ -69,10 +69,14 @@ public class VariantWithSamplesAndAnnotationsService {
         Map<String, Set<AnnotationMongo>> indexedAnnotations = annotationRepository
                 .findAndIndexAnnotationsOfVariants(variantMongos);
 
-        return variantMongos.stream()
-                .map(variant -> convert(variant, studyFileIdsToSamples,
-                                        indexedAnnotations.getOrDefault(variant.getId(), new HashSet<>())))
-                .collect(Collectors.toList());
+        List<VariantWithSamplesAndAnnotations> variantsList =
+                variantMongos.stream().map(variant ->
+                                                   convert(variant, studyFileIdsToSamples,
+                                                           indexedAnnotations.getOrDefault(variant.getId(), new HashSet<>())))
+                             .collect(Collectors.toList());
+
+        VariantStatistics.calculateStatsForVariantsList(variantsList, null);
+        return variantsList;
     }
 
     private static VariantWithSamplesAndAnnotations convert(VariantMongo variantMongo,
