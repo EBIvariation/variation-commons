@@ -52,7 +52,7 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
 
     private final int MARGIN = 5000;
 
-    private static final String GENE_DOC_PATH = VariantMongo.ANNOTATION_FIELD + "." + AnnotationIndexMongo.XREFS_FIELD;
+    private static final String GENE_IDS_FIELD = VariantMongo.ANNOTATION_FIELD + "." + AnnotationIndexMongo.XREFS_FIELD;
 
     @Autowired
     public VariantRepositoryImpl(MongoDbFactory mongoDbFactory, MappingMongoConverter mappingMongoConverter) {
@@ -76,13 +76,13 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
     public List<VariantMongo> findByGenesAndComplexFilters(List<String> geneIds,
                                                            List<VariantRepositoryFilter> filters,
                                                            List<String> exclude, Pageable pageable) {
-        Query query = new Query(Criteria.where(GENE_DOC_PATH).in(geneIds));
+        Query query = new Query(Criteria.where(GENE_IDS_FIELD).in(geneIds));
         return findByComplexFiltersHelper(query, filters, exclude, pageable);
     }
 
     @Override
     public Long countByGenesAndComplexFilters(List<String> geneIds, List<VariantRepositoryFilter> filters) {
-        Criteria criteria = Criteria.where(GENE_DOC_PATH).in(geneIds);
+        Criteria criteria = Criteria.where(GENE_IDS_FIELD).in(geneIds);
         return countByComplexFiltersHelper(criteria, filters);
     }
 
