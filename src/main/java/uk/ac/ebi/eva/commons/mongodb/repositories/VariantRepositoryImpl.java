@@ -31,6 +31,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import uk.ac.ebi.eva.commons.core.models.Region;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.AnnotationIndexMongo;
 import uk.ac.ebi.eva.commons.mongodb.filter.VariantRepositoryFilter;
 
 import java.util.ArrayList;
@@ -50,6 +51,8 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
     private MongoTemplate mongoTemplate;
 
     private final int MARGIN = 5000;
+
+    private static final String GENE_DOC_PATH = VariantMongo.ANNOTATION_FIELD + "." + AnnotationIndexMongo.XREFS_FIELD;
 
     @Autowired
     public VariantRepositoryImpl(MongoDbFactory mongoDbFactory, MappingMongoConverter mappingMongoConverter) {
@@ -73,13 +76,13 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
     public List<VariantMongo> findByGenesAndComplexFilters(List<String> geneIds,
                                                            List<VariantRepositoryFilter> filters,
                                                            List<String> exclude, Pageable pageable) {
-        Query query = new Query(Criteria.where("annot.xrefs.id").in(geneIds));
+        Query query = new Query(Criteria.where(GENE_DOC_PATH).in(geneIds));
         return findByComplexFiltersHelper(query, filters, exclude, pageable);
     }
 
     @Override
     public Long countByGenesAndComplexFilters(List<String> geneIds, List<VariantRepositoryFilter> filters) {
-        Criteria criteria = Criteria.where("annot.xrefs.id").in(geneIds);
+        Criteria criteria = Criteria.where(GENE_DOC_PATH).in(geneIds);
         return countByComplexFiltersHelper(criteria, filters);
     }
 
