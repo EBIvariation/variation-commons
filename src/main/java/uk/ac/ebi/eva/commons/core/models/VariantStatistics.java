@@ -537,6 +537,9 @@ public class VariantStatistics implements IVariantStatistics {
     public static void calculateStatsForVariantsList(List<VariantWithSamplesAndAnnotations> variants, Pedigree ped) {
         for (VariantWithSamplesAndAnnotations variant : variants) {
             for (IVariantSourceEntry file : variant.getSourceEntries()) {
+                if (file.getCohortStats().isEmpty()) {
+                    continue;
+                }
                 VariantStatistics stats = new VariantStatistics(variant)
                         .calculate(file.getSamplesData(), file.getAttributes(), ped);
                 file.setStats(stats); // TODO Correct?
