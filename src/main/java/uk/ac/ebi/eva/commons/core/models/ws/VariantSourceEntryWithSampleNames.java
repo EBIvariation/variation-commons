@@ -48,19 +48,20 @@ public class VariantSourceEntryWithSampleNames extends AbstractVariantSourceEntr
                 variantSourceEntry.getFormat(),
                 variantSourceEntry.getCohortStats(),
                 variantSourceEntry.getAttributes(),
-                joinSamplesDataWithSampleNames(variantSourceEntry.getSamplesData(), sampleNames)
+                joinSamplesDataWithSampleNamesHelper(variantSourceEntry, sampleNames)
         );
     }
 
-    public VariantSourceEntryWithSampleNames(VariantSourceEntryMongo variantSourceEntryMongo, List<String> sampleNames) {
+    public VariantSourceEntryWithSampleNames(VariantSourceEntryMongo variantSourceEntryMongo, List<String> sampleNames,
+                                             Map<String, VariantStatistics> cohortIdToVariantStatsMongoMap) {
         this(
                 variantSourceEntryMongo.getFileId(),
                 variantSourceEntryMongo.getStudyId(),
                 variantSourceEntryMongo.getSecondaryAlternates(),
                 variantSourceEntryMongo.getFormat(),
-                null,
+                cohortIdToVariantStatsMongoMap,
                 variantSourceEntryMongo.getAttributes(),
-                joinSamplesDataWithSampleNames(variantSourceEntryMongo.deflateSamplesData(sampleNames.size()), sampleNames)
+                joinSamplesDataWithSampleNamesHelper(variantSourceEntryMongo, sampleNames)
         );
     }
 
@@ -80,6 +81,30 @@ public class VariantSourceEntryWithSampleNames extends AbstractVariantSourceEntr
 
     public Map<String, Map<String, String>> getSamplesDataMap() {
         return samplesData;
+    }
+
+    private static LinkedHashMap<String, Map<String, String>> joinSamplesDataWithSampleNamesHelper(
+            IVariantSourceEntry variantSourceEntry,
+            List<String> samples) {
+        LinkedHashMap<String, Map<String, String>> temp;
+        if (variantSourceEntry == null || samples == null) {
+            temp = new LinkedHashMap<>();
+        } else {
+            temp = joinSamplesDataWithSampleNames(variantSourceEntry.getSamplesData(), samples);
+        }
+        return temp;
+    }
+
+    private static LinkedHashMap<String, Map<String, String>> joinSamplesDataWithSampleNamesHelper(
+            VariantSourceEntryMongo variantSourceEntry,
+            List<String> samples) {
+        LinkedHashMap<String, Map<String, String>> temp;
+        if (variantSourceEntry == null || samples == null) {
+            temp = new LinkedHashMap<>();
+        } else {
+            temp = joinSamplesDataWithSampleNames(variantSourceEntry.deflateSamplesData(samples.size()), samples);
+        }
+        return temp;
     }
 
     /**

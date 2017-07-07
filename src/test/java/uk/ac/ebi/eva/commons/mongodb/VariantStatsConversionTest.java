@@ -53,8 +53,6 @@ public class VariantStatsConversionTest {
     public void testConvertVariantStatsToMongo() {
         VariantStatistics stats = new VariantStatistics(
                 null,
-                -1,
-                null,
                 null,
                 VariantType.SNV,
                 MAF,

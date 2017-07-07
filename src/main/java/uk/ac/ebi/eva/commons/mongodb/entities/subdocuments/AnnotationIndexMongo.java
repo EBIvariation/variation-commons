@@ -63,7 +63,8 @@ public class AnnotationIndexMongo {
     private Set<String> xrefIds;
 
     AnnotationIndexMongo() {
-        // Spring empty constructor
+        soAccessions = new HashSet<>();
+        xrefIds = new HashSet<>();
     }
 
     /**

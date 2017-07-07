@@ -60,13 +60,13 @@ public class VariantSource implements IVariantSource {
                 variantSource.getDate(),
                 variantSource.getSamplesPosition(),
                 variantSource.getMetadata(),
-                new VariantGlobalStats(variantSource.getStats())
+                variantSource.getStats()
         );
     }
 
     public VariantSource(String fileId, String fileName, String studyId, String studyName, StudyType type,
                          Aggregation aggregation, Date date, Map<String, Integer> samplesPosition,
-                         Map<String, Object> metadata, VariantGlobalStats stats) {
+                         Map<String, Object> metadata, IVariantGlobalStats stats) {
         this.fileId = fileId;
         this.fileName = fileName;
         this.studyId = studyId;
@@ -76,7 +76,9 @@ public class VariantSource implements IVariantSource {
         this.date = date;
         this.samplesPosition = samplesPosition;
         this.metadata = metadata;
-        this.stats = stats;
+        if (stats != null) {
+            this.stats = new VariantGlobalStats(stats);
+        }
     }
 
     @Override
@@ -127,5 +129,41 @@ public class VariantSource implements IVariantSource {
     @Override
     public VariantGlobalStats getStats() {
         return stats;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof VariantSource)) return false;
+
+        VariantSource that = (VariantSource) o;
+
+        if (fileId != null ? !fileId.equals(that.fileId) : that.fileId != null) return false;
+        if (fileName != null ? !fileName.equals(that.fileName) : that.fileName != null) return false;
+        if (studyId != null ? !studyId.equals(that.studyId) : that.studyId != null) return false;
+        if (studyName != null ? !studyName.equals(that.studyName) : that.studyName != null) return false;
+        if (type != that.type) return false;
+        if (aggregation != that.aggregation) return false;
+        if (date != null ? !date.equals(that.date) : that.date != null) return false;
+        if (samplesPosition != null ? !samplesPosition.equals(that.samplesPosition) : that.samplesPosition != null)
+            return false;
+        if (metadata != null ? !metadata.equals(that.metadata) : that.metadata != null) return false;
+        return stats != null ? stats.equals(that.stats) : that.stats == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = fileId != null ? fileId.hashCode() : 0;
+        result = 31 * result + (fileName != null ? fileName.hashCode() : 0);
+        result = 31 * result + (studyId != null ? studyId.hashCode() : 0);
+        result = 31 * result + (studyName != null ? studyName.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (aggregation != null ? aggregation.hashCode() : 0);
+        result = 31 * result + (date != null ? date.hashCode() : 0);
+        result = 31 * result + (samplesPosition != null ? samplesPosition.hashCode() : 0);
+        result = 31 * result + (metadata != null ? metadata.hashCode() : 0);
+        result = 31 * result + (stats != null ? stats.hashCode() : 0);
+        return result;
     }
 }

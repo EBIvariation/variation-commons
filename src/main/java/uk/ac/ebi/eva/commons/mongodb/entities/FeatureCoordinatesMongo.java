@@ -23,7 +23,7 @@ import uk.ac.ebi.eva.commons.core.models.IFeatureCoordinates;
 /**
  * Mapped class for feature collection in mongo
  */
-@Document(collection = "features")
+@Document(collection = "#{mongoCollectionsFeatures}")
 public class FeatureCoordinatesMongo implements IFeatureCoordinates {
 
     //TODO check if these are the intended names for the database structure

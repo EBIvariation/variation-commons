@@ -41,22 +41,6 @@ public class EvaRepositoriesConfiguration {
     @Autowired
     private MongoDbFactory mongoDbFactory;
 
-    @Value("${eva.mongo.collections.files}")
-    private String mongoCollectionsFiles;
-
-    @Value("${eva.mongo.collections.annotation_metadata}")
-    private String mongoCollectionsAnnotationMetadata;
-
-    @Bean
-    public String mongoCollectionsFiles() {
-        return mongoCollectionsFiles;
-    }
-
-    @Bean
-    public String mongoCollectionsAnnotationMetadata() {
-        return mongoCollectionsAnnotationMetadata;
-    }
-
     @Bean
     public MongoMappingContext mongoMappingContext() {
         MongoMappingContext mappingContext = new MongoMappingContext();

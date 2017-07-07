@@ -20,7 +20,7 @@ public class VariantSourceService {
         return convert(repository.findAll());
     }
 
-    private List<VariantSource> convert(List<VariantSourceMongo> variantSources) {
+    List<VariantSource> convert(List<VariantSourceMongo> variantSources) {
         return variantSources.stream().map(VariantSource::new).collect(Collectors.toList());
     }
 

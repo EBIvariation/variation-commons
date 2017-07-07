@@ -75,7 +75,7 @@ public class VariantSourceEntryMongo {
     private Map<String, Object> samples;
 
     VariantSourceEntryMongo() {
-        // Spring empty constructor
+        this(null, null, null, null, null, null);
     }
 
     public VariantSourceEntryMongo(IVariantSourceEntry variantSourceEntry) {

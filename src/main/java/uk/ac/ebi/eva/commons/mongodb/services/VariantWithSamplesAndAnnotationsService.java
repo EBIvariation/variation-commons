@@ -15,23 +15,29 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.services;
 
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import uk.ac.ebi.eva.commons.core.models.Annotation;
 import uk.ac.ebi.eva.commons.core.models.Region;
+import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotations;
 import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantStatisticsMongo;
 import uk.ac.ebi.eva.commons.mongodb.filter.VariantRepositoryFilter;
 import uk.ac.ebi.eva.commons.mongodb.repositories.AnnotationRepository;
 import uk.ac.ebi.eva.commons.mongodb.repositories.VariantRepository;
 import uk.ac.ebi.eva.commons.mongodb.repositories.VariantSourceRepository;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -63,9 +69,14 @@ public class VariantWithSamplesAndAnnotationsService {
         Map<String, Set<AnnotationMongo>> indexedAnnotations = annotationRepository
                 .findAndIndexAnnotationsOfVariants(variantMongos);
 
-        return variantMongos.stream()
-                .map(variant -> convert(variant, studyFileIdsToSamples, indexedAnnotations.get(variant.getId())))
-                .collect(Collectors.toList());
+        List<VariantWithSamplesAndAnnotations> variantsList =
+                variantMongos.stream().map(variant ->
+                                                   convert(variant, studyFileIdsToSamples,
+                                                           indexedAnnotations.getOrDefault(variant.getId(), new HashSet<>())))
+                             .collect(Collectors.toList());
+
+        VariantStatistics.calculateStatsForVariantsList(variantsList, null);
+        return variantsList;
     }
 
     private static VariantWithSamplesAndAnnotations convert(VariantMongo variantMongo,
@@ -78,9 +89,33 @@ public class VariantWithSamplesAndAnnotationsService {
                 variantMongo.getReference(),
                 variantMongo.getAlternate());
         variant.setIds(variantMongo.getIds());
-        variant.addSourceEntries(convert(variantMongo.getSourceEntries(), sampleNames));
+        Table<String, String, Map<String, VariantStatistics>> variantStatisticsMongosTable
+                = variantStatsMongoToTable(variantMongo.getVariantStatsMongo(), variantMongo);
+        variant.addSourceEntries(convert(variantMongo.getSourceEntries(), sampleNames, variantStatisticsMongosTable));
         variant.setAnnotations(convert(annotations));
         return variant;
+    }
+
+    private static Table<String, String, Map<String, VariantStatistics>> variantStatsMongoToTable(
+            Set<VariantStatisticsMongo> variantStatisticsMongos, VariantMongo variantMongo) {
+        Table<String, String, Map<String, VariantStatistics>> variantStatisticsMongosTable = HashBasedTable.create();
+        for (VariantStatisticsMongo variantStatisticsMongo : variantStatisticsMongos) {
+            String studyId = variantStatisticsMongo.getStudyId();
+            String fileId = variantStatisticsMongo.getFileId();
+            String cohortId = variantStatisticsMongo.getCohortId();
+            VariantStatistics variantStatistics =
+                    new VariantStatistics(variantStatisticsMongo, variantMongo.getReference(),
+                                          variantMongo.getAlternate(), variantMongo.getType());
+            if (variantStatisticsMongosTable.contains(studyId, fileId)) {
+                variantStatisticsMongosTable.get(studyId, fileId).put(cohortId, variantStatistics);
+            } else {
+                Map<String, VariantStatistics> cohortIdToVariantStatsMongo = new HashMap<>();
+                cohortIdToVariantStatsMongo.put(cohortId, variantStatistics);
+                variantStatisticsMongosTable.put(studyId, fileId, cohortIdToVariantStatsMongo);
+            }
+
+        }
+        return variantStatisticsMongosTable;
     }
 
     private static Set<Annotation> convert(Set<AnnotationMongo> annotations) {
@@ -88,15 +123,18 @@ public class VariantWithSamplesAndAnnotationsService {
     }
 
     private static List<VariantSourceEntryWithSampleNames> convert(Set<VariantSourceEntryMongo> sourceEntries,
-                                                                   Table<String, String, List<String>> sampleNames) {
+                                                                   Table<String, String, List<String>> sampleNames,
+                                                                   Table<String, String, Map<String, VariantStatistics>> variantStatisticsMongosTable) {
         return sourceEntries.stream()
-                .map(entry -> convert(entry, sampleNames.get(entry.getStudyId(), entry.getFileId())))
+                .map(entry -> convert(entry, sampleNames.get(entry.getStudyId(), entry.getFileId()),
+                                      variantStatisticsMongosTable.get(entry.getStudyId(), entry.getFileId())))
                 .collect(Collectors.toList());
     }
 
     private static VariantSourceEntryWithSampleNames convert(VariantSourceEntryMongo sourceEntryMongo,
-                                                             List<String> samples) {
-        return new VariantSourceEntryWithSampleNames(sourceEntryMongo, samples);
+                                                             List<String> samples,
+                                                             Map<String, VariantStatistics> cohortIdToVariantStatsMongoMap) {
+        return new VariantSourceEntryWithSampleNames(sourceEntryMongo, samples, cohortIdToVariantStatsMongoMap);
     }
 
     public Long countByGenesAndComplexFilters(List<String> geneIds, List<VariantRepositoryFilter> filters) {

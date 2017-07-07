@@ -21,6 +21,7 @@ import uk.ac.ebi.eva.commons.core.models.VariantType;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.HgvsMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantAtMongo;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -72,6 +73,10 @@ public class SimplifiedVariant {
     @Field(HGVS_FIELD)
     private Set<HgvsMongo> hgvs;
 
+    SimplifiedVariant() {
+        this(null, null, -1, -1, -1, null, null, null);
+    }
+
     public SimplifiedVariant(VariantType variantType, String chromosome, int start, int end, int length,
                              String reference, String alternate, Map<String, Set<String>> hgvs) {
         this.id = buildVariantId(chromosome, start, reference, alternate);
@@ -83,7 +88,10 @@ public class SimplifiedVariant {
         this.reference = reference;
         this.alternate = alternate;
         this.at = generateAtField(chromosome, start);
-        this.hgvs = createHgvsMongo(hgvs);
+        this.hgvs = new HashSet<>();
+        if (hgvs != null && !hgvs.isEmpty()) {
+            this.hgvs.addAll(createHgvsMongo(hgvs));
+        }
     }
 
 }

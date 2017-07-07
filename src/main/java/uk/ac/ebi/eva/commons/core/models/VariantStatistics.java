@@ -86,11 +86,11 @@ public class VariantStatistics implements IVariantStatistics {
 
 
     public VariantStatistics() {
-        this(null, -1, null, null, VariantType.SNV, -1, -1, null, null, -1, -1, -1, -1, -1, -1, -1);
+        this(null, null, VariantType.SNV, -1, -1, null, null, -1, -1, -1, -1, -1, -1, -1);
     }
 
     public VariantStatistics(VariantWithSamplesAndAnnotations variant) {
-        this(null, -1,
+        this(
                 variant != null ? variant.getReference() : null,
                 variant != null ? variant.getAlternate() : null,
                 variant != null ? variant.getType() : VariantType.SNV,
@@ -98,12 +98,19 @@ public class VariantStatistics implements IVariantStatistics {
     }
 
     public VariantStatistics(String referenceAllele, String alternateAllele, VariantType type) {
-        this(null, -1, referenceAllele, alternateAllele, type, -1, -1, null, null, -1, -1, -1, -1, -1, -1, -1);
+        this(referenceAllele, alternateAllele, type, -1, -1, null, null, -1, -1, -1, -1, -1, -1, -1);
     }
 
-    public VariantStatistics(String chromosome, int position, String referenceAllele, String alternateAlleles,
+    public VariantStatistics(IVariantStatistics iVariantStatistics, String referenceAllele, String alternateAlleles,
+                             VariantType variantType) {
+        this(referenceAllele, alternateAlleles, variantType, iVariantStatistics.getMaf(), iVariantStatistics.getMgf(), iVariantStatistics.getMafAllele(), iVariantStatistics.getMgfGenotype(), iVariantStatistics.getMissingAlleles(),
+             iVariantStatistics.getMissingGenotypes(), -1, -1, -1, -1, -1);
+    }
+
+    public VariantStatistics(String referenceAllele, String alternateAlleles,
                              VariantType variantType, float maf, float mgf, String mafAllele, String mgfGenotype,
-                             int numMissingAlleles, int numMissingGenotypes, int numMendelErrors, float percentCasesDominant,
+                             int numMissingAlleles, int numMissingGenotypes, int numMendelErrors,
+                             float percentCasesDominant,
                              float percentControlsDominant, float percentCasesRecessive, float percentControlsRecessive) {
         this.refAllele = referenceAllele;
         this.altAllele = alternateAlleles;

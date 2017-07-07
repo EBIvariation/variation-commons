@@ -45,7 +45,7 @@ import static org.junit.Assert.assertNotEquals;
         "/test-data/variants.json",
         "/test-data/annotations.json",
         "/test-data/files.json"})
-public class VariantWithAnnotationMongoServiceTest {
+public class VariantWithSamplesAndAnnotationsServiceTest {
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -57,7 +57,7 @@ public class VariantWithAnnotationMongoServiceTest {
     private VariantWithSamplesAndAnnotationsService service;
 
     @Test
-    public void testAnnotationService() {
+    public void testFindByRegionsAndComplexFilters() {
         String chr = "11";
         int start = 190062;
         int end = 190064;
