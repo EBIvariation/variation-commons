@@ -34,16 +34,12 @@ public class FilterBuilder {
                                                                            String polyphenScore,
                                                                            String siftScore,
                                                                            List<String> studies,
-                                                                           List<String> consequenceType,
-                                                                           String annotationVepVersion,
-                                                                           String annotationVepCacheVersion) {
+                                                                           List<String> consequenceType) {
         return this.withMaf(maf)
                    .withPolyphenScore(polyphenScore)
                    .withSiftScore(siftScore)
                    .withStudies(studies)
                    .withConsequenceType(consequenceType)
-                   .withAnnotationVepVersion(annotationVepVersion)
-                   .withAnnotationVepCacheVersion(annotationVepCacheVersion)
                    .build();
     }
 
@@ -107,17 +103,4 @@ public class FilterBuilder {
         return this;
     }
 
-    public FilterBuilder withAnnotationVepVersion(String version) {
-        if (version != null) {
-            filters.add(new VariantRepositoryAnnotationVepVersionFilter(version));
-        }
-        return this;
-    }
-
-    public FilterBuilder withAnnotationVepCacheVersion(String version) {
-        if (version != null) {
-            filters.add(new VariantRepositoryAnnotationVepCacheVersionFilter(version));
-        }
-        return this;
-    }
 }
