@@ -34,13 +34,17 @@ public class FilterBuilder {
                                                                            String polyphenScore,
                                                                            String siftScore,
                                                                            List<String> studies,
-                                                                           List<String> consequenceType) {
+                                                                           List<String> consequenceType,
+                                                                           String annotationVepVersion,
+                                                                           String annotationVepCacheVersion) {
         return this.withMaf(maf)
-                .withPolyphenScore(polyphenScore)
-                .withSiftScore(siftScore)
-                .withStudies(studies)
-                .withConsequenceType(consequenceType)
-                .build();
+                   .withPolyphenScore(polyphenScore)
+                   .withSiftScore(siftScore)
+                   .withStudies(studies)
+                   .withConsequenceType(consequenceType)
+                   .withAnnotationVepVersion(annotationVepVersion)
+                   .withAnnotationVepCacheVersion(annotationVepCacheVersion)
+                   .build();
     }
 
     public List<VariantRepositoryFilter> build() {
@@ -99,6 +103,20 @@ public class FilterBuilder {
     public FilterBuilder withAlternates(List<String> alternates) {
         if (alternates != null && !alternates.isEmpty()) {
             filters.add(new VariantRepositoryAlternateFilter(alternates));
+        }
+        return this;
+    }
+
+    public FilterBuilder withAnnotationVepVersion(String version) {
+        if (version != null) {
+            filters.add(new VariantRepositoryAnnotationVepVersionFilter(version));
+        }
+        return this;
+    }
+
+    public FilterBuilder withAnnotationVepCacheVersion(String version) {
+        if (version != null) {
+            filters.add(new VariantRepositoryAnnotationVepCacheVersionFilter(version));
         }
         return this;
     }
