@@ -69,6 +69,10 @@ public class VariantWithSamplesAndAnnotationsService {
         Map<String, Set<AnnotationMongo>> indexedAnnotations = annotationRepository
                 .findAndIndexAnnotationsOfVariants(variantMongos);
 
+        ///
+        // Return either one annotationmongo per variant (default or specified)
+        ///
+
         List<VariantWithSamplesAndAnnotations> variantsList =
                 variantMongos.stream().map(variant ->
                                                    convert(variant, studyFileIdsToSamples,

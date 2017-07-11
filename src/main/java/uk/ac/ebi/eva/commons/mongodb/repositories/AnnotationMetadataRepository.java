@@ -16,6 +16,8 @@
 package uk.ac.ebi.eva.commons.mongodb.repositories;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
+
 import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMetadataMongo;
 
 import java.util.List;
@@ -32,5 +34,8 @@ public interface AnnotationMetadataRepository extends MongoRepository<Annotation
      * @return List of AnnotationMetadataMongo objects
      */
     List<AnnotationMetadataMongo> findAllByOrderByCacheVersionDescVepVersionDesc();
+
+    @Query(value = "{ 'default_version': true }")
+    List<AnnotationMetadataMongo> findByDefaultVersionIsTrue();
 
 }

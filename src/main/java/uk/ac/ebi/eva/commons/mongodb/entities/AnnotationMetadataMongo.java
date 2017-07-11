@@ -30,6 +30,8 @@ public class AnnotationMetadataMongo implements IAnnotationMetadata {
 
     private static final String CACHE_VERSION_FIELD = "cachev";
 
+    private static final String DEFAULT_FIELD = "default_version";
+
     @Id
     private String id;
 
@@ -38,6 +40,9 @@ public class AnnotationMetadataMongo implements IAnnotationMetadata {
 
     @Field(CACHE_VERSION_FIELD)
     private String cacheVersion;
+
+    @Field(DEFAULT_FIELD)
+    private boolean defaultVersion;
 
     AnnotationMetadataMongo() {
         // Empty document constructor for spring-data
@@ -79,6 +84,14 @@ public class AnnotationMetadataMongo implements IAnnotationMetadata {
 
     public void setCacheVersion(String cacheVersion) {
         this.cacheVersion = cacheVersion;
+    }
+
+    public boolean isDefault() {
+        return defaultVersion;
+    }
+
+    public void setDefault(boolean aDefault) {
+        defaultVersion = aDefault;
     }
 
     @Override
