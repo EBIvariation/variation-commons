@@ -22,29 +22,30 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import uk.ac.ebi.eva.commons.core.models.Annotation;
+import uk.ac.ebi.eva.commons.core.models.IAnnotationMetadata;
 import uk.ac.ebi.eva.commons.core.models.Region;
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
-import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotations;
+import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotation;
 import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantStatisticsMongo;
 import uk.ac.ebi.eva.commons.mongodb.filter.VariantRepositoryFilter;
+import uk.ac.ebi.eva.commons.mongodb.repositories.AnnotationMetadataRepository;
 import uk.ac.ebi.eva.commons.mongodb.repositories.AnnotationRepository;
 import uk.ac.ebi.eva.commons.mongodb.repositories.VariantRepository;
 import uk.ac.ebi.eva.commons.mongodb.repositories.VariantSourceRepository;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Mongo persistence service to retrieve {@link VariantWithSamplesAndAnnotations}
+ * Mongo persistence service to retrieve {@link VariantWithSamplesAndAnnotation}
  */
 @Service
 public class VariantWithSamplesAndAnnotationsService {
@@ -58,35 +59,46 @@ public class VariantWithSamplesAndAnnotationsService {
     @Autowired
     private VariantSourceRepository variantSourceRepository;
 
-    public List<VariantWithSamplesAndAnnotations> findByGenesAndComplexFilters(List<String> geneIds,
-                                                                               List<VariantRepositoryFilter> filters,
-                                                                               List<String> exclude, Pageable pageable) {
-        return convert(variantRepository.findByGenesAndComplexFilters(geneIds, filters, exclude, pageable));
+
+    @Autowired
+    private AnnotationMetadataRepository annotationMetadataRepository;
+
+
+    public List<VariantWithSamplesAndAnnotation> findByGenesAndComplexFilters(List<String> geneIds,
+                                                                              List<VariantRepositoryFilter> variantRepositoryFilters,
+                                                                              IAnnotationMetadata annotationMetadata,
+                                                                              List<String> exclude, Pageable pageable) {
+        return convert(variantRepository.findByGenesAndComplexFilters(geneIds, variantRepositoryFilters, exclude, pageable),
+                       annotationMetadata);
     }
 
-    private List<VariantWithSamplesAndAnnotations> convert(List<VariantMongo> variantMongos) {
+    private List<VariantWithSamplesAndAnnotation> convert(List<VariantMongo> variantMongos,
+                                                          IAnnotationMetadata annotationMetadata) {
         Table<String, String, List<String>> studyFileIdsToSamples = variantSourceRepository.findAndIndexSamples();
-        Map<String, Set<AnnotationMongo>> indexedAnnotations = annotationRepository
-                .findAndIndexAnnotationsOfVariants(variantMongos);
 
-        ///
-        // Return either one annotationmongo per variant (default or specified)
-        ///
+        if (annotationMetadata == null) {
+            annotationMetadata = annotationMetadataRepository.findByDefaultVersionIsTrue().get(0);
+        }
 
-        List<VariantWithSamplesAndAnnotations> variantsList =
+        Map<String, AnnotationMongo> indexedAnnotations =
+                annotationRepository.findAndIndexAnnotationsOfVariants(variantMongos, annotationMetadata);
+
+        List<VariantWithSamplesAndAnnotation> variantsList =
                 variantMongos.stream().map(variant ->
-                                                   convert(variant, studyFileIdsToSamples,
-                                                           indexedAnnotations.getOrDefault(variant.getId(), new HashSet<>())))
+                                                   convert(
+                                                           variant,
+                                                           studyFileIdsToSamples,
+                                                           indexedAnnotations.getOrDefault(variant.getId(), null)))
                              .collect(Collectors.toList());
 
         VariantStatistics.calculateStatsForVariantsList(variantsList, null);
         return variantsList;
     }
 
-    private static VariantWithSamplesAndAnnotations convert(VariantMongo variantMongo,
-                                                            Table<String, String, List<String>> sampleNames,
-                                                            Set<AnnotationMongo> annotations) {
-        VariantWithSamplesAndAnnotations variant = new VariantWithSamplesAndAnnotations(
+    private static VariantWithSamplesAndAnnotation convert(VariantMongo variantMongo,
+                                                           Table<String, String, List<String>> sampleNames,
+                                                           AnnotationMongo annotation) {
+        VariantWithSamplesAndAnnotation variant = new VariantWithSamplesAndAnnotation(
                 variantMongo.getChromosome(),
                 variantMongo.getStart(),
                 variantMongo.getEnd(),
@@ -96,7 +108,7 @@ public class VariantWithSamplesAndAnnotationsService {
         Table<String, String, Map<String, VariantStatistics>> variantStatisticsMongosTable
                 = variantStatsMongoToTable(variantMongo.getVariantStatsMongo(), variantMongo);
         variant.addSourceEntries(convert(variantMongo.getSourceEntries(), sampleNames, variantStatisticsMongosTable));
-        variant.setAnnotations(convert(annotations));
+        variant.setAnnotation(new Annotation(annotation));
         return variant;
     }
 
@@ -141,65 +153,83 @@ public class VariantWithSamplesAndAnnotationsService {
         return new VariantSourceEntryWithSampleNames(sourceEntryMongo, samples, cohortIdToVariantStatsMongoMap);
     }
 
-    public Long countByGenesAndComplexFilters(List<String> geneIds, List<VariantRepositoryFilter> filters) {
-        return variantRepository.countByGenesAndComplexFilters(geneIds, filters);
+    public Long countByGenesAndComplexFilters(List<String> geneIds, List<VariantRepositoryFilter> variantRepositoryFilters) {
+        return variantRepository.countByGenesAndComplexFilters(geneIds, variantRepositoryFilters);
     }
 
-    public List<VariantWithSamplesAndAnnotations> findByRegionsAndComplexFilters(List<Region> regions,
-                                                                                 List<VariantRepositoryFilter> filters,
-                                                                                 List<String> exclude, Pageable pageable) {
-        return convert(variantRepository.findByRegionsAndComplexFilters(regions, filters, exclude, pageable));
+    public List<VariantWithSamplesAndAnnotation> findByRegionsAndComplexFilters(List<Region> regions,
+                                                                                List<VariantRepositoryFilter> variantRepositoryFilters,
+                                                                                IAnnotationMetadata annotationMetadata,
+                                                                                List<String> exclude,
+                                                                                Pageable pageable) {
+        return convert(variantRepository.findByRegionsAndComplexFilters(regions, variantRepositoryFilters, exclude, pageable),
+                       annotationMetadata);
     }
 
-    public Long countByRegionsAndComplexFilters(List<Region> regions, List<VariantRepositoryFilter> filters) {
-        return variantRepository.countByRegionsAndComplexFilters(regions, filters);
+    public Long countByRegionsAndComplexFilters(List<Region> regions, List<VariantRepositoryFilter> variantRepositoryFilters) {
+        return variantRepository.countByRegionsAndComplexFilters(regions, variantRepositoryFilters);
     }
 
-    public List<VariantWithSamplesAndAnnotations> findByIdsAndComplexFilters(String id,
-                                                                             List<VariantRepositoryFilter> filters,
-                                                                             List<String> exclude, Pageable pageable) {
-        return convert(variantRepository.findByIdsAndComplexFilters(id, filters, exclude, pageable));
+    public List<VariantWithSamplesAndAnnotation> findByIdsAndComplexFilters(String id,
+                                                                            List<VariantRepositoryFilter> variantRepositoryFilters,
+                                                                            IAnnotationMetadata annotationMetadata,
+                                                                            List<String> exclude, Pageable pageable) {
+        return convert(variantRepository.findByIdsAndComplexFilters(id, variantRepositoryFilters, exclude, pageable),
+                       annotationMetadata);
     }
 
-    public Long countByIdsAndComplexFilters(String id, List<VariantRepositoryFilter> filters) {
-        return variantRepository.countByIdsAndComplexFilters(id, filters);
+    public Long countByIdsAndComplexFilters(String id, List<VariantRepositoryFilter> variantRepositoryFilters) {
+        return variantRepository.countByIdsAndComplexFilters(id, variantRepositoryFilters);
     }
 
-    public List<VariantWithSamplesAndAnnotations> findByChromosomeAndStartAndReferenceAndAlternate(String chromosome, int start,
-                                                                                                   String reference, String alternate) {
-        return convert(variantRepository.findByChromosomeAndStartAndReferenceAndAlternate(chromosome, start,
-                reference,
-                alternate));
+    public List<VariantWithSamplesAndAnnotation> findByChromosomeAndStartAndReferenceAndAlternate(String chromosome,
+                                                                                                  int start,
+                                                                                                  String reference,
+                                                                                                  String alternate,
+                                                                                                  IAnnotationMetadata annotationMetadata) {
+        return convert(
+                variantRepository.findByChromosomeAndStartAndReferenceAndAlternate(chromosome, start, reference, alternate),
+                annotationMetadata);
     }
 
-    public List<VariantWithSamplesAndAnnotations> findByChromosomeAndStartAndReference(String chr, int start, String ref) {
-        return convert(variantRepository.findByChromosomeAndStartAndReference(chr, start, ref));
+    public List<VariantWithSamplesAndAnnotation> findByChromosomeAndStartAndReference(String chr, int start, String ref,
+                                                                                      IAnnotationMetadata annotationMetadata) {
+        return convert(variantRepository.findByChromosomeAndStartAndReference(chr, start, ref), annotationMetadata);
     }
 
-    public List<VariantWithSamplesAndAnnotations> findByChromosomeAndStartAndReferenceAndAlternateAndStudyIn(String chromosome,
-                                                                                                             int start,
-                                                                                                             String reference,
-                                                                                                             String alternate,
-                                                                                                             List<String> studyIds) {
+    public List<VariantWithSamplesAndAnnotation> findByChromosomeAndStartAndReferenceAndAlternateAndStudyIn(
+            String chromosome,
+            int start,
+            String reference,
+            String alternate,
+            List<String> studyIds, IAnnotationMetadata annotationMetadata) {
         return convert(variantRepository.findByChromosomeAndStartAndReferenceAndAlternateAndStudyIn(chromosome, start,
-                reference, alternate, studyIds));
+                reference, alternate, studyIds), annotationMetadata);
     }
 
-    public List<VariantWithSamplesAndAnnotations> findByChromosomeAndStartAndReferenceAndStudyIn(String chromosome, int start,
-                                                                                                 String reference,
-                                                                                                 List<String> studyIds) {
+    public List<VariantWithSamplesAndAnnotation> findByChromosomeAndStartAndReferenceAndStudyIn(String chromosome,
+                                                                                                int start,
+                                                                                                String reference,
+                                                                                                List<String> studyIds,
+                                                                                                IAnnotationMetadata annotationMetadata) {
         return convert(variantRepository.findByChromosomeAndStartAndReferenceAndStudyIn(chromosome, start,
-                reference, studyIds));
+                reference, studyIds), annotationMetadata);
     }
 
-    public List<VariantWithSamplesAndAnnotations> findByChromosomeAndStartAndAltAndStudyIn(String chr, int start, String alt,
-                                                                                           List<String> studyIds) {
-        return convert(variantRepository.findByChromosomeAndStartAndAltAndStudyIn(chr, start, alt, studyIds));
+    public List<VariantWithSamplesAndAnnotation> findByChromosomeAndStartAndAltAndStudyIn(String chr, int start,
+                                                                                          String alt,
+                                                                                          List<String> studyIds,
+                                                                                          IAnnotationMetadata annotationMetadata) {
+        return convert(variantRepository.findByChromosomeAndStartAndAltAndStudyIn(chr, start, alt, studyIds),
+                       annotationMetadata);
     }
 
-    public List<VariantWithSamplesAndAnnotations> findByChromosomeAndStartAndTypeAndStudyIn(String chr, int start, VariantType type,
-                                                                                            List<String> studyIds) {
-        return convert(variantRepository.findByChromosomeAndStartAndTypeAndStudyIn(chr, start, type, studyIds));
+    public List<VariantWithSamplesAndAnnotation> findByChromosomeAndStartAndTypeAndStudyIn(String chr, int start,
+                                                                                           VariantType type,
+                                                                                           List<String> studyIds,
+                                                                                           IAnnotationMetadata annotationMetadata) {
+        return convert(variantRepository.findByChromosomeAndStartAndTypeAndStudyIn(chr, start, type, studyIds),
+                       annotationMetadata);
     }
 
     public Set<String> findDistinctChromosomes() {

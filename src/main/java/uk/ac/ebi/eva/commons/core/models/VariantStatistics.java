@@ -20,7 +20,7 @@ import uk.ac.ebi.eva.commons.core.models.genotype.AllelesCode;
 import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.core.models.pedigree.Pedigree;
 import uk.ac.ebi.eva.commons.core.models.stats.VariantHardyWeinbergStats;
-import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotations;
+import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotation;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -89,7 +89,7 @@ public class VariantStatistics implements IVariantStatistics {
         this(null, null, VariantType.SNV, -1, -1, null, null, -1, -1, -1, -1, -1, -1, -1);
     }
 
-    public VariantStatistics(VariantWithSamplesAndAnnotations variant) {
+    public VariantStatistics(VariantWithSamplesAndAnnotation variant) {
         this(
                 variant != null ? variant.getReference() : null,
                 variant != null ? variant.getAlternate() : null,
@@ -534,8 +534,8 @@ public class VariantStatistics implements IVariantStatistics {
      * @param variants The variants whose statistics will be calculated
      * @param ped      Optional pedigree information to calculate some statistics
      */
-    public static void calculateStatsForVariantsList(List<VariantWithSamplesAndAnnotations> variants, Pedigree ped) {
-        for (VariantWithSamplesAndAnnotations variant : variants) {
+    public static void calculateStatsForVariantsList(List<VariantWithSamplesAndAnnotation> variants, Pedigree ped) {
+        for (VariantWithSamplesAndAnnotation variant : variants) {
             for (IVariantSourceEntry file : variant.getSourceEntries()) {
                 if (file.getCohortStats().isEmpty()) {
                     continue;

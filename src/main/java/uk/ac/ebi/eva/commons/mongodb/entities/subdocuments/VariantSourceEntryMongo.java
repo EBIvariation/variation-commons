@@ -34,7 +34,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Mongo database representation of VariantWithSamplesAndAnnotations Source entry.
+ * Mongo database representation of VariantWithSamplesAndAnnotation Source entry.
  */
 public class VariantSourceEntryMongo {
 

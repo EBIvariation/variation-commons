@@ -23,7 +23,7 @@ import uk.ac.ebi.eva.commons.core.models.genotype.AllelesCode;
 import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.core.models.pedigree.Pedigree;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
-import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotations;
+import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotation;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -102,8 +102,8 @@ public class VariantSourceStats {
         this.samplesStats = variantSampleStats;
     }
 
-    public void updateSampleStats(List<VariantWithSamplesAndAnnotations> variants, Pedigree pedigree) {
-        for (VariantWithSamplesAndAnnotations v : variants) {
+    public void updateSampleStats(List<VariantWithSamplesAndAnnotation> variants, Pedigree pedigree) {
+        for (VariantWithSamplesAndAnnotation v : variants) {
             VariantSourceEntryWithSampleNames file = v.getSourceEntry(fileId, studyId);
             if (file == null) {
                 // The variant is not contained in this file

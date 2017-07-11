@@ -28,7 +28,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.eva.commons.configuration.MongoRepositoryTestConfiguration;
 import uk.ac.ebi.eva.commons.core.models.Region;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
-import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotations;
+import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,7 @@ import static org.junit.Assert.assertNotEquals;
         "/test-data/variants.json",
         "/test-data/annotations.json",
         "/test-data/files.json"})
-public class VariantWithSamplesAndAnnotationsServiceTest {
+public class VariantWithSamplesAndAnnotationServiceTest {
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -65,8 +65,8 @@ public class VariantWithSamplesAndAnnotationsServiceTest {
         List<Region> regions = new ArrayList<>();
         regions.add(region);
 
-        List<VariantWithSamplesAndAnnotations> variantEntityList = service.findByRegionsAndComplexFilters(
-                regions, null, null, new PageRequest(0, 10000));
+        List<VariantWithSamplesAndAnnotation> variantEntityList = service.findByRegionsAndComplexFilters(
+                regions, null, null, null, new PageRequest(0, 10000));
 
         assertEquals(1, variantEntityList.size());
 
@@ -78,7 +78,7 @@ public class VariantWithSamplesAndAnnotationsServiceTest {
             Map<String, Map<String, String>> samplesData = variantSourceEntry.getSamplesDataMap();
             assertEquals("0|1", samplesData.get("HG03805").get("GT"));
         }
-        assertFalse(variantEntityList.get(0).getAnnotations().isEmpty());
+        assertFalse(variantEntityList.get(0).getAnnotation().isEmpty());
     }
 
 }

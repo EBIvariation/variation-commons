@@ -23,7 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Mongo database representation of VariantWithSamplesAndAnnotations Stats.
+ * Mongo database representation of VariantWithSamplesAndAnnotation Stats.
  */
 public class VariantStatisticsMongo implements IVariantStatistics {
 

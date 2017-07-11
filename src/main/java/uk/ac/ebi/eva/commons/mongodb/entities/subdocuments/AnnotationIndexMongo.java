@@ -68,7 +68,7 @@ public class AnnotationIndexMongo {
     }
 
     /**
-     * VariantWithSamplesAndAnnotations annotation constructor. Requires non empty values, otherwise throws {@link IllegalArgumentException}
+     * VariantWithSamplesAndAnnotation annotation constructor. Requires non empty values, otherwise throws {@link IllegalArgumentException}
      *
      * @param vepVersion
      * @param vepCacheVersion
