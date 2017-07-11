@@ -28,6 +28,7 @@ import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotation;
+import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMetadataMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
@@ -77,7 +78,10 @@ public class VariantWithSamplesAndAnnotationsService {
         Table<String, String, List<String>> studyFileIdsToSamples = variantSourceRepository.findAndIndexSamples();
 
         if (annotationMetadata == null) {
-            annotationMetadata = annotationMetadataRepository.findByDefaultVersionIsTrue().get(0);
+            List<AnnotationMetadataMongo> annotationMetadataList = annotationMetadataRepository.findByDefaultVersionIsTrue();
+            if (annotationMetadataList.size() > 0) {
+                annotationMetadata = annotationMetadataList.get(0);
+            }
         }
 
         Map<String, AnnotationMongo> indexedAnnotations =

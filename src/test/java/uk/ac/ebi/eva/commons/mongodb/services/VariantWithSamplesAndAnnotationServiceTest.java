@@ -44,7 +44,8 @@ import static org.junit.Assert.assertNotEquals;
 @UsingDataSet(locations = {
         "/test-data/variants.json",
         "/test-data/annotations.json",
-        "/test-data/files.json"})
+        "/test-data/files.json",
+        "/test-data/annotation_metadata.json"})
 public class VariantWithSamplesAndAnnotationServiceTest {
 
     @Autowired
@@ -78,7 +79,7 @@ public class VariantWithSamplesAndAnnotationServiceTest {
             Map<String, Map<String, String>> samplesData = variantSourceEntry.getSamplesDataMap();
             assertEquals("0|1", samplesData.get("HG03805").get("GT"));
         }
-        assertFalse(variantEntityList.get(0).getAnnotation().isEmpty());
+        assertFalse(variantEntityList.get(0).getAnnotation() == null);
     }
 
 }

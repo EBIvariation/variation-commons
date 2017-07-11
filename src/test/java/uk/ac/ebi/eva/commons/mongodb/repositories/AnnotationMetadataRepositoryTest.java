@@ -1,4 +1,4 @@
-package uk.ac.ebi.eva.commons.mongodb.repository;
+package uk.ac.ebi.eva.commons.mongodb.repositories;
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
@@ -12,7 +12,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import uk.ac.ebi.eva.commons.configuration.MongoRepositoryTestConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMetadataMongo;
-import uk.ac.ebi.eva.commons.mongodb.repositories.AnnotationMetadataRepository;
 
 import java.util.List;
 

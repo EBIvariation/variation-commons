@@ -53,7 +53,7 @@ public class AnnotationMetadataServiceTest {
     @Test
     public void testFindAllByOrderByCacheVersionDescVepVersionDescSize() throws Exception {
         List<AnnotationMetadata> annotationMetadataMongoList = service.findAllByOrderByCacheVersionDescVepVersionDesc();
-        assertEquals(4, annotationMetadataMongoList.size());
+        assertEquals(5, annotationMetadataMongoList.size());
     }
 
     @Test
