@@ -38,4 +38,6 @@ public interface AnnotationMetadataRepository extends MongoRepository<Annotation
     @Query(value = "{ 'default_version': true }")
     List<AnnotationMetadataMongo> findByDefaultVersionIsTrue();
 
+    List<AnnotationMetadataMongo> findByCacheVersionAndVepVersion(String cacheVersion, String vepVersion);
+
 }

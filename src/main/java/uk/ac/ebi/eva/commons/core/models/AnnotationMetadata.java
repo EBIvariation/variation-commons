@@ -49,6 +49,14 @@ public class AnnotationMetadata implements IAnnotationMetadata {
     }
 
     @Override
+    public String toString() {
+        return "AnnotationMetadata{" +
+                "vepVersion='" + vepVersion + '\'' +
+                ", cacheVersion='" + cacheVersion + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof AnnotationMetadata)) return false;

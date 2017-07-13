@@ -17,6 +17,7 @@ import java.util.List;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class})
@@ -38,6 +39,16 @@ public class AnnotationMetadataRepositoryTest {
         assertEquals(1, annotationMetadataMongoList.size());
         AnnotationMetadataMongo annotationMetadataMongo = annotationMetadataMongoList.get(0);
         assertEquals(true, annotationMetadataMongo.isDefault());
+    }
+
+    @Test
+    public void testFindByCacheVersionVepVersionExists() {
+        assertEquals(1, repository.findByCacheVersionAndVepVersion("78", "78").size());
+    }
+
+    @Test
+    public void testFindByCacheVersionVepVersionNotExists() {
+        assertEquals(0, repository.findByCacheVersionAndVepVersion("76", "76").size());
     }
 
 }

@@ -58,7 +58,7 @@ public class VariantWithSamplesAndAnnotationServiceTest {
     private VariantWithSamplesAndAnnotationsService service;
 
     @Test
-    public void testFindByRegionsAndComplexFilters() {
+    public void testFindByRegionsAndComplexFilters() throws AnnotationMetadataNotFoundException {
         String chr = "11";
         int start = 190062;
         int end = 190064;

@@ -68,19 +68,29 @@ public class VariantWithSamplesAndAnnotationsService {
     public List<VariantWithSamplesAndAnnotation> findByGenesAndComplexFilters(List<String> geneIds,
                                                                               List<VariantRepositoryFilter> variantRepositoryFilters,
                                                                               IAnnotationMetadata annotationMetadata,
-                                                                              List<String> exclude, Pageable pageable) {
+                                                                              List<String> exclude, Pageable pageable)
+            throws AnnotationMetadataNotFoundException {
         return convert(variantRepository.findByGenesAndComplexFilters(geneIds, variantRepositoryFilters, exclude, pageable),
                        annotationMetadata);
     }
 
     private List<VariantWithSamplesAndAnnotation> convert(List<VariantMongo> variantMongos,
-                                                          IAnnotationMetadata annotationMetadata) {
+                                                          IAnnotationMetadata annotationMetadata)
+            throws AnnotationMetadataNotFoundException {
         Table<String, String, List<String>> studyFileIdsToSamples = variantSourceRepository.findAndIndexSamples();
 
         if (annotationMetadata == null) {
             List<AnnotationMetadataMongo> annotationMetadataList = annotationMetadataRepository.findByDefaultVersionIsTrue();
             if (annotationMetadataList.size() > 0) {
                 annotationMetadata = annotationMetadataList.get(0);
+            } else {
+                throw new AnnotationMetadataNotFoundException();
+            }
+        } else {
+            if (annotationMetadataRepository.findByCacheVersionAndVepVersion(annotationMetadata.getCacheVersion(),
+                                                                             annotationMetadata.getVepVersion()).size() == 0) {
+                throw new AnnotationMetadataNotFoundException(annotationMetadataRepository.findAllByOrderByCacheVersionDescVepVersionDesc(),
+                                                              annotationMetadata);
             }
         }
 
@@ -165,7 +175,8 @@ public class VariantWithSamplesAndAnnotationsService {
                                                                                 List<VariantRepositoryFilter> variantRepositoryFilters,
                                                                                 IAnnotationMetadata annotationMetadata,
                                                                                 List<String> exclude,
-                                                                                Pageable pageable) {
+                                                                                Pageable pageable)
+            throws AnnotationMetadataNotFoundException {
         return convert(variantRepository.findByRegionsAndComplexFilters(regions, variantRepositoryFilters, exclude, pageable),
                        annotationMetadata);
     }
@@ -177,7 +188,8 @@ public class VariantWithSamplesAndAnnotationsService {
     public List<VariantWithSamplesAndAnnotation> findByIdsAndComplexFilters(String id,
                                                                             List<VariantRepositoryFilter> variantRepositoryFilters,
                                                                             IAnnotationMetadata annotationMetadata,
-                                                                            List<String> exclude, Pageable pageable) {
+                                                                            List<String> exclude, Pageable pageable)
+            throws AnnotationMetadataNotFoundException {
         return convert(variantRepository.findByIdsAndComplexFilters(id, variantRepositoryFilters, exclude, pageable),
                        annotationMetadata);
     }
@@ -190,14 +202,16 @@ public class VariantWithSamplesAndAnnotationsService {
                                                                                                   int start,
                                                                                                   String reference,
                                                                                                   String alternate,
-                                                                                                  IAnnotationMetadata annotationMetadata) {
+                                                                                                  IAnnotationMetadata annotationMetadata)
+            throws AnnotationMetadataNotFoundException {
         return convert(
                 variantRepository.findByChromosomeAndStartAndReferenceAndAlternate(chromosome, start, reference, alternate),
                 annotationMetadata);
     }
 
     public List<VariantWithSamplesAndAnnotation> findByChromosomeAndStartAndReference(String chr, int start, String ref,
-                                                                                      IAnnotationMetadata annotationMetadata) {
+                                                                                      IAnnotationMetadata annotationMetadata)
+            throws AnnotationMetadataNotFoundException {
         return convert(variantRepository.findByChromosomeAndStartAndReference(chr, start, ref), annotationMetadata);
     }
 
@@ -206,7 +220,7 @@ public class VariantWithSamplesAndAnnotationsService {
             int start,
             String reference,
             String alternate,
-            List<String> studyIds, IAnnotationMetadata annotationMetadata) {
+            List<String> studyIds, IAnnotationMetadata annotationMetadata) throws AnnotationMetadataNotFoundException {
         return convert(variantRepository.findByChromosomeAndStartAndReferenceAndAlternateAndStudyIn(chromosome, start,
                 reference, alternate, studyIds), annotationMetadata);
     }
@@ -215,7 +229,8 @@ public class VariantWithSamplesAndAnnotationsService {
                                                                                                 int start,
                                                                                                 String reference,
                                                                                                 List<String> studyIds,
-                                                                                                IAnnotationMetadata annotationMetadata) {
+                                                                                                IAnnotationMetadata annotationMetadata)
+            throws AnnotationMetadataNotFoundException {
         return convert(variantRepository.findByChromosomeAndStartAndReferenceAndStudyIn(chromosome, start,
                 reference, studyIds), annotationMetadata);
     }
@@ -223,7 +238,8 @@ public class VariantWithSamplesAndAnnotationsService {
     public List<VariantWithSamplesAndAnnotation> findByChromosomeAndStartAndAltAndStudyIn(String chr, int start,
                                                                                           String alt,
                                                                                           List<String> studyIds,
-                                                                                          IAnnotationMetadata annotationMetadata) {
+                                                                                          IAnnotationMetadata annotationMetadata)
+            throws AnnotationMetadataNotFoundException {
         return convert(variantRepository.findByChromosomeAndStartAndAltAndStudyIn(chr, start, alt, studyIds),
                        annotationMetadata);
     }
@@ -231,7 +247,8 @@ public class VariantWithSamplesAndAnnotationsService {
     public List<VariantWithSamplesAndAnnotation> findByChromosomeAndStartAndTypeAndStudyIn(String chr, int start,
                                                                                            VariantType type,
                                                                                            List<String> studyIds,
-                                                                                           IAnnotationMetadata annotationMetadata) {
+                                                                                           IAnnotationMetadata annotationMetadata)
+            throws AnnotationMetadataNotFoundException {
         return convert(variantRepository.findByChromosomeAndStartAndTypeAndStudyIn(chr, start, type, studyIds),
                        annotationMetadata);
     }
