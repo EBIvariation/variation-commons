@@ -4,8 +4,11 @@ import org.junit.Test;
 
 import java.util.Set;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.isIn;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by parce on 07/10/15.
@@ -16,27 +19,27 @@ public class FileGeneratorTest {
     public void testConstructorNoTitle() {
         Study study = new Study(null, "Alias", "Description", Study.Material.DNA, Study.Scope.OTHER);
     }
-    
+
     @Test(expected = NullPointerException.class)
     public void testConstructorNoAlias() {
         Study study = new Study("Title", null, "Description", Study.Material.DNA, Study.Scope.OTHER);
     }
-    
+
     @Test(expected = NullPointerException.class)
     public void testConstructorNoDescription() {
         Study study = new Study("Title", "Alias", null, Study.Material.DNA, Study.Scope.OTHER);
     }
-    
+
     @Test(expected = NullPointerException.class)
     public void testConstructorNoMaterial() {
         Study study = new Study("Title", "Alias", "Description", null, Study.Scope.OTHER);
     }
-    
+
     @Test(expected = NullPointerException.class)
     public void testConstructorNoScope() {
         Study study = new Study("Title", "Alias", "Description", Study.Material.DNA, null);
     }
-    
+
     @Test
     public void testAddFile() throws Exception {
         // create a file generator without files

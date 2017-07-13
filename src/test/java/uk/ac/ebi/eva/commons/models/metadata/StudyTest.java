@@ -3,13 +3,20 @@ package uk.ac.ebi.eva.commons.models.metadata;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by tom on 07/10/15.
@@ -290,7 +297,6 @@ public class StudyTest {
 
     /**
      * x.equals(WrongType) must return false;
-     *
      */
     @Test
     public void testPassIncompatibleType_isFalse() {
@@ -299,7 +305,6 @@ public class StudyTest {
 
     /**
      * x.equals(null) must return false;
-     *
      */
     @Test
     public void testNullReference_isFalse() {
@@ -366,7 +371,6 @@ public class StudyTest {
     /**
      * A more optimal implementation of hashcode ensures that if the objects are
      * unequal different integers are produced.
-     *
      */
     @Test
     public void testHashcode_twoUnEqualObjects_produceDifferentNumber() {

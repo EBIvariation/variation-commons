@@ -18,7 +18,7 @@ package uk.ac.ebi.eva.commons.models.metadata;
 
 /**
  * Created by parce on 05/10/15.
- * 
+ *
  * @TODO Come back to this class for further design
  */
 public class Run extends FileGenerator {
@@ -28,7 +28,7 @@ public class Run extends FileGenerator {
     public Run(String alias) {
         super(alias);
     }
-    
+
     public Experiment getExperiment() {
         return experiment;
     }
@@ -41,10 +41,10 @@ public class Run extends FileGenerator {
     public boolean equals(Object e) {
         if (e == this) {
             return true;
-        }else if (!(e instanceof Run)) {
+        } else if (!(e instanceof Run)) {
             return false;
-        }else {
-            return ((Run)e).getAlias().equals(alias);
+        } else {
+            return ((Run) e).getAlias().equals(alias);
         }
     }
 

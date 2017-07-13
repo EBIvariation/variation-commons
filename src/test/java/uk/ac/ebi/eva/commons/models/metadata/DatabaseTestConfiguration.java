@@ -15,15 +15,23 @@
  */
 package uk.ac.ebi.eva.commons.models.metadata;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
-/**
- * @author Oliver Gierke
- * @see https://github.com/spring-projects/spring-data-examples
- * @todo Is it possible to move it to the subpackage 'database'?
- */
 @Configuration
 @EnableAutoConfiguration
+@PropertySource("classpath:application.properties")
 public class DatabaseTestConfiguration {
+
+    @Value("${db.collections.annotation-metadata.name}")
+    public String mongoCollectionsAnnotationMetadata;
+
+    @Bean
+    public String mongoCollectionsAnnotationMetadata() {
+        return mongoCollectionsAnnotationMetadata;
+    }
+
 }

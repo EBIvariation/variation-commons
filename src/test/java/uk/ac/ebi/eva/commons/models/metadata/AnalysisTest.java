@@ -16,26 +16,26 @@
 
 package uk.ac.ebi.eva.commons.models.metadata;
 
-import java.util.Date;
-
+import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-import org.junit.Before;
+import java.util.Date;
 
-/**
- *
- * @author Cristina Yenyxe Gonzalez Garcia <cyenyxe@ebi.ac.uk>
- */
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 public class AnalysisTest {
-    
+
     Study study;
-    
+
     @Before
     public void setUp() {
         study = new Study("Some study", "PRJEB12345", "Study description", Study.Material.UNKNOWN, Study.Scope.UNKNOWN);
     }
-    
+
     @Test
     public void testConstructorSuccessful() {
         Analysis analysis1 = new Analysis("Analysis1", "Analysis1", "Description");
@@ -47,7 +47,7 @@ public class AnalysisTest {
         assertNull(analysis1.getSoftware());
         assertFalse(analysis1.isImputation());
         assertNull(analysis1.getDate());
-        
+
         Analysis analysis2 = new Analysis("Analysis2", "Analysis2", "Description", null, null, null, true, null);
         assertEquals(analysis2.getAlias(), "Analysis2");
         assertEquals(analysis2.getTitle(), "Analysis2");
@@ -57,7 +57,7 @@ public class AnalysisTest {
         assertNull(analysis2.getSoftware());
         assertTrue(analysis2.isImputation());
         assertNull(analysis2.getDate());
-        
+
         Analysis analysis3 = new Analysis("Analysis3", "Analysis3", "Description", "Centre", "Platform", "Software", false, new Date());
         assertEquals(analysis3.getAlias(), "Analysis3");
         assertEquals(analysis3.getTitle(), "Analysis3");
@@ -73,15 +73,15 @@ public class AnalysisTest {
     public void testConstructorNoAlias() {
         Analysis analysis = new Analysis(null, "Title", "Description", null, null, null, true, null);
     }
-    
+
     @Test(expected = NullPointerException.class)
     public void testConstructorNoTitle() {
         Analysis analysis = new Analysis("Analysis1", null, "Description", null, null, null, true, null);
     }
-    
+
     @Test(expected = NullPointerException.class)
     public void testConstructorNoDescription() {
         Analysis analysis = new Analysis("Analysis1", "Title", null, null, null, null, true, null);
     }
-    
+
 }

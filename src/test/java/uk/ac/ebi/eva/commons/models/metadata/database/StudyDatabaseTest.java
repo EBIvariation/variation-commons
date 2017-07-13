@@ -15,12 +15,6 @@
  */
 package uk.ac.ebi.eva.commons.models.metadata.database;
 
-import uk.ac.ebi.eva.commons.models.metadata.Analysis;
-import uk.ac.ebi.eva.commons.models.metadata.DatabaseTestConfiguration;
-import uk.ac.ebi.eva.commons.models.metadata.FileGenerator;
-import uk.ac.ebi.eva.commons.models.metadata.Organisation;
-import uk.ac.ebi.eva.commons.models.metadata.Study;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,10 +23,18 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ebi.eva.commons.models.metadata.Analysis;
+import uk.ac.ebi.eva.commons.models.metadata.DatabaseTestConfiguration;
+import uk.ac.ebi.eva.commons.models.metadata.FileGenerator;
+import uk.ac.ebi.eva.commons.models.metadata.Organisation;
+import uk.ac.ebi.eva.commons.models.metadata.Study;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional

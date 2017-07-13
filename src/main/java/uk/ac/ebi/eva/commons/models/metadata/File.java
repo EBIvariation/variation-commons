@@ -15,13 +15,16 @@
  */
 package uk.ac.ebi.eva.commons.models.metadata;
 
+import org.springframework.data.jpa.domain.AbstractPersistable;
+
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.persistence.*;
-
-import org.springframework.data.jpa.domain.AbstractPersistable;
 
 /**
  * Created by parce on 02/10/15.
@@ -37,7 +40,8 @@ public class File extends AbstractPersistable<Long> {
     private String md5;
     @ManyToMany(mappedBy = "files")
     private Set<FileGenerator> fileGenerators;
-    @Transient private Set<Sample> samples;
+    @Transient
+    private Set<Sample> samples;
 
     public File() {
         this.name = null;
@@ -95,7 +99,7 @@ public class File extends AbstractPersistable<Long> {
     final void setFileGenerators(Set<FileGenerator> fileGenerators) {
         Objects.requireNonNull(fileGenerators, "File generators not specified");
         if (this.fileGenerators == null) { // Called from constructor
-            this.fileGenerators = fileGenerators; 
+            this.fileGenerators = fileGenerators;
         } else {
             this.fileGenerators.clear();
             for (FileGenerator g : fileGenerators) {
@@ -115,7 +119,7 @@ public class File extends AbstractPersistable<Long> {
     public final void setSamples(Set<Sample> samples) {
         Objects.requireNonNull(samples, "Samples not specified");
         if (this.samples == null) { // Called from constructor
-            this.samples = samples; 
+            this.samples = samples;
         } else {
             this.samples.clear();
             for (Sample s : samples) {

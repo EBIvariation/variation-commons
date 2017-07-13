@@ -15,10 +15,6 @@
  */
 package uk.ac.ebi.eva.commons.models.metadata.database;
 
-import uk.ac.ebi.eva.commons.models.metadata.DatabaseTestConfiguration;
-import uk.ac.ebi.eva.commons.models.metadata.Study;
-
-import java.util.Collection;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,11 +22,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ebi.eva.commons.models.metadata.DatabaseTestConfiguration;
+import uk.ac.ebi.eva.commons.models.metadata.Study;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by tom on 29/10/15.
@@ -68,7 +67,7 @@ public class StudyRelationDatabaseTest {
         checkChildStudiesInParent(parentStudy1, emptyChildren);
         checkParentStudiesInChildren(parentStudy1, emptyChildren);
     }
-    
+
     @Test
     public void testSingleChild() {
         Set<Study> singleChildStudy = new HashSet<>();
@@ -111,11 +110,11 @@ public class StudyRelationDatabaseTest {
         Set<Study> children = new HashSet<>();
         children.add(childStudy1);
         children.add(childStudy2);
-        
+
         Set<Study> grandchildren1 = new HashSet<>();
         grandchildren1.add(childStudy3);
         grandchildren1.add(childStudy4);
-        
+
         Set<Study> grandchildren2 = new HashSet<>();
         grandchildren2.add(childStudy5);
         grandchildren2.add(childStudy6);
@@ -127,7 +126,7 @@ public class StudyRelationDatabaseTest {
         parentStudy1.setChildStudies(children);
         childStudy1.setChildStudies(grandchildren1);
         childStudy2.setChildStudies(grandchildren2);
-        
+
         checkChildStudiesInParent(parentStudy1, children);
         checkParentStudiesInChildren(parentStudy1, children);
 
@@ -137,15 +136,15 @@ public class StudyRelationDatabaseTest {
         checkChildStudiesInParent(childStudy2, grandchildren2);
         checkParentStudiesInChildren(childStudy2, grandchildren2);
 
-        
+
         Study savedParentStudy = repository.save(parentStudy1);
         checkChildStudiesInParent(savedParentStudy, children);
         checkParentStudiesInChildren(savedParentStudy, children);
-        
+
         assertEquals(7, repository.count());
     }
 
-    
+
     private void checkChildStudiesInParent(Study parentStudy, Set<Study> childStudies) {
         assertEquals(parentStudy.getChildStudies(), childStudies);
     }
