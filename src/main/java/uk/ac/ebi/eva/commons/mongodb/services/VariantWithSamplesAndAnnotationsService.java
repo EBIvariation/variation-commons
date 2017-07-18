@@ -80,7 +80,7 @@ public class VariantWithSamplesAndAnnotationsService {
         Table<String, String, List<String>> studyFileIdsToSamples = variantSourceRepository.findAndIndexSamples();
 
         if (annotationMetadata == null) {
-            List<AnnotationMetadataMongo> annotationMetadataList = annotationMetadataRepository.findByDefaultVersionIsTrue();
+            List<AnnotationMetadataMongo> annotationMetadataList = annotationMetadataRepository.findByDefaultVersionTrue();
             if (annotationMetadataList.size() > 0) {
                 annotationMetadata = annotationMetadataList.get(0);
             } else {

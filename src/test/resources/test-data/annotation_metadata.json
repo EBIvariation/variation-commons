@@ -4,31 +4,31 @@
       "vepv": "74",
       "_id": "74_74",
       "cachev": "74",
-      "default_version": false
+      "is_default": false
     },
     {
       "vepv": "86",
       "_id": "86_86",
       "cachev": "86",
-      "default_version": false
+      "is_default": false
     },
     {
       "vepv": "75",
       "_id": "75_76",
       "cachev": "76",
-      "default_version": false
+      "is_default": false
     },
     {
       "vepv": "78",
       "_id": "78_77",
       "cachev": "77",
-      "default_version": false
+      "is_default": false
     },
     {
       "vepv": "78",
       "_id": "78_78",
       "cachev": "78",
-      "default_version": true
+      "is_default": true
     }
   ]
 }

@@ -30,7 +30,7 @@ public abstract class VariantRepositoryFilter<T> {
     public final static String TYPE_FIELD = VariantMongo.TYPE_FIELD;
     public final static String ALT_FIELD = VariantMongo.ALTERNATE_FIELD;
 
-    public final static String MAF_FIELD = VariantMongo.STATS_FIELD + ".maf";
+    public final static String MAF_FIELD = VariantMongo.STATISTICS_FIELDS + ".maf";
 
     public final static String STUDY_ID_FIELD = VariantMongo.FILES_FIELD + ".sid";
     public final static String FILE_ID_FIELD = VariantMongo.FILES_FIELD + ".fid";

@@ -35,8 +35,7 @@ public interface AnnotationMetadataRepository extends MongoRepository<Annotation
      */
     List<AnnotationMetadataMongo> findAllByOrderByCacheVersionDescVepVersionDesc();
 
-    @Query(value = "{ 'default_version': true }")
-    List<AnnotationMetadataMongo> findByDefaultVersionIsTrue();
+    List<AnnotationMetadataMongo> findByDefaultVersionTrue();
 
     List<AnnotationMetadataMongo> findByCacheVersionAndVepVersion(String cacheVersion, String vepVersion);
 

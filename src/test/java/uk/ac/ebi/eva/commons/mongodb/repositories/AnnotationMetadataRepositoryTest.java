@@ -35,10 +35,10 @@ public class AnnotationMetadataRepositoryTest {
 
     @Test
     public void findOneByDefault() throws Exception {
-        List<AnnotationMetadataMongo> annotationMetadataMongoList = repository.findByDefaultVersionIsTrue();
+        List<AnnotationMetadataMongo> annotationMetadataMongoList = repository.findByDefaultVersionTrue();
         assertEquals(1, annotationMetadataMongoList.size());
         AnnotationMetadataMongo annotationMetadataMongo = annotationMetadataMongoList.get(0);
-        assertEquals(true, annotationMetadataMongo.isDefault());
+        assertTrue(annotationMetadataMongo.isDefault());
     }
 
     @Test

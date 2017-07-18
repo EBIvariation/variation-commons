@@ -30,7 +30,7 @@ public class AnnotationMetadataMongo implements IAnnotationMetadata {
 
     private static final String CACHE_VERSION_FIELD = "cachev";
 
-    private static final String DEFAULT_FIELD = "default_version";
+    private static final String DEFAULT_FIELD = "is_default";
 
     @Id
     private String id;

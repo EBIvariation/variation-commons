@@ -72,7 +72,7 @@ public class VariantMongo {
 
     public final static String FILES_FIELD = "files";
 
-    public final static String STATS_FIELD = "st";
+    public final static String STATISTICS_FIELDS = "st";
 
     public final static String ANNOTATION_FIELD = "annot";
 
@@ -112,7 +112,7 @@ public class VariantMongo {
     @Field(FILES_FIELD)
     private Set<VariantSourceEntryMongo> variantSourceEntries;
 
-    @Field(STATS_FIELD)
+    @Field(STATISTICS_FIELDS)
     private Set<VariantStatisticsMongo> variantStatsMongo;
 
     @Field(ANNOTATION_FIELD)
