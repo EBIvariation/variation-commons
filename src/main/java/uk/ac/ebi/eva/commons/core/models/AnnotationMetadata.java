@@ -24,18 +24,26 @@ public class AnnotationMetadata implements IAnnotationMetadata {
 
     private String cacheVersion;
 
+    private boolean defaultVersion;
+
     AnnotationMetadata() {
         //Spring empty constructor
         this(null, null);
     }
 
     public AnnotationMetadata(IAnnotationMetadata annotationMetadata) {
-        this(annotationMetadata.getVepVersion(), annotationMetadata.getCacheVersion());
+        this(annotationMetadata.getVepVersion(), annotationMetadata.getCacheVersion(),
+             annotationMetadata.isDefaultVersion());
     }
 
     public AnnotationMetadata(String vepVersion, String cacheVersion) {
+        this(vepVersion, cacheVersion, false);
+    }
+
+    public AnnotationMetadata(String vepVersion, String cacheVersion, boolean defaultVersion) {
         this.vepVersion = vepVersion;
         this.cacheVersion = cacheVersion;
+        this.defaultVersion = defaultVersion;
     }
 
     @Override
@@ -46,6 +54,11 @@ public class AnnotationMetadata implements IAnnotationMetadata {
     @Override
     public String getCacheVersion() {
         return cacheVersion;
+    }
+
+    @Override
+    public boolean isDefaultVersion() {
+        return defaultVersion;
     }
 
     @Override

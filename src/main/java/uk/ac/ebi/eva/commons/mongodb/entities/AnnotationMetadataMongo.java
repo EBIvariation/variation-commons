@@ -86,11 +86,12 @@ public class AnnotationMetadataMongo implements IAnnotationMetadata {
         this.cacheVersion = cacheVersion;
     }
 
-    public boolean isDefault() {
+    public boolean isDefaultVersion() {
         return defaultVersion;
     }
 
-    public void setDefault(boolean aDefault) {
+
+    public void setDefaultVersion(boolean aDefault) {
         defaultVersion = aDefault;
     }
 

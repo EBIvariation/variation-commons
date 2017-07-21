@@ -38,7 +38,7 @@ public class AnnotationMetadataRepositoryTest {
         List<AnnotationMetadataMongo> annotationMetadataMongoList = repository.findByDefaultVersionTrue();
         assertEquals(1, annotationMetadataMongoList.size());
         AnnotationMetadataMongo annotationMetadataMongo = annotationMetadataMongoList.get(0);
-        assertTrue(annotationMetadataMongo.isDefault());
+        assertTrue(annotationMetadataMongo.isDefaultVersion());
     }
 
     @Test

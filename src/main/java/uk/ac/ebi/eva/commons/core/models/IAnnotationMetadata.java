@@ -21,4 +21,6 @@ public interface IAnnotationMetadata {
 
     String getCacheVersion();
 
+    boolean isDefaultVersion();
+
 }
