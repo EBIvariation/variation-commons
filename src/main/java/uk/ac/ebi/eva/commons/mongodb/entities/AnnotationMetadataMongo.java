@@ -96,6 +96,15 @@ public class AnnotationMetadataMongo implements IAnnotationMetadata {
     }
 
     @Override
+    public String toString() {
+        return "AnnotationMetadataMongo{" +
+                "vepVersion='" + vepVersion + '\'' +
+                ", cacheVersion='" + cacheVersion + '\'' +
+                ", defaultVersion=" + defaultVersion +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof AnnotationMetadataMongo)) return false;
