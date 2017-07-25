@@ -36,7 +36,7 @@ import java.util.Map;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -79,7 +79,7 @@ public class VariantWithSamplesAndAnnotationServiceTest {
             Map<String, Map<String, String>> samplesData = variantSourceEntry.getSamplesDataMap();
             assertEquals("0|1", samplesData.get("HG03805").get("GT"));
         }
-        assertFalse(variantEntityList.get(0).getAnnotation() == null);
+        assertNotNull(variantEntityList.get(0).getAnnotation());
     }
 
 }

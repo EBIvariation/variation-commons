@@ -28,11 +28,11 @@ public class AnnotationMetadataNotFoundException extends Exception {
 
     public AnnotationMetadataNotFoundException(List<AnnotationMetadataMongo> annotationMetadataList,
                                                IAnnotationMetadata specifiedAnnotationMetadata) {
-        super(buildRepositoryString(annotationMetadataList, specifiedAnnotationMetadata));
+        super(buildMessage(annotationMetadataList, specifiedAnnotationMetadata));
     }
 
-    private static String buildRepositoryString(List<AnnotationMetadataMongo> annotationMetadataList,
-                                                IAnnotationMetadata specifiedAnnotationMetadata) {
+    private static String buildMessage(List<AnnotationMetadataMongo> annotationMetadataList,
+                                       IAnnotationMetadata specifiedAnnotationMetadata) {
         return "Specified annotation metadata version (" + specifiedAnnotationMetadata.toString() + ") not found. " +
                 "\nAvailable annotation metadata versions:\n" + annotationMetadataList.toString();
     }
