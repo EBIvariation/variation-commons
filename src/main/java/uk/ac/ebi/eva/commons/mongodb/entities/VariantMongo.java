@@ -19,6 +19,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+
+import uk.ac.ebi.eva.commons.core.models.IAnnotationMetadata;
 import uk.ac.ebi.eva.commons.core.models.IVariant;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.AnnotationIndexMongo;
@@ -27,6 +29,7 @@ import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantAtMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantStatisticsMongo;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -69,7 +72,7 @@ public class VariantMongo {
 
     public final static String FILES_FIELD = "files";
 
-    public final static String STATS_FIELD = "st";
+    public final static String STATISTICS_FIELD = "st";
 
     public final static String ANNOTATION_FIELD = "annot";
 
@@ -109,7 +112,7 @@ public class VariantMongo {
     @Field(FILES_FIELD)
     private Set<VariantSourceEntryMongo> variantSourceEntries;
 
-    @Field(STATS_FIELD)
+    @Field(STATISTICS_FIELD)
     private Set<VariantStatisticsMongo> variantStatsMongo;
 
     @Field(ANNOTATION_FIELD)
@@ -311,14 +314,28 @@ public class VariantMongo {
     public Set<String> getAnnotationIds() {
         Set<String> ids = new HashSet<>();
         for (AnnotationIndexMongo indexedAnnotation : indexedAnnotations) {
-            ids.add(AnnotationMongo.buildAnnotationId(
-                    chromosome,
-                    start,
-                    reference,
-                    alternate,
-                    indexedAnnotation.getVepVersion(),
-                    indexedAnnotation.getVepCacheVersion()));
+            ids.add(
+                    AnnotationMongo.buildAnnotationId(
+                            chromosome,
+                            start,
+                            reference,
+                            alternate,
+                            indexedAnnotation.getVepVersion(),
+                            indexedAnnotation.getVepCacheVersion())
+            );
         }
         return ids;
+    }
+
+    public Set<String> getAnnotationIds(IAnnotationMetadata annotationMetadata) {
+        return Collections.singleton(
+                AnnotationMongo.buildAnnotationId(
+                        chromosome,
+                        start,
+                        reference,
+                        alternate,
+                        annotationMetadata.getVepVersion(),
+                        annotationMetadata.getCacheVersion())
+        );
     }
 }

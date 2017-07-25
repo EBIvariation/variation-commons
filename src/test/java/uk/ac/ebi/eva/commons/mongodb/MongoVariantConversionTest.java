@@ -28,7 +28,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
-import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotations;
+import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotation;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.HgvsMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
@@ -81,14 +81,14 @@ public class MongoVariantConversionTest {
         Assert.assertEquals(2, ((BasicDBObject) variantSource.get(VariantSourceEntryMongo.SAMPLES_FIELD)).size());
     }
 
-    private VariantWithSamplesAndAnnotations buildVariantWithFiles() {
-        VariantWithSamplesAndAnnotations variant = buildBasicVariant();
+    private VariantWithSamplesAndAnnotation buildVariantWithFiles() {
+        VariantWithSamplesAndAnnotation variant = buildBasicVariant();
         variant.addSourceEntry(buildVariantSourceEntryWithSamples());
         return variant;
     }
 
-    private VariantWithSamplesAndAnnotations buildBasicVariant() {
-        VariantWithSamplesAndAnnotations variant = new VariantWithSamplesAndAnnotations(CHROMOSOME, START, END, REFERENCE, ALTERNATE);
+    private VariantWithSamplesAndAnnotation buildBasicVariant() {
+        VariantWithSamplesAndAnnotation variant = new VariantWithSamplesAndAnnotation(CHROMOSOME, START, END, REFERENCE, ALTERNATE);
         variant.setIds(Collections.singleton(RS_666));
         return variant;
     }
@@ -159,7 +159,7 @@ public class MongoVariantConversionTest {
     }
 
     private BasicDBObject buildMongoBasicVariant() {
-        VariantWithSamplesAndAnnotations variant = new VariantWithSamplesAndAnnotations(CHROMOSOME, START, END, REFERENCE, ALTERNATE);
+        VariantWithSamplesAndAnnotation variant = new VariantWithSamplesAndAnnotation(CHROMOSOME, START, END, REFERENCE, ALTERNATE);
         BasicDBObject mongoVariant = new BasicDBObject("_id", VARIANT_ID)
                 .append(VariantMongo.IDS_FIELD, Collections.singleton(RS_666))
                 .append(VariantMongo.TYPE_FIELD, variant.getType().name())

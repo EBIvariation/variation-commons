@@ -16,6 +16,8 @@
 package uk.ac.ebi.eva.commons.mongodb.repositories;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
+
+import uk.ac.ebi.eva.commons.core.models.IAnnotationMetadata;
 import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 
@@ -41,6 +43,16 @@ public interface AnnotationRepository extends MongoRepository<AnnotationMongo, S
         return findByIdIn(ids);
     }
 
+    default Set<AnnotationMongo> findAnnotationsOfVariants(List<VariantMongo> variants,
+                                                           IAnnotationMetadata annotationMetadata) {
+        Set<String> ids = new HashSet<>();
+        for (VariantMongo variant : variants) {
+            ids.addAll(variant.getAnnotationIds(annotationMetadata));
+        }
+        return findByIdIn(ids);
+    }
+
+
     default Map<String, Set<AnnotationMongo>> findAndIndexAnnotationsOfVariants(List<VariantMongo> variants) {
         Map<String, Set<AnnotationMongo>> indexedAnnotations = new HashMap<>();
         Set<AnnotationMongo> annotations = findAnnotationsOfVariants(variants);
@@ -48,6 +60,17 @@ public interface AnnotationRepository extends MongoRepository<AnnotationMongo, S
             String variantId = annotation.buildVariantId();
             indexedAnnotations.putIfAbsent(variantId, new HashSet<>());
             indexedAnnotations.get(variantId).add(annotation);
+        });
+        return indexedAnnotations;
+    }
+
+    default Map<String, AnnotationMongo> findAndIndexAnnotationsOfVariants(List<VariantMongo> variants,
+                                                                                IAnnotationMetadata annotationMetadata) {
+        Map<String, AnnotationMongo> indexedAnnotations = new HashMap<>();
+        Set<AnnotationMongo> annotations = findAnnotationsOfVariants(variants, annotationMetadata);
+        annotations.forEach(annotation -> {
+            String variantId = annotation.buildVariantId();
+            indexedAnnotations.put(variantId, annotation);
         });
         return indexedAnnotations;
     }

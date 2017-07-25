@@ -29,7 +29,7 @@ import java.util.Set;
  * A mutation in the genome, defined as a change from a reference to an alternate allele in a certain position of
  * said genome.
  */
-public class VariantWithSamplesAndAnnotations extends AbstractVariant {
+public class VariantWithSamplesAndAnnotation extends AbstractVariant {
 
     /**
      * Information specific to each file the variant was read from, such as samples or statistics.
@@ -39,29 +39,23 @@ public class VariantWithSamplesAndAnnotations extends AbstractVariant {
     /**
      * Annotations of the genomic variation.
      */
-    private final Set<Annotation> annotations;
+    private Annotation annotation;
 
-    VariantWithSamplesAndAnnotations() {
+    VariantWithSamplesAndAnnotation() {
         this(null, -1, -1, null, null);
     }
 
-    public VariantWithSamplesAndAnnotations(String chromosome, int start, int end, String reference, String alternate) {
+    public VariantWithSamplesAndAnnotation(String chromosome, int start, int end, String reference, String alternate) {
         super(chromosome, start, end, reference, alternate);
         sourceEntries = new HashMap<>();
-        annotations = new HashSet<>();
     }
 
-    public void addAnnotation(Annotation annotation) {
-        this.annotations.add(annotation);
+    public void setAnnotation(Annotation annotation) {
+        this.annotation = annotation;
     }
 
-    public void setAnnotations(Set<Annotation> annotations) {
-        this.annotations.clear();
-        this.annotations.addAll(annotations);
-    }
-
-    public Set<Annotation> getAnnotations() {
-        return Collections.unmodifiableSet(annotations);
+    public Annotation getAnnotation() {
+        return annotation;
     }
 
     public void addSourceEntry(VariantSourceEntryWithSampleNames sourceEntry) {
@@ -95,21 +89,21 @@ public class VariantWithSamplesAndAnnotations extends AbstractVariant {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof VariantWithSamplesAndAnnotations)) return false;
+        if (!(o instanceof VariantWithSamplesAndAnnotation)) return false;
         if (!super.equals(o)) return false;
 
-        VariantWithSamplesAndAnnotations that = (VariantWithSamplesAndAnnotations) o;
+        VariantWithSamplesAndAnnotation that = (VariantWithSamplesAndAnnotation) o;
 
         if (sourceEntries != null ? !sourceEntries.equals(that.sourceEntries) : that.sourceEntries != null)
             return false;
-        return annotations != null ? annotations.equals(that.annotations) : that.annotations == null;
+        return annotation != null ? annotation.equals(that.annotation) : that.annotation == null;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (sourceEntries != null ? sourceEntries.hashCode() : 0);
-        result = 31 * result + (annotations != null ? annotations.hashCode() : 0);
+        result = 31 * result + (annotation != null ? annotation.hashCode() : 0);
         return result;
     }
 }

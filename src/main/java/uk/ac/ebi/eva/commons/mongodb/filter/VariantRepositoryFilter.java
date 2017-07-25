@@ -20,28 +20,30 @@ package uk.ac.ebi.eva.commons.mongodb.filter;
 
 import org.springframework.data.mongodb.core.query.Criteria;
 
+import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.AnnotationIndexMongo;
+
 import java.util.Collection;
 
 public abstract class VariantRepositoryFilter<T> {
 
-    public final static String ANNOTATION_FIELD = "annot";
-    public final static String STATISTICS_FIELD = "st";
-    public final static String FILES_FIELD = "files";
-    public final static String TYPE_FIELD = "type";
-    public final static String ALT_FIELD = "alt";
-    public final static String REF_FIELD = "ref";
+    public final static String TYPE_FIELD = VariantMongo.TYPE_FIELD;
+    public final static String ALT_FIELD = VariantMongo.ALTERNATE_FIELD;
 
-    public final static String MAF_FIELD = STATISTICS_FIELD + ".maf";
+    public final static String MAF_FIELD = VariantMongo.STATISTICS_FIELD + ".maf";
 
-    public final static String STUDY_ID_FIELD = FILES_FIELD + ".sid";
-    public final static String FILE_ID_FIELD = FILES_FIELD + ".fid";
+    public final static String STUDY_ID_FIELD = VariantMongo.FILES_FIELD + ".sid";
+    public final static String FILE_ID_FIELD = VariantMongo.FILES_FIELD + ".fid";
 
-    public final static String POLYPHEN_FIELD = "annot.polyphen";
-    public final static String SIFT_FIELD = "annot.sift";
-    public final static String CONSEQUENCE_TYPE_SO_FIELD = "annot.so";
+    public final static String POLYPHEN_FIELD = VariantMongo.ANNOTATION_FIELD + "." + AnnotationIndexMongo.POLYPHEN_FIELD;
+    public final static String SIFT_FIELD = VariantMongo.ANNOTATION_FIELD + "." + AnnotationIndexMongo.SIFT_FIELD;
+    public final static String CONSEQUENCE_TYPE_SO_FIELD = VariantMongo.ANNOTATION_FIELD + "." + AnnotationIndexMongo.SO_ACCESSION_FIELD;
 
-    public final static String XREFS_FIELD = ANNOTATION_FIELD + ".xrefs";
+    public final static String XREFS_FIELD = VariantMongo.ANNOTATION_FIELD + "." + AnnotationIndexMongo.XREFS_FIELD;
     public final static String XREFS_ID_FIELD = XREFS_FIELD + ".id";
+
+    public final static String VEP_VERSION_FIELD = VariantMongo.ANNOTATION_FIELD + "." + AnnotationIndexMongo.VEP_VERSION_FIELD;
+    public final static String VEP_CACHE_VERSION_FIELD = VariantMongo.ANNOTATION_FIELD + "." + AnnotationIndexMongo.VEP_CACHE_VERSION_FIELD;
 
     private final String field;
     private final T value;

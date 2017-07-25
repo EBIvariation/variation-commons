@@ -28,7 +28,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.eva.commons.configuration.MongoRepositoryTestConfiguration;
 import uk.ac.ebi.eva.commons.core.models.Region;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
-import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotations;
+import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ import java.util.Map;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -44,8 +44,9 @@ import static org.junit.Assert.assertNotEquals;
 @UsingDataSet(locations = {
         "/test-data/variants.json",
         "/test-data/annotations.json",
-        "/test-data/files.json"})
-public class VariantWithSamplesAndAnnotationsServiceTest {
+        "/test-data/files.json",
+        "/test-data/annotation_metadata.json"})
+public class VariantWithSamplesAndAnnotationServiceTest {
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -57,7 +58,7 @@ public class VariantWithSamplesAndAnnotationsServiceTest {
     private VariantWithSamplesAndAnnotationsService service;
 
     @Test
-    public void testFindByRegionsAndComplexFilters() {
+    public void testFindByRegionsAndComplexFilters() throws AnnotationMetadataNotFoundException {
         String chr = "11";
         int start = 190062;
         int end = 190064;
@@ -65,8 +66,8 @@ public class VariantWithSamplesAndAnnotationsServiceTest {
         List<Region> regions = new ArrayList<>();
         regions.add(region);
 
-        List<VariantWithSamplesAndAnnotations> variantEntityList = service.findByRegionsAndComplexFilters(
-                regions, null, null, new PageRequest(0, 10000));
+        List<VariantWithSamplesAndAnnotation> variantEntityList = service.findByRegionsAndComplexFilters(
+                regions, null, null, null, new PageRequest(0, 10000));
 
         assertEquals(1, variantEntityList.size());
 
@@ -78,7 +79,7 @@ public class VariantWithSamplesAndAnnotationsServiceTest {
             Map<String, Map<String, String>> samplesData = variantSourceEntry.getSamplesDataMap();
             assertEquals("0|1", samplesData.get("HG03805").get("GT"));
         }
-        assertFalse(variantEntityList.get(0).getAnnotations().isEmpty());
+        assertNotNull(variantEntityList.get(0).getAnnotation());
     }
 
 }
