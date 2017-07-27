@@ -38,7 +38,9 @@ public enum StudyType {
 
     TIME_SERIES("Time Series"),
 
-    AGGREGATE("Aggregate");
+    AGGREGATE("Aggregate"),
+
+    SOMATIC("Somatic");
 
     private final String symbol;
     private static final Map<String, StudyType> stringToEnum = new HashMap();
