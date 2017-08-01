@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>mongo</artifactId>
+    <artifactId>mongodb</artifactId>
     <dependencies>
         <dependency>
             <groupId>uk.ac.ebi.eva</groupId>

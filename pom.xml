@@ -10,7 +10,7 @@
     <version>0.5-SNAPSHOT</version>
     <modules>
         <module>core</module>
-        <module>mongo</module>
+        <module>mongodb</module>
         <module>jpa</module>
     </modules>
 
