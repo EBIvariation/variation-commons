@@ -16,6 +16,7 @@
 package uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments;
 
 import org.springframework.data.mongodb.core.mapping.Field;
+
 import uk.ac.ebi.eva.commons.core.models.IScore;
 
 /**
