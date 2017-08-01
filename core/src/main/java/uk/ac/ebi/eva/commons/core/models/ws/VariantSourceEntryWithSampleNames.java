@@ -18,7 +18,7 @@ package uk.ac.ebi.eva.commons.core.models.ws;
 import uk.ac.ebi.eva.commons.core.models.AbstractVariantSourceEntry;
 import uk.ac.ebi.eva.commons.core.models.IVariantSourceEntry;
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
-import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
+import uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.VariantSourceEntryMongo;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
