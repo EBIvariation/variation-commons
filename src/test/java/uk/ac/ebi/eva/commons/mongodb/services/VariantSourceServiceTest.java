@@ -21,7 +21,6 @@ import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantGlobalStatsMongo;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
