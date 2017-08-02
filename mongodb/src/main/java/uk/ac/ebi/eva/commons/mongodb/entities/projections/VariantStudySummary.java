@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.eva.commons.core.models.mongodb.projections;
+package uk.ac.ebi.eva.commons.mongodb.entities.projections;
 
 /**
  * Subset of fields from VariantSourceMongo. This is used to make an automatic MongoDB projection in

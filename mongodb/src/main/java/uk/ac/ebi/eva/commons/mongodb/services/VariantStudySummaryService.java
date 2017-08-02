@@ -24,8 +24,8 @@ import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
-import uk.ac.ebi.eva.commons.core.models.mongodb.VariantSourceMongo;
-import uk.ac.ebi.eva.commons.core.models.mongodb.projections.VariantStudySummary;
+import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.projections.VariantStudySummary;
 
 import java.util.List;
 

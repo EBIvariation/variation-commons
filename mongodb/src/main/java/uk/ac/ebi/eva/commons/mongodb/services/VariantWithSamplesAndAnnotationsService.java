@@ -28,11 +28,11 @@ import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotation;
-import uk.ac.ebi.eva.commons.core.models.mongodb.AnnotationMetadataMongo;
-import uk.ac.ebi.eva.commons.core.models.mongodb.AnnotationMongo;
-import uk.ac.ebi.eva.commons.core.models.mongodb.VariantMongo;
-import uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.VariantSourceEntryMongo;
-import uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.VariantStatisticsMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMetadataMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantStatisticsMongo;
 import uk.ac.ebi.eva.commons.mongodb.filter.VariantRepositoryFilter;
 import uk.ac.ebi.eva.commons.mongodb.repositories.AnnotationMetadataRepository;
 import uk.ac.ebi.eva.commons.mongodb.repositories.AnnotationRepository;
@@ -40,6 +40,7 @@ import uk.ac.ebi.eva.commons.mongodb.repositories.VariantRepository;
 import uk.ac.ebi.eva.commons.mongodb.repositories.VariantSourceRepository;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -164,7 +165,10 @@ public class VariantWithSamplesAndAnnotationsService {
     private static VariantSourceEntryWithSampleNames convert(VariantSourceEntryMongo sourceEntryMongo,
                                                              List<String> samples,
                                                              Map<String, VariantStatistics> cohortIdToVariantStatsMongoMap) {
-        return new VariantSourceEntryWithSampleNames(sourceEntryMongo, samples, cohortIdToVariantStatsMongoMap);
+        return new VariantSourceEntryWithSampleNames(sourceEntryMongo.getFileId(), sourceEntryMongo.getStudyId(),
+                                                     sourceEntryMongo.getSecondaryAlternates(), sourceEntryMongo.getFormat(),
+                                                     cohortIdToVariantStatsMongoMap, sourceEntryMongo.getAttributes(),
+                                                     joinSamplesDataWithSampleNamesHelper(sourceEntryMongo, samples));
     }
 
     public Long countByGenesAndComplexFilters(List<String> geneIds, List<VariantRepositoryFilter> variantRepositoryFilters) {
@@ -255,5 +259,17 @@ public class VariantWithSamplesAndAnnotationsService {
 
     public Set<String> findDistinctChromosomes() {
         return variantRepository.findDistinctChromosomes();
+    }
+
+    private static LinkedHashMap<String, Map<String, String>> joinSamplesDataWithSampleNamesHelper(
+            VariantSourceEntryMongo variantSourceEntry,
+            List<String> samples) {
+        LinkedHashMap<String, Map<String, String>> temp;
+        if (variantSourceEntry == null || samples == null) {
+            temp = new LinkedHashMap<>();
+        } else {
+            temp = VariantSourceEntryWithSampleNames.joinSamplesDataWithSampleNames(variantSourceEntry.deflateSamplesData(samples.size()), samples);
+        }
+        return temp;
     }
 }

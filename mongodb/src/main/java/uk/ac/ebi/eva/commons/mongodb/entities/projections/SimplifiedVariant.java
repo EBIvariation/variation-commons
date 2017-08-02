@@ -13,30 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.eva.commons.core.models.mongodb.projections;
+package uk.ac.ebi.eva.commons.mongodb.entities.projections;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
-import uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.HgvsMongo;
-import uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.VariantAtMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.HgvsMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantAtMongo;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static uk.ac.ebi.eva.commons.core.models.mongodb.VariantMongo.ALTERNATE_FIELD;
-import static uk.ac.ebi.eva.commons.core.models.mongodb.VariantMongo.AT_FIELD;
-import static uk.ac.ebi.eva.commons.core.models.mongodb.VariantMongo.CHROMOSOME_FIELD;
-import static uk.ac.ebi.eva.commons.core.models.mongodb.VariantMongo.END_FIELD;
-import static uk.ac.ebi.eva.commons.core.models.mongodb.VariantMongo.HGVS_FIELD;
-import static uk.ac.ebi.eva.commons.core.models.mongodb.VariantMongo.LENGTH_FIELD;
-import static uk.ac.ebi.eva.commons.core.models.mongodb.VariantMongo.REFERENCE_FIELD;
-import static uk.ac.ebi.eva.commons.core.models.mongodb.VariantMongo.START_FIELD;
-import static uk.ac.ebi.eva.commons.core.models.mongodb.VariantMongo.TYPE_FIELD;
-import static uk.ac.ebi.eva.commons.core.models.mongodb.VariantMongo.buildVariantId;
-import static uk.ac.ebi.eva.commons.core.models.mongodb.VariantMongo.generateAtField;
-import static uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.HgvsMongo.createHgvsMongo;
+import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.ALTERNATE_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.AT_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.CHROMOSOME_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.END_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.HGVS_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.LENGTH_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.REFERENCE_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.START_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.TYPE_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.buildVariantId;
+import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.generateAtField;
+import static uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.HgvsMongo.createHgvsMongo;
 
 /**
  * Simplified representation of variant to be used when inserting or updating a variant

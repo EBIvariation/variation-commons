@@ -20,8 +20,8 @@ package uk.ac.ebi.eva.commons.mongodb.filter;
 
 import org.springframework.data.mongodb.core.query.Criteria;
 
-import uk.ac.ebi.eva.commons.core.models.mongodb.VariantMongo;
-import uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.AnnotationIndexMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.AnnotationIndexMongo;
 
 import java.util.Collection;
 

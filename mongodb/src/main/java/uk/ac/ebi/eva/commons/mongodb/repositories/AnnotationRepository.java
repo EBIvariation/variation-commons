@@ -18,8 +18,8 @@ package uk.ac.ebi.eva.commons.mongodb.repositories;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import uk.ac.ebi.eva.commons.core.models.IAnnotationMetadata;
-import uk.ac.ebi.eva.commons.core.models.mongodb.AnnotationMongo;
-import uk.ac.ebi.eva.commons.core.models.mongodb.VariantMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 
 import java.util.Collection;
 import java.util.HashMap;

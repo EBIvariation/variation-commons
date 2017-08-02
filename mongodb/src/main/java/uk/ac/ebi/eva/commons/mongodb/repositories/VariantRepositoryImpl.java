@@ -30,8 +30,8 @@ import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import uk.ac.ebi.eva.commons.core.models.Region;
-import uk.ac.ebi.eva.commons.core.models.mongodb.VariantMongo;
-import uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.AnnotationIndexMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.AnnotationIndexMongo;
 import uk.ac.ebi.eva.commons.mongodb.filter.VariantRepositoryFilter;
 
 import java.util.ArrayList;

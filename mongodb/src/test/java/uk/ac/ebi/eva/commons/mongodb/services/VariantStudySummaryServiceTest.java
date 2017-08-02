@@ -30,7 +30,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
-import uk.ac.ebi.eva.commons.core.models.mongodb.projections.VariantStudySummary;
+import uk.ac.ebi.eva.commons.mongodb.entities.projections.VariantStudySummary;
 
 import java.util.List;
 

@@ -17,6 +17,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+            <version>1.4.2.RELEASE</version>
+        </dependency>
+        <dependency>
             <groupId>com.lordofthejars</groupId>
             <artifactId>nosqlunit-mongodb</artifactId>
             <version>0.14.0</version>

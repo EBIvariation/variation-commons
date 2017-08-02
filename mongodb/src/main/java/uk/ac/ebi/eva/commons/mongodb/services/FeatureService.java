@@ -18,7 +18,7 @@ package uk.ac.ebi.eva.commons.mongodb.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.eva.commons.core.models.FeatureCoordinates;
-import uk.ac.ebi.eva.commons.core.models.mongodb.FeatureCoordinatesMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.FeatureCoordinatesMongo;
 import uk.ac.ebi.eva.commons.mongodb.repositories.FeatureRepository;
 
 import java.util.List;

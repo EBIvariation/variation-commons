@@ -18,7 +18,7 @@ package uk.ac.ebi.eva.commons.mongodb.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.eva.commons.core.models.AnnotationMetadata;
-import uk.ac.ebi.eva.commons.core.models.mongodb.AnnotationMetadataMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMetadataMongo;
 import uk.ac.ebi.eva.commons.mongodb.repositories.AnnotationMetadataRepository;
 
 import java.util.List;

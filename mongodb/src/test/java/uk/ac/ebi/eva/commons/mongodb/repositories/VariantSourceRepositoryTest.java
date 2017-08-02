@@ -28,8 +28,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import uk.ac.ebi.eva.commons.core.models.mongodb.VariantSourceMongo;
-import uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.VariantGlobalStatsMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantGlobalStatsMongo;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
 
 import java.util.ArrayList;

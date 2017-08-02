@@ -24,8 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import uk.ac.ebi.eva.commons.core.models.mongodb.AnnotationMongo;
-import uk.ac.ebi.eva.commons.core.models.mongodb.VariantMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
 
 import java.util.ArrayList;

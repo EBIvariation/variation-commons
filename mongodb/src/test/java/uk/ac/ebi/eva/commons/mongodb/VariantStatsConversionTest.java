@@ -28,7 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
 import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
-import uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.VariantStatisticsMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantStatisticsMongo;
 import uk.ac.ebi.eva.commons.mongodb.configurations.MongoOperationsConfiguration;
 
 @RunWith(SpringRunner.class)

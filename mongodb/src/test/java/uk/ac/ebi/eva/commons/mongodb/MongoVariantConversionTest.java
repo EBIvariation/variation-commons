@@ -29,9 +29,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotation;
-import uk.ac.ebi.eva.commons.core.models.mongodb.VariantMongo;
-import uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.HgvsMongo;
-import uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.VariantSourceEntryMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.HgvsMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
 import uk.ac.ebi.eva.commons.mongodb.configurations.MongoOperationsConfiguration;
 
 import java.util.Arrays;

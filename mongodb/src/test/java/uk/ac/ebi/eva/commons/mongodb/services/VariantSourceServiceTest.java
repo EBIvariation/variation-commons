@@ -17,8 +17,8 @@ import uk.ac.ebi.eva.commons.core.models.StudyType;
 import uk.ac.ebi.eva.commons.core.models.VariantSource;
 import uk.ac.ebi.eva.commons.core.models.stats.VariantGlobalStats;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
-import uk.ac.ebi.eva.commons.core.models.mongodb.VariantSourceMongo;
-import uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.VariantGlobalStatsMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantGlobalStatsMongo;
 
 import java.util.ArrayList;
 import java.util.Date;

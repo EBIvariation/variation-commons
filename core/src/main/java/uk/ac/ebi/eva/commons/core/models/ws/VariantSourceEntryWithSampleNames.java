@@ -18,7 +18,6 @@ package uk.ac.ebi.eva.commons.core.models.ws;
 import uk.ac.ebi.eva.commons.core.models.AbstractVariantSourceEntry;
 import uk.ac.ebi.eva.commons.core.models.IVariantSourceEntry;
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
-import uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.VariantSourceEntryMongo;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -52,19 +51,6 @@ public class VariantSourceEntryWithSampleNames extends AbstractVariantSourceEntr
         );
     }
 
-    public VariantSourceEntryWithSampleNames(VariantSourceEntryMongo variantSourceEntryMongo, List<String> sampleNames,
-                                             Map<String, VariantStatistics> cohortIdToVariantStatsMongoMap) {
-        this(
-                variantSourceEntryMongo.getFileId(),
-                variantSourceEntryMongo.getStudyId(),
-                variantSourceEntryMongo.getSecondaryAlternates(),
-                variantSourceEntryMongo.getFormat(),
-                cohortIdToVariantStatsMongoMap,
-                variantSourceEntryMongo.getAttributes(),
-                joinSamplesDataWithSampleNamesHelper(variantSourceEntryMongo, sampleNames)
-        );
-    }
-
     public VariantSourceEntryWithSampleNames(String fileId, String studyId, String[] secondaryAlternates, String format,
                                              Map<String, VariantStatistics> cohortStats, Map<String, String> attributes,
                                              LinkedHashMap<String, Map<String, String>> samplesData) {
@@ -95,18 +81,6 @@ public class VariantSourceEntryWithSampleNames extends AbstractVariantSourceEntr
         return temp;
     }
 
-    private static LinkedHashMap<String, Map<String, String>> joinSamplesDataWithSampleNamesHelper(
-            VariantSourceEntryMongo variantSourceEntry,
-            List<String> samples) {
-        LinkedHashMap<String, Map<String, String>> temp;
-        if (variantSourceEntry == null || samples == null) {
-            temp = new LinkedHashMap<>();
-        } else {
-            temp = joinSamplesDataWithSampleNames(variantSourceEntry.deflateSamplesData(samples.size()), samples);
-        }
-        return temp;
-    }
-
     /**
      * Joins the list of sample data with their correspondent name from the sample list
      *
@@ -114,7 +88,7 @@ public class VariantSourceEntryWithSampleNames extends AbstractVariantSourceEntr
      * @param samples
      * @return
      */
-    private static LinkedHashMap<String, Map<String, String>> joinSamplesDataWithSampleNames(
+    public static LinkedHashMap<String, Map<String, String>> joinSamplesDataWithSampleNames(
             List<Map<String, String>> samplesData,
             List<String> samples) {
         LinkedHashMap<String, Map<String, String>> temp = new LinkedHashMap<>();

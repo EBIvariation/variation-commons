@@ -18,7 +18,6 @@ package uk.ac.ebi.eva.commons.core.models.pipeline;
 import uk.ac.ebi.eva.commons.core.models.AbstractVariantSourceEntry;
 import uk.ac.ebi.eva.commons.core.models.IVariantSourceEntry;
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
-import uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.VariantSourceEntryMongo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,18 +51,6 @@ public class VariantSourceEntry extends AbstractVariantSourceEntry implements IV
 
     public VariantSourceEntry(String fileId, String studyId) {
         this(fileId, studyId, null, null, null, null, null);
-    }
-
-    public VariantSourceEntry(VariantSourceEntryMongo variantSourceEntryMongo, int totalSamples) {
-        this(
-                variantSourceEntryMongo.getFileId(),
-                variantSourceEntryMongo.getStudyId(),
-                variantSourceEntryMongo.getSecondaryAlternates(),
-                variantSourceEntryMongo.getFormat(),
-                null,
-                variantSourceEntryMongo.getAttributes(),
-                variantSourceEntryMongo.deflateSamplesData(totalSamples)
-        );
     }
 
     public VariantSourceEntry(String fileId, String studyId, String[] secondaryAlternates, String format,

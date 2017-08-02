@@ -27,7 +27,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
-import uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.VariantSourceEntryMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
 import uk.ac.ebi.eva.commons.mongodb.configurations.MongoOperationsConfiguration;
 
 import java.util.ArrayList;
@@ -36,11 +36,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.VariantSourceEntryMongo.ATTRIBUTES_FIELD;
-import static uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.VariantSourceEntryMongo.FILEID_FIELD;
-import static uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.VariantSourceEntryMongo.FORMAT_FIELD;
-import static uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.VariantSourceEntryMongo.SAMPLES_FIELD;
-import static uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.VariantSourceEntryMongo.STUDYID_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo.ATTRIBUTES_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo.FILEID_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo.FORMAT_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo.SAMPLES_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo.STUDYID_FIELD;
 
 @RunWith(SpringRunner.class)
 @TestPropertySource({"classpath:test-mongo.properties"})
@@ -127,7 +127,10 @@ public class VariantSourceEntryConversionTest {
         sampleNames.add("NA002");
         sampleNames.add("NA003");
 
-        VariantSourceEntry variantSourceEntry = new VariantSourceEntry(variantSourceEntryMongo, sampleNames.size());
+        VariantSourceEntry variantSourceEntry
+                = new VariantSourceEntry(variantSourceEntryMongo.getFileId(), variantSourceEntryMongo.getStudyId(),
+                                         variantSourceEntryMongo.getSecondaryAlternates(), variantSourceEntryMongo.getFormat(),
+                                         null, variantSourceEntryMongo.getAttributes(), variantSourceEntryMongo.deflateSamplesData(sampleNames.size()));
         Assert.assertEquals(FILE_ID, variantSourceEntry.getFileId());
         Assert.assertEquals(STUDY_ID, variantSourceEntry.getStudyId());
         Assert.assertEquals(FORMAT, variantSourceEntry.getFormat());

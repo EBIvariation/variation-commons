@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import uk.ac.ebi.eva.commons.core.models.mongodb.AnnotationMetadataMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMetadataMongo;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
 
 import java.util.List;

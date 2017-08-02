@@ -16,7 +16,7 @@
 package uk.ac.ebi.eva.commons.mongodb.services;
 
 import uk.ac.ebi.eva.commons.core.models.IAnnotationMetadata;
-import uk.ac.ebi.eva.commons.core.models.mongodb.AnnotationMetadataMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMetadataMongo;
 
 import java.util.List;
 

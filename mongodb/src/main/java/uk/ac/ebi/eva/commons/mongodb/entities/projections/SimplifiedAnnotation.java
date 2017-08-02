@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.eva.commons.core.models.mongodb.projections;
+package uk.ac.ebi.eva.commons.mongodb.entities.projections;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
-import uk.ac.ebi.eva.commons.core.models.mongodb.AnnotationMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo;
 
-import static uk.ac.ebi.eva.commons.core.models.mongodb.AnnotationMongo.CHROMOSOME_FIELD;
-import static uk.ac.ebi.eva.commons.core.models.mongodb.AnnotationMongo.END_FIELD;
-import static uk.ac.ebi.eva.commons.core.models.mongodb.AnnotationMongo.START_FIELD;
-import static uk.ac.ebi.eva.commons.core.models.mongodb.AnnotationMongo.VEP_CACHE_VERSION_FIELD;
-import static uk.ac.ebi.eva.commons.core.models.mongodb.AnnotationMongo.VEP_VERSION_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo.CHROMOSOME_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo.END_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo.START_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo.VEP_CACHE_VERSION_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo.VEP_VERSION_FIELD;
 
 /**
  * Simplified form of {@link AnnotationMongo} used to improve the update of annotations in mongo.

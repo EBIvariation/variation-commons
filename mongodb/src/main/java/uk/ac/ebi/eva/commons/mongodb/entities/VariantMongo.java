@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.eva.commons.core.models.mongodb;
+package uk.ac.ebi.eva.commons.mongodb.entities;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.data.annotation.Id;
@@ -23,11 +23,11 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import uk.ac.ebi.eva.commons.core.models.IAnnotationMetadata;
 import uk.ac.ebi.eva.commons.core.models.IVariant;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
-import uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.AnnotationIndexMongo;
-import uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.HgvsMongo;
-import uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.VariantAtMongo;
-import uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.VariantSourceEntryMongo;
-import uk.ac.ebi.eva.commons.core.models.mongodb.subdocuments.VariantStatisticsMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.AnnotationIndexMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.HgvsMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantAtMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantStatisticsMongo;
 
 import java.util.Collections;
 import java.util.HashSet;

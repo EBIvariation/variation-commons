@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.eva.commons.core.models.VariantSource;
-import uk.ac.ebi.eva.commons.core.models.mongodb.VariantSourceMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
 import uk.ac.ebi.eva.commons.mongodb.repositories.VariantSourceRepository;
 
 import java.util.List;
