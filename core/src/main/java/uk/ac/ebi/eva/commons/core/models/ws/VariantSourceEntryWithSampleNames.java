@@ -82,7 +82,12 @@ public class VariantSourceEntryWithSampleNames extends AbstractVariantSourceEntr
     }
 
     /**
-     * Joins the list of sample data with their correspondent name from the sample list
+     * Joins the list of sample data with their correspondent name from the sample list.
+     *
+     * VariantSourceEntryMongo will eventually stop being part of a different class hierarchy so this method will only
+     * belong to this class, once the number of samples for a source entry is added to the database.
+     * Currently this method is also needed by VariantWithSamplesAndAnnotationsService to join the samples data
+     * with names without needing to pass a VariantSourceEntryMongo to this class.
      *
      * @param samplesData
      * @param samples

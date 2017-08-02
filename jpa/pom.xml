@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>jpa</artifactId>
+    <artifactId>variation-commons-jpa</artifactId>
 
     <properties>
         <java.version>1.8</java.version>

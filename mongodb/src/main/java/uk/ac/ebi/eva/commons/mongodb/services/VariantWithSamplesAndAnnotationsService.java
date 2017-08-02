@@ -261,6 +261,13 @@ public class VariantWithSamplesAndAnnotationsService {
         return variantRepository.findDistinctChromosomes();
     }
 
+    /***
+     * Joins the list of sample data from the VariantSourceEntryMongo with their correspondent name from the sample list
+     *
+     * @param variantSourceEntry
+     * @param samples
+     * @return
+     */
     private static LinkedHashMap<String, Map<String, String>> joinSamplesDataWithSampleNamesHelper(
             VariantSourceEntryMongo variantSourceEntry,
             List<String> samples) {
