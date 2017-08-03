@@ -6,14 +6,11 @@
         <artifactId>variation-commons</artifactId>
         <groupId>uk.ac.ebi.eva</groupId>
         <version>0.5-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>variation-commons-mongodb</artifactId>
-
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -23,6 +20,7 @@
         <dependency>
             <groupId>com.lordofthejars</groupId>
             <artifactId>nosqlunit-mongodb</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.github.fakemongo</groupId>
@@ -31,7 +29,8 @@
         </dependency>
         <dependency>
             <groupId>uk.ac.ebi.eva</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>variation-commons-core</artifactId>
+            <version>0.5-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
