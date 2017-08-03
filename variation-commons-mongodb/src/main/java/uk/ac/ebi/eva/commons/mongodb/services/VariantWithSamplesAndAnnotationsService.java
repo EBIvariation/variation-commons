@@ -261,8 +261,12 @@ public class VariantWithSamplesAndAnnotationsService {
         return variantRepository.findDistinctChromosomes();
     }
 
-    /***
-     * Joins the list of sample data from the VariantSourceEntryMongo with their correspondent name from the sample list
+    /**
+     * Joins the list of sample data from the VariantSourceEntryMongo with their correspondent name from the sample list.
+     *
+     * Currently this method is also needed by VariantWithSamplesNames. VariantSourceEntryMongo will eventually stop
+     * being part of a different class hierarchy and this particular implementation will be no longer needed, once
+     * the number of samples for a source entry is added to the database.
      *
      * @param variantSourceEntry
      * @param samples
