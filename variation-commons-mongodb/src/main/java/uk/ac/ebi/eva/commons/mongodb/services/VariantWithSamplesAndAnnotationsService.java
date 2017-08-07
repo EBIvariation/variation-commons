@@ -84,19 +84,19 @@ public class VariantWithSamplesAndAnnotationsService {
             List<AnnotationMetadataMongo> annotationMetadataList = annotationMetadataRepository.findByDefaultVersionTrue();
             if (annotationMetadataList.size() > 0) {
                 annotationMetadata = annotationMetadataList.get(0);
-            } else {
-                throw new AnnotationMetadataNotFoundException();
             }
-        } else {
-            if (annotationMetadataRepository.findByCacheVersionAndVepVersion(annotationMetadata.getCacheVersion(),
-                                                                             annotationMetadata.getVepVersion()).size() == 0) {
-                throw new AnnotationMetadataNotFoundException(annotationMetadataRepository.findAllByOrderByCacheVersionDescVepVersionDesc(),
-                                                              annotationMetadata);
-            }
+        } else if (annotationMetadataRepository.findByCacheVersionAndVepVersion(annotationMetadata.getCacheVersion(),
+                                                                                annotationMetadata.getVepVersion())
+                                               .size() == 0) {
+            throw new AnnotationMetadataNotFoundException(annotationMetadataRepository.findAllByOrderByCacheVersionDescVepVersionDesc(),
+                                                          annotationMetadata);
         }
 
+
         Map<String, AnnotationMongo> indexedAnnotations =
-                annotationRepository.findAndIndexAnnotationsOfVariants(variantMongos, annotationMetadata);
+                (annotationMetadata != null) ?
+                        annotationRepository.findAndIndexAnnotationsOfVariants(variantMongos, annotationMetadata)
+                        : new HashMap<>();
 
         List<VariantWithSamplesAndAnnotation> variantsList =
                 variantMongos.stream().map(variant ->
@@ -123,7 +123,9 @@ public class VariantWithSamplesAndAnnotationsService {
         Table<String, String, Map<String, VariantStatistics>> variantStatisticsMongosTable
                 = variantStatsMongoToTable(variantMongo.getVariantStatsMongo(), variantMongo);
         variant.addSourceEntries(convert(variantMongo.getSourceEntries(), sampleNames, variantStatisticsMongosTable));
-        variant.setAnnotation(new Annotation(annotation));
+        if (annotation != null) {
+            variant.setAnnotation(new Annotation(annotation));
+        }
         return variant;
     }
 
