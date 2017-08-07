@@ -122,7 +122,9 @@ public class VariantWithSamplesAndAnnotationsService {
         Table<String, String, Map<String, VariantStatistics>> variantStatisticsMongosTable
                 = variantStatsMongoToTable(variantMongo.getVariantStatsMongo(), variantMongo);
         variant.addSourceEntries(convert(variantMongo.getSourceEntries(), sampleNames, variantStatisticsMongosTable));
-        variant.setAnnotation(new Annotation(annotation));
+        if (annotation != null) {
+            variant.setAnnotation(new Annotation(annotation));
+        }
         return variant;
     }
 
