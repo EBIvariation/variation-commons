@@ -122,10 +122,19 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
         query.with(pageable1);
 
         if (exclude != null && !exclude.isEmpty()) {
+            exclude = substituteExcludeFields(exclude);
             exclude.forEach(e -> query.fields().exclude(e));
         }
 
         return mongoTemplate.find(query, VariantMongo.class);
+    }
+
+    private List<String> substituteExcludeFields(List<String> exclude) {
+        if (exclude.contains("sourceEntries")) {
+            exclude.remove("sourceEntries");
+            exclude.add("files");
+        }
+        return exclude;
     }
 
     private void addFilterCriteriaToQuery(Query query, List<VariantRepositoryFilter> filters) {
