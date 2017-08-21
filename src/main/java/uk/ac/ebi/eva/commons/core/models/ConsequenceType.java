@@ -53,8 +53,6 @@ public class ConsequenceType implements IConsequenceType {
 
     private Integer relativePosition;
 
-    private Set<ScoreWithSource> proteinSubstitutionScores;
-
     ConsequenceType() {
         //Spring empty constructor
         this(
@@ -79,15 +77,6 @@ public class ConsequenceType implements IConsequenceType {
                            String biotype, Integer cDnaPosition, Integer cdsPosition, Integer aaPosition,
                            String aaChange, String codon, IScore sift, IScore polyphen, Set<Integer> soAccessions,
                            Integer relativePosition) {
-        this(geneName, ensemblGeneId, ensemblTranscriptId, strand, biotype, cDnaPosition, cdsPosition,  aaPosition,
-             aaChange, codon, sift, polyphen, soAccessions, relativePosition,
-             createProteinSubstitutionScores(sift, polyphen));
-    }
-
-    public ConsequenceType(String geneName, String ensemblGeneId, String ensemblTranscriptId, String strand,
-                           String biotype, Integer cDnaPosition, Integer cdsPosition, Integer aaPosition,
-                           String aaChange, String codon, IScore sift, IScore polyphen, Set<Integer> soAccessions,
-                           Integer relativePosition, Set<ScoreWithSource> proteinSubstitutionScores) {
         this.geneName = geneName;
         this.ensemblGeneId = ensemblGeneId;
         this.ensemblTranscriptId = ensemblTranscriptId;
@@ -106,7 +95,6 @@ public class ConsequenceType implements IConsequenceType {
         }
         this.soAccessions = soAccessions;
         this.relativePosition = relativePosition;
-        this.proteinSubstitutionScores = proteinSubstitutionScores;
     }
 
     public ConsequenceType(IConsequenceType consequenceType) {
@@ -126,17 +114,6 @@ public class ConsequenceType implements IConsequenceType {
                 consequenceType.getSoAccessions(),
                 consequenceType.getRelativePosition()
         );
-    }
-
-    private static Set<ScoreWithSource> createProteinSubstitutionScores(IScore sift, IScore polyphen) {
-        Set<ScoreWithSource> proteinSubstitutionScores = new HashSet<>();
-        if (sift != null) {
-            proteinSubstitutionScores.add(new ScoreWithSource(sift.getScore(), sift.getDescription(), "Sift"));
-        }
-        if (polyphen != null) {
-            proteinSubstitutionScores.add(new ScoreWithSource(polyphen.getScore(), polyphen.getDescription(), "Polyphen"));
-        }
-        return proteinSubstitutionScores;
     }
 
     @Override
@@ -210,6 +187,24 @@ public class ConsequenceType implements IConsequenceType {
     }
 
     public Set<ScoreWithSource> getProteinSubstitutionScores() {
+        Set<ScoreWithSource> proteinSubstitutionScores = new HashSet<>();
+        if (sift != null) {
+            proteinSubstitutionScores.add(new ScoreWithSource(sift.getScore(), sift.getDescription(), "Sift"));
+        }
+        if (polyphen != null) {
+            proteinSubstitutionScores.add(new ScoreWithSource(polyphen.getScore(), polyphen.getDescription(), "Polyphen"));
+        }
         return proteinSubstitutionScores;
+    }
+
+    public void setProteinSubstitutionScores(Set<ScoreWithSource> proteinSubstitutionScores) {
+        for (ScoreWithSource score : proteinSubstitutionScores) {
+            if (score.getSource().toLowerCase().equals("sift")) {
+                sift = new Score(score);
+            }
+            if (score.getSource().toLowerCase().equals("polyphen")) {
+                polyphen = new Score(score);
+            }
+        }
     }
 }
