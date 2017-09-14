@@ -21,18 +21,17 @@ import java.util.List;
 public class Region {
 
     private String chromosome;
-    private int start;
-    private int end;
+    private Long start;
+    private Long end;
 
     public Region() {
-        this(null, 0, Integer.MAX_VALUE);
     }
 
-    public Region(String chromosome, int start) {
-        this(chromosome, start, Integer.MAX_VALUE);
+    public Region(String chromosome, Long start) {
+        this(chromosome, start, null);
     }
 
-    public Region(String chromosome, int start, int end) {
+    public Region(String chromosome, Long start, Long end) {
         this.chromosome = chromosome;
         this.start = start;
         this.end = end;
@@ -44,17 +43,17 @@ public class Region {
                 String[] fields = region.split("[:-]", -1);
                 if (fields.length == 3) {
                     this.chromosome = fields[0];
-                    this.start = Integer.parseInt(fields[1]);
-                    this.end = Integer.parseInt(fields[2]);
+                    this.start = Long.parseLong(fields[1]);
+                    this.end = Long.parseLong(fields[2]);
                 } else if (fields.length == 2) {
                     this.chromosome = fields[0];
-                    this.start = Integer.parseInt(fields[1]);
-                    this.end = Integer.MAX_VALUE;
+                    this.start = Long.parseLong(fields[1]);
+                    this.end = null;
                 }
             } else {
                 this.chromosome = region;
-                this.start = 0;
-                this.end = Integer.MAX_VALUE;
+                this.start = null;
+                this.end = null;
             }
         }
     }
@@ -65,9 +64,9 @@ public class Region {
             if (regionString.indexOf(':') != -1) {
                 String[] fields = regionString.split("[:-]", -1);
                 if (fields.length == 3) {
-                    region = new Region(fields[0], Integer.parseInt(fields[1]), Integer.parseInt(fields[2]));
+                    region = new Region(fields[0], Long.parseLong(fields[1]), Long.parseLong(fields[2]));
                 } else if (fields.length == 2) {
-                    region = new Region(fields[0], Integer.parseInt(fields[1]));
+                    region = new Region(fields[0], Long.parseLong(fields[1]));
                 }
             } else {
                 region = new Region(regionString);
@@ -86,7 +85,7 @@ public class Region {
                 if (regionString.indexOf(':') != -1) {
                     fields = regionString.split("[:-]", -1);
                     if (fields.length == 3) {
-                        regions.add(new Region(fields[0], Integer.parseInt(fields[1]), Integer.parseInt(fields[2])));
+                        regions.add(new Region(fields[0], Long.parseLong(fields[1]), Long.parseLong(fields[2])));
                     } else {
                         regions.add(null);
                     }
@@ -106,19 +105,19 @@ public class Region {
         this.chromosome = chromosome;
     }
 
-    public int getStart() {
+    public Long getStart() {
         return start;
     }
 
-    public void setStart(int start) {
+    public void setStart(Long start) {
         this.start = start;
     }
 
-    public int getEnd() {
+    public Long getEnd() {
         return end;
     }
 
-    public void setEnd(int end) {
+    public void setEnd(Long end) {
         this.end = end;
     }
 
@@ -133,24 +132,20 @@ public class Region {
 
         Region region = (Region) o;
 
-        if (end != region.end) {
+        if (chromosome != null ? !chromosome.equals(region.chromosome) : region.chromosome != null) {
             return false;
         }
-        if (start != region.start) {
+        if (start != null ? !start.equals(region.start) : region.start != null) {
             return false;
         }
-        if (!chromosome.equals(region.chromosome)) {
-            return false;
-        }
-
-        return true;
+        return end != null ? end.equals(region.end) : region.end == null;
     }
 
     @Override
     public int hashCode() {
-        int result = chromosome.hashCode();
-        result = 31 * result + (int) (start ^ (start >>> 32));
-        result = 31 * result + (int) (end ^ (end >>> 32));
+        int result = chromosome != null ? chromosome.hashCode() : 0;
+        result = 31 * result + (start != null ? start.hashCode() : 0);
+        result = 31 * result + (end != null ? end.hashCode() : 0);
         return result;
     }
 
@@ -166,9 +161,9 @@ public class Region {
     public String toString() {
         StringBuilder sb = new StringBuilder(this.chromosome);
 
-        if (this.start != 0 && this.end != Integer.MAX_VALUE) {
+        if (this.start != null && this.end != null) {
             sb.append(":").append(this.start).append("-").append(this.end);
-        } else if (this.start != 0 && this.end == Integer.MAX_VALUE) {
+        } else if (this.start != null && this.end == null) {
             sb.append(":").append(this.start);
         }
 

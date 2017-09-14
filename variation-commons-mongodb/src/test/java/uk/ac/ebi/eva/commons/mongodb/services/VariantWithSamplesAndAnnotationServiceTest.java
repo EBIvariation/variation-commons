@@ -60,8 +60,8 @@ public class VariantWithSamplesAndAnnotationServiceTest {
     @Test
     public void testFindByRegionsAndComplexFilters() throws AnnotationMetadataNotFoundException {
         String chr = "11";
-        int start = 190062;
-        int end = 190064;
+        long start = 190062;
+        long end = 190064;
         Region region = new Region(chr, start, end);
         List<Region> regions = new ArrayList<>();
         regions.add(region);
