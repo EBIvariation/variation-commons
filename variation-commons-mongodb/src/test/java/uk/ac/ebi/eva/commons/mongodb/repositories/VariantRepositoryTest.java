@@ -238,7 +238,6 @@ public class VariantRepositoryTest {
         testFiltersHelperRegion(regions, filters, exclude, 3);
     }
 
-    // TODO test won't work until query is modified to support the new database structure
     @Test
     public void testRegionIsFoundWithPolyphenGreaterThan() {
         Region region = new Region("11", 190000L, 193719L);
