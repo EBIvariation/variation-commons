@@ -25,6 +25,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import uk.ac.ebi.eva.commons.core.models.Region;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotation;
@@ -59,10 +60,7 @@ public class VariantWithSamplesAndAnnotationServiceTest {
 
     @Test
     public void testFindByRegionsAndComplexFilters() throws AnnotationMetadataNotFoundException {
-        String chr = "11";
-        int start = 190062;
-        int end = 190064;
-        Region region = new Region(chr, start, end);
+        Region region = new Region("11", 190062L, 190064L);
         List<Region> regions = new ArrayList<>();
         regions.add(region);
 

@@ -28,6 +28,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import uk.ac.ebi.eva.commons.core.models.Region;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
@@ -74,7 +75,7 @@ public class VariantRepositoryTest {
     public void checkFieldPresence() throws IOException {
 
         List<Region> regions = new ArrayList<>();
-        regions.add(new Region("11", 190000, 190300));
+        regions.add(new Region("11", 190000L, 190300L));
 
         List<VariantRepositoryFilter> filters = new ArrayList<>();
         List<String> exclude = new ArrayList<>();
@@ -138,8 +139,8 @@ public class VariantRepositoryTest {
     @Test
     public void testVariantRegionIsFound() {
         String chr = "11";
-        int start = 190013;
-        int end = 190013;
+        long start = 190013;
+        long end = 190013;
         Region region = new Region(chr, start, end);
         List<VariantRepositoryFilter> filters = new ArrayList<>();
         List<String> exclude = new ArrayList<>();
@@ -156,10 +157,7 @@ public class VariantRepositoryTest {
 
     @Test
     public void testVariantRegionIsFoundMultiple() {
-        String chr = "11";
-        int start = 190000;
-        int end = 194000;
-        Region region = new Region(chr, start, end);
+        Region region = new Region("11", 190000L, 194000L);
         List<VariantRepositoryFilter> filters = new ArrayList<>();
         List<String> exclude = new ArrayList<>();
         List<Region> regions = new ArrayList<>();
@@ -177,10 +175,7 @@ public class VariantRepositoryTest {
 
     @Test
     public void testCountByRegionsAndComplexFilters() {
-        String chr = "11";
-        int start = 191000;
-        int end = 194000;
-        Region region = new Region(chr, start, end);
+        Region region = new Region("11", 191000L, 194000L);
         List<VariantRepositoryFilter> filters = new ArrayList<>();
         List<Region> regions = new ArrayList<>();
         regions.add(region);
@@ -190,10 +185,7 @@ public class VariantRepositoryTest {
 
     @Test
     public void testNonExistentVariantRegionIsNotFound() {
-        String chr = "11";
-        int start = 61098;
-        int end = 60916;
-        Region region = new Region(chr, start, end);
+        Region region = new Region("11", 61098L, 60916L);
         List<VariantRepositoryFilter> filters = new ArrayList<>();
         List<String> exclude = new ArrayList<>();
         List<Region> regions = new ArrayList<>();
@@ -208,11 +200,8 @@ public class VariantRepositoryTest {
     public void testRegionIsFoundWithConsequenceType() {
         List<String> cts = new ArrayList<>();
         cts.add("SO:0001566");
-        String chr = "11";
-        int start = 190000;
-        int end = 194000;
         List<VariantRepositoryFilter> filters = new FilterBuilder().withConsequenceType(cts).build();
-        Region region = new Region(chr, start, end);
+        Region region = new Region("11", 190000L, 194000L);
         List<Region> regions = new ArrayList<>();
         regions.add(region);
         List<String> exclude = new ArrayList<>();
@@ -221,10 +210,7 @@ public class VariantRepositoryTest {
 
     @Test
     public void testRegionIsFoundWithMafGreaterThan() {
-        String chr = "11";
-        int start = 191000;
-        int end = 193000;
-        Region region = new Region(chr, start, end);
+        Region region = new Region("11", 191000L, 193000L);
         List<Region> regions = new ArrayList<>();
         regions.add(region);
         List<VariantRepositoryFilter> filters = new FilterBuilder().withMaf(">0.125").build();
@@ -234,10 +220,7 @@ public class VariantRepositoryTest {
 
     @Test
     public void testRegionIsFoundWithMafGreaterThanEquals() {
-        String chr = "11";
-        int start = 191000;
-        int end = 193000;
-        Region region = new Region(chr, start, end);
+        Region region = new Region("11", 191000L, 193_000L);
         List<Region> regions = new ArrayList<>();
         regions.add(region);
         List<VariantRepositoryFilter> filters = new FilterBuilder().withMaf(">=0.125").build();
@@ -247,10 +230,7 @@ public class VariantRepositoryTest {
 
     @Test
     public void testRegionIsFoundWithMafEquals() {
-        String chr = "11";
-        int start = 192000;
-        int end = 194000;
-        Region region = new Region(chr, start, end);
+        Region region = new Region("11", 192000L, 194000L);
         List<Region> regions = new ArrayList<>();
         regions.add(region);
         List<VariantRepositoryFilter> filters = new FilterBuilder().withMaf("=0.5").build();
@@ -258,13 +238,9 @@ public class VariantRepositoryTest {
         testFiltersHelperRegion(regions, filters, exclude, 3);
     }
 
-    // TODO test won't work until query is modified to support the new database structure
     @Test
     public void testRegionIsFoundWithPolyphenGreaterThan() {
-        String chr = "11";
-        int start = 190000;
-        int end = 193719;
-        Region region = new Region(chr, start, end);
+        Region region = new Region("11", 190000L, 193719L);
         List<Region> regions = new ArrayList<>();
         regions.add(region);
         List<VariantRepositoryFilter> filters = new FilterBuilder().withPolyphenScore(">0.5").build();
@@ -274,10 +250,7 @@ public class VariantRepositoryTest {
 
     @Test
     public void testRegionIsFoundWithSiftLessThan() {
-        String chr = "11";
-        int start = 190000;
-        int end = 193719;
-        Region region = new Region(chr, start, end);
+        Region region = new Region("11", 190000L, 193719L);
         List<Region> regions = new ArrayList<>();
         regions.add(region);
         List<VariantRepositoryFilter> filters = new FilterBuilder().withSiftScore("<0.5").build();
@@ -289,11 +262,8 @@ public class VariantRepositoryTest {
     public void testRegionIsFoundWithStudies() {
         List<String> studies = new ArrayList<>();
         studies.add("PRJEB6930");
-        String chr = "11";
-        int start = 192000;
-        int end = 193000;
         List<VariantRepositoryFilter> filters = new FilterBuilder().withStudies(studies).build();
-        Region region = new Region(chr, start, end);
+        Region region = new Region("11", 192000L, 193000L);
         List<Region> regions = new ArrayList<>();
         regions.add(region);
         List<String> exclude = new ArrayList<>();
@@ -304,11 +274,8 @@ public class VariantRepositoryTest {
     public void testRegionIsFoundWithFiles() {
         List<String> files = new ArrayList<>();
         files.add("ERZ019961");
-        String chr = "11";
-        int start = 191000;
-        int end = 192000;
         List<VariantRepositoryFilter> filters = new FilterBuilder().withFiles(files).build();
-        Region region = new Region(chr, start, end);
+        Region region = new Region("11", 191000L, 192000L);
         List<Region> regions = new ArrayList<>();
         regions.add(region);
         List<String> exclude = new ArrayList<>();
@@ -319,11 +286,8 @@ public class VariantRepositoryTest {
     public void testRegionIsFoundWithTypes() {
         List<VariantType> types = new ArrayList<>();
         types.add(VariantType.INDEL);
-        String chr = "11";
-        int start = 192000;
-        int end = 194000;
         List<VariantRepositoryFilter> filters = new FilterBuilder().withVariantTypes(types).build();
-        Region region = new Region(chr, start, end);
+        Region region = new Region("11", 192000L, 194000L);
         List<Region> regions = new ArrayList<>();
         regions.add(region);
         List<String> exclude = new ArrayList<>();
@@ -334,11 +298,8 @@ public class VariantRepositoryTest {
     public void testRegionIsFoundWithAlternates() {
         List<String> alternates = new ArrayList<>();
         alternates.add("T");
-        String chr = "11";
-        int start = 192000;
-        int end = 194000;
         List<VariantRepositoryFilter> filters = new FilterBuilder().withAlternates(alternates).build();
-        Region region = new Region(chr, start, end);
+        Region region = new Region("11", 192000L, 194000L);
         List<Region> regions = new ArrayList<>();
         regions.add(region);
         List<String> exclude = new ArrayList<>();
@@ -349,9 +310,9 @@ public class VariantRepositoryTest {
     public void testFindByRegionsAndComplexFilters() {
 
         List<Region> regions = new ArrayList<>();
-        regions.add(new Region("11", 193000, 193300));
-        regions.add(new Region("11", 190100, 190200));
-        regions.add(new Region("11", 190000, 190200));
+        regions.add(new Region("11", 193000L, 193300L));
+        regions.add(new Region("11", 190100L, 190200L));
+        regions.add(new Region("11", 190000L, 190200L));
 
         List<VariantRepositoryFilter> filters = new ArrayList<>();
         List<String> exclude = new ArrayList<>();
@@ -359,15 +320,15 @@ public class VariantRepositoryTest {
         testFindByRegionsAndComplexFiltersHelper(regions, filters, exclude, 106);
 
         regions = new ArrayList<>();
-        regions.add(new Region("11", 190001, 190079)); //7
+        regions.add(new Region("11", 190001L, 190079L)); //7
 
         testFindByRegionsAndComplexFiltersHelper(regions, filters, null, 7);
 
-        regions.add(new Region("11", 190150, 190250)); //3
+        regions.add(new Region("11", 190150L, 190250L)); //3
 
         testFindByRegionsAndComplexFiltersHelper(regions, filters, null, 10);
 
-        regions.add(new Region("11", 191222, 191333)); //6
+        regions.add(new Region("11", 191222L, 191333L)); //6
 
         testFindByRegionsAndComplexFiltersHelper(regions, filters, null, 16);
     }
@@ -375,7 +336,7 @@ public class VariantRepositoryTest {
     @Test
     public void testFindByRegionsAndComplexFiltersExcludeSingleRoot() {
         List<Region> regions = new ArrayList<>();
-        regions.add(new Region("11", 193000, 193300));
+        regions.add(new Region("11", 193000L, 193300L));
 
         List<String> exclude = new ArrayList<>();
         exclude.add(VariantMongo.FILES_FIELD);
@@ -392,7 +353,7 @@ public class VariantRepositoryTest {
     @Test
     public void testFindByRegionsAndComplexFiltersExcludeAttributes() {
         List<Region> regions = new ArrayList<>();
-        regions.add(new Region("11", 193000, 193300));
+        regions.add(new Region("11", 193000L, 193300L));
 
         List<String> exclude = new ArrayList<>();
         exclude.add(
@@ -443,10 +404,7 @@ public class VariantRepositoryTest {
 
     @Test
     public void testSamplesDataIsNotEmpty() {
-        String chr = "11";
-        int start = 190062;
-        int end = 190064;
-        Region region = new Region(chr, start, end);
+        Region region = new Region("11", 190062L, 190064L);
         List<Region> regions = new ArrayList<>();
         regions.add(region);
 
@@ -467,8 +425,8 @@ public class VariantRepositoryTest {
 
     private void testFindByRegionsAndComplexFiltersHelper(List<Region> regions, List<VariantRepositoryFilter> filters,
                                                           List<String> exclude, int expectedResultLength) {
-        List<VariantMongo> variantEntityList =
-                variantRepository.findByRegionsAndComplexFilters(regions, filters, exclude, new PageRequest(0, 100000000));
+        List<VariantMongo> variantEntityList = variantRepository
+                .findByRegionsAndComplexFilters(regions, filters, exclude, new PageRequest(0, 100000000));
         assertNotNull(variantEntityList);
         assertTrue(variantEntityList.size() > 0);
         VariantMongo prevVariantEntity = variantEntityList.get(0);
