@@ -88,8 +88,8 @@ public abstract class AbstractVariant implements IVariant {
     }
 
     public AbstractVariant(String chromosome, long start, long end, String reference, String alternate) {
-        if (start > end && !(reference.equals("-"))) {
-            throw new IllegalArgumentException("End position must be greater than the start position");
+        if (end < start && !(reference.equals("-"))) {
+            throw new IllegalArgumentException("End position must be greater or equal than the start position");
         }
 
         if (chromosome == null || chromosome.trim().equals("")) {
