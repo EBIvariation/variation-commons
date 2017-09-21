@@ -77,12 +77,25 @@ public abstract class AbstractVariant implements IVariant {
      */
     private final Map<String, Set<String>> hgvs;
 
+    protected AbstractVariant() {
+        this.chromosome = null;
+        this.start = -1;
+        this.end = -1;
+        this.reference = null;
+        this.alternate = null;
+        this.ids = new HashSet<>();
+        this.hgvs = new HashMap<>();
+    }
+
     public AbstractVariant(String chromosome, long start, long end, String reference, String alternate) {
         if (start > end && !(reference.equals("-"))) {
             throw new IllegalArgumentException("End position must be greater than the start position");
         }
 
-        this.chromosome = (chromosome != null) ? chromosome : "";
+        if (chromosome == null || chromosome.trim().equals("")) {
+            throw new IllegalArgumentException("Chromosome name cannot be empty");
+        }
+        this.chromosome = chromosome;
         this.start = start;
         this.end = end;
         this.reference = (reference != null) ? reference : "";
