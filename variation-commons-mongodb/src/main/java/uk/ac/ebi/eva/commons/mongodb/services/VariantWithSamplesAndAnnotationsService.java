@@ -205,7 +205,7 @@ public class VariantWithSamplesAndAnnotationsService {
     }
 
     public List<VariantWithSamplesAndAnnotation> findByChromosomeAndStartAndReferenceAndAlternate(String chromosome,
-                                                                                                  int start,
+                                                                                                  long start,
                                                                                                   String reference,
                                                                                                   String alternate,
                                                                                                   IAnnotationMetadata annotationMetadata)
@@ -215,7 +215,7 @@ public class VariantWithSamplesAndAnnotationsService {
                 annotationMetadata);
     }
 
-    public List<VariantWithSamplesAndAnnotation> findByChromosomeAndStartAndReference(String chr, int start, String ref,
+    public List<VariantWithSamplesAndAnnotation> findByChromosomeAndStartAndReference(String chr, long start, String ref,
                                                                                       IAnnotationMetadata annotationMetadata)
             throws AnnotationMetadataNotFoundException {
         return convert(variantRepository.findByChromosomeAndStartAndReference(chr, start, ref), annotationMetadata);
@@ -223,7 +223,7 @@ public class VariantWithSamplesAndAnnotationsService {
 
     public List<VariantWithSamplesAndAnnotation> findByChromosomeAndStartAndReferenceAndAlternateAndStudyIn(
             String chromosome,
-            int start,
+            long start,
             String reference,
             String alternate,
             List<String> studyIds, IAnnotationMetadata annotationMetadata) throws AnnotationMetadataNotFoundException {
@@ -232,7 +232,7 @@ public class VariantWithSamplesAndAnnotationsService {
     }
 
     public List<VariantWithSamplesAndAnnotation> findByChromosomeAndStartAndReferenceAndStudyIn(String chromosome,
-                                                                                                int start,
+                                                                                                long start,
                                                                                                 String reference,
                                                                                                 List<String> studyIds,
                                                                                                 IAnnotationMetadata annotationMetadata)
@@ -241,7 +241,7 @@ public class VariantWithSamplesAndAnnotationsService {
                 reference, studyIds), annotationMetadata);
     }
 
-    public List<VariantWithSamplesAndAnnotation> findByChromosomeAndStartAndAltAndStudyIn(String chr, int start,
+    public List<VariantWithSamplesAndAnnotation> findByChromosomeAndStartAndAltAndStudyIn(String chr, long start,
                                                                                           String alt,
                                                                                           List<String> studyIds,
                                                                                           IAnnotationMetadata annotationMetadata)
@@ -250,7 +250,7 @@ public class VariantWithSamplesAndAnnotationsService {
                        annotationMetadata);
     }
 
-    public List<VariantWithSamplesAndAnnotation> findByChromosomeAndStartAndTypeAndStudyIn(String chr, int start,
+    public List<VariantWithSamplesAndAnnotation> findByChromosomeAndStartAndTypeAndStudyIn(String chr, long start,
                                                                                            VariantType type,
                                                                                            List<String> studyIds,
                                                                                            IAnnotationMetadata annotationMetadata)
