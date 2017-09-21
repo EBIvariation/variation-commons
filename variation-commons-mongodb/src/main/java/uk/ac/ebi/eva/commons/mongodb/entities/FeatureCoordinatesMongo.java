@@ -50,16 +50,16 @@ public class FeatureCoordinatesMongo implements IFeatureCoordinates {
     private String chromosome;
 
     @Field(START_FIELD)
-    private int start;
+    private long start;
 
     @Field(END_FIELD)
-    private int end;
+    private long end;
 
     FeatureCoordinatesMongo() {
         // Spring empty constructor
     }
 
-    public FeatureCoordinatesMongo(String id, String name, String feature, String chromosome, int start, int end) {
+    public FeatureCoordinatesMongo(String id, String name, String feature, String chromosome, long start, long end) {
         this.id = id;
         this.name = name;
         this.feature = feature;
@@ -80,11 +80,11 @@ public class FeatureCoordinatesMongo implements IFeatureCoordinates {
         return chromosome;
     }
 
-    public int getStart() {
+    public long getStart() {
         return start;
     }
 
-    public int getEnd() {
+    public long getEnd() {
         return end;
     }
 

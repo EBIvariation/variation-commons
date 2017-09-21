@@ -25,8 +25,8 @@ public interface IFeatureCoordinates {
 
     String getChromosome();
 
-    int getStart();
+    long getStart();
 
-    int getEnd();
+    long getEnd();
 
 }

@@ -28,9 +28,9 @@ public class FeatureCoordinates implements IFeatureCoordinates {
 
     private String chromosome;
 
-    private int start;
+    private long start;
 
-    private int end;
+    private long end;
 
     FeatureCoordinates() {
         this(null,null,null,null,-1,-1);
@@ -47,7 +47,7 @@ public class FeatureCoordinates implements IFeatureCoordinates {
         );
     }
 
-    public FeatureCoordinates(String id, String name, String feature, String chromosome, int start, int end) {
+    public FeatureCoordinates(String id, String name, String feature, String chromosome, long start, long end) {
         this.id = id;
         this.name = name;
         this.feature = feature;
@@ -77,12 +77,12 @@ public class FeatureCoordinates implements IFeatureCoordinates {
     }
 
     @Override
-    public int getStart() {
+    public long getStart() {
         return start;
     }
 
     @Override
-    public int getEnd() {
+    public long getEnd() {
         return end;
     }
 }
