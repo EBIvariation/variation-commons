@@ -44,7 +44,7 @@ public class Variant extends AbstractVariant {
         );
     }
 
-    public Variant(String chromosome, int start, int end, String reference, String alternate) {
+    public Variant(String chromosome, long start, long end, String reference, String alternate) {
         super(chromosome, start, end, reference, alternate);
         sourceEntries = new HashMap<>();
     }

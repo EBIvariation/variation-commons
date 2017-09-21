@@ -55,10 +55,10 @@ public class AnnotationMongo implements IAnnotation {
     private String chromosome;
 
     @Field(value = START_FIELD)
-    private int start;
+    private long start;
 
     @Field(value = END_FIELD)
-    private int end;
+    private long end;
 
     @Field(value = VEP_VERSION_FIELD)
     private String vepVersion;
@@ -86,7 +86,7 @@ public class AnnotationMongo implements IAnnotation {
         );
     }
 
-    public AnnotationMongo(String chromosome, int start, int end, String referenceAllele, String alternativeAllele,
+    public AnnotationMongo(String chromosome, long start, long end, String referenceAllele, String alternativeAllele,
                            String vepVersion, String vepCacheVersion) {
         this(
                 buildAnnotationId(chromosome, start, referenceAllele, alternativeAllele, vepVersion, vepCacheVersion),
@@ -118,7 +118,7 @@ public class AnnotationMongo implements IAnnotation {
         );
     }
 
-    public AnnotationMongo(String id, String chromosome, int start, int end, String vepVersion,
+    public AnnotationMongo(String id, String chromosome, long start, long end, String vepVersion,
                            String vepCacheVersion, Set<XrefMongo> xrefs, Set<ConsequenceTypeMongo> consequenceTypes) {
         this.id = id;
         this.chromosome = chromosome;
@@ -142,12 +142,12 @@ public class AnnotationMongo implements IAnnotation {
     }
 
     @Override
-    public int getStart() {
+    public long getStart() {
         return start;
     }
 
     @Override
-    public int getEnd() {
+    public long getEnd() {
         return end;
     }
 
@@ -175,7 +175,7 @@ public class AnnotationMongo implements IAnnotation {
         return vepCacheVersion;
     }
 
-    public static String buildAnnotationId(String chromosome, int start, String reference, String alternate,
+    public static String buildAnnotationId(String chromosome, long start, String reference, String alternate,
                                            String vepVersion, String vepCacheVersion) {
         StringBuilder builder = new StringBuilder(VariantMongo.buildVariantId(
                 chromosome, start,

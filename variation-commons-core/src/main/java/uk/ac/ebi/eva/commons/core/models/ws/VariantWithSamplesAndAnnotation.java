@@ -45,7 +45,7 @@ public class VariantWithSamplesAndAnnotation extends AbstractVariant {
         this(null, -1, -1, null, null);
     }
 
-    public VariantWithSamplesAndAnnotation(String chromosome, int start, int end, String reference, String alternate) {
+    public VariantWithSamplesAndAnnotation(String chromosome, long start, long end, String reference, String alternate) {
         super(chromosome, start, end, reference, alternate);
         sourceEntries = new HashMap<>();
     }

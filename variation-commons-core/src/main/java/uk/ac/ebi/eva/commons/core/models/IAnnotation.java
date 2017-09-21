@@ -24,9 +24,9 @@ public interface IAnnotation {
 
     String getChromosome();
 
-    int getStart();
+    long getStart();
 
-    int getEnd();
+    long getEnd();
 
     Set<? extends IXref> getXrefs();
 

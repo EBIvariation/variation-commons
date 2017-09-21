@@ -48,8 +48,8 @@ import static org.junit.Assert.assertTrue;
 @ContextConfiguration(classes = {MongoOperationsConfiguration.class})
 public class MongoVariantConversionTest {
 
-    public static final int START = 1000;
-    public static final int END = 1000;
+    public static final long START = 1000;
+    public static final long END = 1000;
     public static final String CHROMOSOME = "1";
     public static final String REFERENCE = "A";
     public static final String ALTERNATE = "C";
