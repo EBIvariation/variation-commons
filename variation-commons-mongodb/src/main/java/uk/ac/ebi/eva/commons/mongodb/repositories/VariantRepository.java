@@ -34,26 +34,26 @@ public interface VariantRepository extends MongoRepository<VariantMongo, String>
         VariantRepositoryCustom {
 
     @Query("{'chr': ?0, 'start': ?1, 'ref': ?2, 'alt': ?3}")
-    List<VariantMongo> findByChromosomeAndStartAndReferenceAndAlternate(String chromosome, int start,
+    List<VariantMongo> findByChromosomeAndStartAndReferenceAndAlternate(String chromosome, long start,
                                                                         String reference, String alternate);
 
     @Query("{'chr': ?0, 'start': ?1, 'ref': ?2, 'alt': ?3, 'files.sid': {$in : ?4}}")
-    List<VariantMongo> findByChromosomeAndStartAndReferenceAndAlternateAndStudyIn(String chromosome, int start,
+    List<VariantMongo> findByChromosomeAndStartAndReferenceAndAlternateAndStudyIn(String chromosome, long start,
                                                                                   String reference, String alternate,
                                                                                   List<String> studyIds);
 
     @Query("{'chr': ?0, 'start': ?1, 'ref': ?2, 'files.sid': {$in : ?3}}")
-    List<VariantMongo> findByChromosomeAndStartAndReferenceAndStudyIn(String chromosome, int start, String reference,
+    List<VariantMongo> findByChromosomeAndStartAndReferenceAndStudyIn(String chromosome, long start, String reference,
                                                                       List<String> studyIds);
 
     @Query("{'chr': ?0, 'start': ?1, 'ref': ?2}")
-    List<VariantMongo> findByChromosomeAndStartAndReference(String chr, int start, String ref);
+    List<VariantMongo> findByChromosomeAndStartAndReference(String chr, long start, String ref);
 
     @Query(value = "{'chr': ?0, 'start': ?1, 'alt': ?2, 'files.sid': {$in : ?3}}}")
-    List<VariantMongo> findByChromosomeAndStartAndAltAndStudyIn(String chr, int start, String alt,
+    List<VariantMongo> findByChromosomeAndStartAndAltAndStudyIn(String chr, long start, String alt,
                                                                 List<String> studyIds);
 
     @Query(value = "{'chr': ?0, 'start': ?1, 'type': ?2, 'files.sid': {$in : ?3}}}")
-    List<VariantMongo> findByChromosomeAndStartAndTypeAndStudyIn(String chr, int start, VariantType type,
+    List<VariantMongo> findByChromosomeAndStartAndTypeAndStudyIn(String chr, long start, VariantType type,
                                                                  List<String> studyIds);
 }

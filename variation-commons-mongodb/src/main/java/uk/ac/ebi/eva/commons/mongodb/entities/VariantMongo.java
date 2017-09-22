@@ -86,10 +86,10 @@ public class VariantMongo {
     private String chromosome;
 
     @Field(START_FIELD)
-    private int start;
+    private long start;
 
     @Field(END_FIELD)
-    private int end;
+    private long end;
 
     @Field(LENGTH_FIELD)
     private int length;
@@ -161,7 +161,7 @@ public class VariantMongo {
         );
     }
 
-    public VariantMongo(VariantType type, String chromosome, int start, int end, int length, String reference,
+    public VariantMongo(VariantType type, String chromosome, long start, long end, int length, String reference,
                         String alternate) {
         this(
                 buildVariantId(chromosome, start, reference, alternate),
@@ -181,7 +181,7 @@ public class VariantMongo {
         );
     }
 
-    public VariantMongo(String id, VariantType type, String chromosome, int start, int end, int length,
+    public VariantMongo(String id, VariantType type, String chromosome, long start, long end, int length,
                         String reference, String alternate, VariantAtMongo at, Set<HgvsMongo> hgvs, Set<String> ids,
                         Set<VariantSourceEntryMongo> variantSourceEntries, Set<VariantStatisticsMongo> variantStatsMongo,
                         Set<AnnotationIndexMongo> indexedAnnotations) {
@@ -216,7 +216,7 @@ public class VariantMongo {
         }
     }
 
-    public static String buildVariantId(String chromosome, int start, String reference, String alternate) {
+    public static String buildVariantId(String chromosome, long start, String reference, String alternate) {
         StringBuilder builder = new StringBuilder(chromosome);
         builder.append("_");
         builder.append(start);
@@ -241,9 +241,9 @@ public class VariantMongo {
         return builder.toString();
     }
 
-    public static VariantAtMongo generateAtField(String chromosome, int start) {
-        int smallChunkId = start / CHUNK_SIZE_SMALL;
-        int bigChunkId = start / CHUNK_SIZE_BIG;
+    public static VariantAtMongo generateAtField(String chromosome, long start) {
+        long smallChunkId = start / CHUNK_SIZE_SMALL;
+        long bigChunkId = start / CHUNK_SIZE_BIG;
         String chunkSmall = chromosome + "_" + smallChunkId + "_" + ONE_THOUSAND_STRING;
         String chunkBig = chromosome + "_" + bigChunkId + "_" + TEN_THOUSAND_STRING;
 
@@ -262,11 +262,11 @@ public class VariantMongo {
         return chromosome;
     }
 
-    public int getStart() {
+    public long getStart() {
         return start;
     }
 
-    public int getEnd() {
+    public long getEnd() {
         return end;
     }
 

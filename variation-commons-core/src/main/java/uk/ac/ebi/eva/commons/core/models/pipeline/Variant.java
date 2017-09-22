@@ -35,16 +35,11 @@ public class Variant extends AbstractVariant {
 
     Variant() {
         //Spring empty constructor
-        this(
-                null,
-                -1,
-                -1,
-                null,
-                null
-        );
+        super();
+        sourceEntries = new HashMap<>();
     }
 
-    public Variant(String chromosome, int start, int end, String reference, String alternate) {
+    public Variant(String chromosome, long start, long end, String reference, String alternate) {
         super(chromosome, start, end, reference, alternate);
         sourceEntries = new HashMap<>();
     }

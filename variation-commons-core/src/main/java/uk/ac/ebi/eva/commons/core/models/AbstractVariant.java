@@ -43,7 +43,7 @@ public abstract class AbstractVariant implements IVariant {
      * deleted nucleotide is in position 6, the start is position 6</li>
      * </ul>
      */
-    private final int start;
+    private final long start;
 
     /**
      * Position where the genomic variation ends.
@@ -55,7 +55,7 @@ public abstract class AbstractVariant implements IVariant {
      * deleted nucleotide is in position 9, the end is position 9</li>
      * </ul>
      */
-    private final int end;
+    private final long end;
 
     /**
      * Reference allele.
@@ -77,12 +77,25 @@ public abstract class AbstractVariant implements IVariant {
      */
     private final Map<String, Set<String>> hgvs;
 
-    public AbstractVariant(String chromosome, int start, int end, String reference, String alternate) {
-        if (start > end && !(reference.equals("-"))) {
-            throw new IllegalArgumentException("End position must be greater than the start position");
+    protected AbstractVariant() {
+        this.chromosome = null;
+        this.start = -1;
+        this.end = -1;
+        this.reference = null;
+        this.alternate = null;
+        this.ids = new HashSet<>();
+        this.hgvs = new HashMap<>();
+    }
+
+    public AbstractVariant(String chromosome, long start, long end, String reference, String alternate) {
+        if (end < start) {
+            throw new IllegalArgumentException("End position must be equal or greater than the start position");
         }
 
-        this.chromosome = (chromosome != null) ? chromosome : "";
+        if (chromosome == null || chromosome.trim().equals("")) {
+            throw new IllegalArgumentException("Chromosome name cannot be empty");
+        }
+        this.chromosome = chromosome;
         this.start = start;
         this.end = end;
         this.reference = (reference != null) ? reference : "";
@@ -97,7 +110,7 @@ public abstract class AbstractVariant implements IVariant {
         }
     }
 
-        public int getLength() {
+    public int getLength() {
         return Math.max(this.reference.length(), this.alternate.length());
     }
 
@@ -128,11 +141,11 @@ public abstract class AbstractVariant implements IVariant {
         return chromosome;
     }
 
-    public int getStart() {
+    public long getStart() {
         return start;
     }
 
-    public int getEnd() {
+    public long getEnd() {
         return end;
     }
 
@@ -198,13 +211,13 @@ public abstract class AbstractVariant implements IVariant {
 
     @Override
     public int hashCode() {
-        int result = chromosome != null ? chromosome.hashCode() : 0;
-        result = 31 * result + start;
-        result = 31 * result + end;
-        result = 31 * result + (reference != null ? reference.hashCode() : 0);
-        result = 31 * result + (alternate != null ? alternate.hashCode() : 0);
-        result = 31 * result + (ids != null ? ids.hashCode() : 0);
-        result = 31 * result + (hgvs != null ? hgvs.hashCode() : 0);
+        int result = chromosome.hashCode();
+        result = 31 * result + (int) (start ^ (start >>> 32));
+        result = 31 * result + (int) (end ^ (end >>> 32));
+        result = 31 * result + reference.hashCode();
+        result = 31 * result + alternate.hashCode();
+        result = 31 * result + ids.hashCode();
+        result = 31 * result + hgvs.hashCode();
         return result;
     }
 }

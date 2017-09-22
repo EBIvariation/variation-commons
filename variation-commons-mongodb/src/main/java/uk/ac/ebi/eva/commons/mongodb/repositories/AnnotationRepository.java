@@ -76,7 +76,7 @@ public interface AnnotationRepository extends MongoRepository<AnnotationMongo, S
     }
 
 
-    default AnnotationMongo findOne(String chromosome, int start, String referenceAllele, String alternativeAllele,
+    default AnnotationMongo findOne(String chromosome, long start, String referenceAllele, String alternativeAllele,
                                     String vepVersion, String vepCacheVersion) {
         return findOne(AnnotationMongo.buildAnnotationId(
                 chromosome,

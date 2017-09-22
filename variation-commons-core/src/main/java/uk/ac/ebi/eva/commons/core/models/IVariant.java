@@ -28,9 +28,9 @@ public interface IVariant {
 
     String getChromosome();
 
-    int getStart();
+    long getStart();
 
-    int getEnd();
+    long getEnd();
 
     int getLength();
 

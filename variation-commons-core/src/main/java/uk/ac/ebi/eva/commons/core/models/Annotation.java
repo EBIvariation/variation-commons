@@ -25,9 +25,9 @@ public class Annotation implements IAnnotation {
 
     private String chromosome;
 
-    private int start;
+    private long start;
 
-    private int end;
+    private long end;
 
     private String vepVersion;
 
@@ -54,7 +54,7 @@ public class Annotation implements IAnnotation {
         );
     }
 
-    public Annotation(String chromosome, int start, int end, String vepVersion, String vepCacheVersion,
+    public Annotation(String chromosome, long start, long end, String vepVersion, String vepCacheVersion,
                       Set<? extends IXref> xrefs, Set<? extends IConsequenceType> consequenceTypes) {
         this.chromosome = chromosome;
         this.start = start;
@@ -77,12 +77,12 @@ public class Annotation implements IAnnotation {
     }
 
     @Override
-    public int getStart() {
+    public long getStart() {
         return start;
     }
 
     @Override
-    public int getEnd() {
+    public long getEnd() {
         return end;
     }
 
@@ -127,13 +127,13 @@ public class Annotation implements IAnnotation {
 
     @Override
     public int hashCode() {
-        int result = chromosome != null ? chromosome.hashCode() : 0;
-        result = 31 * result + start;
-        result = 31 * result + end;
-        result = 31 * result + (vepVersion != null ? vepVersion.hashCode() : 0);
-        result = 31 * result + (vepCacheVersion != null ? vepCacheVersion.hashCode() : 0);
-        result = 31 * result + (consequenceTypes != null ? consequenceTypes.hashCode() : 0);
-        result = 31 * result + (xrefs != null ? xrefs.hashCode() : 0);
+        int result = chromosome.hashCode();
+        result = 31 * result + (int) (start ^ (start >>> 32));
+        result = 31 * result + (int) (end ^ (end >>> 32));
+        result = 31 * result + vepVersion.hashCode();
+        result = 31 * result + vepCacheVersion.hashCode();
+        result = 31 * result + consequenceTypes.hashCode();
+        result = 31 * result + xrefs.hashCode();
         return result;
     }
 }
