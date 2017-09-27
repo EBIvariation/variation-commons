@@ -105,7 +105,6 @@ public class VariantWithSamplesAndAnnotationsService {
                                                            indexedAnnotations.getOrDefault(variant.getId(), null)))
                              .collect(Collectors.toList());
 
-        VariantStatistics.calculateStatsForVariantsList(variantsList, null);
         return variantsList;
     }
 
