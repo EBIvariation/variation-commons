@@ -537,9 +537,11 @@ public class VariantStatistics implements IVariantStatistics {
     public static void calculateStatsForVariantsList(List<VariantWithSamplesAndAnnotation> variants, Pedigree ped) {
         for (VariantWithSamplesAndAnnotation variant : variants) {
             for (IVariantSourceEntry file : variant.getSourceEntries()) {
-                if (file.getCohortStats().isEmpty()) {
+                if (!file.getCohortStats().isEmpty()) {
+                    // If statistics are already available there is no need to calculate them
                     continue;
                 }
+
                 VariantStatistics stats = new VariantStatistics(variant)
                         .calculate(file.getSamplesData(), file.getAttributes(), ped);
                 file.setStats(stats); // TODO Correct?

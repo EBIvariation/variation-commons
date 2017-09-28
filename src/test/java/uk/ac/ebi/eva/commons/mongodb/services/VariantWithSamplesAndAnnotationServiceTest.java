@@ -36,8 +36,9 @@ import java.util.Map;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class})
@@ -72,12 +73,15 @@ public class VariantWithSamplesAndAnnotationServiceTest {
         assertEquals(1, variantEntityList.size());
 
         for (VariantSourceEntryWithSampleNames variantSourceEntry : variantEntityList.get(0).getSourceEntries()) {
-            if (!variantSourceEntry.getFileId().equals("ERZX00051")) {
-                continue;
+            if (variantSourceEntry.getFileId().equals("ERZX00051")) {
+                assertEquals(28, variantSourceEntry.getCohortStats().size());
+                assertFalse(variantSourceEntry.getSamplesData().isEmpty());
+                Map<String, Map<String, String>> samplesData = variantSourceEntry.getSamplesDataMap();
+                assertEquals("0|1", samplesData.get("HG03805").get("GT"));
+            } else if (variantSourceEntry.getFileId().equals("ERZX00075")) {
+                assertEquals(1, variantSourceEntry.getCohortStats().size());
+                assertTrue(variantSourceEntry.getSamplesData().isEmpty());
             }
-            assertNotEquals(0, variantSourceEntry.getSamplesData().size());
-            Map<String, Map<String, String>> samplesData = variantSourceEntry.getSamplesDataMap();
-            assertEquals("0|1", samplesData.get("HG03805").get("GT"));
         }
         assertNotNull(variantEntityList.get(0).getAnnotation());
     }
