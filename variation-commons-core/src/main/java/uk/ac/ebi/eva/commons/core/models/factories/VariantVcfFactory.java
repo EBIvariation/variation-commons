@@ -78,7 +78,8 @@ public class VariantVcfFactory {
             Variant variant = new Variant(chromosome, keyFields.start, keyFields.end, keyFields.reference,
                                           keyFields.alternate);
             String[] secondaryAlternates = getSecondaryAlternates(keyFields.getNumAllele(), alternateAlleles);
-            VariantSourceEntry file = new VariantSourceEntry(fileId, studyId, secondaryAlternates, format);
+            VariantSourceEntry file = new VariantSourceEntry(fileId, studyId, secondaryAlternates, format, null, null,
+                                                             null);
             variant.addSourceEntry(file);
 
             parseSplitSampleData(variant, fileId, studyId, fields, alternateAlleles, secondaryAlternates, altAlleleIdx);
