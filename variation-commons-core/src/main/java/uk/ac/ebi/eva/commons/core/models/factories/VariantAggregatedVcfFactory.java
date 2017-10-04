@@ -19,9 +19,9 @@ package uk.ac.ebi.eva.commons.core.models.factories;
 import org.opencb.biodata.models.feature.Genotype;
 import org.opencb.biodata.models.variant.exceptions.NonStandardCompliantSampleField;
 
+import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
-import uk.ac.ebi.eva.commons.models.data.VariantStats;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -148,7 +148,7 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
     protected void parseStats(Variant variant, String fileId, String studyId, int numAllele, String[] alternateAlleles,
                               String info) {
         VariantSourceEntry file = variant.getSourceEntry(fileId, studyId);
-        VariantStats vs = new VariantStats(variant);
+        VariantStatistics vs = new VariantStatistics(variant);
         Map<String, String> stats = new LinkedHashMap<>();
         String[] splittedInfo = info.split(";");
         for (String attribute : splittedInfo) {
@@ -189,7 +189,7 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
         }
 
         for (String cohortName : cohortStats.keySet()) {
-            VariantStats vs = new VariantStats(variant);
+            VariantStatistics vs = new VariantStatistics(variant);
             addStats(variant, file, numAllele, alternateAlleles, cohortStats.get(cohortName), vs);
             file.setCohortStats(cohortName, vs);
         }
@@ -205,10 +205,10 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
      * @param numAllele
      * @param alternateAlleles
      * @param attributes
-     * @param variantStats
+     * @param VariantStatistics
      */
     protected void addStats(Variant variant, VariantSourceEntry sourceEntry, int numAllele, String[] alternateAlleles,
-                            Map<String, String> attributes, VariantStats variantStats) {
+                            Map<String, String> attributes, VariantStatistics variantStats) {
 
         if (attributes.containsKey("AN") && attributes.containsKey("AC")) {
             int total = Integer.parseInt(attributes.get("AN"));
@@ -402,7 +402,7 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
     }
 
     protected void addGenotypeWithGTS(Variant variant, VariantSourceEntry sourceEntry, String[] splitsGTC,
-                                      String[] alternateAlleles, int numAllele, VariantStats cohortStats) {
+                                      String[] alternateAlleles, int numAllele, VariantStatistics cohortStats) {
         if (sourceEntry.hasAttribute("GTS")) {
             String splitsGTS[] = sourceEntry.getAttribute("GTS").split(",");
             if (splitsGTC.length == splitsGTS.length) {
