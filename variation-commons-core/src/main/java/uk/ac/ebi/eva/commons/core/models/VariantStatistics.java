@@ -89,7 +89,7 @@ public class VariantStatistics implements IVariantStatistics {
         this(null, null, VariantType.SNV, -1, -1, null, null, -1, -1, -1, -1, -1, -1, -1);
     }
 
-    public VariantStatistics(VariantWithSamplesAndAnnotation variant) {
+    public VariantStatistics(IVariant variant) {
         this(
                 variant != null ? variant.getReference() : null,
                 variant != null ? variant.getAlternate() : null,
