@@ -16,9 +16,8 @@
  */
 package uk.ac.ebi.eva.commons.core.models.factories;
 
-import org.opencb.biodata.models.feature.Genotype;
-
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
+import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 import uk.ac.ebi.eva.utils.FileUtils;

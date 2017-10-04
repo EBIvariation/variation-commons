@@ -16,10 +16,10 @@
  */
 package uk.ac.ebi.eva.commons.core.models.factories;
 
-import org.opencb.biodata.models.feature.Genotype;
 import org.opencb.biodata.models.variant.exceptions.NonStandardCompliantSampleField;
 
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
+import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 
@@ -205,7 +205,7 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
      * @param numAllele
      * @param alternateAlleles
      * @param attributes
-     * @param VariantStatistics
+     * @param variantStats
      */
     protected void addStats(Variant variant, VariantSourceEntry sourceEntry, int numAllele, String[] alternateAlleles,
                             Map<String, String> attributes, VariantStatistics variantStats) {

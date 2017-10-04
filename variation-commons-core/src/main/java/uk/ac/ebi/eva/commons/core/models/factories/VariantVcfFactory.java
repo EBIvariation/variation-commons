@@ -17,11 +17,11 @@
 package uk.ac.ebi.eva.commons.core.models.factories;
 
 import org.apache.commons.lang3.StringUtils;
-import org.opencb.biodata.models.feature.Genotype;
 import org.opencb.biodata.models.variant.exceptions.NonStandardCompliantSampleField;
 import org.opencb.biodata.models.variant.exceptions.NotAVariantException;
 
 
+import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 
