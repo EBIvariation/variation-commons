@@ -92,7 +92,7 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
         }
     }
 
-    protected void loadDefaultMappings() {
+    protected void loadDefaultMappings(Properties properties) {
         // No default mapping.
     }
 

@@ -19,9 +19,7 @@ package uk.ac.ebi.eva.commons.core.models.factories;
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
-import uk.ac.ebi.eva.utils.FileUtils;
 
-import java.io.IOException;
 import java.util.Properties;
 import java.util.Set;
 
@@ -63,12 +61,8 @@ public class VariantVcfEVSFactory extends VariantAggregatedVcfFactory {
     }
 
     @Override
-    protected void loadDefaultMappings() {
-        try {
-            loadMappings(FileUtils.getPropertiesFile(FileUtils.getResourceAsStream(EVS_MAPPING_FILE)));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    protected void loadDefaultMappings(Properties evsMappingProperties) {
+        loadMappings(evsMappingProperties);
     }
 
     @Override

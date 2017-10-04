@@ -20,9 +20,7 @@ import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
 import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
-import uk.ac.ebi.eva.utils.FileUtils;
 
-import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -42,8 +40,6 @@ public class VariantVcfExacFactory extends VariantAggregatedVcfFactory {
     private static final String AC_ADJ = "AC_Adj";
 
     private static final String COMMA = ",";
-
-    private static final String EXAC_MAPPING_FILE = "/mappings/exac-mapping.properties";
 
     public VariantVcfExacFactory() {
         this(null);
@@ -75,12 +71,8 @@ public class VariantVcfExacFactory extends VariantAggregatedVcfFactory {
     }
 
     @Override
-    protected void loadDefaultMappings() {
-        try {
-            loadMappings(FileUtils.getPropertiesFile(FileUtils.getResourceAsStream(EXAC_MAPPING_FILE)));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    protected void loadDefaultMappings(Properties exacMappingProperties) {
+        loadMappings(exacMappingProperties);
     }
 
     @Override
