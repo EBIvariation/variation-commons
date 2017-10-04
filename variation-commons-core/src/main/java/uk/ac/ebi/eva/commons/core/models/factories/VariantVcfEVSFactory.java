@@ -16,8 +16,8 @@
  */
 package uk.ac.ebi.eva.commons.core.models.factories;
 
-import uk.ac.ebi.eva.commons.models.data.Variant;
-import uk.ac.ebi.eva.commons.models.data.VariantSourceEntry;
+import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
+import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 import uk.ac.ebi.eva.commons.models.data.VariantStats;
 import uk.ac.ebi.eva.utils.FileUtils;
 
