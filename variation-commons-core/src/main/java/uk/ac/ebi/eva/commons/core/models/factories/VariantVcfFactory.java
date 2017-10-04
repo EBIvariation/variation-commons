@@ -17,9 +17,6 @@
 package uk.ac.ebi.eva.commons.core.models.factories;
 
 import org.apache.commons.lang3.StringUtils;
-import org.opencb.biodata.models.variant.exceptions.NonStandardCompliantSampleField;
-import org.opencb.biodata.models.variant.exceptions.NotAVariantException;
-
 
 import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
@@ -33,8 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static java.lang.Math.max;
 
@@ -57,8 +52,7 @@ public class VariantVcfFactory {
      * @param line Contents of the line in the file
      * @return The list of Variant objects that can be created using the fields from a VCF record
      */
-    public List<Variant> create(String fileId, String studyId,
-                                String line) throws IllegalArgumentException, NotAVariantException {
+    public List<Variant> create(String fileId, String studyId, String line) throws IllegalArgumentException {
         String[] fields = line.split("\t");
         if (fields.length < 8) {
             throw new IllegalArgumentException("Not enough fields provided (min 8)");
@@ -87,18 +81,11 @@ public class VariantVcfFactory {
             VariantSourceEntry file = new VariantSourceEntry(fileId, studyId, secondaryAlternates, format);
             variant.addSourceEntry(file);
 
-            try {
-                parseSplitSampleData(variant, fileId, studyId, fields, alternateAlleles, secondaryAlternates, altAlleleIdx);
-                // Fill the rest of fields (after samples because INFO depends on them)
-                setOtherFields(variant, fileId, studyId, ids, quality, filter, info, format, keyFields.getNumAllele(),
-                               alternateAlleles, line);
-                variants.add(variant);
-            } catch (NonStandardCompliantSampleField ex) {
-                Logger.getLogger(VariantVcfFactory.class.getName())
-                      .log(Level.SEVERE,
-                           String.format("Variant %s:%d:%s>%s will not be saved\n%s", chromosome, position, reference,
-                                         alternateAlleles[altAlleleIdx], ex.getMessage()));
-            }
+            parseSplitSampleData(variant, fileId, studyId, fields, alternateAlleles, secondaryAlternates, altAlleleIdx);
+            // Fill the rest of fields (after samples because INFO depends on them)
+            setOtherFields(variant, fileId, studyId, ids, quality, filter, info, format, keyFields.getNumAllele(),
+                           alternateAlleles, line);
+            variants.add(variant);
         }
 
         return variants;
@@ -187,10 +174,9 @@ public class VariantVcfFactory {
      * @param alternate Input alternate allele
      * @return The new start, end, reference and alternate alleles wrapped in a VariantKeyFields
      */
-    protected VariantKeyFields normalizeLeftAlign(String chromosome, int position, String reference, String alternate)
-            throws NotAVariantException {
+    protected VariantKeyFields normalizeLeftAlign(String chromosome, int position, String reference, String alternate) {
         if (reference.equals(alternate)) {
-            throw new NotAVariantException("One alternate allele is identical to the reference. Variant found as: "
+            throw new IllegalArgumentException("One alternate allele is identical to the reference. Variant found as: "
                         + chromosome + ":" + position + ":" + reference + ">" + alternate);
         }
 
@@ -225,7 +211,7 @@ public class VariantVcfFactory {
 
     protected void parseSplitSampleData(Variant variant, String fileId, String studyId, String[] fields,
                                         String[] alternateAlleles, String[] secondaryAlternates,
-                                        int alternateAlleleIdx) throws NonStandardCompliantSampleField {
+                                        int alternateAlleleIdx) {
         String[] formatFields = variant.getSourceEntry(fileId, studyId).getFormat().split(":");
 
         for (int i = 9; i < fields.length; i++) {
