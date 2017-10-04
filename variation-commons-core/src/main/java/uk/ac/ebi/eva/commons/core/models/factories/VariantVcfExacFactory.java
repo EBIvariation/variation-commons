@@ -71,7 +71,7 @@ public class VariantVcfExacFactory extends VariantAggregatedVcfFactory {
     }
 
     @Override
-    protected void loadDefaultMappings(Properties exacMappingProperties) {
+    protected void loadMappings(Properties exacMappingProperties) {
         loadMappings(exacMappingProperties);
     }
 

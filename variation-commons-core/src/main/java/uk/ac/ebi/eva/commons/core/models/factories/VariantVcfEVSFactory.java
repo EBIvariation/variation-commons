@@ -61,7 +61,7 @@ public class VariantVcfEVSFactory extends VariantAggregatedVcfFactory {
     }
 
     @Override
-    protected void loadDefaultMappings(Properties evsMappingProperties) {
+    protected void loadMappings(Properties evsMappingProperties) {
         loadMappings(evsMappingProperties);
     }
 
