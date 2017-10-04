@@ -18,7 +18,6 @@ package uk.ac.ebi.eva.commons.core.models.factories;
 
 import org.apache.commons.lang3.StringUtils;
 import org.opencb.biodata.models.feature.Genotype;
-import org.opencb.biodata.models.variant.VariantFactory;
 import org.opencb.biodata.models.variant.exceptions.NonStandardCompliantSampleField;
 import org.opencb.biodata.models.variant.exceptions.NotAVariantException;
 
@@ -95,7 +94,7 @@ public class VariantVcfFactory {
                                alternateAlleles, line);
                 variants.add(variant);
             } catch (NonStandardCompliantSampleField ex) {
-                Logger.getLogger(VariantFactory.class.getName())
+                Logger.getLogger(VariantVcfFactory.class.getName())
                       .log(Level.SEVERE,
                            String.format("Variant %s:%d:%s>%s will not be saved\n%s", chromosome, position, reference,
                                          alternateAlleles[altAlleleIdx], ex.getMessage()));
