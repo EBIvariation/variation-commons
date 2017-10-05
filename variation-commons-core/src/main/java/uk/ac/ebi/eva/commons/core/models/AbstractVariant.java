@@ -184,7 +184,7 @@ public abstract class AbstractVariant implements IVariant {
 
     @Override
     public String toString() {
-        return "VariantWithSamplesAndAnnotation{" +
+        return "AbstractVariant{" +
                 "chromosome='" + chromosome + '\'' +
                 ", position=" + start + "-" + end +
                 ", reference='" + reference + '\'' +
