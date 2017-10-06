@@ -16,11 +16,10 @@
 package uk.ac.ebi.eva.commons.core.models.factories;
 
 import org.junit.Test;
-import org.opencb.biodata.models.feature.Genotype;
-import org.opencb.commons.test.GenericTest;
 
-import uk.ac.ebi.eva.commons.models.data.Variant;
-import uk.ac.ebi.eva.commons.models.data.VariantStats;
+import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
+import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
+import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 
 import java.util.List;
 import java.util.Properties;
@@ -33,7 +32,7 @@ import static org.junit.Assert.assertEquals;
  * input: a generic aggregated VCF
  * output: a List of Variants
  */
-public class VariantAggregatedVcfFactoryTest extends GenericTest {
+public class VariantAggregatedVcfFactoryTest {
 
     private static final String FILE_ID = "fileId";
     private static final String STUDY_ID = "studyId";
@@ -46,7 +45,7 @@ public class VariantAggregatedVcfFactoryTest extends GenericTest {
 
         List<Variant> variants = factory.create(FILE_ID, STUDY_ID, line);
 
-        VariantStats stats = variants.get(0).getSourceEntry(FILE_ID, STUDY_ID).getStats();
+        VariantStatistics stats = variants.get(0).getSourceEntry(FILE_ID, STUDY_ID).getStats();
         assertEquals(2904, stats.getRefAlleleCount());
         assertEquals(889, stats.getAltAlleleCount());
 
@@ -62,7 +61,7 @@ public class VariantAggregatedVcfFactoryTest extends GenericTest {
 
         List<Variant> variants = factory.create(FILE_ID, STUDY_ID, line);
 
-        VariantStats stats = variants.get(0).getSourceEntry(FILE_ID, STUDY_ID).getStats();
+        VariantStatistics stats = variants.get(0).getSourceEntry(FILE_ID, STUDY_ID).getStats();
         assertEquals(new Integer(304), stats.getGenotypesCount().get(new Genotype("0/0", "C", "T")));
         assertEquals(new Integer(163), stats.getGenotypesCount().get(new Genotype("0/1", "C", "T")));
         assertEquals(new Integer(31), stats.getGenotypesCount().get(new Genotype("T/T", "C", "T")));
@@ -80,8 +79,7 @@ public class VariantAggregatedVcfFactoryTest extends GenericTest {
         properties.put("ALL.AF", "AF");
         List<Variant> variants = new VariantAggregatedVcfFactory(properties).create(FILE_ID, STUDY_ID, line);
 
-        VariantStats stats = variants.get(0).getSourceEntry(FILE_ID, STUDY_ID).getCohortStats(
-                "ALL");
+        VariantStatistics stats = variants.get(0).getSourceEntry(FILE_ID, STUDY_ID).getCohortStats("ALL");
         assertEquals(523, stats.getRefAlleleCount());
         assertEquals(3, stats.getAltAlleleCount());
         assertEquals(0.006, stats.getAltAlleleFreq(), 0.0001);
@@ -103,7 +101,7 @@ public class VariantAggregatedVcfFactoryTest extends GenericTest {
 
         List<Variant> variants = factory.create(FILE_ID, STUDY_ID, line);
 
-        VariantStats stats = variants.get(0).getSourceEntry(FILE_ID, STUDY_ID).getStats();
+        VariantStatistics stats = variants.get(0).getSourceEntry(FILE_ID, STUDY_ID).getStats();
         assertEquals(new Integer(34), stats.getGenotypesCount().get(new Genotype("0/0", "A", "G")));
         assertEquals(new Integer(0), stats.getGenotypesCount().get(new Genotype("0/1", "A", "G")));
         assertEquals(new Integer(1), stats.getGenotypesCount().get(new Genotype("G/G", "A", "G")));

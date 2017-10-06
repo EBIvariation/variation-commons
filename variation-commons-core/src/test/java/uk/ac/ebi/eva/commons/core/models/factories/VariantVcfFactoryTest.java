@@ -17,8 +17,9 @@ package uk.ac.ebi.eva.commons.core.models.factories;
 
 import org.junit.Test;
 
-import uk.ac.ebi.eva.commons.models.data.Variant;
-import uk.ac.ebi.eva.commons.models.data.VariantSourceEntry;
+import uk.ac.ebi.eva.commons.core.models.AbstractVariant;
+import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
+import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 
 import java.util.Arrays;
 import java.util.Collections;

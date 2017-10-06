@@ -16,11 +16,10 @@
 package uk.ac.ebi.eva.commons.core.models.factories;
 
 import org.junit.Test;
-import org.opencb.biodata.models.feature.Genotype;
-import org.opencb.commons.test.GenericTest;
 
-import uk.ac.ebi.eva.commons.models.data.Variant;
-import uk.ac.ebi.eva.commons.models.data.VariantSourceEntry;
+import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
+import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
+import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,7 +38,7 @@ import static org.junit.Assert.assertTrue;
  * input: an EVS aggregated VCF
  * output: a List of Variants
  */
-public class VariantVcfEVSFactoryTest extends GenericTest {
+public class VariantVcfEVSFactoryTest {
 
     private static final String FILE_ID = "EVS";
     private static final String STUDY_ID = "EVS";
