@@ -20,6 +20,15 @@ import org.apache.commons.lang3.StringUtils;
 
 import static java.lang.Math.max;
 
+/**
+ * Class that stores a Variant coordinates and alleles, normalizing and left aligning them.
+ * <p>
+ * This task comprises 2 steps: removing the trailing bases that are
+ * identical in both alleles, then the leading identical bases.
+ * <p>
+ * It is left aligned because the trailing bases are removed before the leading ones, implying a normalization where
+ * the position is moved the least possible from its original location.
+ */
 public class VariantKeyFields {
 
     private final String chromosome;
@@ -33,38 +42,25 @@ public class VariantKeyFields {
     private String alternate;
 
     public VariantKeyFields(String chromosome, int position, String reference, String alternate) {
-        this.chromosome = chromosome;
-        this.reference = reference;
-        this.alternate = alternate;
-        normalizeLeftAlign(position);
-    }
-
-    /**
-     * Calculates the normalized start, end, reference and alternate of a variant where the
-     * reference and the alternate are not identical.
-     * <p>
-     * This task comprises 2 steps: removing the trailing bases that are
-     * identical in both alleles, then the leading identical bases.
-     * <p>
-     * It is left aligned because the traling bases are removed before the leading ones, implying a normalization where
-     * the position is moved the least possible from its original location.
-     * @param position Input starting position
-     */
-    private void normalizeLeftAlign(int position) {
         if (reference.equals(alternate)) {
             throw new IllegalArgumentException("One alternate allele is identical to the reference. Variant found as: "
                                                        + chromosome + ":" + position + ":" + reference + ">" + alternate);
         }
+        this.chromosome = chromosome;
+        removeTrailingBases(reference, alternate);
+        removeLeadingBases(position);
+    }
 
-        // Remove the trailing bases
+    private void removeTrailingBases(String reference, String alternate) {
         String refReversed = StringUtils.reverse(reference);
         String altReversed = StringUtils.reverse(alternate);
         int indexOfDifference = StringUtils.indexOfDifference(refReversed, altReversed);
-        reference = StringUtils.reverse(refReversed.substring(indexOfDifference));
-        alternate = StringUtils.reverse(altReversed.substring(indexOfDifference));
+        this.reference = StringUtils.reverse(refReversed.substring(indexOfDifference));
+        this.alternate = StringUtils.reverse(altReversed.substring(indexOfDifference));
+    }
 
-        // Remove the leading bases
-        indexOfDifference = StringUtils.indexOfDifference(reference, alternate);
+    private void removeLeadingBases(int position) {
+        int indexOfDifference = StringUtils.indexOfDifference(reference, alternate);
         start = position + indexOfDifference;
         int length = max(reference.length(), alternate.length());
         end = position + length - 1;    // -1 because end is inclusive
