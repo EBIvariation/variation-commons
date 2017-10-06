@@ -46,28 +46,33 @@ public class VariantKeyFields {
             throw new IllegalArgumentException("One alternate allele is identical to the reference. Variant found as: "
                                                        + chromosome + ":" + position + ":" + reference + ">" + alternate);
         }
+
         this.chromosome = chromosome;
-        removeTrailingBases(reference, alternate);
-        removeLeadingBases(position);
+
+        // remove common trailing bases
+        int nucleotidesToRemoveInTheRight = getIndexOfLastDifferentNucleotide(reference, alternate);
+        String rightTrimmedReference = reference.substring(0, reference.length() - nucleotidesToRemoveInTheRight);
+        String rightTrimmedAlternate = alternate.substring(0, alternate.length() - nucleotidesToRemoveInTheRight);
+
+        // remove common leading bases
+        int nucleotidesToRemoveInTheLeft = StringUtils.indexOfDifference(rightTrimmedReference, rightTrimmedAlternate);
+        this.reference = rightTrimmedReference.substring(nucleotidesToRemoveInTheLeft);
+        this.alternate = rightTrimmedAlternate.substring(nucleotidesToRemoveInTheLeft);
+
+        // calculate start and end
+        start = position + nucleotidesToRemoveInTheLeft;
+        end = calculateEnd(position, rightTrimmedReference, rightTrimmedAlternate);
     }
 
-    private void removeTrailingBases(String reference, String alternate) {
+    private int getIndexOfLastDifferentNucleotide(String reference, String alternate) {
         String refReversed = StringUtils.reverse(reference);
         String altReversed = StringUtils.reverse(alternate);
-        int indexOfDifference = StringUtils.indexOfDifference(refReversed, altReversed);
-        this.reference = StringUtils.reverse(refReversed.substring(indexOfDifference));
-        this.alternate = StringUtils.reverse(altReversed.substring(indexOfDifference));
+        return StringUtils.indexOfDifference(refReversed, altReversed);
     }
 
-    private void removeLeadingBases(int position) {
-        int indexOfDifference = StringUtils.indexOfDifference(reference, alternate);
-        start = position + indexOfDifference;
+    private int calculateEnd(int position, String reference, String alternate) {
         int length = max(reference.length(), alternate.length());
-        end = position + length - 1;    // -1 because end is inclusive
-        if (indexOfDifference > 0) {
-            reference = reference.substring(indexOfDifference);
-            alternate = alternate.substring(indexOfDifference);
-        }
+        return position + length - 1;
     }
 
     public String getChromosome() {
