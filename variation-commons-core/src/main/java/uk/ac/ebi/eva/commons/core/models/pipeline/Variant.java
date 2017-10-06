@@ -77,17 +77,11 @@ public class Variant extends AbstractVariant {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Variant)) return false;
-        if (!super.equals(o)) return false;
-
-        Variant variant = (Variant) o;
-
-        return sourceEntries != null ? sourceEntries.equals(variant.sourceEntries) : variant.sourceEntries == null;
+        return super.equals(o);
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (sourceEntries != null ? sourceEntries.hashCode() : 0);
-        return result;
+        return super.hashCode();
     }
 }

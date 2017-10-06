@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -194,30 +195,40 @@ public abstract class AbstractVariant implements IVariant {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AbstractVariant)) return false;
-
-        AbstractVariant that = (AbstractVariant) o;
-
-        if (start != that.start) return false;
-        if (end != that.end) return false;
-        if (chromosome != null ? !chromosome.equals(that.chromosome) : that.chromosome != null) return false;
-        if (reference != null ? !reference.equals(that.reference) : that.reference != null) return false;
-        if (alternate != null ? !alternate.equals(that.alternate) : that.alternate != null) return false;
-        if (ids != null ? !ids.equals(that.ids) : that.ids != null) return false;
-        return hgvs != null ? hgvs.equals(that.hgvs) : that.hgvs == null;
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final AbstractVariant other = (AbstractVariant) obj;
+        if (!Objects.equals(this.chromosome, other.chromosome)) {
+            return false;
+        }
+        if (this.start != other.start) {
+            return false;
+        }
+        if (this.end != other.end) {
+            return false;
+        }
+        if (!Objects.equals(this.reference, other.reference)) {
+            return false;
+        }
+        if (!Objects.equals(this.alternate, other.alternate)) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public int hashCode() {
-        int result = chromosome.hashCode();
-        result = 31 * result + (int) (start ^ (start >>> 32));
-        result = 31 * result + (int) (end ^ (end >>> 32));
-        result = 31 * result + reference.hashCode();
-        result = 31 * result + alternate.hashCode();
-        result = 31 * result + ids.hashCode();
-        result = 31 * result + hgvs.hashCode();
-        return result;
+        int hash = 5;
+        hash = 37 * hash + Objects.hashCode(this.chromosome);
+        hash = 37 * hash + (int) (start ^ (start >>> 32));
+        hash = 37 * hash + (int) (end ^ (end >>> 32));
+        hash = 37 * hash + Objects.hashCode(this.reference);
+        hash = 37 * hash + Objects.hashCode(this.alternate);
+        return hash;
     }
 }
