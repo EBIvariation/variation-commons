@@ -32,8 +32,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import static java.lang.Math.max;
-
 /**
  * Class that parses VCF lines to create Variants.
  */
@@ -149,7 +147,7 @@ public class VariantVcfFactory {
         List<VariantKeyFields> generatedKeyFields = new ArrayList<>();
 
         for (int i = 0; i < alternateAlleles.length; i++) { // This index is necessary for getting the samples where the mutated allele is present
-            VariantKeyFields keyFields = normalizeLeftAlign(chromosome, position, reference, alternateAlleles[i]);
+            VariantKeyFields keyFields = new VariantKeyFields(chromosome, position, reference, alternateAlleles[i]);
 
             // Since the reference and alternate alleles won't necessarily match
             // the ones read from the VCF file but they are still needed for
@@ -158,46 +156,6 @@ public class VariantVcfFactory {
             generatedKeyFields.add(keyFields);
         }
         return generatedKeyFields;
-    }
-
-    /**
-     * Calculates the normalized start, end, reference and alternate of a variant where the
-     * reference and the alternate are not identical.
-     * <p>
-     * This task comprises 2 steps: removing the trailing bases that are
-     * identical in both alleles, then the leading identical bases.
-     * <p>
-     * It is left aligned because the traling bases are removed before the leading ones, implying a normalization where
-     * the position is moved the least possible from its original location.
-     * @param chromosome needed for error reporting and logging
-     * @param position Input starting position
-     * @param reference Input reference allele
-     * @param alternate Input alternate allele
-     * @return The new start, end, reference and alternate alleles wrapped in a VariantKeyFields
-     */
-    protected VariantKeyFields normalizeLeftAlign(String chromosome, int position, String reference, String alternate) {
-        if (reference.equals(alternate)) {
-            throw new IllegalArgumentException("One alternate allele is identical to the reference. Variant found as: "
-                        + chromosome + ":" + position + ":" + reference + ">" + alternate);
-        }
-
-        // Remove the trailing bases
-        String refReversed = StringUtils.reverse(reference);
-        String altReversed = StringUtils.reverse(alternate);
-        int indexOfDifference = StringUtils.indexOfDifference(refReversed, altReversed);
-        reference = StringUtils.reverse(refReversed.substring(indexOfDifference));
-        alternate = StringUtils.reverse(altReversed.substring(indexOfDifference));
-
-        // Remove the leading bases
-        indexOfDifference = StringUtils.indexOfDifference(reference, alternate);
-        int start = position + indexOfDifference;
-        int length = max(reference.length(), alternate.length());
-        int end = position + length - 1;    // -1 because end is inclusive
-        if (indexOfDifference > 0) {
-            reference = reference.substring(indexOfDifference);
-            alternate = alternate.substring(indexOfDifference);
-        }
-        return new VariantKeyFields(start, end, reference, alternate);
     }
 
     protected String[] getSecondaryAlternates(int numAllele, String[] alternateAlleles) {
