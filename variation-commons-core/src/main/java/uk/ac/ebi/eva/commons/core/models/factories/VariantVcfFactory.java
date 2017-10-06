@@ -18,6 +18,7 @@ package uk.ac.ebi.eva.commons.core.models.factories;
 
 import org.apache.commons.lang3.StringUtils;
 
+import uk.ac.ebi.eva.commons.core.models.VariantKeyFields;
 import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
@@ -75,8 +76,8 @@ public class VariantVcfFactory {
         // Now create all the Variant objects read from the VCF record
         for (int altAlleleIdx = 0; altAlleleIdx < alternateAlleles.length; altAlleleIdx++) {
             VariantKeyFields keyFields = generatedKeyFields.get(altAlleleIdx);
-            Variant variant = new Variant(chromosome, keyFields.start, keyFields.end, keyFields.reference,
-                                          keyFields.alternate);
+            Variant variant = new Variant(chromosome, keyFields.getStart(), keyFields.getEnd(), keyFields.getReference(),
+                                          keyFields.getAlternate());
             String[] secondaryAlternates = getSecondaryAlternates(altAlleleIdx, alternateAlleles);
             VariantSourceEntry file = new VariantSourceEntry(fileId, studyId, secondaryAlternates, format, null, null,
                                                              null);
@@ -153,7 +154,7 @@ public class VariantVcfFactory {
             // Since the reference and alternate alleles won't necessarily match
             // the ones read from the VCF file but they are still needed for
             // instantiating the variants, they must be updated
-            alternateAlleles[i] = keyFields.alternate;
+            alternateAlleles[i] = keyFields.getAlternate();
             generatedKeyFields.add(keyFields);
         }
         return generatedKeyFields;
@@ -364,20 +365,6 @@ public class VariantVcfFactory {
             } else {
                 variant.getSourceEntry(fileId, studyId).addAttribute(splits[0], "");
             }
-        }
-    }
-
-    protected class VariantKeyFields {
-
-        int start, end;
-
-        String reference, alternate;
-
-        public VariantKeyFields(int start, int end, String reference, String alternate) {
-            this.start = start;
-            this.end = end;
-            this.reference = reference;
-            this.alternate = alternate;
         }
     }
 
