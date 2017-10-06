@@ -77,14 +77,14 @@ public class VariantVcfFactory {
             VariantKeyFields keyFields = generatedKeyFields.get(altAlleleIdx);
             Variant variant = new Variant(chromosome, keyFields.start, keyFields.end, keyFields.reference,
                                           keyFields.alternate);
-            String[] secondaryAlternates = getSecondaryAlternates(keyFields.getNumAllele(), alternateAlleles);
+            String[] secondaryAlternates = getSecondaryAlternates(altAlleleIdx, alternateAlleles);
             VariantSourceEntry file = new VariantSourceEntry(fileId, studyId, secondaryAlternates, format, null, null,
                                                              null);
             variant.addSourceEntry(file);
 
             parseSplitSampleData(variant, fileId, studyId, fields, alternateAlleles, secondaryAlternates, altAlleleIdx);
             // Fill the rest of fields (after samples because INFO depends on them)
-            setOtherFields(variant, fileId, studyId, ids, quality, filter, info, format, keyFields.getNumAllele(),
+            setOtherFields(variant, fileId, studyId, ids, quality, filter, info, format, altAlleleIdx,
                            alternateAlleles, line);
             variants.add(variant);
         }
@@ -149,7 +149,6 @@ public class VariantVcfFactory {
 
         for (int i = 0; i < alternateAlleles.length; i++) { // This index is necessary for getting the samples where the mutated allele is present
             VariantKeyFields keyFields = normalizeLeftAlign(chromosome, position, reference, alternateAlleles[i]);
-            keyFields.setNumAllele(i);
 
             // Since the reference and alternate alleles won't necessarily match
             // the ones read from the VCF file but they are still needed for
@@ -370,7 +369,7 @@ public class VariantVcfFactory {
 
     protected class VariantKeyFields {
 
-        int start, end, numAllele;
+        int start, end;
 
         String reference, alternate;
 
@@ -379,14 +378,6 @@ public class VariantVcfFactory {
             this.end = end;
             this.reference = reference;
             this.alternate = alternate;
-        }
-
-        public void setNumAllele(int numAllele) {
-            this.numAllele = numAllele;
-        }
-
-        public int getNumAllele() {
-            return numAllele;
         }
     }
 
