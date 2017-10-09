@@ -33,15 +33,15 @@ public class VariantKeyFields {
 
     private final String chromosome;
 
-    private int start;
+    private long start;
 
-    private int end;
+    private long end;
 
     private String reference;
 
     private String alternate;
 
-    public VariantKeyFields(String chromosome, int position, String reference, String alternate) {
+    public VariantKeyFields(String chromosome, long position, String reference, String alternate) {
         if (reference.equals(alternate)) {
             throw new IllegalArgumentException("One alternate allele is identical to the reference. Variant found as: "
                                                        + chromosome + ":" + position + ":" + reference + ">" + alternate);
@@ -70,7 +70,7 @@ public class VariantKeyFields {
         return StringUtils.indexOfDifference(refReversed, altReversed);
     }
 
-    private int calculateEnd(int position, String reference, String alternate) {
+    private long calculateEnd(long position, String reference, String alternate) {
         int length = max(reference.length(), alternate.length());
         return position + length - 1;
     }
@@ -79,11 +79,11 @@ public class VariantKeyFields {
         return chromosome;
     }
 
-    public int getStart() {
+    public long getStart() {
         return start;
     }
 
-    public int getEnd() {
+    public long getEnd() {
         return end;
     }
 

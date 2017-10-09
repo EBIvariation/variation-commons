@@ -24,10 +24,10 @@ public class VariantKeyFieldsTest {
 
     @Test
     public void testSnp() {
-        VariantKeyFields snp = new VariantKeyFields("chr1", 1000, "A", "C");
+        VariantKeyFields snp = new VariantKeyFields("chr1", 1000L, "A", "C");
         assertEquals("chr1", snp.getChromosome());
-        assertEquals(1000, snp.getStart());
-        assertEquals(1000, snp.getEnd());
+        assertEquals(1000L, snp.getStart());
+        assertEquals(1000L, snp.getEnd());
         assertEquals("A", snp.getReference());
         assertEquals("C", snp.getAlternate());
     }
