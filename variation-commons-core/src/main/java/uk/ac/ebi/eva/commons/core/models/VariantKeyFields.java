@@ -94,4 +94,28 @@ public class VariantKeyFields {
     public String getAlternate() {
         return alternate;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        VariantKeyFields that = (VariantKeyFields) o;
+
+        if (start != that.start) return false;
+        if (end != that.end) return false;
+        if (chromosome != null ? !chromosome.equals(that.chromosome) : that.chromosome != null) return false;
+        if (reference != null ? !reference.equals(that.reference) : that.reference != null) return false;
+        return alternate != null ? alternate.equals(that.alternate) : that.alternate == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = chromosome != null ? chromosome.hashCode() : 0;
+        result = 31 * result + (int) (start ^ (start >>> 32));
+        result = 31 * result + (int) (end ^ (end >>> 32));
+        result = 31 * result + (reference != null ? reference.hashCode() : 0);
+        result = 31 * result + (alternate != null ? alternate.hashCode() : 0);
+        return result;
+    }
 }
