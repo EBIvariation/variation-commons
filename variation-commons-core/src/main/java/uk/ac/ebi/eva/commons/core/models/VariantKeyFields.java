@@ -118,4 +118,15 @@ public class VariantKeyFields {
         result = 31 * result + (alternate != null ? alternate.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "VariantKeyFields{" +
+                "chromosome='" + chromosome + '\'' +
+                ", start=" + start +
+                ", end=" + end +
+                ", reference='" + reference + '\'' +
+                ", alternate='" + alternate + '\'' +
+                '}';
+    }
 }
