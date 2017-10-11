@@ -61,11 +61,6 @@ public class VariantVcfEVSFactory extends VariantAggregatedVcfFactory {
     }
 
     @Override
-    protected void loadMappings(Properties evsMappingProperties) {
-        super.loadMappings(evsMappingProperties);
-    }
-
-    @Override
     protected void setOtherFields(Variant variant, String fileId, String studyId, Set<String> ids, float quality,
                                   String filter, String info, String format, int numAllele, String[] alternateAlleles,
                                   String line) {

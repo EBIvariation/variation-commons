@@ -18,7 +18,7 @@ package uk.ac.ebi.eva.commons.core.models.factories;
 
 import org.apache.commons.lang3.StringUtils;
 
-import uk.ac.ebi.eva.commons.core.models.VariantKeyFields;
+import uk.ac.ebi.eva.commons.core.models.VariantCoreFields;
 import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
@@ -67,18 +67,17 @@ public class VariantVcfFactory {
         String info = getInfo(fields);
         String format = getFormat(fields);
 
-        List<VariantKeyFields> generatedKeyFields = buildVariantKeyFields(chromosome, position, reference,
-                alternateAlleles);
+        List<VariantCoreFields> generatedKeyFields = buildVariantCoreFields(chromosome, position, reference,
+                                                                            alternateAlleles);
 
         List<Variant> variants = new LinkedList<>();
         // Now create all the Variant objects read from the VCF record
         for (int altAlleleIdx = 0; altAlleleIdx < alternateAlleles.length; altAlleleIdx++) {
-            VariantKeyFields keyFields = generatedKeyFields.get(altAlleleIdx);
+            VariantCoreFields keyFields = generatedKeyFields.get(altAlleleIdx);
             Variant variant = new Variant(chromosome, keyFields.getStart(), keyFields.getEnd(), keyFields.getReference(),
                                           keyFields.getAlternate());
             String[] secondaryAlternates = getSecondaryAlternates(altAlleleIdx, alternateAlleles);
-            VariantSourceEntry file = new VariantSourceEntry(fileId, studyId, secondaryAlternates, format, null, null,
-                                                             null);
+            VariantSourceEntry file = new VariantSourceEntry(fileId, studyId, secondaryAlternates, format);
             variant.addSourceEntry(file);
 
             parseSplitSampleData(variant, fileId, studyId, fields, alternateAlleles, secondaryAlternates, altAlleleIdx);
@@ -142,12 +141,12 @@ public class VariantVcfFactory {
         return (fields.length <= 8 || fields[8].equals(".")) ? "" : fields[8];
     }
 
-    private List<VariantKeyFields> buildVariantKeyFields(String chromosome, int position, String reference,
-            String[] alternateAlleles) {
-        List<VariantKeyFields> generatedKeyFields = new ArrayList<>();
+    private List<VariantCoreFields> buildVariantCoreFields(String chromosome, int position, String reference,
+                                                          String[] alternateAlleles) {
+        List<VariantCoreFields> generatedKeyFields = new ArrayList<>();
 
         for (int i = 0; i < alternateAlleles.length; i++) { // This index is necessary for getting the samples where the mutated allele is present
-            VariantKeyFields keyFields = new VariantKeyFields(chromosome, position, reference, alternateAlleles[i]);
+            VariantCoreFields keyFields = new VariantCoreFields(chromosome, position, reference, alternateAlleles[i]);
 
             // Since the reference and alternate alleles won't necessarily match
             // the ones read from the VCF file but they are still needed for

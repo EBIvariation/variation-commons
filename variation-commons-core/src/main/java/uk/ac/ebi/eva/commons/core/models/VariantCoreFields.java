@@ -29,7 +29,7 @@ import static java.lang.Math.max;
  * It is left aligned because the trailing bases are removed before the leading ones, implying a normalization where
  * the position is moved the least possible from its original location.
  */
-public class VariantKeyFields {
+public class VariantCoreFields {
 
     private final String chromosome;
 
@@ -41,7 +41,7 @@ public class VariantKeyFields {
 
     private String alternate;
 
-    public VariantKeyFields(String chromosome, long position, String reference, String alternate) {
+    public VariantCoreFields(String chromosome, long position, String reference, String alternate) {
         if (reference.equals(alternate)) {
             throw new IllegalArgumentException("One alternate allele is identical to the reference. Variant found as: "
                                                        + chromosome + ":" + position + ":" + reference + ">" + alternate);
@@ -50,17 +50,17 @@ public class VariantKeyFields {
         this.chromosome = chromosome;
 
         // remove common trailing bases
-        int nucleotidesToRemoveInTheRight = getIndexOfLastDifferentNucleotide(reference, alternate);
-        String rightTrimmedReference = reference.substring(0, reference.length() - nucleotidesToRemoveInTheRight);
-        String rightTrimmedAlternate = alternate.substring(0, alternate.length() - nucleotidesToRemoveInTheRight);
+        int numTrailingNucleotidesToRemove = getIndexOfLastDifferentNucleotide(reference, alternate);
+        String rightTrimmedReference = reference.substring(0, reference.length() - numTrailingNucleotidesToRemove);
+        String rightTrimmedAlternate = alternate.substring(0, alternate.length() - numTrailingNucleotidesToRemove);
 
         // remove common leading bases
-        int nucleotidesToRemoveInTheLeft = StringUtils.indexOfDifference(rightTrimmedReference, rightTrimmedAlternate);
-        this.reference = rightTrimmedReference.substring(nucleotidesToRemoveInTheLeft);
-        this.alternate = rightTrimmedAlternate.substring(nucleotidesToRemoveInTheLeft);
+        int numLeadingNucleotidesToRemove = StringUtils.indexOfDifference(rightTrimmedReference, rightTrimmedAlternate);
+        this.reference = rightTrimmedReference.substring(numLeadingNucleotidesToRemove);
+        this.alternate = rightTrimmedAlternate.substring(numLeadingNucleotidesToRemove);
 
         // calculate start and end
-        start = position + nucleotidesToRemoveInTheLeft;
+        start = position + numLeadingNucleotidesToRemove;
         end = calculateEnd(position, rightTrimmedReference, rightTrimmedAlternate);
     }
 
@@ -100,7 +100,7 @@ public class VariantKeyFields {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        VariantKeyFields that = (VariantKeyFields) o;
+        VariantCoreFields that = (VariantCoreFields) o;
 
         if (start != that.start) return false;
         if (end != that.end) return false;
@@ -121,7 +121,7 @@ public class VariantKeyFields {
 
     @Override
     public String toString() {
-        return "VariantKeyFields{" +
+        return "VariantCoreFields{" +
                 "chromosome='" + chromosome + '\'' +
                 ", start=" + start +
                 ", end=" + end +

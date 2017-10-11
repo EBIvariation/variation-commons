@@ -71,11 +71,6 @@ public class VariantVcfExacFactory extends VariantAggregatedVcfFactory {
     }
 
     @Override
-    protected void loadMappings(Properties exacMappingProperties) {
-        super.loadMappings(exacMappingProperties);
-    }
-
-    @Override
     protected void parseStats(Variant variant, String fileId, String studyId, int numAllele, String[] alternateAlleles,
                               String info) {
         VariantSourceEntry sourceEntry = variant.getSourceEntry(fileId, studyId);

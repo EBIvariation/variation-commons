@@ -83,20 +83,8 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
      *                 AC, AN or GTC.
      */
     public VariantAggregatedVcfFactory(Properties mappings) {
-        if (mappings == null) {
-            loadDefaultMappings();
-        } else {
-            loadMappings(mappings);
-        }
-    }
-
-    protected void loadDefaultMappings() {
-        // No default mapping.
-    }
-
-    protected void loadMappings(Properties mappings) {
         this.tagMap = mappings;
-        if (tagMap != null) {
+        if (this.tagMap != null) {
             this.reverseTagMap = new LinkedHashMap<>(tagMap.size());
             for (String tag : tagMap.stringPropertyNames()) {
                 this.reverseTagMap.put(tagMap.getProperty(tag), tag);
