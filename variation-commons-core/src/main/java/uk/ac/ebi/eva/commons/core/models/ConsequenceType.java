@@ -15,6 +15,9 @@
  */
 package uk.ac.ebi.eva.commons.core.models;
 
+import uk.ac.ebi.eva.commons.core.models.ws.ScoreWithSource;
+
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -87,7 +90,7 @@ public class ConsequenceType implements IConsequenceType {
         if (sift != null) {
             this.sift = new Score(sift);
         }
-        if(polyphen!=null) {
+        if (polyphen != null) {
             this.polyphen = new Score(polyphen);
         }
         this.soAccessions = soAccessions;
@@ -183,4 +186,25 @@ public class ConsequenceType implements IConsequenceType {
         return relativePosition;
     }
 
+    public Set<ScoreWithSource> getProteinSubstitutionScores() {
+        Set<ScoreWithSource> proteinSubstitutionScores = new HashSet<>();
+        if (sift != null) {
+            proteinSubstitutionScores.add(new ScoreWithSource(sift.getScore(), sift.getDescription(), "Sift"));
+        }
+        if (polyphen != null) {
+            proteinSubstitutionScores.add(new ScoreWithSource(polyphen.getScore(), polyphen.getDescription(), "Polyphen"));
+        }
+        return proteinSubstitutionScores;
+    }
+
+    public void setProteinSubstitutionScores(Set<ScoreWithSource> proteinSubstitutionScores) {
+        for (ScoreWithSource score : proteinSubstitutionScores) {
+            if (score.getSource().toLowerCase().equals("sift")) {
+                sift = new Score(score);
+            }
+            if (score.getSource().toLowerCase().equals("polyphen")) {
+                polyphen = new Score(score);
+            }
+        }
+    }
 }
