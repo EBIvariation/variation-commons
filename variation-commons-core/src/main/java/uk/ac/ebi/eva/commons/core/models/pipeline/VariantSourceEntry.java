@@ -53,6 +53,10 @@ public class VariantSourceEntry extends AbstractVariantSourceEntry implements IV
         this(fileId, studyId, null, null, null, null, null);
     }
 
+    public VariantSourceEntry(String fileId, String studyId, String[] secondaryAlternates, String format) {
+        this(fileId, studyId, secondaryAlternates, format, null, null, null);
+    }
+
     public VariantSourceEntry(String fileId, String studyId, String[] secondaryAlternates, String format,
                               Map<String, VariantStatistics> cohortStats, Map<String, String> attributes,
                               List<Map<String, String>> samplesData) {
