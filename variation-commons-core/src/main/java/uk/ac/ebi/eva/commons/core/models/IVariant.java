@@ -40,6 +40,8 @@ public interface IVariant {
 
     Set<String> getIds();
 
+    default String getMainId() { return null; }
+
     Map<String, Set<String>> getHgvs();
 
     Collection<? extends IVariantSourceEntry> getSourceEntries();
