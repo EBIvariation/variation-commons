@@ -17,6 +17,8 @@ package uk.ac.ebi.eva.commons.core.models.ws;
 
 import uk.ac.ebi.eva.commons.core.models.AbstractVariant;
 import uk.ac.ebi.eva.commons.core.models.Annotation;
+import uk.ac.ebi.eva.commons.core.models.IVariant;
+import uk.ac.ebi.eva.commons.core.models.IVariantSourceEntry;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 
@@ -54,19 +56,13 @@ public class VariantWithSamplesAndAnnotation extends AbstractVariant {
         sourceEntries = new HashMap<>();
     }
 
-    public VariantWithSamplesAndAnnotation(Variant variant) {
+    public VariantWithSamplesAndAnnotation(IVariant variant) {
         super(variant.getChromosome(), variant.getStart(), variant.getEnd(), variant.getReference(), variant.getAlternate());
-
-        Map<String, VariantSourceEntryWithSampleNames> sourceEntries = new HashMap<>();
-        for (VariantSourceEntry entry : variant.getSourceEntries()) {
-            Set<String> sampleNames = new HashSet<>();
-            for (Map<String, String> stringStringMap : entry.getSamplesData()) {
-                sampleNames.addAll(stringStringMap.keySet());
-            }
-            VariantSourceEntryWithSampleNames entrySN = new VariantSourceEntryWithSampleNames(entry, new ArrayList<>(sampleNames));
-            sourceEntries.put(getSourceEntryIndex(entrySN), entrySN);
+        this.sourceEntries = new HashMap<>();
+        for (IVariantSourceEntry entry : variant.getSourceEntries()) {
+            VariantSourceEntryWithSampleNames entrySN = new VariantSourceEntryWithSampleNames(entry);
+            this.sourceEntries.put(getSourceEntryIndex(entrySN), entrySN);
         }
-        this.sourceEntries = sourceEntries;
     }
 
 

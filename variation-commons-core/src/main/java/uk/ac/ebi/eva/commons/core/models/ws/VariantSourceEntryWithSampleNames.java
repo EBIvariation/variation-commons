@@ -20,9 +20,12 @@ import uk.ac.ebi.eva.commons.core.models.IVariantSourceEntry;
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class VariantSourceEntryWithSampleNames extends AbstractVariantSourceEntry implements IVariantSourceEntry {
 
@@ -59,6 +62,21 @@ public class VariantSourceEntryWithSampleNames extends AbstractVariantSourceEntr
         if (samplesData != null) {
             this.samplesData.putAll(samplesData);
         }
+    }
+
+
+    public VariantSourceEntryWithSampleNames(IVariantSourceEntry variantSourceEntry) {
+        super(variantSourceEntry.getFileId(), variantSourceEntry.getStudyId(),
+              variantSourceEntry.getSecondaryAlternates(), variantSourceEntry.getFormat(),
+              variantSourceEntry.getCohortStats(), variantSourceEntry.getAttributes());
+
+        Set<String> sampleNames = new HashSet<>();
+        for (Map<String, String> stringStringMap : variantSourceEntry.getSamplesData()) {
+            sampleNames.addAll(stringStringMap.keySet());
+        }
+        HashMap<String, Map<String, String>> samplesData = joinSamplesDataWithSampleNamesHelper(variantSourceEntry, new ArrayList<>(sampleNames));
+        this.samplesData = new LinkedHashMap<>();
+        this.samplesData.putAll(samplesData);
     }
 
     public List<Map<String, String>> getSamplesData() {
