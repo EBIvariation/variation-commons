@@ -19,16 +19,11 @@ import uk.ac.ebi.eva.commons.core.models.AbstractVariant;
 import uk.ac.ebi.eva.commons.core.models.Annotation;
 import uk.ac.ebi.eva.commons.core.models.IVariant;
 import uk.ac.ebi.eva.commons.core.models.IVariantSourceEntry;
-import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
-import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * A mutation in the genome, defined as a change from a reference to an alternate allele in a certain position of
