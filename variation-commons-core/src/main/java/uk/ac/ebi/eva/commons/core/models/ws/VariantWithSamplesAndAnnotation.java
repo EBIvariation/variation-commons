@@ -17,7 +17,10 @@ package uk.ac.ebi.eva.commons.core.models.ws;
 
 import uk.ac.ebi.eva.commons.core.models.AbstractVariant;
 import uk.ac.ebi.eva.commons.core.models.Annotation;
+import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
+import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -50,6 +53,22 @@ public class VariantWithSamplesAndAnnotation extends AbstractVariant {
         super(chromosome, start, end, reference, alternate);
         sourceEntries = new HashMap<>();
     }
+
+    public VariantWithSamplesAndAnnotation(Variant variant) {
+        super(variant.getChromosome(), variant.getStart(), variant.getEnd(), variant.getReference(), variant.getAlternate());
+
+        Map<String, VariantSourceEntryWithSampleNames> sourceEntries = new HashMap<>();
+        for (VariantSourceEntry entry : variant.getSourceEntries()) {
+            Set<String> sampleNames = new HashSet<>();
+            for (Map<String, String> stringStringMap : entry.getSamplesData()) {
+                sampleNames.addAll(stringStringMap.keySet());
+            }
+            VariantSourceEntryWithSampleNames entrySN = new VariantSourceEntryWithSampleNames(entry, new ArrayList<>(sampleNames));
+            sourceEntries.put(getSourceEntryIndex(entrySN), entrySN);
+        }
+        this.sourceEntries = sourceEntries;
+    }
+
 
     public void setAnnotation(Annotation annotation) {
         this.annotation = annotation;
