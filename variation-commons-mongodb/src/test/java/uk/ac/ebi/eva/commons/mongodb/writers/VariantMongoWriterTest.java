@@ -54,6 +54,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.ALTERNATE_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.CHROMOSOME_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.END_FIELD;
@@ -164,7 +165,7 @@ public class VariantMongoWriterTest {
         final String alternate = "T";
         final String fileId = "fileId";
         final String studyId = "studyId";
-        Variant variant = buildVariant(chromosome, start, end, reference, alternate, fileId, studyId);
+        Variant variant = buildVariantWithStats(chromosome, start, end, reference, alternate, fileId, studyId);
 
         VariantMongoWriter variantMongoWriter = new VariantMongoWriter(collectionName, mongoOperations, false, true);
         variantMongoWriter.write(Collections.singletonList(variant));
@@ -187,7 +188,7 @@ public class VariantMongoWriterTest {
 
     @Test
     public void includeStatsTrueShouldIncludeStatistics() throws Exception {
-        Variant variant = buildVariant("12", 3, 4, "A", "T", "fileId", "studyId");
+        Variant variant = buildVariantWithStats("12", 3, 4, "A", "T", "fileId", "studyId");
 
         VariantMongoWriter variantMongoWriter = new VariantMongoWriter(collectionName, mongoOperations, true, false);
         variantMongoWriter.write(Collections.singletonList(variant));
@@ -200,9 +201,9 @@ public class VariantMongoWriterTest {
 
     @Test
     public void includeStatsFalseShouldNotIncludeStatistics() throws Exception {
-        Variant variant = buildVariant("12", 3, 4, "A", "T", "fileId", "studyId");
+        Variant variant = buildVariantWithStats("12", 3, 4, "A", "T", "fileId", "studyId");
 
-        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(collectionName, mongoOperations, false, true);
+        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(collectionName, mongoOperations, false, false);
         variantMongoWriter.write(Collections.singletonList(variant));
 
         DBCollection dbCollection = mongoOperations.getCollection(collectionName);
@@ -213,8 +214,9 @@ public class VariantMongoWriterTest {
 
     @Test
     public void idsIfPresentShouldBeWrittenIntoTheVariant() throws Exception {
-        Variant variant = buildVariant("12", 3, 4, "A", "T", "fileId", "studyId");
-        variant.setIds(new HashSet<>(Arrays.asList("a", "b", "c")));
+        Variant variant = buildVariantWithStats("12", 3, 4, "A", "T", "fileId", "studyId");
+        HashSet<String> ids = new HashSet<>(Arrays.asList("a", "b", "c"));
+        variant.setIds(ids);
 
         VariantMongoWriter variantMongoWriter = new VariantMongoWriter(collectionName, mongoOperations, false, true);
         variantMongoWriter.write(Collections.singletonList(variant));
@@ -222,12 +224,16 @@ public class VariantMongoWriterTest {
         DBCollection dbCollection = mongoOperations.getCollection(collectionName);
         assertEquals(1, dbCollection.count());
         final DBObject storedVariant = dbCollection.findOne();
-        assertNotNull(storedVariant.get(IDS_FIELD));
+        BasicDBList dbIds = (BasicDBList) storedVariant.get(IDS_FIELD);
+        for (String id : ids) {
+            assertTrue(dbIds.contains(id));
+        }
+        assertEquals(ids.size(), dbIds.size());
     }
 
     @Test
     public void idsIfNotPresentShouldNotBeWrittenIntoTheVariant() throws Exception {
-        Variant variant = buildVariant("12", 3, 4, "A", "T", "fileId", "studyId");
+        Variant variant = buildVariantWithStats("12", 3, 4, "A", "T", "fileId", "studyId");
 
         VariantMongoWriter variantMongoWriter = new VariantMongoWriter(collectionName, mongoOperations, false, true);
         variantMongoWriter.write(Collections.singletonList(variant));
@@ -247,7 +253,7 @@ public class VariantMongoWriterTest {
         final String alternate = "T";
         final String fileId = "fileId";
         final String studyId = "studyId";
-        Variant variant = buildVariantWithSourceEntry(chromosome, start, end, reference, alternate, fileId, studyId);
+        Variant variant = buildVariantWithSampleData(chromosome, start, end, reference, alternate, fileId, studyId);
 
         VariantMongoWriter variantMongoWriter = new VariantMongoWriter(collectionName, mongoOperations, false, true);
         variantMongoWriter.write(Collections.singletonList(variant));
@@ -269,25 +275,25 @@ public class VariantMongoWriterTest {
 
     @Test
     public void sourceEntryShouldBeAdded() throws Exception {
-        Variant variant = buildVariantWithSourceEntry("1", 1, 2, "A", "T", "fileId", "previousStudy");
-        Variant newVariant = buildVariantWithSourceEntry("1", 1, 2, "A", "T", "fileId", "dbsnpStudy");
+        Variant variant = buildVariantWithSampleData("1", 1, 2, "A", "T", "fileId", "previousStudy");
+        Variant newVariant = buildVariantWithSampleData("1", 1, 2, "A", "T", "fileId", "dbsnpStudy");
 
         VariantMongoWriter variantMongoWriter = new VariantMongoWriter(collectionName, mongoOperations, false, false);
         variantMongoWriter.write(Collections.singletonList(variant));
-
         variantMongoWriter.write(Collections.singletonList(newVariant));
+
         DBCollection dbCollection = mongoOperations.getCollection(collectionName);
         assertEquals(1, dbCollection.count());
         final DBObject storedVariant = dbCollection.findOne();
         assertEquals(2, ((BasicDBList) storedVariant.get(FILES_FIELD)).size());
     }
 
-    private Variant buildVariant(String chromosome, long start, long end, String reference, String alternate,
-                                 String fileId, String studyId) {
-        return buildVariant(chromosome, start, end, reference, alternate, new VariantSourceEntry(fileId, studyId));
+    private Variant buildVariantWithStats(String chromosome, long start, long end, String reference, String alternate,
+                                          String fileId, String studyId) {
+        return buildVariantWithStats(chromosome, start, end, reference, alternate, new VariantSourceEntry(fileId, studyId));
     }
 
-    private Variant buildVariantWithSourceEntry(String chromosome, long start, long end, String reference, String alternate,
+    private Variant buildVariantWithSampleData(String chromosome, long start, long end, String reference, String alternate,
                                                 String fileId, String studyId) {
         String[] secondaryAlternates = new String[]{alternate + "A"};
         String format = "GT:AD:DP:GQ:PL:PP";
@@ -302,11 +308,11 @@ public class VariantMongoWriterTest {
         samplesData.add(secondSampleData);
         VariantSourceEntry variantSourceEntry = new VariantSourceEntry(fileId, studyId, secondaryAlternates,
                                                                        format, null, attributes, samplesData);
-        return buildVariant(chromosome, start, end, reference, alternate, variantSourceEntry);
+        return buildVariantWithStats(chromosome, start, end, reference, alternate, variantSourceEntry);
     }
 
-    private Variant buildVariant(String chromosome, long start, long end, String reference, String alternate,
-                                 VariantSourceEntry variantSourceEntry) {
+    private Variant buildVariantWithStats(String chromosome, long start, long end, String reference, String alternate,
+                                          VariantSourceEntry variantSourceEntry) {
         Variant variant = new Variant(chromosome, start, end, reference, alternate);
         variantSourceEntry.setCohortStats("cohortStats", new VariantStatistics(reference, alternate, VariantType.SNV));
         variant.addSourceEntry(variantSourceEntry);

@@ -54,7 +54,9 @@ public class VariantMongoWriter extends MongoItemWriter<Variant> {
     private final MongoOperations mongoOperations;
 
     private final String collection;
+
     private final boolean includeStats;
+
     private final boolean includeSamples;
 
     public VariantMongoWriter(String collection, MongoOperations mongoOperations, boolean includeStats,
@@ -69,32 +71,6 @@ public class VariantMongoWriter extends MongoItemWriter<Variant> {
         this.includeSamples = includeSamples;
 
         createIndexes();
-    }
-
-    @Override
-    protected void doWrite(List<? extends Variant> variants) {
-        BulkWriteOperation bulk = mongoOperations.getCollection(collection).initializeUnorderedBulkOperation();
-        for (Variant variant : variants) {
-            String id = VariantMongo.buildVariantId(variant.getChromosome(), variant.getStart(),
-                                                    variant.getReference(), variant.getAlternate());
-
-            // the chromosome and start appear just as shard keys, in an unsharded cluster they wouldn't be needed
-            BasicDBObject query = new BasicDBObject("_id", id)
-                    .append(VariantMongo.CHROMOSOME_FIELD, variant.getChromosome())
-                    .append(VariantMongo.START_FIELD, variant.getStart());
-
-            bulk.find(query).upsert().updateOne(generateUpdate(variant));
-
-        }
-
-        executeBulk(bulk, variants.size());
-    }
-
-    private void executeBulk(BulkWriteOperation bulk, int currentBulkSize) {
-        if (currentBulkSize != 0) {
-            logger.trace("Execute bulk. BulkSize : " + currentBulkSize);
-            bulk.execute();
-        }
     }
 
     private void createIndexes() {
@@ -123,6 +99,32 @@ public class VariantMongoWriter extends MongoItemWriter<Variant> {
                 new BasicDBObject(BACKGROUND_INDEX, true));
     }
 
+    @Override
+    protected void doWrite(List<? extends Variant> variants) {
+        BulkWriteOperation bulk = mongoOperations.getCollection(collection).initializeUnorderedBulkOperation();
+        for (Variant variant : variants) {
+            String id = VariantMongo.buildVariantId(variant.getChromosome(), variant.getStart(),
+                                                    variant.getReference(), variant.getAlternate());
+
+            // the chromosome and start appear just as shard keys, in an unsharded cluster they wouldn't be needed
+            BasicDBObject query = new BasicDBObject("_id", id)
+                    .append(VariantMongo.CHROMOSOME_FIELD, variant.getChromosome())
+                    .append(VariantMongo.START_FIELD, variant.getStart());
+
+            bulk.find(query).upsert().updateOne(generateUpdate(variant));
+
+        }
+
+        executeBulk(bulk, variants.size());
+    }
+
+    private void executeBulk(BulkWriteOperation bulk, int currentBulkSize) {
+        if (currentBulkSize != 0) {
+            logger.trace("Execute bulk. BulkSize : " + currentBulkSize);
+            bulk.execute();
+        }
+    }
+
     private DBObject generateUpdate(Variant variant) {
         Assert.notNull(variant, "Variant should not be null. Please provide a valid Variant object");
         logger.trace("Convert variant {} into mongo object", variant);
@@ -130,13 +132,13 @@ public class VariantMongoWriter extends MongoItemWriter<Variant> {
         BasicDBObject addToSet = new BasicDBObject();
 
         if (!variant.getSourceEntries().isEmpty()) {
-            VariantSourceEntry variantSourceEntry = variant.getSourceEntries().iterator().next();
+            VariantSourceEntry variantSourceEntry = getVariantSourceEntry(variant);
 
-            addToSet.put(VariantMongo.FILES_FIELD, convert(variantSourceEntry));
+            addToSet.put(VariantMongo.FILES_FIELD, convertSourceEntry(variantSourceEntry));
 
             if (includeStats) {
-                BasicDBList basicDBList = convertStatistics(variantSourceEntry);
-                addToSet.put(VariantMongo.STATISTICS_FIELD, new BasicDBObject("$each", basicDBList));
+                BasicDBList statistics = convertStatistics(variantSourceEntry);
+                addToSet.put(VariantMongo.STATISTICS_FIELD, new BasicDBObject("$each", statistics));
             }
         }
 
@@ -148,26 +150,19 @@ public class VariantMongoWriter extends MongoItemWriter<Variant> {
         if (!addToSet.isEmpty()) {
             update.put("$addToSet", addToSet);
         }
-        update.append("$setOnInsert", convert(variant));
+        update.append("$setOnInsert", convertVariant(variant));
 
         return update;
     }
 
-    private BasicDBList convertStatistics(VariantSourceEntry variantSourceEntry) {
-        List<VariantStatisticsMongo> variantStats = new ArrayList<>();
-        for (Map.Entry<String, VariantStatistics> variantStatsEntry : variantSourceEntry.getCohortStats().entrySet()) {
-            variantStats.add(new VariantStatisticsMongo(
-                    variantSourceEntry.getStudyId(),
-                    variantSourceEntry.getFileId(),
-                    variantStatsEntry.getKey(),
-                    variantStatsEntry.getValue()
-            ));
-        }
-        return (BasicDBList) mongoOperations.getConverter().convertToMongoType(variantStats);
+    private VariantSourceEntry getVariantSourceEntry(Variant variant) {
+        Assert.isTrue(1 == variant.getSourceEntries().size(), "VariantMongoWriter assumes that there's only " +
+                "one study being loaded, so there should only be 0 or 1 VariantSourceEntries inside any Variant");
+        return variant.getSourceEntries().iterator().next();
     }
 
-    private DBObject convert(VariantSourceEntry variantSourceEntry) {
-        VariantSourceEntryMongo variantSource = null;
+    private DBObject convertSourceEntry(VariantSourceEntry variantSourceEntry) {
+        VariantSourceEntryMongo variantSource;
         if (includeSamples) {
             variantSource = new VariantSourceEntryMongo(
                     variantSourceEntry.getFileId(),
@@ -188,7 +183,20 @@ public class VariantMongoWriter extends MongoItemWriter<Variant> {
         return (DBObject) mongoOperations.getConverter().convertToMongoType(variantSource);
     }
 
-    private DBObject convert(Variant variant) {
+    private BasicDBList convertStatistics(VariantSourceEntry variantSourceEntry) {
+        List<VariantStatisticsMongo> variantStats = new ArrayList<>();
+        for (Map.Entry<String, VariantStatistics> variantStatsEntry : variantSourceEntry.getCohortStats().entrySet()) {
+            variantStats.add(new VariantStatisticsMongo(
+                    variantSourceEntry.getStudyId(),
+                    variantSourceEntry.getFileId(),
+                    variantStatsEntry.getKey(),
+                    variantStatsEntry.getValue()
+            ));
+        }
+        return (BasicDBList) mongoOperations.getConverter().convertToMongoType(variantStats);
+    }
+
+    private DBObject convertVariant(Variant variant) {
         SimplifiedVariant simplifiedVariant = new SimplifiedVariant(
                 variant.getType(),
                 variant.getChromosome(),
