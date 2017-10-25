@@ -69,6 +69,11 @@ public abstract class AbstractVariant implements IVariant {
     private final String alternate;
 
     /**
+     * Among all the identifiers used for this genomic variation, the one that is considered the most relevant.
+     */
+    private String mainId;
+
+    /**
      * Set of identifiers used for this genomic variation.
      */
     private final Set<String> ids;
@@ -84,6 +89,7 @@ public abstract class AbstractVariant implements IVariant {
         this.end = -1;
         this.reference = null;
         this.alternate = null;
+        this.mainId = null;
         this.ids = new HashSet<>();
         this.hgvs = new HashMap<>();
     }
@@ -101,6 +107,7 @@ public abstract class AbstractVariant implements IVariant {
         this.end = end;
         this.reference = (reference != null) ? reference : "";
         this.alternate = (alternate != null) ? alternate : "";
+        this.mainId = null;
 
         this.ids = new HashSet<>();
         this.hgvs = new HashMap<>();
@@ -128,7 +135,6 @@ public abstract class AbstractVariant implements IVariant {
             /*
             * 3 possibilities for being an INDEL:
             * - The value of the ALT field is <DEL> or <INS>
-            * - The REF allele is not . but the ALT is
             * - The REF allele is . but the ALT is not
             * - The REF field length is different than the ALT field length
             */
@@ -156,6 +162,14 @@ public abstract class AbstractVariant implements IVariant {
 
     public String getAlternate() {
         return alternate;
+    }
+
+    public String getMainId() {
+        return mainId;
+    }
+
+    public void setMainId(String mainId) {
+        this.mainId = mainId;
     }
 
     public void addId(String id) {
