@@ -18,6 +18,7 @@ package uk.ac.ebi.eva.commons.mongodb.entities;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.CohortCatMongo;
 
 import java.util.Set;
 

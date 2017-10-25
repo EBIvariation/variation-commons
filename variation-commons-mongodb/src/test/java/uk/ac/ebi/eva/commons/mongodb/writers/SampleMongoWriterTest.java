@@ -17,7 +17,6 @@
 package uk.ac.ebi.eva.commons.mongodb.writers;
 
 import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +29,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
-import uk.ac.ebi.eva.commons.mongodb.entities.CohortCatMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.CohortCatMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.SampleMongo;
 
 import java.util.Arrays;
