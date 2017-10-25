@@ -17,6 +17,9 @@
 package uk.ac.ebi.eva.commons.mongodb.writers;
 
 import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.batch.item.data.MongoItemWriter;
@@ -30,6 +33,7 @@ import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfigurat
 import uk.ac.ebi.eva.commons.mongodb.entities.CohortCatMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.SampleMongo;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -47,13 +51,25 @@ public class SampleMongoWriterTest {
     @Value("${eva.mongo.collections.samples}")
     private String samplesCollection;
 
+    private DBCollection dbCollection;
+
+    private MongoItemWriter<SampleMongo> sampleMongoWriter;
+
+    @Before
+    public void setUp() {
+        dbCollection = mongoOperations.getCollection(samplesCollection);
+        sampleMongoWriter = new MongoItemWriter<>();
+    }
+
+    @After
+    public void tearDown() {
+        dbCollection.drop();
+    }
+
     @Test
     public void noSamplesNothingShouldBeWritten() throws Exception {
-        MongoItemWriter sampleMongoWriter = new MongoItemWriter<SampleMongo>();
-
         sampleMongoWriter.write(emptyList());
 
-        DBCollection dbCollection = mongoOperations.getCollection(samplesCollection);
         assertEquals(0, dbCollection.count());
     }
 
@@ -67,12 +83,38 @@ public class SampleMongoWriterTest {
         Set<CohortCatMongo> cohortSet2 = new HashSet<>(Collections.singletonList(cohort2));
         SampleMongo sample2 = new SampleMongo("id2", "V", "father2", "mother2", cohortSet2);
 
-        MongoItemWriter sampleMongoWriter = new MongoItemWriter<SampleMongo>();
         sampleMongoWriter.setTemplate(mongoOperations);
-        sampleMongoWriter.write(Collections.singletonList(sample1));
-        sampleMongoWriter.write(Collections.singletonList(sample2));
+        sampleMongoWriter.write(Arrays.asList(sample1, sample2));
 
-        DBCollection dbCollection = mongoOperations.getCollection(samplesCollection);
         assertEquals(2, dbCollection.count());
+    }
+
+    @Test
+    public void sameSampleWrittenTwiceShouldBeStoredJustOnce() throws Exception {
+        CohortCatMongo cohort1 = new CohortCatMongo("category1", "value1");
+        Set<CohortCatMongo> cohortSet1 = new HashSet<>(Collections.singletonList(cohort1));
+        SampleMongo sample1 = new SampleMongo("id1", "V", "father1", "mother1", cohortSet1);
+
+        sampleMongoWriter.setTemplate(mongoOperations);
+        sampleMongoWriter.write(Arrays.asList(sample1, sample1));
+
+        assertEquals(1, dbCollection.count());
+    }
+
+
+    @Test
+    public void identicalSamplesShouldBeStoredJustOnce() throws Exception {
+        CohortCatMongo cohort1 = new CohortCatMongo("category1", "value1");
+        Set<CohortCatMongo> cohortSet1 = new HashSet<>(Collections.singletonList(cohort1));
+        SampleMongo sample1 = new SampleMongo("id1", "V", "father1", "mother1", cohortSet1);
+
+        CohortCatMongo cohort1b = new CohortCatMongo("category1", "value1");
+        Set<CohortCatMongo> cohortSet1b = new HashSet<>(Collections.singletonList(cohort1b));
+        SampleMongo sample1b = new SampleMongo("id1", "V", "father1", "mother1", cohortSet1b);
+
+        sampleMongoWriter.setTemplate(mongoOperations);
+        sampleMongoWriter.write(Arrays.asList(sample1, sample1b));
+
+        assertEquals(1, dbCollection.count());
     }
 }
