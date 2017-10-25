@@ -17,32 +17,32 @@ package uk.ac.ebi.eva.commons.mongodb.entities.subdocuments;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 
-public class CohortCatMongo {
+public class SampleCategoryMongo {
 
-    public static final String CAT_FIELD = "cat";
+    public static final String NAME_FIELD = "name";
 
     public static final String VALUE_FIELD = "value";
 
-    @Field(CAT_FIELD)
-    private String category;
+    @Field(NAME_FIELD)
+    private String name;
 
     @Field(VALUE_FIELD)
     private String value;
 
-    public CohortCatMongo() {
+    public SampleCategoryMongo() {
     }
 
-    public CohortCatMongo(String category, String value) {
-        this.category = category;
+    public SampleCategoryMongo(String name, String value) {
+        this.name = name;
         this.value = value;
     }
 
-    public String getCategory() {
-        return category;
+    public String getName() {
+        return name;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getValue() {

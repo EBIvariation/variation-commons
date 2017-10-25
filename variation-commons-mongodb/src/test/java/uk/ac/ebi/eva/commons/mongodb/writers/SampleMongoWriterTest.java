@@ -29,7 +29,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
-import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.CohortCatMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.SampleCategoryMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.SampleMongo;
 
 import java.util.Arrays;
@@ -75,12 +75,12 @@ public class SampleMongoWriterTest {
 
     @Test
     public void variantsShouldBeWrittenIntoMongoDb() throws Exception {
-        CohortCatMongo cohort1 = new CohortCatMongo("category1", "value1");
-        Set<CohortCatMongo> cohortSet1 = new HashSet<>(Collections.singletonList(cohort1));
+        SampleCategoryMongo cohort1 = new SampleCategoryMongo("category1", "value1");
+        Set<SampleCategoryMongo> cohortSet1 = new HashSet<>(Collections.singletonList(cohort1));
         SampleMongo sample1 = new SampleMongo("id1", "V", "father1", "mother1", cohortSet1);
 
-        CohortCatMongo cohort2 = new CohortCatMongo("category2", "value2");
-        Set<CohortCatMongo> cohortSet2 = new HashSet<>(Collections.singletonList(cohort2));
+        SampleCategoryMongo cohort2 = new SampleCategoryMongo("category2", "value2");
+        Set<SampleCategoryMongo> cohortSet2 = new HashSet<>(Collections.singletonList(cohort2));
         SampleMongo sample2 = new SampleMongo("id2", "V", "father2", "mother2", cohortSet2);
 
         sampleMongoWriter.write(Arrays.asList(sample1, sample2));
@@ -90,8 +90,8 @@ public class SampleMongoWriterTest {
 
     @Test
     public void sameSampleWrittenTwiceShouldBeStoredJustOnce() throws Exception {
-        CohortCatMongo cohort1 = new CohortCatMongo("category1", "value1");
-        Set<CohortCatMongo> cohortSet1 = new HashSet<>(Collections.singletonList(cohort1));
+        SampleCategoryMongo cohort1 = new SampleCategoryMongo("category1", "value1");
+        Set<SampleCategoryMongo> cohortSet1 = new HashSet<>(Collections.singletonList(cohort1));
         SampleMongo sample1 = new SampleMongo("id1", "V", "father1", "mother1", cohortSet1);
 
         sampleMongoWriter.write(Arrays.asList(sample1, sample1));
@@ -102,12 +102,12 @@ public class SampleMongoWriterTest {
 
     @Test
     public void identicalSamplesShouldBeStoredJustOnce() throws Exception {
-        CohortCatMongo cohort1 = new CohortCatMongo("category1", "value1");
-        Set<CohortCatMongo> cohortSet1 = new HashSet<>(Collections.singletonList(cohort1));
+        SampleCategoryMongo cohort1 = new SampleCategoryMongo("category1", "value1");
+        Set<SampleCategoryMongo> cohortSet1 = new HashSet<>(Collections.singletonList(cohort1));
         SampleMongo sample1 = new SampleMongo("id1", "V", "father1", "mother1", cohortSet1);
 
-        CohortCatMongo cohort1b = new CohortCatMongo("category1", "value1");
-        Set<CohortCatMongo> cohortSet1b = new HashSet<>(Collections.singletonList(cohort1b));
+        SampleCategoryMongo cohort1b = new SampleCategoryMongo("category1", "value1");
+        Set<SampleCategoryMongo> cohortSet1b = new HashSet<>(Collections.singletonList(cohort1b));
         SampleMongo sample1b = new SampleMongo("id1", "V", "father1", "mother1", cohortSet1b);
 
         sampleMongoWriter.write(Arrays.asList(sample1, sample1b));
@@ -116,12 +116,12 @@ public class SampleMongoWriterTest {
 
     @Test
     public void addTwoSamplesAndRemoveOne() throws Exception {
-        CohortCatMongo cohort1 = new CohortCatMongo("category1", "value1");
-        Set<CohortCatMongo> cohortSet1 = new HashSet<>(Collections.singletonList(cohort1));
+        SampleCategoryMongo cohort1 = new SampleCategoryMongo("category1", "value1");
+        Set<SampleCategoryMongo> cohortSet1 = new HashSet<>(Collections.singletonList(cohort1));
         SampleMongo sample1 = new SampleMongo("id1", "V", "father1", "mother1", cohortSet1);
 
-        CohortCatMongo cohort2 = new CohortCatMongo("category2", "value2");
-        Set<CohortCatMongo> cohortSet2 = new HashSet<>(Collections.singletonList(cohort2));
+        SampleCategoryMongo cohort2 = new SampleCategoryMongo("category2", "value2");
+        Set<SampleCategoryMongo> cohortSet2 = new HashSet<>(Collections.singletonList(cohort2));
         SampleMongo sample2 = new SampleMongo("id2", "V", "father2", "mother2", cohortSet2);
 
         sampleMongoWriter.write(Arrays.asList(sample1, sample2));

@@ -18,7 +18,7 @@ package uk.ac.ebi.eva.commons.mongodb.entities;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.CohortCatMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.SampleCategoryMongo;
 
 import java.util.Set;
 
@@ -31,7 +31,7 @@ public class SampleMongo {
 
     public static final String MOTHER_FIELD = "mother";
 
-    public static final String COHORT_CAT_FIELD = "cohort_cat";
+    public static final String CATEGORIES_FIELDS = "categories";
 
     @Id
     private String id;
@@ -45,18 +45,18 @@ public class SampleMongo {
     @Field(MOTHER_FIELD)
     private String mother;
 
-    @Field(COHORT_CAT_FIELD)
-    private Set<CohortCatMongo> cohortCat;
+    @Field(CATEGORIES_FIELDS)
+    private Set<SampleCategoryMongo> categories;
 
     public SampleMongo() {
     }
 
-    public SampleMongo(String id, String sex, String father, String mother, Set<CohortCatMongo> cohortCat) {
+    public SampleMongo(String id, String sex, String father, String mother, Set<SampleCategoryMongo> categories) {
         this.id = id;
         this.sex = sex;
         this.father = father;
         this.mother = mother;
-        this.cohortCat = cohortCat;
+        this.categories = categories;
     }
 
     public String getId() {
@@ -91,11 +91,11 @@ public class SampleMongo {
         this.mother = mother;
     }
 
-    public Set<CohortCatMongo> getCohortCat() {
-        return cohortCat;
+    public Set<SampleCategoryMongo> getCategories() {
+        return categories;
     }
 
-    public void setCohortCat(Set<CohortCatMongo> cohortCat) {
-        this.cohortCat = cohortCat;
+    public void setCategories(Set<SampleCategoryMongo> categories) {
+        this.categories = categories;
     }
 }
