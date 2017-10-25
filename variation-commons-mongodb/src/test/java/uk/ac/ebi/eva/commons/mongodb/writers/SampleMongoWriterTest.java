@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -43,7 +44,8 @@ public class SampleMongoWriterTest {
     @Autowired
     private MongoOperations mongoOperations;
 
-    private String samplesCollection = "samples";
+    @Value("${eva.mongo.collections.samples}")
+    private String samplesCollection;
 
     @Test
     public void noSamplesNothingShouldBeWritten() throws Exception {
