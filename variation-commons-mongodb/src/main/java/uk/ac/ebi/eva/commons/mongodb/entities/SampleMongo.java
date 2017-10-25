@@ -16,10 +16,12 @@
 package uk.ac.ebi.eva.commons.mongodb.entities;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Set;
 
+@Document(collection = "#{mongoCollectionsSamples}")
 public class SampleMongo {
 
     public static final String SEX_FIELD = "sex";
