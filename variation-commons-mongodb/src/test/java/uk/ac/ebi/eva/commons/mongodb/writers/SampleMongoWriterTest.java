@@ -59,6 +59,7 @@ public class SampleMongoWriterTest {
     public void setUp() {
         dbCollection = mongoOperations.getCollection(samplesCollection);
         sampleMongoWriter = new MongoItemWriter<>();
+        sampleMongoWriter.setTemplate(mongoOperations);
     }
 
     @After
@@ -83,7 +84,6 @@ public class SampleMongoWriterTest {
         Set<CohortCatMongo> cohortSet2 = new HashSet<>(Collections.singletonList(cohort2));
         SampleMongo sample2 = new SampleMongo("id2", "V", "father2", "mother2", cohortSet2);
 
-        sampleMongoWriter.setTemplate(mongoOperations);
         sampleMongoWriter.write(Arrays.asList(sample1, sample2));
 
         assertEquals(2, dbCollection.count());
@@ -95,7 +95,6 @@ public class SampleMongoWriterTest {
         Set<CohortCatMongo> cohortSet1 = new HashSet<>(Collections.singletonList(cohort1));
         SampleMongo sample1 = new SampleMongo("id1", "V", "father1", "mother1", cohortSet1);
 
-        sampleMongoWriter.setTemplate(mongoOperations);
         sampleMongoWriter.write(Arrays.asList(sample1, sample1));
 
         assertEquals(1, dbCollection.count());
@@ -112,9 +111,25 @@ public class SampleMongoWriterTest {
         Set<CohortCatMongo> cohortSet1b = new HashSet<>(Collections.singletonList(cohort1b));
         SampleMongo sample1b = new SampleMongo("id1", "V", "father1", "mother1", cohortSet1b);
 
-        sampleMongoWriter.setTemplate(mongoOperations);
         sampleMongoWriter.write(Arrays.asList(sample1, sample1b));
+        assertEquals(1, dbCollection.count());
+    }
+
+    @Test
+    public void addTwoSamplesAndRemoveOne() throws Exception {
+        CohortCatMongo cohort1 = new CohortCatMongo("category1", "value1");
+        Set<CohortCatMongo> cohortSet1 = new HashSet<>(Collections.singletonList(cohort1));
+        SampleMongo sample1 = new SampleMongo("id1", "V", "father1", "mother1", cohortSet1);
+
+        CohortCatMongo cohort2 = new CohortCatMongo("category2", "value2");
+        Set<CohortCatMongo> cohortSet2 = new HashSet<>(Collections.singletonList(cohort2));
+        SampleMongo sample2 = new SampleMongo("id2", "V", "father2", "mother2", cohortSet2);
+
+        sampleMongoWriter.write(Arrays.asList(sample1, sample2));
+        sampleMongoWriter.setDelete(true);
+        sampleMongoWriter.write(Collections.singletonList(sample2));
 
         assertEquals(1, dbCollection.count());
+        assertEquals("id1", dbCollection.find().next().get("_id"));
     }
 }
