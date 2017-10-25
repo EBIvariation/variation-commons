@@ -21,16 +21,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
-import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.SampleCategoryMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.SampleMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.SampleCategoryMongo;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -52,13 +50,12 @@ public class SampleMongoWriterTest {
 
     private DBCollection dbCollection;
 
-    private MongoItemWriter<SampleMongo> sampleMongoWriter;
+    private SampleMongoWriter sampleMongoWriter;
 
     @Before
     public void setUp() {
         dbCollection = mongoOperations.getCollection(samplesCollection);
-        sampleMongoWriter = new MongoItemWriter<>();
-        sampleMongoWriter.setTemplate(mongoOperations);
+        sampleMongoWriter = new SampleMongoWriter(samplesCollection, mongoOperations);
     }
 
     @After
