@@ -29,7 +29,7 @@ import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
 import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantStatisticsMongo;
-import uk.ac.ebi.eva.commons.mongodb.configurations.MongoOperationsConfiguration;
+import uk.ac.ebi.eva.commons.mongodb.configuration.MongoOperationsConfiguration;
 
 @RunWith(SpringRunner.class)
 @TestPropertySource({"classpath:test-mongo.properties"})

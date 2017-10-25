@@ -32,7 +32,7 @@ import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotation;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.HgvsMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
-import uk.ac.ebi.eva.commons.mongodb.configurations.MongoOperationsConfiguration;
+import uk.ac.ebi.eva.commons.mongodb.configuration.MongoOperationsConfiguration;
 
 import java.util.Arrays;
 import java.util.Collections;
