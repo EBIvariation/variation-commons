@@ -25,9 +25,10 @@ import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.util.Assert;
 
+import uk.ac.ebi.eva.commons.core.models.IVariant;
+import uk.ac.ebi.eva.commons.core.models.IVariantSourceEntry;
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
-import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.projections.SimplifiedVariant;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
@@ -45,7 +46,7 @@ import static uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.AnnotationInde
 /**
  * Write a list of {@link Variant} into MongoDB
  */
-public class VariantMongoWriter extends MongoItemWriter<Variant> {
+public class VariantMongoWriter extends MongoItemWriter<IVariant> {
 
     private static final Logger logger = LoggerFactory.getLogger(VariantMongoWriter.class);
 
@@ -100,9 +101,9 @@ public class VariantMongoWriter extends MongoItemWriter<Variant> {
     }
 
     @Override
-    protected void doWrite(List<? extends Variant> variants) {
+    protected void doWrite(List<? extends IVariant> variants) {
         BulkWriteOperation bulk = mongoOperations.getCollection(collection).initializeUnorderedBulkOperation();
-        for (Variant variant : variants) {
+        for (IVariant variant : variants) {
             String id = VariantMongo.buildVariantId(variant.getChromosome(), variant.getStart(),
                                                     variant.getReference(), variant.getAlternate());
 
@@ -125,14 +126,14 @@ public class VariantMongoWriter extends MongoItemWriter<Variant> {
         }
     }
 
-    private DBObject generateUpdate(Variant variant) {
+    private DBObject generateUpdate(IVariant variant) {
         Assert.notNull(variant, "Variant should not be null. Please provide a valid Variant object");
         logger.trace("Convert variant {} into mongo object", variant);
 
         BasicDBObject addToSet = new BasicDBObject();
 
         if (!variant.getSourceEntries().isEmpty()) {
-            VariantSourceEntry variantSourceEntry = getVariantSourceEntry(variant);
+            IVariantSourceEntry variantSourceEntry = getVariantSourceEntry(variant);
 
             addToSet.put(VariantMongo.FILES_FIELD, convertSourceEntry(variantSourceEntry));
 
@@ -155,13 +156,13 @@ public class VariantMongoWriter extends MongoItemWriter<Variant> {
         return update;
     }
 
-    private VariantSourceEntry getVariantSourceEntry(Variant variant) {
+    private IVariantSourceEntry getVariantSourceEntry(IVariant variant) {
         Assert.isTrue(1 == variant.getSourceEntries().size(), "VariantMongoWriter assumes that there's only " +
                 "one study being loaded, so there should only be 0 or 1 VariantSourceEntries inside any Variant");
         return variant.getSourceEntries().iterator().next();
     }
 
-    private DBObject convertSourceEntry(VariantSourceEntry variantSourceEntry) {
+    private DBObject convertSourceEntry(IVariantSourceEntry variantSourceEntry) {
         VariantSourceEntryMongo variantSource;
         if (includeSamples) {
             variantSource = new VariantSourceEntryMongo(
@@ -183,7 +184,7 @@ public class VariantMongoWriter extends MongoItemWriter<Variant> {
         return (DBObject) mongoOperations.getConverter().convertToMongoType(variantSource);
     }
 
-    private BasicDBList convertStatistics(VariantSourceEntry variantSourceEntry) {
+    private BasicDBList convertStatistics(IVariantSourceEntry variantSourceEntry) {
         List<VariantStatisticsMongo> variantStats = new ArrayList<>();
         for (Map.Entry<String, VariantStatistics> variantStatsEntry : variantSourceEntry.getCohortStats().entrySet()) {
             variantStats.add(new VariantStatisticsMongo(
@@ -196,7 +197,7 @@ public class VariantMongoWriter extends MongoItemWriter<Variant> {
         return (BasicDBList) mongoOperations.getConverter().convertToMongoType(variantStats);
     }
 
-    private DBObject convertVariant(Variant variant) {
+    private DBObject convertVariant(IVariant variant) {
         SimplifiedVariant simplifiedVariant = new SimplifiedVariant(
                 variant.getType(),
                 variant.getChromosome(),
