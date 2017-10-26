@@ -28,7 +28,6 @@ import org.springframework.util.Assert;
 import uk.ac.ebi.eva.commons.core.models.IVariant;
 import uk.ac.ebi.eva.commons.core.models.IVariantSourceEntry;
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
-import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.projections.SimplifiedVariant;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
@@ -44,7 +43,7 @@ import static uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.AnnotationInde
 import static uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.AnnotationIndexMongo.XREFS_FIELD;
 
 /**
- * Write a list of {@link Variant} into MongoDB
+ * Write a list of {@link IVariant} into MongoDB
  */
 public class VariantMongoWriter extends MongoItemWriter<IVariant> {
 
