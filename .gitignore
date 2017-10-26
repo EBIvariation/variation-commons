@@ -19,3 +19,4 @@ target
 # IntelliJ files
 .idea
 *.iml
+/.project
