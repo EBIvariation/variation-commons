@@ -17,7 +17,7 @@ package uk.ac.ebi.eva.commons.mongodb.entities.subdocuments;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 
-public class SampleCategoryMongo {
+public class SamplePhenotypeMongo {
 
     public static final String NAME_FIELD = "name";
 
@@ -29,10 +29,10 @@ public class SampleCategoryMongo {
     @Field(VALUE_FIELD)
     private String value;
 
-    public SampleCategoryMongo() {
+    public SamplePhenotypeMongo() {
     }
 
-    public SampleCategoryMongo(String name, String value) {
+    public SamplePhenotypeMongo(String name, String value) {
         this.name = name;
         this.value = value;
     }

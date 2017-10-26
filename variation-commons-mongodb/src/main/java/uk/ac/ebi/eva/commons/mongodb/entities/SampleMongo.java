@@ -18,7 +18,7 @@ package uk.ac.ebi.eva.commons.mongodb.entities;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.SampleCategoryMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.SamplePhenotypeMongo;
 
 import java.util.Set;
 
@@ -31,7 +31,7 @@ public class SampleMongo {
 
     public static final String MOTHER_FIELD = "mother";
 
-    public static final String CATEGORIES_FIELDS = "categories";
+    public static final String PHENOTYPE_FIELDS = "phenotypes";
 
     @Id
     private String id;
@@ -45,18 +45,18 @@ public class SampleMongo {
     @Field(MOTHER_FIELD)
     private String mother;
 
-    @Field(CATEGORIES_FIELDS)
-    private Set<SampleCategoryMongo> categories;
+    @Field(PHENOTYPE_FIELDS)
+    private Set<SamplePhenotypeMongo> phenotypes;
 
     public SampleMongo() {
     }
 
-    public SampleMongo(String id, String sex, String father, String mother, Set<SampleCategoryMongo> categories) {
+    public SampleMongo(String id, String sex, String father, String mother, Set<SamplePhenotypeMongo> phenotypes) {
         this.id = id;
         this.sex = sex;
         this.father = father;
         this.mother = mother;
-        this.categories = categories;
+        this.phenotypes = phenotypes;
     }
 
     public String getId() {
@@ -91,11 +91,11 @@ public class SampleMongo {
         this.mother = mother;
     }
 
-    public Set<SampleCategoryMongo> getCategories() {
-        return categories;
+    public Set<SamplePhenotypeMongo> getPhenotypes() {
+        return phenotypes;
     }
 
-    public void setCategories(Set<SampleCategoryMongo> categories) {
-        this.categories = categories;
+    public void setPhenotypes(Set<SamplePhenotypeMongo> phenotypes) {
+        this.phenotypes = phenotypes;
     }
 }
