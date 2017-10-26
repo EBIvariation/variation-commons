@@ -17,6 +17,8 @@ package uk.ac.ebi.eva.commons.mongodb.writers;
 
 import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.util.Assert;
+
 import uk.ac.ebi.eva.commons.mongodb.entities.SampleMongo;
 
 public class SampleMongoWriter extends MongoItemWriter<SampleMongo> {
@@ -26,6 +28,9 @@ public class SampleMongoWriter extends MongoItemWriter<SampleMongo> {
     private String collection;
 
     public SampleMongoWriter(String collection, MongoOperations mongoOperations) {
+        Assert.notNull(mongoOperations, "A Mongo instance is required");
+        Assert.hasText(collection, "A collection name is required");
+
         this.collection = collection;
         this.mongoOperations = mongoOperations;
         this.setTemplate(mongoOperations);
