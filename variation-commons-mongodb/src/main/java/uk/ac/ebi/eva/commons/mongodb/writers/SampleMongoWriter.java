@@ -23,22 +23,9 @@ import uk.ac.ebi.eva.commons.mongodb.entities.SampleMongo;
 
 public class SampleMongoWriter extends MongoItemWriter<SampleMongo> {
 
-    private final MongoOperations mongoOperations;
-
-    private String collection;
-
-    public SampleMongoWriter(String collection, MongoOperations mongoOperations) {
+    public SampleMongoWriter(MongoOperations mongoOperations) {
         Assert.notNull(mongoOperations, "A Mongo instance is required");
-        Assert.hasText(collection, "A collection name is required");
 
-        this.collection = collection;
-        this.mongoOperations = mongoOperations;
         this.setTemplate(mongoOperations);
-        this.createIndexes();
-    }
-
-    private void createIndexes() {
-        // TODO: any indexes to add? if we are just going to look for id, then this method and the collection
-        // field are not needed
     }
 }

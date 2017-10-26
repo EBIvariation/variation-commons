@@ -55,7 +55,7 @@ public class SampleMongoWriterTest {
     @Before
     public void setUp() {
         dbCollection = mongoOperations.getCollection(samplesCollection);
-        sampleMongoWriter = new SampleMongoWriter(samplesCollection, mongoOperations);
+        sampleMongoWriter = new SampleMongoWriter(mongoOperations);
     }
 
     @After
