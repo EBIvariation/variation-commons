@@ -87,7 +87,7 @@ public class SampleMongoWriterTest {
     @Test
     public void sameSampleWrittenTwiceShouldBeStoredJustOnce() throws Exception {
         SamplePhenotypeMongo phenotype1 = new SamplePhenotypeMongo("category1", "value1");
-        SampleMongo sample1 = new SampleMongo("id1", "V", "father1", "mother1", buildPhenotypeSet(phenotype1)());
+        SampleMongo sample1 = new SampleMongo("id1", "V", "father1", "mother1", buildPhenotypeSet(phenotype1));
 
         sampleMongoWriter.write(Arrays.asList(sample1, sample1));
 
