@@ -71,6 +71,12 @@ public class MongoRepositoryTestConfiguration {
     }
 
     @Bean
+    public String mongoCollectionsSamples(@Value("${eva.mongo.collections.samples:#{null}}") String collectionSamples) {
+        Assert.notNull(collectionSamples);
+        return collectionSamples;
+    }
+
+    @Bean
     public MongoClient mongoClient() {
         return new Fongo("defaultInstance").getMongo();
     }
