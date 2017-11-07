@@ -64,21 +64,6 @@ public class VariantSourceEntryWithSampleNames extends AbstractVariantSourceEntr
         }
     }
 
-
-    public VariantSourceEntryWithSampleNames(IVariantSourceEntry variantSourceEntry) {
-        super(variantSourceEntry.getFileId(), variantSourceEntry.getStudyId(),
-              variantSourceEntry.getSecondaryAlternates(), variantSourceEntry.getFormat(),
-              variantSourceEntry.getCohortStats(), variantSourceEntry.getAttributes());
-
-        Set<String> sampleNames = new HashSet<>();
-        for (Map<String, String> stringStringMap : variantSourceEntry.getSamplesData()) {
-            sampleNames.addAll(stringStringMap.keySet());
-        }
-        HashMap<String, Map<String, String>> samplesData = joinSamplesDataWithSampleNamesHelper(variantSourceEntry, new ArrayList<>(sampleNames));
-        this.samplesData = new LinkedHashMap<>();
-        this.samplesData.putAll(samplesData);
-    }
-
     public List<Map<String, String>> getSamplesData() {
         return new ArrayList<>(samplesData.values());
     }

@@ -23,6 +23,7 @@ import uk.ac.ebi.eva.commons.core.models.IVariantSourceEntry;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,11 +52,11 @@ public class VariantWithSamplesAndAnnotation extends AbstractVariant {
         sourceEntries = new HashMap<>();
     }
 
-    public VariantWithSamplesAndAnnotation(IVariant variant) {
+    public VariantWithSamplesAndAnnotation(IVariant variant, List<String> sampleNames) {
         super(variant.getChromosome(), variant.getStart(), variant.getEnd(), variant.getReference(), variant.getAlternate());
         this.sourceEntries = new HashMap<>();
         for (IVariantSourceEntry entry : variant.getSourceEntries()) {
-            VariantSourceEntryWithSampleNames entrySN = new VariantSourceEntryWithSampleNames(entry);
+            VariantSourceEntryWithSampleNames entrySN = new VariantSourceEntryWithSampleNames(entry, sampleNames);
             this.sourceEntries.put(getSourceEntryIndex(entrySN), entrySN);
         }
     }
