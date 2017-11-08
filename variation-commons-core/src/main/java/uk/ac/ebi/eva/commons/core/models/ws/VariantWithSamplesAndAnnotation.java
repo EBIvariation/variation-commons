@@ -17,13 +17,14 @@ package uk.ac.ebi.eva.commons.core.models.ws;
 
 import uk.ac.ebi.eva.commons.core.models.AbstractVariant;
 import uk.ac.ebi.eva.commons.core.models.Annotation;
+import uk.ac.ebi.eva.commons.core.models.IVariant;
+import uk.ac.ebi.eva.commons.core.models.IVariantSourceEntry;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * A mutation in the genome, defined as a change from a reference to an alternate allele in a certain position of
@@ -50,6 +51,18 @@ public class VariantWithSamplesAndAnnotation extends AbstractVariant {
         super(chromosome, start, end, reference, alternate);
         sourceEntries = new HashMap<>();
     }
+
+    public VariantWithSamplesAndAnnotation(IVariant variant, List<String> sampleNames) {
+        super(variant.getChromosome(), variant.getStart(), variant.getEnd(), variant.getReference(),
+              variant.getAlternate());
+        this.sourceEntries = new HashMap<>();
+        for (IVariantSourceEntry entry : variant.getSourceEntries()) {
+            VariantSourceEntryWithSampleNames entryWithSampleNames = new VariantSourceEntryWithSampleNames(entry,
+                                                                                                           sampleNames);
+            this.sourceEntries.put(getSourceEntryIndex(entryWithSampleNames), entryWithSampleNames);
+        }
+    }
+
 
     public void setAnnotation(Annotation annotation) {
         this.annotation = annotation;
