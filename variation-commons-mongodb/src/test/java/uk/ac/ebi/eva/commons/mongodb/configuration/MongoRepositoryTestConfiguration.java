@@ -28,6 +28,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
+import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.util.Assert;
 
@@ -84,6 +85,9 @@ public class MongoRepositoryTestConfiguration {
     @Bean
     public MongoTemplate mongoTemplate(MongoDbFactory mongoDbFactory,
                                        MappingMongoConverter mappingMongoConverter) throws Exception {
+        mappingMongoConverter.setTypeMapper(new DefaultMongoTypeMapper(null));
+        // Customization: replace dots with pound sign
+        mappingMongoConverter.setMapKeyDotReplacement("£");
         return new MongoTemplate(mongoDbFactory, mappingMongoConverter);
     }
 
