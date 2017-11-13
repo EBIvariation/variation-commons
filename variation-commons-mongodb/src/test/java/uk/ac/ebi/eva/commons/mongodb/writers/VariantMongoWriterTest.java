@@ -37,6 +37,7 @@ import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfigurat
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -53,6 +54,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.ALTERNATE_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.CHROMOSOME_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.DBSNP_IDS_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.END_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.FILES_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.IDS_FIELD;
@@ -209,8 +211,10 @@ public class VariantMongoWriterTest {
         Variant variant = buildVariantWithStats("12", 3, 4, "A", "T", "fileId", "studyId");
         String mainId = "b";
         HashSet<String> ids = new HashSet<>(Arrays.asList("a", mainId, "c"));
+        HashSet<String> dbsnpIds = new HashSet<>(Arrays.asList("d", mainId, "e"));
         variant.setIds(ids);
         variant.setMainId(mainId);
+        variant.setDbsnpIds(dbsnpIds);
 
         VariantMongoWriter variantMongoWriter = new VariantMongoWriter(collectionName, mongoOperations, false, true);
         variantMongoWriter.write(Collections.singletonList(variant));
@@ -218,12 +222,16 @@ public class VariantMongoWriterTest {
         DBCollection dbCollection = mongoOperations.getCollection(collectionName);
         assertEquals(1, dbCollection.count());
         final DBObject storedVariant = dbCollection.findOne();
-        BasicDBList dbIds = (BasicDBList) storedVariant.get(IDS_FIELD);
-        for (String id : ids) {
-            assertTrue(dbIds.contains(id));
-        }
-        assertEquals(ids.size(), dbIds.size());
+        assertBasicDBListEquals(ids, (BasicDBList) storedVariant.get(IDS_FIELD));
+        assertBasicDBListEquals(dbsnpIds, (BasicDBList) storedVariant.get(DBSNP_IDS_FIELD));
         assertEquals(mainId, storedVariant.get(MAIN_ID_FIELD));
+    }
+
+    private void assertBasicDBListEquals(Collection<String> expected, BasicDBList actual) {
+        for (String expectedElement : expected) {
+            assertTrue(actual.contains(expectedElement));
+        }
+        assertEquals(expected.size(), actual.size());
     }
 
     @Test
@@ -238,6 +246,7 @@ public class VariantMongoWriterTest {
         final DBObject storedVariant = dbCollection.findOne();
         assertNull(storedVariant.get(IDS_FIELD));
         assertNull(storedVariant.get(MAIN_ID_FIELD));
+        assertNull(storedVariant.get(DBSNP_IDS_FIELD));
     }
 
     @Test

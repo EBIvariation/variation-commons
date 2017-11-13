@@ -42,6 +42,10 @@ public interface IVariant {
 
     default String getMainId() { return null; }
 
+    /** @deprecated this field is temporal, use getIds or getMainId instead */
+    @Deprecated
+    Set<String> getDbsnpIds();
+
     Map<String, Set<String>> getHgvs();
 
     Collection<? extends IVariantSourceEntry> getSourceEntries();

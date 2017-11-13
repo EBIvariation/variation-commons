@@ -79,6 +79,13 @@ public abstract class AbstractVariant implements IVariant {
     private final Set<String> ids;
 
     /**
+     * Set of identifiers used for this genomic variation, according to dbsnp.
+     * @deprecated this field is temporal for the dbsnp import, use getIds or getMainId instead
+     */
+    @Deprecated
+    private final Set<String> dbsnpIds;
+
+    /**
      * Unique identifier following the HGVS nomenclature.
      */
     private final Map<String, Set<String>> hgvs;
@@ -91,6 +98,7 @@ public abstract class AbstractVariant implements IVariant {
         this.alternate = null;
         this.mainId = null;
         this.ids = new HashSet<>();
+        this.dbsnpIds = new HashSet<>();
         this.hgvs = new HashMap<>();
     }
 
@@ -110,6 +118,7 @@ public abstract class AbstractVariant implements IVariant {
         this.mainId = null;
 
         this.ids = new HashSet<>();
+        this.dbsnpIds = new HashSet<>();
         this.hgvs = new HashMap<>();
         if (getType() == VariantType.SNV) { // Generate HGVS code only for SNVs
             Set<String> hgvsCodes = new HashSet<>();
@@ -183,6 +192,19 @@ public abstract class AbstractVariant implements IVariant {
 
     public Set<String> getIds() {
         return Collections.unmodifiableSet(ids);
+    }
+
+    public void addDbsnpId(String id) {
+        this.dbsnpIds.add(id);
+    }
+
+    public void setDbsnpIds(Set<String> ids) {
+        this.dbsnpIds.clear();
+        this.dbsnpIds.addAll(ids);
+    }
+
+    public Set<String> getDbsnpIds() {
+        return Collections.unmodifiableSet(dbsnpIds);
     }
 
     public boolean addHgvs(String type, String value) {

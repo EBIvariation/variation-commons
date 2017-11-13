@@ -70,6 +70,8 @@ public class VariantMongo {
 
     public final static String IDS_FIELD = "ids";
 
+    public final static String DBSNP_IDS_FIELD = "dbsnpIds";
+
     public final static String MAIN_ID_FIELD = "mainId";
 
     public final static String FILES_FIELD = "files";

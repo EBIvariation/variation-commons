@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.ANNOTATION_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.DBSNP_IDS_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.IDS_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.MAIN_ID_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.AnnotationIndexMongo.SO_ACCESSION_FIELD;
@@ -171,6 +172,10 @@ public class VariantMongoWriter extends MongoItemWriter<IVariant> {
 
         if (variant.getIds() != null && !variant.getIds().isEmpty()) {
             addToSet.put(IDS_FIELD, new BasicDBObject("$each", variant.getIds()));
+        }
+
+        if (variant.getIds() != null && !variant.getIds().isEmpty()) {
+            addToSet.put(DBSNP_IDS_FIELD, new BasicDBObject("$each", variant.getDbsnpIds()));
         }
 
         if (!addToSet.isEmpty()) {
