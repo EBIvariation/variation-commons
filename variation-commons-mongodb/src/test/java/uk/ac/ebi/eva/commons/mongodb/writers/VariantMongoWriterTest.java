@@ -56,6 +56,7 @@ import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.CHROMOSOME_FIE
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.END_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.FILES_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.IDS_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.MAIN_ID_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.REFERENCE_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.START_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.STATISTICS_FIELD;
@@ -206,8 +207,10 @@ public class VariantMongoWriterTest {
     @Test
     public void idsIfPresentShouldBeWrittenIntoTheVariant() throws Exception {
         Variant variant = buildVariantWithStats("12", 3, 4, "A", "T", "fileId", "studyId");
-        HashSet<String> ids = new HashSet<>(Arrays.asList("a", "b", "c"));
+        String mainId = "b";
+        HashSet<String> ids = new HashSet<>(Arrays.asList("a", mainId, "c"));
         variant.setIds(ids);
+        variant.setMainId(mainId);
 
         VariantMongoWriter variantMongoWriter = new VariantMongoWriter(collectionName, mongoOperations, false, true);
         variantMongoWriter.write(Collections.singletonList(variant));
@@ -220,6 +223,7 @@ public class VariantMongoWriterTest {
             assertTrue(dbIds.contains(id));
         }
         assertEquals(ids.size(), dbIds.size());
+        assertEquals(mainId, storedVariant.get(MAIN_ID_FIELD));
     }
 
     @Test
@@ -233,6 +237,7 @@ public class VariantMongoWriterTest {
         assertEquals(1, dbCollection.count());
         final DBObject storedVariant = dbCollection.findOne();
         assertNull(storedVariant.get(IDS_FIELD));
+        assertNull(storedVariant.get(MAIN_ID_FIELD));
     }
 
     @Test
