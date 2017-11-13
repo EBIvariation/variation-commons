@@ -28,8 +28,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import uk.ac.ebi.eva.commons.core.models.IVariantGlobalStats;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
-import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantGlobalStatsMongo;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
 
 import java.util.ArrayList;
@@ -147,7 +147,7 @@ public class VariantSourceRepositoryTest {
         assertEquals(1, variantSourceMongoList.size());
 
         VariantSourceMongo variantSourceMongo = variantSourceMongoList.get(0);
-        VariantGlobalStatsMongo variantGlobalStatsMongo = variantSourceMongo.getStats();
+        IVariantGlobalStats variantGlobalStatsMongo = variantSourceMongo.getStats();
 
         assertNotEquals(0, variantGlobalStatsMongo.getSamplesCount());
         assertNotEquals(0, variantGlobalStatsMongo.getVariantsCount());

@@ -18,6 +18,7 @@ package uk.ac.ebi.eva.commons.mongodb.entities;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import uk.ac.ebi.eva.commons.core.models.Aggregation;
+import uk.ac.ebi.eva.commons.core.models.IVariantGlobalStats;
 import uk.ac.ebi.eva.commons.core.models.IVariantSource;
 import uk.ac.ebi.eva.commons.core.models.StudyType;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantGlobalStatsMongo;
@@ -98,6 +99,27 @@ public class VariantSourceMongo implements IVariantSource {
         );
     }
 
+    public VariantSourceMongo(IVariantSource variantSource) {
+        this.fileId = variantSource.getFileId();
+        this.fileName = variantSource.getFileName();
+        this.studyId = variantSource.getStudyId();
+        this.studyName = variantSource.getStudyName();
+        this.type = variantSource.getType();
+        this.aggregation = variantSource.getAggregation();
+        this.samplesPosition = new HashMap<>();
+        Map<String,Integer> samplesPosition = variantSource.getSamplesPosition();
+        if (samplesPosition != null && !samplesPosition.isEmpty()) {
+            this.samplesPosition.putAll(samplesPosition);
+        }
+        this.metadata = new HashMap<>();
+        Map<String, Object> metadata = variantSource.getMetadata();
+        if (metadata != null && !metadata.isEmpty()) {
+            this.metadata.putAll(metadata);
+        }
+        this.stats = (VariantGlobalStatsMongo)(variantSource.getStats());
+        this.date = variantSource.getDate();
+    }
+
     public VariantSourceMongo(String fileId, String fileName, String studyId, String studyName,
                               StudyType type, Aggregation aggregation,
                               Map<String, Integer> samplesPosition, Map<String, Object> metadata,
@@ -154,6 +176,10 @@ public class VariantSourceMongo implements IVariantSource {
 
     public Map<String, Integer> getSamplesPosition() {
         return samplesPosition;
+    }
+
+    public void setSamplesPosition(Map<String, Integer> samplesPosition) {
+        this.samplesPosition = samplesPosition;
     }
 
     public Map<String, Object> getMetadata() {

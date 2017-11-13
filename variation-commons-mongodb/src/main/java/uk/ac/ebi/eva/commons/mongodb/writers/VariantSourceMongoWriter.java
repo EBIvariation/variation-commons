@@ -20,12 +20,17 @@ import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.util.Assert;
 
-import uk.ac.ebi.eva.commons.core.models.VariantSource;
+import uk.ac.ebi.eva.commons.core.models.IVariantSource;
+import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * Write a list of {@link VariantSource} into MongoDB
+ * Write a list of {@link VariantSourceMongo} into MongoDB
  */
-public class VariantSourceMongoWriter extends MongoItemWriter<VariantSource> {
+public class VariantSourceMongoWriter extends MongoItemWriter<IVariantSource> {
 
     public static final String UNIQUE_FILE_INDEX_NAME = "unique_file";
 
@@ -54,9 +59,16 @@ public class VariantSourceMongoWriter extends MongoItemWriter<VariantSource> {
 
     private void createIndexes() {
         mongoOperations.getCollection(collection).createIndex(
-                new BasicDBObject(VariantSource.STUDYID_FIELD, 1).append(VariantSource.FILEID_FIELD, 1)
-                        .append(VariantSource.FILENAME_FIELD, 1),
+                new BasicDBObject(VariantSourceMongo.STUDYID_FIELD, 1).append(VariantSourceMongo.FILEID_FIELD, 1)
+                        .append(VariantSourceMongo.FILENAME_FIELD, 1),
                 new BasicDBObject(BACKGROUND_INDEX, true).append(UNIQUE_INDEX, true)
                         .append(INDEX_NAME, UNIQUE_FILE_INDEX_NAME));
+    }
+
+    @Override
+    public void write(List<? extends IVariantSource> items) throws Exception {
+        List<VariantSourceMongo> convertedList = items.stream().map(VariantSourceMongo::new).
+                collect(Collectors.toList());
+        super.write(convertedList);
     }
 }

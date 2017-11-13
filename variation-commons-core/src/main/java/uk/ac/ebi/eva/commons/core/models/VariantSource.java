@@ -15,7 +15,6 @@
  */
 package uk.ac.ebi.eva.commons.core.models;
 
-import org.springframework.data.mongodb.core.mapping.Field;
 import uk.ac.ebi.eva.commons.core.models.stats.VariantGlobalStats;
 
 import java.util.Date;
@@ -26,76 +25,24 @@ import java.util.Map;
  */
 public class VariantSource implements IVariantSource {
 
-    public final static String FILEID_FIELD = "fid";
-
-    public final static String FILENAME_FIELD = "fname";
-
-    public final static String STUDYID_FIELD = "sid";
-
-    public final static String STUDYNAME_FIELD = "sname";
-
-    public final static String STUDYTYPE_FIELD = "stype";
-
-    public final static String AGGREGATION_FIELD = "aggregation";
-
-    public final static String DATE_FIELD = "date";
-
-    public final static String SAMPLES_FIELD = "samp";
-
-    public final static String STATISTICS_FIELD = "st";
-
-    public final static String STATISTICS_NUMSAMPLES_FIELD = "nSamp";
-
-    public final static String STATISTICS_NUMVARIANTS_FIELD = "nVar";
-
-    public final static String STATISTICS_NUMSNPS_FIELD = "nSnp";
-
-    public final static String STATISTICS_NUMINDELS_FIELD = "nIndel";
-
-    public final static String STATISTICS_NUMSTRUCTURAL_FIELD = "nSv";
-
-    public final static String STATISTICS_NUMPASSFILTERS_FIELD = "nPass";
-
-    public final static String STATISTICS_NUMTRANSITIONS_FIELD = "nTi";
-
-    public final static String STATISTICS_NUMTRANSVERSIONS_FIELD = "nTv";
-
-    public final static String STATISTICS_MEANQUALITY_FIELD = "meanQ";
-
-    public final static String METADATA_FIELD = "meta";
-
-    public final static String METADATA_FILEFORMAT_FIELD = "fileformat";
-
-    public final static String METADATA_HEADER_FIELD = "header";
-
-    @Field(value = FILEID_FIELD)
     private String fileId;
 
-    @Field(value = FILENAME_FIELD)
     private String fileName;
 
-    @Field(value = STUDYID_FIELD)
     private String studyId;
 
-    @Field(value = STUDYNAME_FIELD)
     private String studyName;
 
-    @Field(value = STUDYTYPE_FIELD)
     private StudyType type;
 
-    @Field(value = AGGREGATION_FIELD)
     private Aggregation aggregation;
 
-    @Field(value = DATE_FIELD)
     private Date date;
 
-    @Field(value = SAMPLES_FIELD)
     private Map<String, Integer> samplesPosition;
 
-    @Field(value = METADATA_FIELD)
     private Map<String, Object> metadata;
 
-    @Field(value = STATISTICS_FIELD)
     private VariantGlobalStats stats;
 
     VariantSource() {
@@ -138,80 +85,50 @@ public class VariantSource implements IVariantSource {
     public String getFileId() {
         return fileId;
     }
-    public void setFileId(String fileId) {
-        this.fileId = fileId;
-    }
 
     @Override
     public String getFileName() {
         return fileName;
-    }
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
     }
 
     @Override
     public String getStudyId() {
         return studyId;
     }
-    public void setStudyId(String studyId) {
-        this.studyId = studyId;
-    }
 
     @Override
     public String getStudyName() {
         return studyName;
-    }
-    public void setStudyName(String studyName) {
-        this.studyName = studyName;
     }
 
     @Override
     public StudyType getType() {
         return type;
     }
-    public void setType(StudyType type) {
-        this.type = type;
-    }
 
     @Override
     public Aggregation getAggregation() {
         return aggregation;
-    }
-    public void setAggregation(Aggregation aggregation) {
-        this.aggregation = aggregation;
     }
 
     @Override
     public Date getDate() {
         return date;
     }
-    public void setDate(Date date) {
-        this.date = date;
-    }
 
     @Override
     public Map<String, Integer> getSamplesPosition() {
         return samplesPosition;
-    }
-    public void setSamplesPosition(Map<String, Integer> samplesPosition) {
-        this.samplesPosition = samplesPosition;
     }
 
     @Override
     public Map<String, Object> getMetadata() {
         return metadata;
     }
-    public void setMetadata(Map<String, Object> metadata) {
-        this.metadata = metadata;
-    }
 
     @Override
     public VariantGlobalStats getStats() {
         return stats;
-    }
-    public void setStats(VariantGlobalStats stats) {
-        this.stats = stats;
     }
 
     @Override
