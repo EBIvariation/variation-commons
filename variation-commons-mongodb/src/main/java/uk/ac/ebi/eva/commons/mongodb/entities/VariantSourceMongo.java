@@ -102,23 +102,10 @@ public class VariantSourceMongo implements IVariantSource {
 
     public VariantSourceMongo(IVariantSource variantSource) {
 
-        this.samplesPosition = new HashMap<>();
-        Map<String,Integer> samplesPosition = variantSource.getSamplesPosition();
-
-        this.metadata = new HashMap<>();
-        Map<String, Object> metadata = variantSource.getMetadata();
-
-        IVariantGlobalStats iVariantGlobalStats = variantSource.getStats();
-        VariantGlobalStatsMongo variantGlobalStatsMongo = new VariantGlobalStatsMongo(
-                iVariantGlobalStats.getVariantsCount(), iVariantGlobalStats.getSamplesCount(),
-                iVariantGlobalStats.getSnpsCount(), iVariantGlobalStats.getIndelsCount(),
-                iVariantGlobalStats.getStructuralCount(), iVariantGlobalStats.getPassCount(),
-                iVariantGlobalStats.getTransitionsCount(), iVariantGlobalStats.getTransversionsCount(),
-                iVariantGlobalStats.getMeanQuality());
-
-        VariantSourceMongo returnObj = new VariantSourceMongo(variantSource.getFileId(), variantSource.getFileName(),
+        this(variantSource.getFileId(), variantSource.getFileName(),
                 variantSource.getStudyId(), variantSource.getStudyName(), variantSource.getType(),
-                variantSource.getAggregation(), samplesPosition, metadata, variantGlobalStatsMongo);
+                variantSource.getAggregation(), variantSource.getSamplesPosition(), variantSource.getMetadata(),
+                new VariantGlobalStatsMongo(variantSource.getStats()));
     }
 
     public VariantSourceMongo(String fileId, String fileName, String studyId, String studyName,

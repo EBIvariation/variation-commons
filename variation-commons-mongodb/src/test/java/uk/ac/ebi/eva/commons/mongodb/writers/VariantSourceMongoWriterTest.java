@@ -20,6 +20,8 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,6 +35,7 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantGlobalStatsMongo;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -68,14 +71,22 @@ public class VariantSourceMongoWriterTest {
     @Autowired
     private MongoOperations mongoOperations;
 
+    @Before
+    public void setUp() throws Exception {
+        mongoOperations.dropCollection(COLLECTION_FILES_NAME);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        mongoOperations.dropCollection(COLLECTION_FILES_NAME);
+    }
+
     @Test
     public void shouldWriteAllFieldsIntoMongoDb() throws Exception {
 
-        String collectionName = COLLECTION_FILES_NAME + ThreadLocalRandom.current().nextInt(0, 100000);
-        DBCollection fileCollection = mongoOperations.getCollection (collectionName);
-
+        DBCollection fileCollection = mongoOperations.getCollection (COLLECTION_FILES_NAME);
         VariantSourceMongoWriter filesWriter = new VariantSourceMongoWriter(
-                mongoOperations, collectionName);
+                mongoOperations, COLLECTION_FILES_NAME);
 
         VariantSourceMongo variantSource = getVariantSource();
         filesWriter.write(Collections.singletonList(variantSource));
@@ -108,11 +119,10 @@ public class VariantSourceMongoWriterTest {
     @Test
     public void shouldWriteSamplesWithDotsInName() throws Exception {
 
-        String collectionName = COLLECTION_FILES_NAME + ThreadLocalRandom.current().nextInt(0, 100000);
-        DBCollection fileCollection = mongoOperations.getCollection(collectionName);
+        DBCollection fileCollection = mongoOperations.getCollection(COLLECTION_FILES_NAME);
 
         VariantSourceMongoWriter filesWriter = new VariantSourceMongoWriter(
-                mongoOperations, collectionName);
+                mongoOperations, COLLECTION_FILES_NAME);
 
         VariantSourceMongo variantSource = getVariantSource();
         Map<String, Integer> samplesPosition = new HashMap<>();
@@ -138,10 +148,8 @@ public class VariantSourceMongoWriterTest {
     @Test
     public void shouldCreateUniqueFileIndex() throws Exception {
 
-        String collectionName = COLLECTION_FILES_NAME + ThreadLocalRandom.current().nextInt(0, 100000);
-        DBCollection fileCollection = mongoOperations.getCollection (collectionName);
-
-        VariantSourceMongoWriter filesWriter = new VariantSourceMongoWriter( mongoOperations, collectionName);
+        DBCollection fileCollection = mongoOperations.getCollection (COLLECTION_FILES_NAME);
+        VariantSourceMongoWriter filesWriter = new VariantSourceMongoWriter( mongoOperations, COLLECTION_FILES_NAME);
 
         VariantSourceMongo variantSource = getVariantSource();
         filesWriter.write(Collections.singletonList(variantSource));
@@ -177,6 +185,8 @@ public class VariantSourceMongoWriterTest {
         metadata.put("INFO", "INFO field");
         metadata.put("FORMAT", "FORMAT field");
         return new VariantSourceMongo(FILE_ID, "CHICKEN_SNPS_LAYER", STUDY_ID, STUDY_NAME, STUDY_TYPE,
-                AGGREGATION, samplesPosition, metadata, null);
+                AGGREGATION, samplesPosition, metadata,
+                new VariantGlobalStatsMongo(0,0,0, 0,
+                        0, 0, 0, 0, 0));
     }
 }
