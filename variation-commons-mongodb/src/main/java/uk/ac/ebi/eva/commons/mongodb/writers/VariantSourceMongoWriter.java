@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Write a list of {@link VariantSourceMongo} into MongoDB
+ * Write a list of {@link IVariantSource} into MongoDB
  */
 public class VariantSourceMongoWriter extends MongoItemWriter<IVariantSource> {
 
@@ -67,8 +67,9 @@ public class VariantSourceMongoWriter extends MongoItemWriter<IVariantSource> {
 
     @Override
     public void write(List<? extends IVariantSource> items) throws Exception {
-        List<VariantSourceMongo> convertedList = items.stream().map(VariantSourceMongo::new).
-                collect(Collectors.toList());
+        List<VariantSourceMongo> convertedList = items.stream()
+                .map(VariantSourceMongo::new)
+                .collect(Collectors.toList());
         super.write(convertedList);
     }
 }

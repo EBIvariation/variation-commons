@@ -21,6 +21,7 @@ import uk.ac.ebi.eva.commons.core.models.Aggregation;
 import uk.ac.ebi.eva.commons.core.models.IVariantGlobalStats;
 import uk.ac.ebi.eva.commons.core.models.IVariantSource;
 import uk.ac.ebi.eva.commons.core.models.StudyType;
+import uk.ac.ebi.eva.commons.core.models.stats.VariantGlobalStats;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantGlobalStatsMongo;
 
 import java.util.Calendar;
@@ -100,24 +101,24 @@ public class VariantSourceMongo implements IVariantSource {
     }
 
     public VariantSourceMongo(IVariantSource variantSource) {
-        this.fileId = variantSource.getFileId();
-        this.fileName = variantSource.getFileName();
-        this.studyId = variantSource.getStudyId();
-        this.studyName = variantSource.getStudyName();
-        this.type = variantSource.getType();
-        this.aggregation = variantSource.getAggregation();
+
         this.samplesPosition = new HashMap<>();
         Map<String,Integer> samplesPosition = variantSource.getSamplesPosition();
-        if (samplesPosition != null && !samplesPosition.isEmpty()) {
-            this.samplesPosition.putAll(samplesPosition);
-        }
+
         this.metadata = new HashMap<>();
         Map<String, Object> metadata = variantSource.getMetadata();
-        if (metadata != null && !metadata.isEmpty()) {
-            this.metadata.putAll(metadata);
-        }
-        this.stats = (VariantGlobalStatsMongo)(variantSource.getStats());
-        this.date = variantSource.getDate();
+
+        IVariantGlobalStats iVariantGlobalStats = variantSource.getStats();
+        VariantGlobalStatsMongo variantGlobalStatsMongo = new VariantGlobalStatsMongo(
+                iVariantGlobalStats.getVariantsCount(), iVariantGlobalStats.getSamplesCount(),
+                iVariantGlobalStats.getSnpsCount(), iVariantGlobalStats.getIndelsCount(),
+                iVariantGlobalStats.getStructuralCount(), iVariantGlobalStats.getPassCount(),
+                iVariantGlobalStats.getTransitionsCount(), iVariantGlobalStats.getTransversionsCount(),
+                iVariantGlobalStats.getMeanQuality());
+
+        VariantSourceMongo returnObj = new VariantSourceMongo(variantSource.getFileId(), variantSource.getFileName(),
+                variantSource.getStudyId(), variantSource.getStudyName(), variantSource.getType(),
+                variantSource.getAggregation(), samplesPosition, metadata, variantGlobalStatsMongo);
     }
 
     public VariantSourceMongo(String fileId, String fileName, String studyId, String studyName,
