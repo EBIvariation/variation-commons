@@ -18,8 +18,10 @@ package uk.ac.ebi.eva.commons.mongodb.entities;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import uk.ac.ebi.eva.commons.core.models.Aggregation;
+import uk.ac.ebi.eva.commons.core.models.IVariantGlobalStats;
 import uk.ac.ebi.eva.commons.core.models.IVariantSource;
 import uk.ac.ebi.eva.commons.core.models.StudyType;
+import uk.ac.ebi.eva.commons.core.models.stats.VariantGlobalStats;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantGlobalStatsMongo;
 
 import java.util.Calendar;
@@ -98,6 +100,13 @@ public class VariantSourceMongo implements IVariantSource {
         );
     }
 
+    public VariantSourceMongo(IVariantSource variantSource) {
+        this(variantSource.getFileId(), variantSource.getFileName(),
+                variantSource.getStudyId(), variantSource.getStudyName(), variantSource.getType(),
+                variantSource.getAggregation(), variantSource.getSamplesPosition(), variantSource.getMetadata(),
+                new VariantGlobalStatsMongo(variantSource.getStats()));
+    }
+
     public VariantSourceMongo(String fileId, String fileName, String studyId, String studyName,
                               StudyType type, Aggregation aggregation,
                               Map<String, Integer> samplesPosition, Map<String, Object> metadata,
@@ -154,6 +163,10 @@ public class VariantSourceMongo implements IVariantSource {
 
     public Map<String, Integer> getSamplesPosition() {
         return samplesPosition;
+    }
+
+    public void setSamplesPosition(Map<String, Integer> samplesPosition) {
+        this.samplesPosition = samplesPosition;
     }
 
     public Map<String, Object> getMetadata() {
