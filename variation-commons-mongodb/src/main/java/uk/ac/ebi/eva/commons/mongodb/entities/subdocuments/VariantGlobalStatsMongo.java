@@ -72,8 +72,7 @@ public class VariantGlobalStatsMongo implements IVariantGlobalStats {
         // Spring empty constructor
     }
 
-    public VariantGlobalStatsMongo (IVariantGlobalStats iVariantGlobalStats)
-    {
+    public VariantGlobalStatsMongo (IVariantGlobalStats iVariantGlobalStats) {
         this(iVariantGlobalStats.getVariantsCount(), iVariantGlobalStats.getSamplesCount(),
                 iVariantGlobalStats.getSnpsCount(), iVariantGlobalStats.getIndelsCount(),
                 iVariantGlobalStats.getStructuralCount(), iVariantGlobalStats.getPassCount(),

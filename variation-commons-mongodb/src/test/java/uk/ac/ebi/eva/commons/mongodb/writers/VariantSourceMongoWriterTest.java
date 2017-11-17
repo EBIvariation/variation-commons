@@ -83,7 +83,6 @@ public class VariantSourceMongoWriterTest {
 
     @Test
     public void shouldWriteAllFieldsIntoMongoDb() throws Exception {
-
         DBCollection fileCollection = mongoOperations.getCollection (COLLECTION_FILES_NAME);
         VariantSourceMongoWriter filesWriter = new VariantSourceMongoWriter(
                 mongoOperations, COLLECTION_FILES_NAME);
@@ -118,7 +117,6 @@ public class VariantSourceMongoWriterTest {
 
     @Test
     public void shouldWriteSamplesWithDotsInName() throws Exception {
-
         DBCollection fileCollection = mongoOperations.getCollection(COLLECTION_FILES_NAME);
 
         VariantSourceMongoWriter filesWriter = new VariantSourceMongoWriter(
@@ -147,7 +145,6 @@ public class VariantSourceMongoWriterTest {
 
     @Test
     public void shouldCreateUniqueFileIndex() throws Exception {
-
         DBCollection fileCollection = mongoOperations.getCollection (COLLECTION_FILES_NAME);
         VariantSourceMongoWriter filesWriter = new VariantSourceMongoWriter( mongoOperations, COLLECTION_FILES_NAME);
 

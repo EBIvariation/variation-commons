@@ -101,7 +101,6 @@ public class VariantSourceMongo implements IVariantSource {
     }
 
     public VariantSourceMongo(IVariantSource variantSource) {
-
         this(variantSource.getFileId(), variantSource.getFileName(),
                 variantSource.getStudyId(), variantSource.getStudyName(), variantSource.getType(),
                 variantSource.getAggregation(), variantSource.getSamplesPosition(), variantSource.getMetadata(),
