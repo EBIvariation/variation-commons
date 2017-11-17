@@ -80,7 +80,7 @@ public abstract class AbstractVariant implements IVariant {
 
     /**
      * Set of identifiers used for this genomic variation, according to dbsnp.
-     * @deprecated this field is temporal for the dbsnp import, use getIds or getMainId instead
+     * @deprecated this field is temporary for the dbsnp import, use getIds or getMainId instead
      */
     @Deprecated
     private final Set<String> dbsnpIds;

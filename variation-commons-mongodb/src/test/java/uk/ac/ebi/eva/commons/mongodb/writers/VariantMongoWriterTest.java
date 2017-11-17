@@ -82,7 +82,7 @@ public class VariantMongoWriterTest {
 
     private static final HashSet<String> DBSNP_IDS = new HashSet<>(Arrays.asList("d", MAIN_ID, "e"));
 
-    private final String COLLECTION_NAME = "variants";
+    private static final String COLLECTION_NAME = "variants";
 
     @Autowired
     private MongoOperations mongoOperations;

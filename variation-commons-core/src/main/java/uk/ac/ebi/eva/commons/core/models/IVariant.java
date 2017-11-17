@@ -42,7 +42,7 @@ public interface IVariant {
 
     default String getMainId() { return null; }
 
-    /** @deprecated this field is temporal, use getIds or getMainId instead */
+    /** @deprecated this field is temporary, use getIds or getMainId instead */
     @Deprecated
     Set<String> getDbsnpIds();
 
