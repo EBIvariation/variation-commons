@@ -37,6 +37,7 @@ import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfigurat
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -53,9 +54,11 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.ALTERNATE_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.CHROMOSOME_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.DBSNP_IDS_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.END_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.FILES_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.IDS_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.MAIN_ID_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.REFERENCE_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.START_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.STATISTICS_FIELD;
@@ -73,26 +76,32 @@ import static uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceE
 @ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class})
 public class VariantMongoWriterTest {
 
-    private final String collectionName = "variants";
+    private static final String MAIN_ID = "b";
+
+    private static final HashSet<String> IDS = new HashSet<>(Arrays.asList("a", MAIN_ID, "c"));
+
+    private static final HashSet<String> DBSNP_IDS = new HashSet<>(Arrays.asList("d", MAIN_ID, "e"));
+
+    private static final String COLLECTION_NAME = "variants";
 
     @Autowired
     private MongoOperations mongoOperations;
 
     @Before
     public void setUp() throws Exception {
-        mongoOperations.dropCollection(collectionName);
+        mongoOperations.dropCollection(COLLECTION_NAME);
     }
 
     @After
     public void tearDown() throws Exception {
-        mongoOperations.dropCollection(collectionName);
+        mongoOperations.dropCollection(COLLECTION_NAME);
     }
 
     @Test
     public void noVariantsNothingShouldBeWritten() throws UnknownHostException {
-        DBCollection dbCollection = mongoOperations.getCollection(collectionName);
+        DBCollection dbCollection = mongoOperations.getCollection(COLLECTION_NAME);
 
-        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(collectionName, mongoOperations, false, false);
+        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, false);
         variantMongoWriter.doWrite(emptyList());
 
         assertEquals(0, dbCollection.count());
@@ -103,9 +112,9 @@ public class VariantMongoWriterTest {
         Variant variant1 = new Variant("1", 1, 2, "A", "T");
         Variant variant2 = new Variant("2", 3, 4, "C", "G");
 
-        DBCollection dbCollection = mongoOperations.getCollection(collectionName);
+        DBCollection dbCollection = mongoOperations.getCollection(COLLECTION_NAME);
 
-        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(collectionName, mongoOperations, false, false);
+        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, false);
         variantMongoWriter.write(Collections.singletonList(variant1));
         variantMongoWriter.write(Collections.singletonList(variant2));
 
@@ -114,9 +123,9 @@ public class VariantMongoWriterTest {
 
     @Test
     public void indexesShouldBeCreatedInBackground() throws UnknownHostException {
-        DBCollection dbCollection = mongoOperations.getCollection(collectionName);
+        DBCollection dbCollection = mongoOperations.getCollection(COLLECTION_NAME);
 
-        new VariantMongoWriter(collectionName, mongoOperations, false, false);
+        new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, false);
 
         List<DBObject> indexInfo = dbCollection.getIndexInfo();
 
@@ -137,14 +146,18 @@ public class VariantMongoWriterTest {
         Variant variant1 = new Variant("1", 1, 2, "A", "T");
         variant1.addSourceEntry(new VariantSourceEntry("test_file", "test_study_id"));
 
-        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(collectionName, mongoOperations, false, false);
+        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, false);
         variantMongoWriter.write(Collections.singletonList(variant1));
 
         variantMongoWriter.write(Collections.singletonList(variant1));
-        DBCollection dbCollection = mongoOperations.getCollection(collectionName);
-        assertEquals(1, dbCollection.count());
-        final DBObject storedVariant = dbCollection.findOne();
+        DBObject storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
         assertEquals(1, ((BasicDBList) storedVariant.get(FILES_FIELD)).size());
+    }
+
+    private DBObject assertThereIsOnlyOneDocumentAndReturnIt() {
+        DBCollection dbCollection = mongoOperations.getCollection(COLLECTION_NAME);
+        assertEquals(1, dbCollection.count());
+        return dbCollection.findOne();
     }
 
     @Test
@@ -158,12 +171,10 @@ public class VariantMongoWriterTest {
         final String studyId = "studyId";
         Variant variant = buildVariantWithStats(chromosome, start, end, reference, alternate, fileId, studyId);
 
-        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(collectionName, mongoOperations, false, true);
+        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, true);
         variantMongoWriter.write(Collections.singletonList(variant));
 
-        DBCollection dbCollection = mongoOperations.getCollection(collectionName);
-        assertEquals(1, dbCollection.count());
-        final DBObject storedVariant = dbCollection.findOne();
+        DBObject storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
         final BasicDBList variantSources = (BasicDBList) storedVariant.get(FILES_FIELD);
         assertNotNull(variantSources);
         assertFalse(variantSources.isEmpty());
@@ -181,12 +192,10 @@ public class VariantMongoWriterTest {
     public void includeStatsTrueShouldIncludeStatistics() throws Exception {
         Variant variant = buildVariantWithStats("12", 3, 4, "A", "T", "fileId", "studyId");
 
-        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(collectionName, mongoOperations, true, false);
+        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, true, false);
         variantMongoWriter.write(Collections.singletonList(variant));
 
-        DBCollection dbCollection = mongoOperations.getCollection(collectionName);
-        assertEquals(1, dbCollection.count());
-        final DBObject storedVariant = dbCollection.findOne();
+        DBObject storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
         assertNotNull(storedVariant.get(STATISTICS_FIELD));
     }
 
@@ -194,45 +203,95 @@ public class VariantMongoWriterTest {
     public void includeStatsFalseShouldNotIncludeStatistics() throws Exception {
         Variant variant = buildVariantWithStats("12", 3, 4, "A", "T", "fileId", "studyId");
 
-        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(collectionName, mongoOperations, false, false);
+        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, false);
         variantMongoWriter.write(Collections.singletonList(variant));
 
-        DBCollection dbCollection = mongoOperations.getCollection(collectionName);
-        assertEquals(1, dbCollection.count());
-        final DBObject storedVariant = dbCollection.findOne();
+        DBObject storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
         assertNull(storedVariant.get(STATISTICS_FIELD));
     }
 
     @Test
     public void idsIfPresentShouldBeWrittenIntoTheVariant() throws Exception {
         Variant variant = buildVariantWithStats("12", 3, 4, "A", "T", "fileId", "studyId");
-        HashSet<String> ids = new HashSet<>(Arrays.asList("a", "b", "c"));
-        variant.setIds(ids);
+        variant.setIds(IDS);
+        variant.setMainId(MAIN_ID);
+        variant.setDbsnpIds(DBSNP_IDS);
 
-        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(collectionName, mongoOperations, false, true);
+        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, true);
         variantMongoWriter.write(Collections.singletonList(variant));
 
-        DBCollection dbCollection = mongoOperations.getCollection(collectionName);
-        assertEquals(1, dbCollection.count());
-        final DBObject storedVariant = dbCollection.findOne();
-        BasicDBList dbIds = (BasicDBList) storedVariant.get(IDS_FIELD);
-        for (String id : ids) {
-            assertTrue(dbIds.contains(id));
+        DBObject storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
+        assertBasicDBListEquals(IDS, (BasicDBList) storedVariant.get(IDS_FIELD));
+        assertBasicDBListEquals(DBSNP_IDS, (BasicDBList) storedVariant.get(DBSNP_IDS_FIELD));
+        assertEquals(MAIN_ID, storedVariant.get(MAIN_ID_FIELD));
+    }
+
+    private void assertBasicDBListEquals(Collection<String> expected, BasicDBList actual) {
+        for (String expectedElement : expected) {
+            assertTrue(actual.contains(expectedElement));
         }
-        assertEquals(ids.size(), dbIds.size());
+        assertEquals(expected.size(), actual.size());
     }
 
     @Test
     public void idsIfNotPresentShouldNotBeWrittenIntoTheVariant() throws Exception {
         Variant variant = buildVariantWithStats("12", 3, 4, "A", "T", "fileId", "studyId");
 
-        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(collectionName, mongoOperations, false, true);
+        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, true);
         variantMongoWriter.write(Collections.singletonList(variant));
 
-        DBCollection dbCollection = mongoOperations.getCollection(collectionName);
-        assertEquals(1, dbCollection.count());
-        final DBObject storedVariant = dbCollection.findOne();
+        DBObject storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
         assertNull(storedVariant.get(IDS_FIELD));
+        assertNull(storedVariant.get(MAIN_ID_FIELD));
+        assertNull(storedVariant.get(DBSNP_IDS_FIELD));
+    }
+
+    @Test
+    public void writeOnlySubmittedIds() throws Exception {
+        Variant variant = buildVariantWithStats("12", 3, 4, "A", "T", "fileId", "studyId");
+        variant.setIds(IDS);
+
+        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, true);
+        variantMongoWriter.write(Collections.singletonList(variant));
+
+        DBObject storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
+        assertBasicDBListEquals(IDS, (BasicDBList) storedVariant.get(IDS_FIELD));
+        assertNull(storedVariant.get(MAIN_ID_FIELD));
+        assertNull(storedVariant.get(DBSNP_IDS_FIELD));
+    }
+
+    @Test
+    public void writeOnlyDbsnpIds() throws Exception {
+        Variant variant = buildVariantWithStats("12", 3, 4, "A", "T", "fileId", "studyId");
+        variant.setMainId(MAIN_ID);
+        variant.setDbsnpIds(DBSNP_IDS);
+
+        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, true);
+        variantMongoWriter.write(Collections.singletonList(variant));
+
+        DBObject storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
+        assertNull(storedVariant.get(IDS_FIELD));
+        assertBasicDBListEquals(DBSNP_IDS, (BasicDBList) storedVariant.get(DBSNP_IDS_FIELD));
+        assertEquals(MAIN_ID, storedVariant.get(MAIN_ID_FIELD));
+    }
+
+    @Test
+    public void updateWithDbsnpIds() throws Exception {
+        Variant variant = buildVariantWithStats("12", 3, 4, "A", "T", "fileId", "studyId");
+        variant.setIds(IDS);
+
+        Variant updatedDbsnpVariant = buildVariantWithStats("12", 3, 4, "A", "T", "fileId", "studyId");
+        updatedDbsnpVariant.setMainId(MAIN_ID);
+        updatedDbsnpVariant.setDbsnpIds(DBSNP_IDS);
+
+        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, true);
+        variantMongoWriter.write(Collections.singletonList(variant));
+        variantMongoWriter.write(Collections.singletonList(updatedDbsnpVariant));
+
+        DBObject storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
+        assertBasicDBListEquals(IDS, (BasicDBList) storedVariant.get(IDS_FIELD));
+        assertBasicDBListEquals(DBSNP_IDS, (BasicDBList) storedVariant.get(DBSNP_IDS_FIELD));
+        assertEquals(MAIN_ID, storedVariant.get(MAIN_ID_FIELD));
     }
 
     @Test
@@ -246,12 +305,10 @@ public class VariantMongoWriterTest {
         final String studyId = "studyId";
         Variant variant = buildVariantWithSampleData(chromosome, start, end, reference, alternate, fileId, studyId);
 
-        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(collectionName, mongoOperations, false, true);
+        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, true);
         variantMongoWriter.write(Collections.singletonList(variant));
 
-        DBCollection dbCollection = mongoOperations.getCollection(collectionName);
-        assertEquals(1, dbCollection.count());
-        final DBObject storedVariant = dbCollection.findOne();
+        DBObject storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
         final BasicDBList variantSources = (BasicDBList) storedVariant.get(FILES_FIELD);
         assertNotNull(variantSources);
         assertFalse(variantSources.isEmpty());
@@ -269,13 +326,11 @@ public class VariantMongoWriterTest {
         Variant variant = buildVariantWithSampleData("1", 1, 2, "A", "T", "fileId", "previousStudy");
         Variant newVariant = buildVariantWithSampleData("1", 1, 2, "A", "T", "fileId", "dbsnpStudy");
 
-        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(collectionName, mongoOperations, false, false);
+        VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, false);
         variantMongoWriter.write(Collections.singletonList(variant));
         variantMongoWriter.write(Collections.singletonList(newVariant));
 
-        DBCollection dbCollection = mongoOperations.getCollection(collectionName);
-        assertEquals(1, dbCollection.count());
-        final DBObject storedVariant = dbCollection.findOne();
+        DBObject storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
         assertEquals(2, ((BasicDBList) storedVariant.get(FILES_FIELD)).size());
     }
 

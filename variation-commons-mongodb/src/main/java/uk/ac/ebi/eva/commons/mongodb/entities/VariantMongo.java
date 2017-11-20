@@ -70,6 +70,10 @@ public class VariantMongo {
 
     public final static String IDS_FIELD = "ids";
 
+    public final static String DBSNP_IDS_FIELD = "dbsnpIds";
+
+    public final static String MAIN_ID_FIELD = "mainId";
+
     public final static String FILES_FIELD = "files";
 
     public final static String STATISTICS_FIELD = "st";
@@ -109,6 +113,9 @@ public class VariantMongo {
     @Field(IDS_FIELD)
     private Set<String> ids;
 
+    @Field(MAIN_ID_FIELD)
+    private String mainId;
+
     @Field(FILES_FIELD)
     private Set<VariantSourceEntryMongo> variantSourceEntries;
 
@@ -127,6 +134,7 @@ public class VariantMongo {
                 -1,
                 -1,
                 -1,
+                null,
                 null,
                 null,
                 null,
@@ -155,6 +163,7 @@ public class VariantMongo {
                 generateAtField(variant.getChromosome(), variant.getStart()),
                 HgvsMongo.createHgvsMongo(variant.getHgvs()),
                 variant.getIds(),
+                variant.getMainId(),
                 VariantSourceEntryMongo.createSourceEntries(variant.getSourceEntries()),
                 null,
                 null
@@ -177,14 +186,15 @@ public class VariantMongo {
                 null,
                 null,
                 null,
+                null,
                 null
         );
     }
 
     public VariantMongo(String id, VariantType type, String chromosome, long start, long end, int length,
                         String reference, String alternate, VariantAtMongo at, Set<HgvsMongo> hgvs, Set<String> ids,
-                        Set<VariantSourceEntryMongo> variantSourceEntries, Set<VariantStatisticsMongo> variantStatsMongo,
-                        Set<AnnotationIndexMongo> indexedAnnotations) {
+                        String mainId, Set<VariantSourceEntryMongo> variantSourceEntries,
+                        Set<VariantStatisticsMongo> variantStatsMongo, Set<AnnotationIndexMongo> indexedAnnotations) {
         this.id = id;
         this.type = type;
         this.chromosome = chromosome;
@@ -202,6 +212,7 @@ public class VariantMongo {
         if (ids != null && !ids.isEmpty()) {
             this.ids.addAll(ids);
         }
+        this.mainId = mainId;
         this.variantSourceEntries = new HashSet<>();
         if (variantSourceEntries != null && !variantSourceEntries.isEmpty()) {
             this.variantSourceEntries.addAll(variantSourceEntries);

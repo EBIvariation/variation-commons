@@ -38,7 +38,9 @@ import java.util.List;
 import java.util.Map;
 
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.ANNOTATION_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.DBSNP_IDS_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.IDS_FIELD;
+import static uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo.MAIN_ID_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.AnnotationIndexMongo.SO_ACCESSION_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.AnnotationIndexMongo.XREFS_FIELD;
 
@@ -103,19 +105,20 @@ public class VariantMongoWriter extends MongoItemWriter<IVariant> {
     protected void doWrite(List<? extends IVariant> variants) {
         BulkWriteOperation bulk = mongoOperations.getCollection(collection).initializeUnorderedBulkOperation();
         for (IVariant variant : variants) {
-            String id = VariantMongo.buildVariantId(variant.getChromosome(), variant.getStart(),
-                                                    variant.getReference(), variant.getAlternate());
-
-            // the chromosome and start appear just as shard keys, in an unsharded cluster they wouldn't be needed
-            BasicDBObject query = new BasicDBObject("_id", id)
-                    .append(VariantMongo.CHROMOSOME_FIELD, variant.getChromosome())
-                    .append(VariantMongo.START_FIELD, variant.getStart());
-
-            bulk.find(query).upsert().updateOne(generateUpdate(variant));
-
+            bulk.find(generateQuery(variant)).upsert().updateOne(generateUpdate(variant));
         }
 
         executeBulk(bulk, variants.size());
+    }
+
+    private BasicDBObject generateQuery(IVariant variant) {
+        String id = VariantMongo.buildVariantId(variant.getChromosome(), variant.getStart(),
+                                                variant.getReference(), variant.getAlternate());
+
+        // the chromosome and start appear just as shard keys, in an unsharded cluster they wouldn't be needed
+        return new BasicDBObject("_id", id)
+                .append(VariantMongo.CHROMOSOME_FIELD, variant.getChromosome())
+                .append(VariantMongo.START_FIELD, variant.getStart());
     }
 
     private void executeBulk(BulkWriteOperation bulk, int currentBulkSize) {
@@ -129,6 +132,31 @@ public class VariantMongoWriter extends MongoItemWriter<IVariant> {
         Assert.notNull(variant, "Variant should not be null. Please provide a valid Variant object");
         logger.trace("Convert variant {} into mongo object", variant);
 
+        BasicDBObject update = new BasicDBObject();
+
+        addOperatorAddToSet(variant, update);
+        addOperatorSetOnInsert(variant, update);
+        addOperatorSet(variant, update);
+
+        return update;
+    }
+
+    private void addOperatorSetOnInsert(IVariant variant, BasicDBObject update) {
+        update.append("$setOnInsert", convertVariant(variant));
+    }
+
+    private void addOperatorSet(IVariant variant, BasicDBObject update) {
+        BasicDBObject overwrite = new BasicDBObject();
+        if (variant.getMainId() != null) {
+            overwrite.put(MAIN_ID_FIELD, variant.getMainId());
+        }
+
+        if (!overwrite.isEmpty()) {
+            update.append("$set", overwrite);
+        }
+    }
+
+    private void addOperatorAddToSet(IVariant variant, BasicDBObject update) {
         BasicDBObject addToSet = new BasicDBObject();
 
         if (!variant.getSourceEntries().isEmpty()) {
@@ -142,17 +170,17 @@ public class VariantMongoWriter extends MongoItemWriter<IVariant> {
             }
         }
 
-        if (variant.getIds() != null && !variant.getIds().isEmpty()) {
+        if (!variant.getIds().isEmpty()) {
             addToSet.put(IDS_FIELD, new BasicDBObject("$each", variant.getIds()));
         }
 
-        BasicDBObject update = new BasicDBObject();
+        if (!variant.getDbsnpIds().isEmpty()) {
+            addToSet.put(DBSNP_IDS_FIELD, new BasicDBObject("$each", variant.getDbsnpIds()));
+        }
+
         if (!addToSet.isEmpty()) {
             update.put("$addToSet", addToSet);
         }
-        update.append("$setOnInsert", convertVariant(variant));
-
-        return update;
     }
 
     private IVariantSourceEntry getVariantSourceEntry(IVariant variant) {
