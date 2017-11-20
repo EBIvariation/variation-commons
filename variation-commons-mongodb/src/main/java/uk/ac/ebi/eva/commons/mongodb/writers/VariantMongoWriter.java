@@ -170,11 +170,11 @@ public class VariantMongoWriter extends MongoItemWriter<IVariant> {
             }
         }
 
-        if (variant.getIds() != null && !variant.getIds().isEmpty()) {
+        if (!variant.getIds().isEmpty()) {
             addToSet.put(IDS_FIELD, new BasicDBObject("$each", variant.getIds()));
         }
 
-        if (variant.getDbsnpIds() != null && !variant.getDbsnpIds().isEmpty()) {
+        if (!variant.getDbsnpIds().isEmpty()) {
             addToSet.put(DBSNP_IDS_FIELD, new BasicDBObject("$each", variant.getDbsnpIds()));
         }
 
