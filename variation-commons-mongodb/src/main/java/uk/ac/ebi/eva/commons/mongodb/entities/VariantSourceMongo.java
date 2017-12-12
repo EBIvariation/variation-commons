@@ -104,13 +104,13 @@ public class VariantSourceMongo implements IVariantSource {
         this(variantSource.getFileId(), variantSource.getFileName(),
                 variantSource.getStudyId(), variantSource.getStudyName(), variantSource.getType(),
                 variantSource.getAggregation(), variantSource.getSamplesPosition(), variantSource.getMetadata(),
-                new VariantGlobalStatsMongo(variantSource.getStats()));
+                variantSource.getStats());
     }
 
     public VariantSourceMongo(String fileId, String fileName, String studyId, String studyName,
                               StudyType type, Aggregation aggregation,
                               Map<String, Integer> samplesPosition, Map<String, Object> metadata,
-                              VariantGlobalStatsMongo stats) {
+                              IVariantGlobalStats stats) {
         this.fileId = fileId;
         this.fileName = fileName;
         this.studyId = studyId;
@@ -125,7 +125,9 @@ public class VariantSourceMongo implements IVariantSource {
         if (metadata != null && !metadata.isEmpty()) {
             this.metadata.putAll(metadata);
         }
-        this.stats = stats;
+        if (stats != null) {
+            this.stats = new VariantGlobalStatsMongo(stats);
+        }
         this.date = Calendar.getInstance().getTime();
     }
 
