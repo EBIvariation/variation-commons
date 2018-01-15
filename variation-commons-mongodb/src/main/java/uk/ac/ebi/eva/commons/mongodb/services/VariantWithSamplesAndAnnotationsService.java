@@ -19,6 +19,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import uk.ac.ebi.eva.commons.core.models.Annotation;
@@ -260,6 +261,28 @@ public class VariantWithSamplesAndAnnotationsService {
 
     public Set<String> findDistinctChromosomes() {
         return variantRepository.findDistinctChromosomes();
+    }
+
+    public Long findChromosomeLowestReportedCoordinate(String chromosome, List<String> studyIds) {
+        Sort startAscendingSort = new Sort(Sort.Direction.ASC, VariantMongo.START_FIELD);
+        VariantMongo variant = variantRepository.findOneByChromosomeAndStudyInSorted(chromosome, studyIds,
+                                                                                     startAscendingSort);
+        return getVariantStart(variant);
+    }
+
+    public Long findChromosomeHighestReportedCoordinate(String chromosome, List<String> studyIds) {
+        Sort startDescendingSort = new Sort(Sort.Direction.DESC, VariantMongo.START_FIELD);
+        VariantMongo variant = variantRepository.findOneByChromosomeAndStudyInSorted(chromosome, studyIds,
+                                                                                     startDescendingSort);
+        return getVariantStart(variant);
+    }
+
+    private Long getVariantStart(VariantMongo variant) {
+        if (variant != null) {
+            return variant.getStart();
+        } else {
+            return null;
+        }
     }
 
     /**
