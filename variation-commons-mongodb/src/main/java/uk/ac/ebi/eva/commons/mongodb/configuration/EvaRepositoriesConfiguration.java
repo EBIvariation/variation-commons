@@ -53,6 +53,9 @@ public class EvaRepositoriesConfiguration {
         DbRefResolver dbRefResolver = new DefaultDbRefResolver(mongoDbFactory);
         MappingMongoConverter mongoConverter = new MappingMongoConverter(dbRefResolver, mongoMappingContext());
 
+        // Customization: replace dots with pound sign
+        mongoConverter.setMapKeyDotReplacement("£");
+
         mongoConverter.afterPropertiesSet();
 
         // TODO jmmut: see if this works if we want to exclude the _class
