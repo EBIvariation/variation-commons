@@ -263,6 +263,12 @@ public class VariantWithSamplesAndAnnotationsService {
         return variantRepository.findDistinctChromosomes();
     }
 
+    /**
+     * Returns the lowest start coordinate for the variants in a given chromosome and study(ies)
+     * @param chromosome Chromosome
+     * @param studyIds List of study ids
+     * @return Lowest start coordinate, or null if no variants are found for that chromosome and studies
+     */
     public Long findChromosomeLowestReportedCoordinate(String chromosome, List<String> studyIds) {
         Sort startAscendingSort = new Sort(Sort.Direction.ASC, VariantMongo.START_FIELD);
         VariantMongo variant = variantRepository.findOneByChromosomeAndStudyInSorted(chromosome, studyIds,
@@ -270,6 +276,12 @@ public class VariantWithSamplesAndAnnotationsService {
         return getVariantStart(variant);
     }
 
+    /**
+     * Returns the highest start coordinate for the variants in a given chromosome and study(ies)
+     * @param chromosome Chromosome
+     * @param studyIds List of study ids
+     * @return Highest start coordinate, or null if no variants are found for that chromosome and studies
+     */
     public Long findChromosomeHighestReportedCoordinate(String chromosome, List<String> studyIds) {
         Sort startDescendingSort = new Sort(Sort.Direction.DESC, VariantMongo.START_FIELD);
         VariantMongo variant = variantRepository.findOneByChromosomeAndStudyInSorted(chromosome, studyIds,

@@ -97,7 +97,7 @@ public class VariantWithSamplesAndAnnotationServiceTest {
         assertEquals(190010L, service.findChromosomeLowestReportedCoordinate("11", Arrays.asList("PRJEB8661", "PRJEB6930")).longValue());
         assertEquals(194190L, service.findChromosomeHighestReportedCoordinate("11", Arrays.asList("PRJEB8661", "PRJEB6930")).longValue());
 
-        // not existing study
+        // null is returned if a study has no variants in a chromosome
         assertNull(service.findChromosomeLowestReportedCoordinate("11", Arrays.asList("PRJEB5870")));
         assertNull(service.findChromosomeHighestReportedCoordinate("11", Arrays.asList("PRJEB5870")));
     }
