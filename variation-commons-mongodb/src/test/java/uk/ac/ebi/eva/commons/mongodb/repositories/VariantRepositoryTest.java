@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -39,6 +40,8 @@ import uk.ac.ebi.eva.commons.mongodb.filter.VariantRepositoryFilter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -412,6 +415,44 @@ public class VariantRepositoryTest {
                 findByRegionsAndComplexFilters(regions, null, null, new PageRequest(0, 10000));
 
         assertEquals(1, variantEntityList.size());
+    }
+
+    @Test
+    public void testFindByChromosomeAndStudyInSortedBy() {
+        Sort ascendingStartOrder = new Sort(Sort.Direction.ASC, "start");
+        Sort descendingStartOrder = new Sort(Sort.Direction.DESC, "start");
+
+        // first and last variant for one study
+        VariantMongo firstVariant =
+                variantRepository.findOneByChromosomeAndStudyInSorted("11", Collections.singletonList("PRJEB8661"),
+                                                                      ascendingStartOrder);
+        VariantMongo lastVariant =
+                variantRepository.findOneByChromosomeAndStudyInSorted("11", Collections.singletonList("PRJEB8661"),
+                                                                      descendingStartOrder);
+        assertEquals(193051L, firstVariant.getStart());
+        assertEquals(193959L, lastVariant.getStart());
+
+        // first and last variant for two studies
+        firstVariant =
+                variantRepository.findOneByChromosomeAndStudyInSorted("11", Arrays.asList("PRJEB8661", "PRJEB6930"),
+                                                                      ascendingStartOrder);
+        lastVariant =
+                variantRepository.findOneByChromosomeAndStudyInSorted("11", Arrays.asList("PRJEB8661", "PRJEB6930"),
+                                                                      descendingStartOrder);
+        assertEquals(190010L, firstVariant.getStart());
+        assertEquals(194190L, lastVariant.getStart());
+
+
+        // in a chromosome with one variant, the first and the last variants are the same
+        firstVariant =
+                variantRepository.findOneByChromosomeAndStudyInSorted("9", Collections.singletonList("PRJEB5829"),
+                                                                      ascendingStartOrder);
+        lastVariant =
+                variantRepository.findOneByChromosomeAndStudyInSorted("9", Collections.singletonList("PRJEB5829"),
+                                                                      descendingStartOrder);
+        assertEquals(firstVariant.getId(), lastVariant.getId());
+        assertEquals(10099L, firstVariant.getStart());
+
     }
 
     private void testFiltersHelperRegion(List<Region> regions, List<VariantRepositoryFilter> filters,

@@ -18,6 +18,7 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.repositories;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
@@ -56,4 +57,7 @@ public interface VariantRepository extends MongoRepository<VariantMongo, String>
     @Query(value = "{'chr': ?0, 'start': ?1, 'type': ?2, 'files.sid': {$in : ?3}}}")
     List<VariantMongo> findByChromosomeAndStartAndTypeAndStudyIn(String chr, long start, VariantType type,
                                                                  List<String> studyIds);
+
+    @Query(value = "{'chr': ?0, 'files.sid': {$in : ?1}}}")
+    VariantMongo findOneByChromosomeAndStudyInSorted(String chr, List<String> studyIds, Sort sort);
 }

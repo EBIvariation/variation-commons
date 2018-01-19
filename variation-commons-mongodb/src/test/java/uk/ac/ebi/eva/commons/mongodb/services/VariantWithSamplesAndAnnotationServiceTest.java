@@ -32,10 +32,13 @@ import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotation;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
+import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -82,6 +85,21 @@ public class VariantWithSamplesAndAnnotationServiceTest {
             }
         }
         assertNotNull(variantEntityList.get(0).getAnnotation());
+    }
+
+    @Test
+    public void testFindChromosomeBoundaries() {
+        // single study in filter
+        assertEquals(193051L, service.findChromosomeLowestReportedCoordinate("11", Collections.singletonList("PRJEB8661")).longValue());
+        assertEquals(193959L, service.findChromosomeHighestReportedCoordinate("11", Collections.singletonList("PRJEB8661")).longValue());
+
+        // two studies in filter
+        assertEquals(190010L, service.findChromosomeLowestReportedCoordinate("11", Arrays.asList("PRJEB8661", "PRJEB6930")).longValue());
+        assertEquals(194190L, service.findChromosomeHighestReportedCoordinate("11", Arrays.asList("PRJEB8661", "PRJEB6930")).longValue());
+
+        // null is returned if a study has no variants in a chromosome
+        assertNull(service.findChromosomeLowestReportedCoordinate("11", Arrays.asList("PRJEB5870")));
+        assertNull(service.findChromosomeHighestReportedCoordinate("11", Arrays.asList("PRJEB5870")));
     }
 
 }
