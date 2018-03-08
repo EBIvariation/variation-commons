@@ -204,6 +204,10 @@ public class VariantWithSamplesAndAnnotationsService {
         return variantRepository.countByIdsAndComplexFilters(id, variantRepositoryFilters);
     }
 
+    public Long countTotalNumberOfVariants() {
+        return variantRepository.countTotalNumberOfVariants();
+    }
+
     public List<VariantWithSamplesAndAnnotation> findByChromosomeAndStartAndReferenceAndAlternate(String chromosome,
                                                                                                   long start,
                                                                                                   String reference,
