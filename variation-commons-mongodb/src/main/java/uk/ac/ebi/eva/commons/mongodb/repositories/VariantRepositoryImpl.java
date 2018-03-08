@@ -73,12 +73,6 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
     }
 
     @Override
-    public Long countTotalNumberOfVariants() {
-        return mongoTemplate.getCollection(mongoTemplate.getCollectionName(VariantMongo.class))
-                .count();
-    }
-
-    @Override
     public List<VariantMongo> findByGenesAndComplexFilters(List<String> geneIds,
                                                            List<VariantRepositoryFilter> filters,
                                                            List<String> exclude, Pageable pageable) {

@@ -48,8 +48,6 @@ interface VariantRepositoryCustom {
 
     Long countByIdsAndComplexFilters(String id, List<VariantRepositoryFilter> filters);
 
-    Long countTotalNumberOfVariants();
-
     List<VariantMongo> findByGenesAndComplexFilters(List<String> geneIds, List<VariantRepositoryFilter> filters,
                                                     List<String> exclude, Pageable pageable);
 
