@@ -104,7 +104,7 @@ public class VariantWithSamplesAndAnnotationServiceTest {
 
     @Test
     public void testCountTotalNumberOfVariants() {
-        // the returned type should be a positive number (it can be 0 on the case of empty database)
+        // the returned number of variants should be the same as the number of variants in the test database
         assertEquals(498, service.countTotalNumberOfVariants());
     }
 
