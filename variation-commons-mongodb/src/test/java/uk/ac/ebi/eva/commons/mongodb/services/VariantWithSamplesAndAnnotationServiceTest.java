@@ -104,9 +104,6 @@ public class VariantWithSamplesAndAnnotationServiceTest {
 
     @Test
     public void testCountTotalNumberOfVariants() {
-        // the returned type of the result should be Long
-        assertTrue(service.countTotalNumberOfVariants() instanceof Long);
-
         // the returned type should be a positive number (it can be 0 on the case of empty database)
         assertFalse(service.countTotalNumberOfVariants() < 0);
     }

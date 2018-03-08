@@ -204,7 +204,7 @@ public class VariantWithSamplesAndAnnotationsService {
         return variantRepository.countByIdsAndComplexFilters(id, variantRepositoryFilters);
     }
 
-    public Long countTotalNumberOfVariants() {
+    public long countTotalNumberOfVariants() {
         return variantRepository.count();
     }
 
