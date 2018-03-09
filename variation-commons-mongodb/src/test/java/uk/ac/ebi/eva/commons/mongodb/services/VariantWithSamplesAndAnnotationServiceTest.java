@@ -102,5 +102,11 @@ public class VariantWithSamplesAndAnnotationServiceTest {
         assertNull(service.findChromosomeHighestReportedCoordinate("11", Arrays.asList("PRJEB5870")));
     }
 
+    @Test
+    public void testCountTotalNumberOfVariants() {
+        // the returned number of variants should be the same as the number of variants in the test database
+        assertEquals(498, service.countTotalNumberOfVariants());
+    }
+
 }
 
