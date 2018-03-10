@@ -99,42 +99,51 @@ public class VariantRepositoryTest {
 
     @Test
     public void testVariantIdIsFound() {
-        String id = "rs148957270";
+        List<String> geneIds = new ArrayList<>();
+        geneIds.add("rs148957270");
+
         List<VariantRepositoryFilter> filters = new ArrayList<>();
         List<String> exclude = new ArrayList<>();
         List<VariantMongo> variantEntityList = variantRepository
-                .findByIdsAndComplexFilters(id, filters, exclude, null);
+                .findByIdsAndComplexFilters(geneIds, filters, exclude, null);
         assertNotNull(variantEntityList);
         assertTrue(variantEntityList.size() > 0);
         Set<String> idSet = new HashSet<>();
-        idSet.add(id);
+        idSet.add(geneIds.get(0));
         idSet.add("ss254803838");
         assertEquals(idSet, variantEntityList.get(0).getIds());
     }
 
     @Test
     public void testCountByIdsAndComplexFilters() {
-        String id = "rs575961545";
+        List<String> geneIds = new ArrayList<>();
+        geneIds.add("rs575961545");
+        geneIds.add("rs148957270");
         List<VariantRepositoryFilter> filters = new ArrayList<>();
-        Long count = variantRepository.countByIdsAndComplexFilters(id, filters);
-        assertEquals(new Long(1), count);
+
+        Long count = variantRepository.countByIdsAndComplexFilters(geneIds, filters);
+        assertEquals(new Long(2), count);
     }
 
     @Test
     public void testCountByIdsAndComplexFiltersZeroCount() {
-        String id = "not_a_real_id";
+        List<String> geneIds = new ArrayList<>();
+        geneIds.add("not_a_real_id");
+
         List<VariantRepositoryFilter> filters = new ArrayList<>();
-        Long count = variantRepository.countByIdsAndComplexFilters(id, filters);
+        Long count = variantRepository.countByIdsAndComplexFilters(geneIds, filters);
         assertEquals(new Long(0), count);
     }
 
     @Test
     public void testNonExistentVariantIdIsNotFound() {
-        String id = "notarealid";
+        List<String> geneIds = new ArrayList<>();
+        geneIds.add("notarealid");
+
         List<VariantRepositoryFilter> filters = new ArrayList<>();
         List<String> exclude = new ArrayList<>();
         List<VariantMongo> variantEntityList = variantRepository
-                .findByIdsAndComplexFilters(id, filters, exclude, null);
+                .findByIdsAndComplexFilters(geneIds, filters, exclude, null);
         assertNotNull(variantEntityList);
         assertTrue(variantEntityList.size() == 0);
     }
