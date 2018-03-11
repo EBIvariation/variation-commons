@@ -60,15 +60,15 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
     }
 
     @Override
-    public List<VariantMongo> findByIdsAndComplexFilters(List<String> geneIds, List<VariantRepositoryFilter> filters,
+    public List<VariantMongo> findByIdsAndComplexFilters(List<String> ids, List<VariantRepositoryFilter> filters,
                                                          List<String> exclude, Pageable pageable) {
-        Query query = new Query(Criteria.where(VariantMongo.IDS_FIELD).in(geneIds));
+        Query query = new Query(Criteria.where(VariantMongo.IDS_FIELD).in(ids));
         return findByComplexFiltersHelper(query, filters, exclude, pageable);
     }
 
     @Override
-    public Long countByIdsAndComplexFilters(List<String> geneIds, List<VariantRepositoryFilter> filters) {
-        Criteria criteria = Criteria.where("ids").in(geneIds);
+    public Long countByIdsAndComplexFilters(List<String> ids, List<VariantRepositoryFilter> filters) {
+        Criteria criteria = Criteria.where("ids").in(ids);
         return countByComplexFiltersHelper(criteria, filters);
     }
 
