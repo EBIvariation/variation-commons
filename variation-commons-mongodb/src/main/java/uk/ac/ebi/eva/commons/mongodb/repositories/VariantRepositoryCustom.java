@@ -36,17 +36,17 @@ interface VariantRepositoryCustom {
      * Query for variants with a specified ID (eg. RS IDs), and whose attributes match those values specified in the
      * filters: study, consequence type, minor allele frequency and protein substitution scores (Polyphen and SIFT).
      *
-     * @param id
+     * @param ids
      * @param filters List of VariantRepositoryFilter objects by which to filter the query
      * @param exclude List of strings, each matching a field in the variant Mongo documents. Fields specified in the
      *                list will be excluded from the returned document(s)
      * @return VariantEntities whose values are within the bounds of the filters
      */
-    List<VariantMongo> findByIdsAndComplexFilters(String id, List<VariantRepositoryFilter> filters,
+    List<VariantMongo> findByIdsAndComplexFilters(List<String> ids, List<VariantRepositoryFilter> filters,
                                                   List<String> exclude,
                                                   Pageable pageable);
 
-    Long countByIdsAndComplexFilters(String id, List<VariantRepositoryFilter> filters);
+    Long countByIdsAndComplexFilters(List<String> ids, List<VariantRepositoryFilter> filters);
 
     List<VariantMongo> findByGenesAndComplexFilters(List<String> geneIds, List<VariantRepositoryFilter> filters,
                                                     List<String> exclude, Pageable pageable);

@@ -191,17 +191,17 @@ public class VariantWithSamplesAndAnnotationsService {
         return variantRepository.countByRegionsAndComplexFilters(regions, variantRepositoryFilters);
     }
 
-    public List<VariantWithSamplesAndAnnotation> findByIdsAndComplexFilters(String id,
+    public List<VariantWithSamplesAndAnnotation> findByIdsAndComplexFilters(List<String> ids,
                                                                             List<VariantRepositoryFilter> variantRepositoryFilters,
                                                                             IAnnotationMetadata annotationMetadata,
                                                                             List<String> exclude, Pageable pageable)
             throws AnnotationMetadataNotFoundException {
-        return convert(variantRepository.findByIdsAndComplexFilters(id, variantRepositoryFilters, exclude, pageable),
+        return convert(variantRepository.findByIdsAndComplexFilters(ids, variantRepositoryFilters, exclude, pageable),
                        annotationMetadata);
     }
 
-    public Long countByIdsAndComplexFilters(String id, List<VariantRepositoryFilter> variantRepositoryFilters) {
-        return variantRepository.countByIdsAndComplexFilters(id, variantRepositoryFilters);
+    public Long countByIdsAndComplexFilters(List<String> ids, List<VariantRepositoryFilter> variantRepositoryFilters) {
+        return variantRepository.countByIdsAndComplexFilters(ids, variantRepositoryFilters);
     }
 
     public long countTotalNumberOfVariants() {
