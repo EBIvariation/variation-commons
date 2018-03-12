@@ -115,6 +115,28 @@ public class VariantRepositoryTest {
     }
 
     @Test
+    public void testVariantIdsFoundAndNotFound() {
+        List<String> ids = new ArrayList<>();
+
+        // Ids that should be found
+        ids.add("rs148957270");
+        ids.add("rs575961545");
+
+        // Id that should be not found
+        ids.add("a1b1c1d1e1");
+
+        List<VariantRepositoryFilter> filters = new ArrayList<>();
+        List<String> exclude = new ArrayList<>();
+        List<VariantMongo> variantEntityList = variantRepository
+                .findByIdsAndComplexFilters(ids, filters, exclude, null);
+        assertNotNull(variantEntityList);
+        assertTrue(variantEntityList.size() > 0);
+
+        // Only the 2 first ids should be found
+        assertEquals(2, variantEntityList.size());
+    }
+
+    @Test
     public void testCountByIdsAndComplexFilters() {
         List<String> ids = new ArrayList<>();
         ids.add("rs575961545");
