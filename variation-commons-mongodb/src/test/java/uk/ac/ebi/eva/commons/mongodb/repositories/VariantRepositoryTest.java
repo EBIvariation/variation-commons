@@ -134,6 +134,20 @@ public class VariantRepositoryTest {
 
         // Only the 2 first ids should be found
         assertEquals(2, variantEntityList.size());
+
+        // And the result has the expected ids
+        Set<String> idSet = new HashSet<>();
+        idSet.add(ids.get(1));
+        idSet.add("ss1426502619");
+        idSet.add("ss1339764116");
+        idSet.add("ss286297457");
+        idSet.add("ss102929930");
+        idSet.add("ss280846269");
+        idSet.add("ss254803821");
+        idSet.add("rs72479377");
+
+        assertEquals(idSet, variantEntityList.get(0).getIds());
+
     }
 
     @Test
