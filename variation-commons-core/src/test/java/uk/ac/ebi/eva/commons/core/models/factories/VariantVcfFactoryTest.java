@@ -578,4 +578,35 @@ public class VariantVcfFactoryTest {
         assertEquals(expResult, result);
         assertEquals(emptySet, result.get(0).getIds());
     }
+
+    @Test
+    public void variantWithAllGenotypesNoAltWontBeCreatedByTheFactory() {
+        // diploid calls
+        String line = "1\t10040\trs123\tT\tC\t.\t.\t.\tGT\t0/0\t0|0\t./.\t0|0\t./.";
+
+        List<Variant> result = factory.create(FILE_ID, STUDY_ID, line);
+
+        assertEquals(0, result.size());
+
+        // haploid calls
+        line = "Y\t10040\trs123\tT\tC\t.\t.\t.\tGT\t.\t0\t0\t.";
+
+        result = factory.create(FILE_ID, STUDY_ID, line);
+
+        assertEquals(0, result.size());
+
+        // triploid calls
+        line = "1\t10040\trs123\tT\tC\t.\t.\t.\tGT\t0/0/0\t0|0|0\t././.\t0|0|0\t././.";
+
+        result = factory.create(FILE_ID, STUDY_ID, line);
+
+        assertEquals(0, result.size());
+
+        // a variant with no genotypes won't be discarded
+        line = "1\t10040\trs123\tT\tC\t.\t.\t.";
+
+        result = factory.create(FILE_ID, STUDY_ID, line);
+
+        assertEquals(1, result.size());
+    }
 }

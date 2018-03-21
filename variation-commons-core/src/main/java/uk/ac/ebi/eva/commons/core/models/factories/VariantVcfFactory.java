@@ -17,8 +17,11 @@
 package uk.ac.ebi.eva.commons.core.models.factories;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import uk.ac.ebi.eva.commons.core.models.VariantCoreFields;
+import uk.ac.ebi.eva.commons.core.models.factories.exception.NonVariantException;
 import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
@@ -36,6 +39,8 @@ import java.util.TreeMap;
  * Class that parses VCF lines to create Variants.
  */
 public class VariantVcfFactory {
+
+    private static final Logger logger = LoggerFactory.getLogger(VariantVcfFactory.class);
 
     /**
      * Creates a list of Variant objects using the fields in a record of a VCF
@@ -80,11 +85,16 @@ public class VariantVcfFactory {
             VariantSourceEntry file = new VariantSourceEntry(fileId, studyId, secondaryAlternates, format);
             variant.addSourceEntry(file);
 
-            parseSplitSampleData(variant, fileId, studyId, fields, alternateAlleles, secondaryAlternates, altAlleleIdx);
-            // Fill the rest of fields (after samples because INFO depends on them)
-            setOtherFields(variant, fileId, studyId, ids, quality, filter, info, format, altAlleleIdx,
-                           alternateAlleles, line);
-            variants.add(variant);
+            try {
+                parseSplitSampleData(variant, fileId, studyId, fields, alternateAlleles, secondaryAlternates,
+                                         altAlleleIdx);
+                // Fill the rest of fields (after samples because INFO depends on them)
+                setOtherFields(variant, fileId, studyId, ids, quality, filter, info, format, altAlleleIdx,
+                               alternateAlleles, line);
+                variants.add(variant);
+            } catch (NonVariantException e) {
+                logger.warn("Variant {} excluded: {}", keyFields, e.getMessage());
+            }
         }
 
         return variants;
@@ -169,8 +179,11 @@ public class VariantVcfFactory {
 
     protected void parseSplitSampleData(Variant variant, String fileId, String studyId, String[] fields,
                                         String[] alternateAlleles, String[] secondaryAlternates,
-                                        int alternateAlleleIdx) {
+                                        int alternateAlleleIdx) throws NonVariantException {
         String[] formatFields = variant.getSourceEntry(fileId, studyId).getFormat().split(":");
+
+        // if there are no sample columns (fields.length < 9), there are no genotypes to check
+        boolean allGenotypesAreRefOrMissingValues = fields.length >= 9;
 
         for (int i = 9; i < fields.length; i++) {
             Map<String, String> map = new TreeMap<>();
@@ -183,12 +196,20 @@ public class VariantVcfFactory {
             for (int j = 0; j < sampleFields.length; j++) {
                 String formatField = formatFields[j];
                 String sampleField = processSampleField(alternateAlleleIdx, formatField, sampleFields[j]);
+                if (allGenotypesAreRefOrMissingValues && formatField.equalsIgnoreCase("GT")) {
+                    if (genotypeHasAlternateAllele(sampleField)) {
+                        allGenotypesAreRefOrMissingValues = false;
+                    }
+                }
 
                 map.put(formatField, sampleField);
             }
 
             // Add sample to the variant entry in the source file
             variant.getSourceEntry(fileId, studyId).addSampleData(map);
+        }
+        if (allGenotypesAreRefOrMissingValues) {
+            throw new NonVariantException("All genotypes are reference or missing values");
         }
     }
 
@@ -238,6 +259,10 @@ public class VariantVcfFactory {
         }
 
         return genotype.intern();
+    }
+
+    private boolean genotypeHasAlternateAllele(String sampleField) {
+        return Arrays.stream(sampleField.split("[/|]")).anyMatch(allele -> !allele.equals("0") && !allele.equals("."));
     }
 
     protected void setOtherFields(Variant variant, String fileId, String studyId, Set<String> ids, float quality, String filter,
