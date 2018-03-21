@@ -265,8 +265,10 @@ public class VariantVcfFactory {
         return Arrays.stream(sampleField.split("[/|]")).anyMatch(allele -> allele.equals("1"));
     }
 
-    protected void setOtherFields(Variant variant, String fileId, String studyId, Set<String> ids, float quality, String filter,
-                                  String info, String format, int numAllele, String[] alternateAlleles, String line) {
+    protected void setOtherFields(Variant variant, String fileId, String studyId, Set<String> ids, float quality,
+                                  String filter, String info, String format, int numAllele, String[] alternateAlleles,
+                                  String line) throws NonVariantException {
+
         // Fields not affected by the structure of REF and ALT fields
         variant.setIds(ids);
 
@@ -283,7 +285,9 @@ public class VariantVcfFactory {
         variant.getSourceEntry(fileId, studyId).addAttribute("src", line);
     }
 
-    protected void parseInfo(Variant variant, String fileId, String studyId, String info, int numAllele) {
+    protected void parseInfo(Variant variant, String fileId, String studyId, String info,
+                             int numAllele) throws NonVariantException {
+
         VariantSourceEntry file = variant.getSourceEntry(fileId, studyId);
 
         for (String var : info.split(";")) {
@@ -303,6 +307,9 @@ public class VariantVcfFactory {
                     case "AF":
                         // TODO For now, only one alternate is supported
                         String[] frequencies = splits[1].split(",");
+                        if (frequencies[numAllele].equals("0")) {
+                            throw new NonVariantException("Allele frequency is 0");
+                        }
                         file.addAttribute(splits[0], frequencies[numAllele]);
                         break;
 //                    case "AN":

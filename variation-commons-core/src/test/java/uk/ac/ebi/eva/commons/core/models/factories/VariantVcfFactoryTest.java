@@ -619,4 +619,22 @@ public class VariantVcfFactoryTest {
         assertTrue(result.stream().anyMatch(v -> v.getAlternate().equals("G")));
         assertTrue(result.stream().anyMatch(v -> v.getAlternate().equals("A")));
     }
+
+    @Test
+    public void variantWithAlleleFrequencyZeroWontBeCreatedByTheFactory() {
+        String line = "1\t10040\trs123\tT\tC\t.\t.\tAF=0";
+
+        List<Variant> result = factory.create(FILE_ID, STUDY_ID, line);
+
+        assertEquals(0, result.size());
+
+        // multiallelic variant, one of the alt has AF=0
+        line = "1\t10040\trs123\tT\tC,G,A\t.\t.\tAF=0.5,0,0.2";
+
+        result = factory.create(FILE_ID, STUDY_ID, line);
+
+        assertEquals(2, result.size());
+        assertTrue(result.stream().anyMatch(v -> v.getAlternate().equals("C")));
+        assertTrue(result.stream().anyMatch(v -> v.getAlternate().equals("A")));
+    }
 }

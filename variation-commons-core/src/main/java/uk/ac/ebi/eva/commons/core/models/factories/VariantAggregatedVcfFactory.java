@@ -17,6 +17,7 @@
 package uk.ac.ebi.eva.commons.core.models.factories;
 
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
+import uk.ac.ebi.eva.commons.core.models.factories.exception.NonVariantException;
 import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
@@ -107,7 +108,7 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
     @Override
     protected void setOtherFields(Variant variant, String fileId, String studyId, Set<String> ids, float quality,
                                   String filter, String info, String format, int numAllele, String[] alternateAlleles,
-                                  String line) {
+                                  String line) throws NonVariantException {
         // Fields not affected by the structure of REF and ALT fields
         variant.setIds(ids);
         VariantSourceEntry sourceEntry = variant.getSourceEntry(fileId, studyId);
