@@ -262,7 +262,7 @@ public class VariantVcfFactory {
     }
 
     private boolean genotypeHasAlternateAllele(String sampleField) {
-        return Arrays.stream(sampleField.split("[/|]")).anyMatch(allele -> !allele.equals("0") && !allele.equals("."));
+        return Arrays.stream(sampleField.split("[/|]")).anyMatch(allele -> allele.equals("1"));
     }
 
     protected void setOtherFields(Variant variant, String fileId, String studyId, Set<String> ids, float quality, String filter,
