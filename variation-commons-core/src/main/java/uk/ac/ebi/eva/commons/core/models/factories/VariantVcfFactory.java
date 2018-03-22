@@ -56,7 +56,9 @@ public class VariantVcfFactory {
      * @param line Contents of the line in the file
      * @return The list of Variant objects that can be created using the fields from a VCF record
      */
-    public List<Variant> create(String fileId, String studyId, String line) throws IllegalArgumentException {
+    public List<Variant> create(String fileId, String studyId,
+                                String line) throws IllegalArgumentException, NonVariantException {
+
         String[] fields = line.split("\t");
         if (fields.length < 8) {
             throw new IllegalArgumentException("Not enough fields provided (min 8)");
@@ -79,22 +81,19 @@ public class VariantVcfFactory {
         // Now create all the Variant objects read from the VCF record
         for (int altAlleleIdx = 0; altAlleleIdx < alternateAlleles.length; altAlleleIdx++) {
             VariantCoreFields keyFields = generatedKeyFields.get(altAlleleIdx);
-            Variant variant = new Variant(chromosome, keyFields.getStart(), keyFields.getEnd(), keyFields.getReference(),
+            Variant variant = new Variant(chromosome, keyFields.getStart(), keyFields.getEnd(),
+                                          keyFields.getReference(),
                                           keyFields.getAlternate());
             String[] secondaryAlternates = getSecondaryAlternates(altAlleleIdx, alternateAlleles);
             VariantSourceEntry file = new VariantSourceEntry(fileId, studyId, secondaryAlternates, format);
             variant.addSourceEntry(file);
 
-            try {
-                parseSplitSampleData(variant, fileId, studyId, fields, alternateAlleles, secondaryAlternates,
-                                         altAlleleIdx);
-                // Fill the rest of fields (after samples because INFO depends on them)
-                setOtherFields(variant, fileId, studyId, ids, quality, filter, info, format, altAlleleIdx,
-                               alternateAlleles, line);
-                variants.add(variant);
-            } catch (NonVariantException e) {
-                logger.warn("Variant {} excluded: {}", keyFields, e.getMessage());
-            }
+            parseSplitSampleData(variant, fileId, studyId, fields, alternateAlleles, secondaryAlternates,
+                                 altAlleleIdx);
+            // Fill the rest of fields (after samples because INFO depends on them)
+            setOtherFields(variant, fileId, studyId, ids, quality, filter, info, format, altAlleleIdx,
+                           alternateAlleles, line);
+            variants.add(variant);
         }
 
         return variants;

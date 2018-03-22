@@ -15,13 +15,14 @@
  */
 package uk.ac.ebi.eva.commons.core.models.factories;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
+import uk.ac.ebi.eva.commons.core.models.factories.exception.NonVariantException;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -29,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
@@ -45,6 +45,9 @@ public class VariantVcfFactoryTest {
     private static final String STUDY_ID = "studyId";
 
     private VariantVcfFactory factory = new VariantVcfFactory();
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void testRemoveChrPrefixInAnyCase() {
@@ -581,78 +584,66 @@ public class VariantVcfFactoryTest {
     }
 
     @Test
-    public void variantWithAllGenotypesNoAltWontBeCreatedByTheFactory() {
-        // diploid calls
+    public void variantWithNoAltGenotypes() {
         String line = "1\t10040\trs123\tT\tC\t.\t.\t.\tGT\t0/0\t0|0\t./.\t0|0\t./.";
 
-        List<Variant> result = factory.create(FILE_ID, STUDY_ID, line);
-
-        assertEquals(0, result.size());
-
-        // haploid calls
-        line = "Y\t10040\trs123\tT\tC\t.\t.\t.\tGT\t.\t0\t0\t.";
-
-        result = factory.create(FILE_ID, STUDY_ID, line);
-
-        assertEquals(0, result.size());
-
-        // triploid calls
-        line = "1\t10040\trs123\tT\tC\t.\t.\t.\tGT\t0/0/0\t0|0|0\t././.\t0|0|0\t././.";
-
-        result = factory.create(FILE_ID, STUDY_ID, line);
-
-        assertEquals(0, result.size());
-
-        // a variant with no genotypes won't be discarded
-        line = "1\t10040\trs123\tT\tC\t.\t.\t.";
-
-        result = factory.create(FILE_ID, STUDY_ID, line);
-
-        assertEquals(1, result.size());
-
-        // multiallelic variant, one of the alt has no calls
-        line = "Y\t10040\trs123\tT\tC,G,A\t.\t.\t.\tGT\t0/0\t0/2\t./.\t2/2\t0/3\t2/3";
-
-        result = factory.create(FILE_ID, STUDY_ID, line);
-
-        assertEquals(2, result.size());
-        assertTrue(result.stream().anyMatch(v -> v.getAlternate().equals("G")));
-        assertTrue(result.stream().anyMatch(v -> v.getAlternate().equals("A")));
+        thrown.expect(NonVariantException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
     }
 
     @Test
-    public void variantWithAlleleFrequencyZeroWontBeCreatedByTheFactory() {
+    public void haploidVariantWithNoAltGenotypes() {
+        String line = "Y\t10040\trs123\tT\tC\t.\t.\t.\tGT\t.\t0\t0\t.";
+
+        thrown.expect(NonVariantException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
+    }
+
+    @Test
+    public void triploidVariantWithNoAltGenotypes() {
+        String line = "1\t10040\trs123\tT\tC\t.\t.\t.\tGT\t0/0/0\t0|0|0\t././.\t0|0|0\t././.";
+
+        thrown.expect(NonVariantException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
+    }
+
+    @Test
+    public void multiAllelicVariantAndOneAlleleHasNoGenotypes() {
+        String line = "Y\t10040\trs123\tT\tC,G,A\t.\t.\t.\tGT\t0/0\t0/2\t./.\t2/2\t0/3\t2/3";
+
+        thrown.expect(NonVariantException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
+    }
+
+    @Test
+    public void variantWithAlleleFrequencyZero() {
         String line = "1\t10040\trs123\tT\tC\t.\t.\tAF=0";
 
-        List<Variant> result = factory.create(FILE_ID, STUDY_ID, line);
-
-        assertEquals(0, result.size());
-
-        // multiallelic variant, one of the alt has AF=0
-        line = "1\t10040\trs123\tT\tC,G,A\t.\t.\tAF=0.5,0,0.2";
-
-        result = factory.create(FILE_ID, STUDY_ID, line);
-
-        assertEquals(2, result.size());
-        assertTrue(result.stream().anyMatch(v -> v.getAlternate().equals("C")));
-        assertTrue(result.stream().anyMatch(v -> v.getAlternate().equals("A")));
+        thrown.expect(NonVariantException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
     }
 
     @Test
-    public void variantWithAlleleCountZeroWontBeCreatedByTheFactory() {
+    public void multiAllelicWithAlleleFrequencyZero() {
+        String line = "1\t10040\trs123\tT\tC,G,A\t.\t.\tAF=0.5,0,0.2";
+
+        thrown.expect(NonVariantException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
+    }
+
+    @Test
+    public void variantWithAlleleCountZero() {
         String line = "1\t10040\trs123\tT\tC\t.\t.\tAC=0";
 
-        List<Variant> result = factory.create(FILE_ID, STUDY_ID, line);
+        thrown.expect(NonVariantException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
+    }
 
-        assertEquals(0, result.size());
+    @Test
+    public void multiAlleleWithOneAlleleCountZero() {
+        String line =  "1\t10040\trs123\tT\tC,G,A\t.\t.\tAC=0.5,0,0.2";
 
-        // multiallelic variant, one of the alt has AC=0
-        line = "1\t10040\trs123\tT\tC,G,A\t.\t.\tAC=0.5,0,0.2";
-
-        result = factory.create(FILE_ID, STUDY_ID, line);
-
-        assertEquals(2, result.size());
-        assertTrue(result.stream().anyMatch(v -> v.getAlternate().equals("C")));
-        assertTrue(result.stream().anyMatch(v -> v.getAlternate().equals("A")));
+        thrown.expect(NonVariantException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
     }
 }
