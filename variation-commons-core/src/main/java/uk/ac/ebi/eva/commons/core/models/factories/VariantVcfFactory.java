@@ -314,10 +314,13 @@ public class VariantVcfFactory {
                         }
                         file.addAttribute(splits[0], frequencies[numAllele]);
                         break;
-//                    case "AN":
+                    case "AN":
 //                        // TODO For now, only two alleles (reference and one alternate) are supported, but this should be changed
 //                        file.addAttribute(splits[0], "2");
-//                        break;
+                        if (splits[1].equals("0")) {
+                            throw new NonVariantException("Total number of alleles is 0");
+                        }
+                        break;
                     case "NS":
                         // Count the number of samples that are associated with the allele
                         file.addAttribute(splits[0], String.valueOf(file.getSamplesData().size()));

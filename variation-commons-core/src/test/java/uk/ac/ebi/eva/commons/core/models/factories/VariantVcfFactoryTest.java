@@ -646,4 +646,12 @@ public class VariantVcfFactoryTest {
         thrown.expect(NonVariantException.class);
         factory.create(FILE_ID, STUDY_ID, line);
     }
+
+    @Test
+    public void variantWithAlleleTotalNumberZero() {
+        String line = "1\t10040\trs123\tT\tC\t.\t.\tAN=0";
+
+        thrown.expect(NonVariantException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
+    }
 }
