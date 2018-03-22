@@ -302,13 +302,16 @@ public class VariantVcfFactory {
                     case "AC":
                         // TODO For now, only one alternate is supported
                         String[] counts = splits[1].split(",");
+                        if (counts[numAllele].equals("0")) {
+                            throw new NonVariantException("Alternate allele count is 0");
+                        }
                         file.addAttribute(splits[0], counts[numAllele]);
                         break;
                     case "AF":
                         // TODO For now, only one alternate is supported
                         String[] frequencies = splits[1].split(",");
                         if (frequencies[numAllele].equals("0")) {
-                            throw new NonVariantException("Allele frequency is 0");
+                            throw new NonVariantException("Alternate allele frequency is 0");
                         }
                         file.addAttribute(splits[0], frequencies[numAllele]);
                         break;
