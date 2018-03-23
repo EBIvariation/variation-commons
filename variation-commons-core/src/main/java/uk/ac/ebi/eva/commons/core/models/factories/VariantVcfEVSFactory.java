@@ -62,7 +62,7 @@ public class VariantVcfEVSFactory extends VariantAggregatedVcfFactory {
     }
 
     @Override
-    protected void setOtherFields(Variant variant, String fileId, String studyId, Set<String> ids, float quality,
+    protected boolean setOtherFields(Variant variant, String fileId, String studyId, Set<String> ids, float quality,
                                   String filter, String info, String format, int numAllele, String[] alternateAlleles,
                                   String line) throws NonVariantException {
         // Fields not affected by the structure of REF and ALT fields
@@ -74,21 +74,25 @@ public class VariantVcfEVSFactory extends VariantAggregatedVcfFactory {
         if (!filter.isEmpty()) {
             sourceEntry.addAttribute("FILTER", filter);
         }
+
+        boolean hasCountsOrFrequenciesInInfoField = false;
         if (!info.isEmpty()) {
-            parseInfo(variant, fileId, studyId, info, numAllele);
+            hasCountsOrFrequenciesInInfoField = parseInfo(variant, fileId, studyId, info, numAllele);
         }
         sourceEntry.setFormat(format);
         sourceEntry.addAttribute("src", line);
 
-
+        boolean hasGTCInfoTag = false;
         if (tagMap == null) {   // whether we can parse population stats or not
-            parseEVSAttributes(variant, fileId, studyId, numAllele, alternateAlleles);
+            hasGTCInfoTag = parseEVSAttributes(variant, fileId, studyId, numAllele, alternateAlleles);
         } else {
-            parseCohortEVSInfo(variant, sourceEntry, numAllele, alternateAlleles);
+            hasGTCInfoTag = parseCohortEVSInfo(variant, sourceEntry, numAllele, alternateAlleles);
         }
+
+        return hasCountsOrFrequenciesInInfoField || hasGTCInfoTag;
     }
 
-    private void parseEVSAttributes(Variant variant, String fileId, String studyId, int numAllele, String[] alternateAlleles) {
+    private boolean parseEVSAttributes(Variant variant, String fileId, String studyId, int numAllele, String[] alternateAlleles) {
         VariantSourceEntry file = variant.getSourceEntry(fileId, studyId);
         VariantStatistics stats = new VariantStatistics(variant);
         if (file.hasAttribute("MAF")) {
@@ -99,16 +103,21 @@ public class VariantVcfEVSFactory extends VariantAggregatedVcfFactory {
             }
         }
 
+        boolean hasGTCInfoTag = false;
         if (file.hasAttribute("GTS") && file.hasAttribute("GTC")) {
             String splitsGTC[] = file.getAttribute("GTC").split(",");
             addGenotypeWithGTS(variant, file, splitsGTC, alternateAlleles, numAllele, stats);
+            hasGTCInfoTag = true;
         }
         file.setStats(stats);
+
+        return hasGTCInfoTag;
     }
 
 
-    private void parseCohortEVSInfo(Variant variant, VariantSourceEntry sourceEntry,
+    private boolean parseCohortEVSInfo(Variant variant, VariantSourceEntry sourceEntry,
                                     int numAllele, String[] alternateAlleles) {
+        boolean hasGTCInfoTag = false;
         if (tagMap != null) {
             for (String key : sourceEntry.getAttributes().keySet()) {
                 String opencgaTag = reverseTagMap.get(key);
@@ -138,6 +147,7 @@ public class VariantVcfEVSFactory extends VariantAggregatedVcfFactory {
                             case "GTC":
                                 addGenotypeWithGTS(variant, sourceEntry, values, alternateAlleles, numAllele,
                                                    cohortStats);
+                                hasGTCInfoTag = true;
                                 break;
                             default:
                                 break;
@@ -163,6 +173,8 @@ public class VariantVcfEVSFactory extends VariantAggregatedVcfFactory {
             }
             // TODO reprocess stats to complete inferable values. A StatsHolder may be needed to keep values not storables in VariantStatistics
         }
+
+        return hasGTCInfoTag;
     }
 
 }
