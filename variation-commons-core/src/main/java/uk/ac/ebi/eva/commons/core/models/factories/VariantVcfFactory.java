@@ -362,7 +362,7 @@ public class VariantVcfFactory {
         return correctedAllele;
     }
 
-    protected void checkVariantInformation(Variant variant, String fileId,
+    private void checkVariantInformation(Variant variant, String fileId,
                                            String studyId) throws NonVariantException, IncompleteInformationException {
 
         // check genotypes
