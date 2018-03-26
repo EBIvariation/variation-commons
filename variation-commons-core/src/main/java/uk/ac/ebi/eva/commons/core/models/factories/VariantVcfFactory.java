@@ -54,12 +54,11 @@ public class VariantVcfFactory {
      *
      * @param fileId,
      * @param studyId
-     * @param line    Contents of the line in the file
+     * @param line Contents of the line in the file
      * @return The list of Variant objects that can be created using the fields from a VCF record
      */
-    public List<Variant> create(String fileId, String studyId,
-                                String line) throws IllegalArgumentException, NonVariantException,
-            IncompleteInformationException {
+    public List<Variant> create(String fileId, String studyId, String line)
+            throws IllegalArgumentException, NonVariantException, IncompleteInformationException {
 
         String[] fields = line.split("\t");
         if (fields.length < 8) {
@@ -83,21 +82,18 @@ public class VariantVcfFactory {
         // Now create all the Variant objects read from the VCF record
         for (int altAlleleIdx = 0; altAlleleIdx < alternateAlleles.length; altAlleleIdx++) {
             VariantCoreFields keyFields = generatedKeyFields.get(altAlleleIdx);
-            Variant variant = new Variant(chromosome, keyFields.getStart(), keyFields.getEnd(),
-                                          keyFields.getReference(),
+            Variant variant = new Variant(chromosome, keyFields.getStart(), keyFields.getEnd(), keyFields.getReference(),
                                           keyFields.getAlternate());
             String[] secondaryAlternates = getSecondaryAlternates(altAlleleIdx, alternateAlleles);
             VariantSourceEntry file = new VariantSourceEntry(fileId, studyId, secondaryAlternates, format);
             variant.addSourceEntry(file);
 
-            boolean hasSamplesData = parseSplitSampleData(variant, fileId, studyId, fields, alternateAlleles,
-                                                          secondaryAlternates, altAlleleIdx);
+            parseSplitSampleData(variant, fileId, studyId, fields, alternateAlleles, secondaryAlternates, altAlleleIdx);
             // Fill the rest of fields (after samples because INFO depends on them)
-            boolean hasFrequenciesOrAllelesCounts = setOtherFields(variant, fileId, studyId, ids, quality, filter, info,
-                                                                   format, altAlleleIdx, alternateAlleles, line);
-            if (!hasSamplesData && !hasFrequenciesOrAllelesCounts) {
-                throw new IncompleteInformationException(keyFields);
-            }
+            setOtherFields(variant, fileId, studyId, ids, quality, filter, info, format, altAlleleIdx,
+                           alternateAlleles, line);
+            checkVariantInformation(variant, fileId, studyId);
+
             variants.add(variant);
         }
 
@@ -181,46 +177,29 @@ public class VariantVcfFactory {
         return secondaryAlternates;
     }
 
-    protected boolean parseSplitSampleData(Variant variant, String fileId, String studyId, String[] fields,
+    protected void parseSplitSampleData(Variant variant, String fileId, String studyId, String[] fields,
                                         String[] alternateAlleles, String[] secondaryAlternates,
-                                        int alternateAlleleIdx) throws NonVariantException {
-
+                                        int alternateAlleleIdx) {
         String[] formatFields = variant.getSourceEntry(fileId, studyId).getFormat().split(":");
 
-        boolean hasSampleData = fields.length >= 9;
+        for (int i = 9; i < fields.length; i++) {
+            Map<String, String> map = new TreeMap<>();
 
-        if (hasSampleData) {
-            boolean allGenotypesAreRefOrMissingValues = true;
+            // Fill map of a sample
+            String[] sampleFields = fields[i].split(":");
 
-            for (int i = 9; i < fields.length; i++) {
-                Map<String, String> map = new TreeMap<>();
+            // Samples may remove the trailing fields (only GT is mandatory),
+            // so the loop iterates to sampleFields.length, not formatFields.length
+            for (int j = 0; j < sampleFields.length; j++) {
+                String formatField = formatFields[j];
+                String sampleField = processSampleField(alternateAlleleIdx, formatField, sampleFields[j]);
 
-                // Fill map of a sample
-                String[] sampleFields = fields[i].split(":");
-
-                // Samples may remove the trailing fields (only GT is mandatory),
-                // so the loop iterates to sampleFields.length, not formatFields.length
-                for (int j = 0; j < sampleFields.length; j++) {
-                    String formatField = formatFields[j];
-                    String sampleField = processSampleField(alternateAlleleIdx, formatField, sampleFields[j]);
-                    if (allGenotypesAreRefOrMissingValues && formatField.equalsIgnoreCase("GT")) {
-                        if (genotypeHasAlternateAllele(sampleField)) {
-                            allGenotypesAreRefOrMissingValues = false;
-                        }
-                    }
-
-                    map.put(formatField, sampleField);
-                }
-
-                // Add sample to the variant entry in the source file
-                variant.getSourceEntry(fileId, studyId).addSampleData(map);
+                map.put(formatField, sampleField);
             }
-            if (allGenotypesAreRefOrMissingValues) {
-                throw new NonVariantException("All genotypes are reference or missing values");
-            }
+
+            // Add sample to the variant entry in the source file
+            variant.getSourceEntry(fileId, studyId).addSampleData(map);
         }
-
-        return hasSampleData;
     }
 
     /**
@@ -271,14 +250,8 @@ public class VariantVcfFactory {
         return genotype.intern();
     }
 
-    private boolean genotypeHasAlternateAllele(String sampleField) {
-        return Arrays.stream(sampleField.split("[/|]")).anyMatch(allele -> allele.equals("1"));
-    }
-
-    protected boolean setOtherFields(Variant variant, String fileId, String studyId, Set<String> ids, float quality,
-                                  String filter, String info, String format, int numAllele, String[] alternateAlleles,
-                                  String line) throws NonVariantException {
-
+    protected void setOtherFields(Variant variant, String fileId, String studyId, Set<String> ids, float quality, String filter,
+                                  String info, String format, int numAllele, String[] alternateAlleles, String line) {
         // Fields not affected by the structure of REF and ALT fields
         variant.setIds(ids);
 
@@ -289,21 +262,14 @@ public class VariantVcfFactory {
         if (!filter.isEmpty()) {
             variant.getSourceEntry(fileId, studyId).addAttribute("FILTER", filter);
         }
-
-        boolean hasCountsOrFrequenciesInInfoField = false;
         if (!info.isEmpty()) {
-            hasCountsOrFrequenciesInInfoField = parseInfo(variant, fileId, studyId, info, numAllele);
+            parseInfo(variant, fileId, studyId, info, numAllele);
         }
         variant.getSourceEntry(fileId, studyId).addAttribute("src", line);
-
-        return hasCountsOrFrequenciesInInfoField;
     }
 
-    protected boolean parseInfo(Variant variant, String fileId, String studyId, String info,
-                             int numAllele) throws NonVariantException {
-
+    protected void parseInfo(Variant variant, String fileId, String studyId, String info, int numAllele) {
         VariantSourceEntry file = variant.getSourceEntry(fileId, studyId);
-        boolean hasCountsOrFrequencies = false;
 
         for (String var : info.split(";")) {
             String[] splits = var.split("=");
@@ -317,27 +283,16 @@ public class VariantVcfFactory {
                     case "AC":
                         // TODO For now, only one alternate is supported
                         String[] counts = splits[1].split(",");
-                        if (counts[numAllele].equals("0")) {
-                            throw new NonVariantException("Alternate allele count is 0");
-                        }
                         file.addAttribute(splits[0], counts[numAllele]);
-                        hasCountsOrFrequencies = true;
                         break;
                     case "AF":
                         // TODO For now, only one alternate is supported
                         String[] frequencies = splits[1].split(",");
-                        if (frequencies[numAllele].equals("0")) {
-                            throw new NonVariantException("Alternate allele frequency is 0");
-                        }
                         file.addAttribute(splits[0], frequencies[numAllele]);
-                        hasCountsOrFrequencies = true;
                         break;
                     case "AN":
 //                        // TODO For now, only two alleles (reference and one alternate) are supported, but this should be changed
-//                        file.addAttribute(splits[0], "2");
-                        if (splits[1].equals("0")) {
-                            throw new NonVariantException("Total number of alleles is 0");
-                        }
+                        file.addAttribute(splits[0], splits[1]);
                         break;
                     case "NS":
                         // Count the number of samples that are associated with the allele
@@ -377,9 +332,7 @@ public class VariantVcfFactory {
             } else {
                 variant.getSourceEntry(fileId, studyId).addAttribute(splits[0], "");
             }
-
         }
-        return hasCountsOrFrequencies;
     }
 
     /**
@@ -407,5 +360,39 @@ public class VariantVcfFactory {
             }
         }
         return correctedAllele;
+    }
+
+    protected void checkVariantInformation(Variant variant, String fileId,
+                                           String studyId) throws NonVariantException, IncompleteInformationException {
+
+        // check genotypes
+        VariantSourceEntry variantSourceEntry = variant.getSourceEntry(fileId, studyId);
+        List<Map<String, String>> samplesData = variantSourceEntry.getSamplesData();
+        if (!samplesData.isEmpty()) {
+            if (samplesData.stream().map(m -> m.get("GT")).noneMatch(this::genotypeHasAlternateAllele)) {
+                throw new NonVariantException("TODO MESSAGE HERE");
+            }
+        } else {
+            // check info
+            boolean hasAC = checkAttributeIsNotZero(variantSourceEntry, "AC");
+            boolean hasAF = checkAttributeIsNotZero(variantSourceEntry, "AF");
+            boolean hasAN =  checkAttributeIsNotZero(variantSourceEntry, "AN");
+            boolean hasGTC =  checkAttributeIsNotZero(variantSourceEntry, "GTC");
+            if (!hasAC && !hasAF && !hasAN && !hasGTC) {
+                throw new IncompleteInformationException(variant);
+            }
+        }
+    }
+
+    private boolean genotypeHasAlternateAllele(String sampleField) {
+        return Arrays.stream(sampleField.split("[/|]")).anyMatch(allele -> allele.equals("1"));
+    }
+
+    private boolean checkAttributeIsNotZero(VariantSourceEntry variantSourceEntry, String attribute) {
+        boolean hasAttribute = variantSourceEntry.hasAttribute(attribute);
+        if (hasAttribute && variantSourceEntry.getAttribute(attribute).equals("0")) {
+            throw new NonVariantException("TODO MESSAGE HERE");
+        }
+        return hasAttribute;
     }
 }

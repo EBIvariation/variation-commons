@@ -17,7 +17,6 @@
 package uk.ac.ebi.eva.commons.core.models.factories;
 
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
-import uk.ac.ebi.eva.commons.core.models.factories.exception.NonVariantException;
 import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
@@ -96,20 +95,19 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
     }
 
     @Override
-    protected boolean parseSplitSampleData(Variant variant, String fileId, String studyId, String[] fields,
+    protected void parseSplitSampleData(Variant variant, String fileId, String studyId, String[] fields,
                                         String[] alternateAlleles, String[] secondaryAlternates,
                                         int alternateAlleleIdx) {
         if (fields.length > 8) {
             throw new IllegalArgumentException("Aggregated VCFs should not have column FORMAT nor " +
                     "further sample columns, i.e. there should be only 8 columns");
         }
-        return false;
     }
 
     @Override
-    protected boolean setOtherFields(Variant variant, String fileId, String studyId, Set<String> ids, float quality,
+    protected void setOtherFields(Variant variant, String fileId, String studyId, Set<String> ids, float quality,
                                   String filter, String info, String format, int numAllele, String[] alternateAlleles,
-                                  String line) throws NonVariantException {
+                                  String line) {
         // Fields not affected by the structure of REF and ALT fields
         variant.setIds(ids);
         VariantSourceEntry sourceEntry = variant.getSourceEntry(fileId, studyId);
@@ -119,9 +117,8 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
         if (!filter.isEmpty()) {
             sourceEntry.addAttribute("FILTER", filter);
         }
-        boolean hasCountsOrFrequenciesInInfoField = false;
         if (!info.isEmpty()) {
-            hasCountsOrFrequenciesInInfoField = parseInfo(variant, fileId, studyId, info, numAllele);
+            parseInfo(variant, fileId, studyId, info, numAllele);
         }
         sourceEntry.setFormat(format);
         sourceEntry.addAttribute("src", line);
@@ -132,8 +129,6 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
         } else {
             parseCohortStats(variant, fileId, studyId, numAllele, alternateAlleles, info);
         }
-
-        return hasCountsOrFrequenciesInInfoField;
     }
 
     protected void parseStats(Variant variant, String fileId, String studyId, int numAllele, String[] alternateAlleles,
