@@ -281,17 +281,14 @@ public class VariantVcfFactory {
                         file.addAttribute(splits[0], ids[numAllele]);
                         break;
                     case "AC":
-                        // TODO For now, only one alternate is supported
                         String[] counts = splits[1].split(",");
                         file.addAttribute(splits[0], counts[numAllele]);
                         break;
                     case "AF":
-                        // TODO For now, only one alternate is supported
                         String[] frequencies = splits[1].split(",");
                         file.addAttribute(splits[0], frequencies[numAllele]);
                         break;
                     case "AN":
-//                        // TODO For now, only two alleles (reference and one alternate) are supported, but this should be changed
                         file.addAttribute(splits[0], splits[1]);
                         break;
                     case "NS":
