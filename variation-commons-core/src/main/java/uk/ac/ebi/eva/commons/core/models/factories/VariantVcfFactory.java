@@ -378,13 +378,15 @@ public class VariantVcfFactory {
             boolean hasAF = checkAttributeIsNotZero(variantSourceEntry, "AF");
             boolean hasAN =  checkAttributeIsNotZero(variantSourceEntry, "AN");
             boolean hasGTC =  checkAttributeIsNotZero(variantSourceEntry, "GTC");
-            if (!hasAC && !hasAF && !hasAN && !hasGTC) {
+            if (!hasAF && !hasGTC && !(hasAN && hasAC)) {
                 throw new IncompleteInformationException(variant);
             }
         }
     }
 
     private boolean genotypeHasAlternateAllele(String sampleField) {
+        // the alternate allele index could be originally other than 1, but the processGenotypeField method has
+        // updated those indexes so all calls to the alternate allele in this variant has now index 1
         return Arrays.stream(sampleField.split("[/|]")).anyMatch(allele -> allele.equals("1"));
     }
 

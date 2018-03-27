@@ -674,7 +674,7 @@ public class VariantVcfFactoryTest {
 
     @Test
     public void multiAlleleWithOneAlleleCountZero() {
-        String line =  "1\t10040\trs123\tT\tC,G,A\t.\t.\tAC=0.5,0,0.2";
+        String line =  "1\t10040\trs123\tT\tC,G,A\t.\t.\tAN=7;AC=5,0,2";
 
         thrown.expect(NonVariantException.class);
         factory.create(FILE_ID, STUDY_ID, line);
@@ -685,6 +685,22 @@ public class VariantVcfFactoryTest {
         String line = "1\t10040\trs123\tT\tC\t.\t.\tAN=0";
 
         thrown.expect(NonVariantException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
+    }
+
+    @Test
+    public void variantWithAlleleTotalNumberButNotAlleleCount() {
+        String line = "1\t10040\trs123\tT\tC\t.\t.\tAN=5";
+
+        thrown.expect(IncompleteInformationException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
+    }
+
+    @Test
+    public void variantWithAlleleCountButNotAlleleTotalNumber() {
+        String line = "1\t10040\trs123\tT\tC\t.\t.\tAC=5";
+
+        thrown.expect(IncompleteInformationException.class);
         factory.create(FILE_ID, STUDY_ID, line);
     }
 }
