@@ -362,9 +362,8 @@ public class VariantVcfFactory {
         return correctedAllele;
     }
 
-    private void checkVariantInformation(Variant variant, String fileId,
-                                           String studyId) throws NonVariantException, IncompleteInformationException {
-
+    private void checkVariantInformation(Variant variant, String fileId, String studyId)
+            throws NonVariantException, IncompleteInformationException {
         // check genotypes
         VariantSourceEntry variantSourceEntry = variant.getSourceEntry(fileId, studyId);
         List<Map<String, String>> samplesData = variantSourceEntry.getSamplesData();
