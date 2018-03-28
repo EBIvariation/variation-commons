@@ -420,9 +420,13 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
 
     @Override
     protected boolean isNonVariant(VariantSourceEntry variantSourceEntry){
-        return isVariantInfoAttributeZero(variantSourceEntry, "AF") ||
-               isVariantInfoAttributeZero(variantSourceEntry, "AC") ||
-               isVariantInfoAttributeZero(variantSourceEntry, "AN");
+        return attributeIsZeroInVariantSourceEntry(variantSourceEntry, "AF") ||
+               attributeIsZeroInVariantSourceEntry(variantSourceEntry, "AC") ||
+               attributeIsZeroInVariantSourceEntry(variantSourceEntry, "AN");
+    }
+
+    protected boolean attributeIsZeroInVariantSourceEntry(VariantSourceEntry variantSourceEntry, String attribute) {
+        return variantSourceEntry.hasAttribute(attribute) && variantSourceEntry.getAttribute(attribute).equals("0");
     }
 
     protected boolean canAlleleFrequenciesBeCalculated(VariantSourceEntry variantSourceEntry) {
@@ -434,10 +438,6 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
         }
 
         return frequenciesCanBeCalculated;
-    }
-
-    protected boolean isVariantInfoAttributeZero(VariantSourceEntry variantSourceEntry, String attribute) {
-        return variantSourceEntry.hasAttribute(attribute) && variantSourceEntry.getAttribute(attribute).equals("0");
     }
 }
 

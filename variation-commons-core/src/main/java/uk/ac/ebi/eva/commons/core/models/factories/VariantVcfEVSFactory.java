@@ -179,8 +179,8 @@ public class VariantVcfEVSFactory extends VariantAggregatedVcfFactory {
 
     @Override
     protected boolean isNonVariant(VariantSourceEntry variantSourceEntry){
-        return isVariantInfoAttributeZero(variantSourceEntry, "TAC") ||
-                isVariantInfoAttributeZero(variantSourceEntry, "AN");
+        return attributeIsZeroInVariantSourceEntry(variantSourceEntry, "TAC") ||
+                attributeIsZeroInVariantSourceEntry(variantSourceEntry, "AN");
     }
 
     @Override
