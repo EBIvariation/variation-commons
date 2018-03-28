@@ -359,38 +359,32 @@ public class VariantVcfFactory {
         return correctedAllele;
     }
 
-    private void checkVariantInformation(Variant variant, String fileId, String studyId)
+    protected void checkVariantInformation(Variant variant, String fileId, String studyId)
             throws NonVariantException, IncompleteInformationException {
-        // check genotypes
         VariantSourceEntry variantSourceEntry = variant.getSourceEntry(fileId, studyId);
-        List<Map<String, String>> samplesData = variantSourceEntry.getSamplesData();
-        if (!samplesData.isEmpty()) {
-            if (samplesData.stream().map(m -> m.get("GT")).noneMatch(this::genotypeHasAlternateAllele)) {
-                throw new NonVariantException("TODO MESSAGE HERE");
-            }
-        } else {
-            // check info
-            boolean hasAC = checkAttributeIsNotZero(variantSourceEntry, "AC");
-            boolean hasAF = checkAttributeIsNotZero(variantSourceEntry, "AF");
-            boolean hasAN =  checkAttributeIsNotZero(variantSourceEntry, "AN");
-            boolean hasGTC =  checkAttributeIsNotZero(variantSourceEntry, "GTC");
-            if (!hasAF && !hasGTC && !(hasAN && hasAC)) {
-                throw new IncompleteInformationException(variant);
-            }
+        if (isNonVariant(variantSourceEntry)) {
+            throw new NonVariantException("The variant " + variant + " has no alternate allele genotype calls");
         }
     }
 
-    private boolean genotypeHasAlternateAllele(String sampleField) {
+    protected boolean isNonVariant(VariantSourceEntry variantSourceEntry){
+        boolean isNonVariant = true;
+
+        List<Map<String, String>> samplesData = variantSourceEntry.getSamplesData();
+        if (!samplesData.isEmpty()) {
+            if (samplesData.stream().map(m -> m.get("GT")).anyMatch(VariantVcfFactory::genotypeHasAlternateAllele)) {
+                isNonVariant = false;
+            }
+        }
+
+        return isNonVariant;
+    }
+
+
+    private static boolean genotypeHasAlternateAllele(String sampleField) {
         // the alternate allele index could be originally other than 1, but the processGenotypeField method has
         // updated those indexes so all calls to the alternate allele in this variant has now index 1
         return Arrays.stream(sampleField.split("[/|]")).anyMatch(allele -> allele.equals("1"));
     }
 
-    private boolean checkAttributeIsNotZero(VariantSourceEntry variantSourceEntry, String attribute) {
-        boolean hasAttribute = variantSourceEntry.hasAttribute(attribute);
-        if (hasAttribute && variantSourceEntry.getAttribute(attribute).equals("0")) {
-            throw new NonVariantException("TODO MESSAGE HERE");
-        }
-        return hasAttribute;
-    }
 }
