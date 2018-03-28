@@ -56,15 +56,15 @@ public class VariantVcfFactoryTest {
         expResult.add(new Variant("1", 1000, 1000, "T", "G"));
         String line;
 
-        line = "chr1\t1000\t.\tT\tG\t.\t.\tAF=0.5";
+        line = "chr1\t1000\t.\tT\tG\t.\t.\t.\tGT\t0/1";
         List<Variant> result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
 
-        line = "Chr1\t1000\t.\tT\tG\t.\t.\tAF=0.5";
+        line = "Chr1\t1000\t.\tT\tG\t.\t.\t.\tGT\t0/1";
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
 
-        line = "CHR1\t1000\t.\tT\tG\t.\t.\tAF=0.5";
+        line = "CHR1\t1000\t.\tT\tG\t.\t.\t.\tGT\t0/1";
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
     }
@@ -72,7 +72,7 @@ public class VariantVcfFactoryTest {
     @Test
     public void testCreateVariantFromVcfSameLengthRefAlt() {
         // Test when there are differences at the end of the sequence
-        String line = "1\t1000\trs123\tTCACCC\tTGACGG\t.\t.\tAF=0.5";
+        String line = "1\t1000\trs123\tTCACCC\tTGACGG\t.\t.\t.\tGT\t0/1";
 
         List<Variant> expResult = new LinkedList<>();
         expResult.add(new Variant("1", 1001, 1005, "CACCC", "GACGG"));
@@ -81,7 +81,7 @@ public class VariantVcfFactoryTest {
         assertEquals(expResult, result);
 
         // Test when there are not differences at the end of the sequence
-        line = "1\t1000\trs123\tTCACCC\tTGACGC\t.\t.\tAF=0.5";
+        line = "1\t1000\trs123\tTCACCC\tTGACGC\t.\t.\t.\tGT\t0/1";
 
         expResult = new LinkedList<>();
         expResult.add(new Variant("1", 1001, 1004, "CACC", "GACG"));
@@ -92,7 +92,7 @@ public class VariantVcfFactoryTest {
 
     @Test
     public void testCreateVariantFromVcfInsertionEmptyRef() {
-        String line = "1\t1000\trs123\t.\tTGACGC\t.\t.\tAF=0.5";
+        String line = "1\t1000\trs123\t.\tTGACGC\t.\t.\t.\tGT\t0/1";
 
         List<Variant> expResult = new LinkedList<>();
         expResult.add(new Variant("1", 1000, 1000 + "TGACGC".length() - 1, "", "TGACGC"));
@@ -103,7 +103,7 @@ public class VariantVcfFactoryTest {
 
     @Test
     public void testCreateVariantFromVcfDeletionEmptyAlt() {
-        String line = "1\t999\trs123\tGTCACCC\tG\t.\t.\tAF=0.5";
+        String line = "1\t999\trs123\tGTCACCC\tG\t.\t.\t.\tGT\t0/1";
 
         List<Variant> expResult = new LinkedList<>();
         expResult.add(new Variant("1", 1000, 1000 + "TCACCC".length() - 1, "TCACCC", ""));
@@ -114,69 +114,69 @@ public class VariantVcfFactoryTest {
 
     @Test
     public void testCreateVariantFromVcfIndelNotEmptyFields() {
-        String line = "1\t1000\trs123\tCGATT\tTAC\t.\t.\tAF=0.5";
+        String line = "1\t1000\trs123\tCGATT\tTAC\t.\t.\t.\tGT\t0/1";
 
         List<Variant> expResult = new LinkedList<>();
         expResult.add(new Variant("1", 1000, 1000 + "CGATT".length() - 1, "CGATT", "TAC"));
         List<Variant> result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
 
-        line = "1\t1000\trs123\tAT\tA\t.\t.\tAF=0.5";
+        line = "1\t1000\trs123\tAT\tA\t.\t.\t.\tGT\t0/1";
         expResult = new LinkedList<>();
         expResult.add(new Variant("1", 1001, 1001, "T", ""));
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
 
-        line = "1\t1000\trs123\tGATC\tG\t.\t.\tAF=0.5";
+        line = "1\t1000\trs123\tGATC\tG\t.\t.\t.\tGT\t0/1";
         expResult = new LinkedList<>();
         expResult.add(new Variant("1", 1001, 1003, "ATC", ""));
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
 
-        line = "1\t1000\trs123\t.\tATC\t.\t.\tAF=0.5";
+        line = "1\t1000\trs123\t.\tATC\t.\t.\t.\tGT\t0/1";
         expResult = new LinkedList<>();
         expResult.add(new Variant("1", 1000, 1002, "", "ATC"));
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
 
-        line = "1\t1000\trs123\tA\tATC\t.\t.\tAF=0.5";
+        line = "1\t1000\trs123\tA\tATC\t.\t.\t.\tGT\t0/1";
         expResult = new LinkedList<>();
         expResult.add(new Variant("1", 1001, 1002, "", "TC"));
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
 
-        line = "1\t1000\trs123\tAC\tACT\t.\t.\tAF=0.5";
+        line = "1\t1000\trs123\tAC\tACT\t.\t.\t.\tGT\t0/1";
         expResult = new LinkedList<>();
         expResult.add(new Variant("1", 1002, 1002, "", "T"));
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
 
         // Printing those that are not currently managed
-        line = "1\t1000\trs123\tAT\tT\t.\t.\tAF=0.5";
+        line = "1\t1000\trs123\tAT\tT\t.\t.\t.\tGT\t0/1";
         expResult = new LinkedList<>();
         expResult.add(new Variant("1", 1000, 1000, "A", ""));
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
 
-        line = "1\t1000\trs123\tATC\tTC\t.\t.\tAF=0.5";
+        line = "1\t1000\trs123\tATC\tTC\t.\t.\t.\tGT\t0/1";
         expResult = new LinkedList<>();
         expResult.add(new Variant("1", 1000, 1000, "A", ""));
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
 
-        line = "1\t1000\trs123\tATC\tAC\t.\t.\tAF=0.5";
+        line = "1\t1000\trs123\tATC\tAC\t.\t.\t.\tGT\t0/1";
         expResult = new LinkedList<>();
         expResult.add(new Variant("1", 1001, 1001, "T", ""));
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
 
-        line = "1\t1000\trs123\tAC\tATC\t.\t.\tAF=0.5";
+        line = "1\t1000\trs123\tAC\tATC\t.\t.\t.\tGT\t0/1";
         expResult = new LinkedList<>();
         expResult.add(new Variant("1", 1001, 1001, "", "T"));
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
 
-        line = "1\t1000\trs123\tATC\tGC\t.\t.\tAF=0.5";
+        line = "1\t1000\trs123\tATC\tGC\t.\t.\t.\tGT\t0/1";
         expResult = new LinkedList<>();
         expResult.add(new Variant("1", 1000, 1001, "AT", "G"));
         result = factory.create(FILE_ID, STUDY_ID, line);
@@ -559,7 +559,7 @@ public class VariantVcfFactoryTest {
 
         Set<String> emptySet = new HashSet<>();
         // test that an ID is properly handled
-        String line = "1\t1000\trs123\tC\tT\t.\t.\tAF=0.5";
+        String line = "1\t1000\trs123\tC\tT\t.\t.\t.\tGT\t0/1";
         List<Variant> expResult = new LinkedList<>();
         expResult.add(new Variant("1", 1000, 1000, "C", "T"));
         List<Variant> result = factory.create(FILE_ID, STUDY_ID, line);
@@ -568,7 +568,7 @@ public class VariantVcfFactoryTest {
         assertEquals(emptySet, result.get(0).getIds());
 
         // test that the ';' is used as the ID separator (as of VCF 4.2)
-        line = "1\t1000\trs123;rs456\tC\tT\t.\t.\tAF=0.5";
+        line = "1\t1000\trs123;rs456\tC\tT\t.\t.\t.\tGT\t0/1";
         expResult = new LinkedList<>();
         expResult.add(new Variant("1", 1000, 1000, "C", "T"));
         result = factory.create(FILE_ID, STUDY_ID, line);
@@ -576,7 +576,7 @@ public class VariantVcfFactoryTest {
         assertEquals(emptySet, result.get(0).getIds());
 
         // test that a missing ID ('.') is not added to the IDs set
-        line = "1\t1000\t.\tC\tT\t.\t.\tAF=0.5";
+        line = "1\t1000\t.\tC\tT\t.\t.\t.\tGT\t0/1";
         expResult = new LinkedList<>();
         expResult.add(new Variant("1", 1000, 1000, "C", "T"));
         result = factory.create(FILE_ID, STUDY_ID, line);
@@ -585,34 +585,22 @@ public class VariantVcfFactoryTest {
     }
 
     @Test
-    public void testVariantWitnNoInfoOrSampleInformation() {
-        String line = "1\t1000\t.\tT\tG\t.\t.\t.";
+    public void testVariantWitnNoSampleInformation() {
+        // a variant with frequency but no genotypes, will be valid for the VariantAggregatedVcfFactory, but not a
+        // variant for VariantVcfFactory, that expects to find genotypes
+        String line = "1\t1000\t.\tT\tG\t.\t.\tAF=0.5";
 
-        thrown.expect(IncompleteInformationException.class);
+        thrown.expect(NonVariantException.class);
         factory.create(FILE_ID, STUDY_ID, line);
     }
 
     @Test
-    public void testMultiallelicVariantWitnNoInfoOrSampleInformation() {
-        String line = "1\t1000\t.\tT\tG,C\t.\t.\t.";
+    public void testMultiallelicVariantWitnNoSampleInformation() {
+        // a variant with frequency but no genotypes, will be valid for the VariantAggregatedVcfFactory, but not a
+        // variant for VariantVcfFactory, that expects to find genotypes
+        String line = "1\t1000\t.\tT\tG,C\t.\t.\tAF=0.5";
 
-        thrown.expect(IncompleteInformationException.class);
-        factory.create(FILE_ID, STUDY_ID, line);
-    }
-
-    @Test
-    public void testVariantWitnNoAlleleCountsFrequencyOrSampleInformation() {
-        String line = "1\t1000\t.\tT\tG\t.\t.\tAA=A";
-
-        thrown.expect(IncompleteInformationException.class);
-        factory.create(FILE_ID, STUDY_ID, line);
-    }
-
-    @Test
-    public void testMultiallelicVariantWitnNoAlleleCountsFrequencyOrSampleInformation() {
-        String line = "1\t1000\t.\tT\tG,A\t.\t.\tAA=A";
-
-        thrown.expect(IncompleteInformationException.class);
+        thrown.expect(NonVariantException.class);
         factory.create(FILE_ID, STUDY_ID, line);
     }
 
@@ -649,58 +637,14 @@ public class VariantVcfFactoryTest {
     }
 
     @Test
-    public void variantWithAlleleFrequencyZero() {
-        String line = "1\t10040\trs123\tT\tC\t.\t.\tAF=0";
+    public void infoAttributesWontBeValidated() {
+        List<Variant> expResult = new LinkedList<>();
+        expResult.add(new Variant("1", 1000, 1000, "T", "G"));
+        String line;
 
-        thrown.expect(NonVariantException.class);
-        factory.create(FILE_ID, STUDY_ID, line);
-    }
-
-    @Test
-    public void multiallelicWithAlleleFrequencyZero() {
-        String line = "1\t10040\trs123\tT\tC,G,A\t.\t.\tAF=0.5,0,0.2";
-
-        thrown.expect(NonVariantException.class);
-        factory.create(FILE_ID, STUDY_ID, line);
-    }
-
-    @Test
-    public void variantWithAlleleCountZero() {
-        String line = "1\t10040\trs123\tT\tC\t.\t.\tAC=0";
-
-        thrown.expect(NonVariantException.class);
-        factory.create(FILE_ID, STUDY_ID, line);
-    }
-
-    @Test
-    public void multiAlleleWithOneAlleleCountZero() {
-        String line =  "1\t10040\trs123\tT\tC,G,A\t.\t.\tAN=7;AC=5,0,2";
-
-        thrown.expect(NonVariantException.class);
-        factory.create(FILE_ID, STUDY_ID, line);
-    }
-
-    @Test
-    public void variantWithAlleleTotalNumberZero() {
-        String line = "1\t10040\trs123\tT\tC\t.\t.\tAN=0";
-
-        thrown.expect(NonVariantException.class);
-        factory.create(FILE_ID, STUDY_ID, line);
-    }
-
-    @Test
-    public void variantWithAlleleTotalNumberButNotAlleleCount() {
-        String line = "1\t10040\trs123\tT\tC\t.\t.\tAN=5";
-
-        thrown.expect(IncompleteInformationException.class);
-        factory.create(FILE_ID, STUDY_ID, line);
-    }
-
-    @Test
-    public void variantWithAlleleCountButNotAlleleTotalNumber() {
-        String line = "1\t10040\trs123\tT\tC\t.\t.\tAC=5";
-
-        thrown.expect(IncompleteInformationException.class);
-        factory.create(FILE_ID, STUDY_ID, line);
+        // the variant is valid if it has some alternate genotypes, even if AF, AC or AN are zero
+        line = "chr1\t1000\t.\tT\tG\t.\t.\tAF=0;AC=0;AN=0\tGT\t0/1";
+        List<Variant> result = factory.create(FILE_ID, STUDY_ID, line);
+        assertEquals(expResult, result);
     }
 }
