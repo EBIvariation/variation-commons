@@ -17,6 +17,8 @@
 package uk.ac.ebi.eva.commons.core.models.factories;
 
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
+import uk.ac.ebi.eva.commons.core.models.factories.exception.IncompleteInformationException;
+import uk.ac.ebi.eva.commons.core.models.factories.exception.NonVariantException;
 import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
@@ -403,6 +405,39 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
                 }
             }
         }
+    }
+
+    @Override
+    protected void checkVariantInformation(Variant variant, String fileId, String studyId)
+            throws NonVariantException, IncompleteInformationException {
+        VariantSourceEntry variantSourceEntry = variant.getSourceEntry(fileId, studyId);
+        if (isNonVariant(variantSourceEntry)) {
+            throw new NonVariantException("The variant " + variant + " has allele frequency or counts '0'");
+        } else if (!canAlleleFrequenciesBeCalculated(variantSourceEntry)) {
+            throw new IncompleteInformationException(variant);
+        }
+    }
+
+    @Override
+    protected boolean isNonVariant(VariantSourceEntry variantSourceEntry){
+        return isVariantInfoAttributeZero(variantSourceEntry, "AF") ||
+               isVariantInfoAttributeZero(variantSourceEntry, "AC") ||
+               isVariantInfoAttributeZero(variantSourceEntry, "AN");
+    }
+
+    protected boolean canAlleleFrequenciesBeCalculated(VariantSourceEntry variantSourceEntry) {
+        boolean frequenciesCanBeCalculated = false;
+        if (variantSourceEntry.hasAttribute("AF")) {
+            frequenciesCanBeCalculated = true;
+        } else if (variantSourceEntry.hasAttribute("AN") && variantSourceEntry.hasAttribute("AC")) {
+            frequenciesCanBeCalculated = true;
+        }
+
+        return frequenciesCanBeCalculated;
+    }
+
+    private boolean isVariantInfoAttributeZero(VariantSourceEntry variantSourceEntry, String attribute) {
+        return variantSourceEntry.hasAttribute(attribute) && variantSourceEntry.getAttribute(attribute).equals("0");
     }
 }
 
