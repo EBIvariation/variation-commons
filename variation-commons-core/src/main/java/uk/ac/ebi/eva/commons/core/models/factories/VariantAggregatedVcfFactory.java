@@ -436,7 +436,7 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
         return frequenciesCanBeCalculated;
     }
 
-    private boolean isVariantInfoAttributeZero(VariantSourceEntry variantSourceEntry, String attribute) {
+    protected boolean isVariantInfoAttributeZero(VariantSourceEntry variantSourceEntry, String attribute) {
         return variantSourceEntry.hasAttribute(attribute) && variantSourceEntry.getAttribute(attribute).equals("0");
     }
 }

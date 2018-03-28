@@ -17,6 +17,8 @@
 package uk.ac.ebi.eva.commons.core.models.factories;
 
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
+import uk.ac.ebi.eva.commons.core.models.factories.exception.IncompleteInformationException;
+import uk.ac.ebi.eva.commons.core.models.factories.exception.NonVariantException;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 
@@ -162,6 +164,33 @@ public class VariantVcfEVSFactory extends VariantAggregatedVcfFactory {
             }
             // TODO reprocess stats to complete inferable values. A StatsHolder may be needed to keep values not storables in VariantStatistics
         }
+    }
+
+    @Override
+    protected void checkVariantInformation(Variant variant, String fileId, String studyId)
+            throws NonVariantException, IncompleteInformationException {
+        VariantSourceEntry variantSourceEntry = variant.getSourceEntry(fileId, studyId);
+        if (isNonVariant(variantSourceEntry)) {
+            throw new NonVariantException("The variant " + variant + " has allele frequency or counts '0'");
+        } else if (!canAlleleFrequenciesBeCalculated(variantSourceEntry)) {
+            throw new IncompleteInformationException(variant);
+        }
+    }
+
+    @Override
+    protected boolean isNonVariant(VariantSourceEntry variantSourceEntry){
+        return isVariantInfoAttributeZero(variantSourceEntry, "TAC") ||
+                isVariantInfoAttributeZero(variantSourceEntry, "AN");
+    }
+
+    @Override
+    protected boolean canAlleleFrequenciesBeCalculated(VariantSourceEntry variantSourceEntry) {
+        boolean frequenciesCanBeCalculated = false;
+        if (variantSourceEntry.hasAttribute("GTS") && variantSourceEntry.hasAttribute("GTC")) {
+            frequenciesCanBeCalculated = true;
+        }
+
+        return frequenciesCanBeCalculated;
     }
 
 }
