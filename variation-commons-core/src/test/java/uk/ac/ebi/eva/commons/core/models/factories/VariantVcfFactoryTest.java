@@ -360,7 +360,7 @@ public class VariantVcfFactoryTest {
         var0.getSourceEntry(FILE_ID, STUDY_ID).addSampleData(na005_C);
         var0.getSourceEntry(FILE_ID, STUDY_ID).addSampleData(na006_C);
 
-        // TODO Initialize expected samples in variant 2 (alt allele GC)
+        // Initialize expected samples in variant 2 (alt allele GC)
         Map<String, String> na001_GC = new HashMap<>();
         na001_GC.put("GT", "0/0");
         Map<String, String> na002_GC = new HashMap<>();
