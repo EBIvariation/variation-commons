@@ -585,7 +585,7 @@ public class VariantVcfFactoryTest {
     }
 
     @Test
-    public void testVariantWitnNoSampleInformation() {
+    public void testVariantWithNoSampleInformation() {
         // a variant with frequency but no genotypes, will be valid for the VariantAggregatedVcfFactory, but not a
         // variant for VariantVcfFactory, that expects to find genotypes
         String line = "1\t1000\t.\tT\tG\t.\t.\tAF=0.5";

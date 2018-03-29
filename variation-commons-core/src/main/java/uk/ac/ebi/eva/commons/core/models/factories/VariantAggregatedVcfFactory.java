@@ -411,7 +411,7 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
     protected void checkVariantInformation(Variant variant, String fileId, String studyId)
             throws NonVariantException, IncompleteInformationException {
         VariantSourceEntry variantSourceEntry = variant.getSourceEntry(fileId, studyId);
-        if (isNonVariant(variantSourceEntry)) {
+        if (!isVariant(variantSourceEntry)) {
             throw new NonVariantException("The variant " + variant + " has allele frequency or counts '0'");
         } else if (!canAlleleFrequenciesBeCalculated(variantSourceEntry)) {
             throw new IncompleteInformationException(variant);
@@ -419,13 +419,13 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
     }
 
     @Override
-    protected boolean isNonVariant(VariantSourceEntry variantSourceEntry){
-        return attributeIsZeroInVariantSourceEntry(variantSourceEntry, "AF") ||
-               attributeIsZeroInVariantSourceEntry(variantSourceEntry, "AC") ||
-               attributeIsZeroInVariantSourceEntry(variantSourceEntry, "AN");
+    protected boolean isVariant(VariantSourceEntry variantSourceEntry) {
+        return !isAttributeZeroInVariantSourceEntry(variantSourceEntry, "AF") &&
+               !isAttributeZeroInVariantSourceEntry(variantSourceEntry, "AC") &&
+               !isAttributeZeroInVariantSourceEntry(variantSourceEntry, "AN");
     }
 
-    protected boolean attributeIsZeroInVariantSourceEntry(VariantSourceEntry variantSourceEntry, String attribute) {
+    protected boolean isAttributeZeroInVariantSourceEntry(VariantSourceEntry variantSourceEntry, String attribute) {
         return variantSourceEntry.hasAttribute(attribute) && variantSourceEntry.getAttribute(attribute).equals("0");
     }
 

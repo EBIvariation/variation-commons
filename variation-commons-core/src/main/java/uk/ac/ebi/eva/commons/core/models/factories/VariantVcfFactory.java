@@ -275,11 +275,6 @@ public class VariantVcfFactory {
             String[] splits = var.split("=");
             if (splits.length == 2) {
                 switch (splits[0]) {
-                    case "ACC":
-                        // Managing accession ID for the allele
-                        String[] ids = splits[1].split(",");
-                        file.addAttribute(splits[0], ids[numAllele]);
-                        break;
                     case "AC":
                         String[] counts = splits[1].split(",");
                         file.addAttribute(splits[0], counts[numAllele]);
@@ -362,22 +357,22 @@ public class VariantVcfFactory {
     protected void checkVariantInformation(Variant variant, String fileId, String studyId)
             throws NonVariantException, IncompleteInformationException {
         VariantSourceEntry variantSourceEntry = variant.getSourceEntry(fileId, studyId);
-        if (isNonVariant(variantSourceEntry)) {
+        if (!isVariant(variantSourceEntry)) {
             throw new NonVariantException("The variant " + variant + " has no alternate allele genotype calls");
         }
     }
 
-    protected boolean isNonVariant(VariantSourceEntry variantSourceEntry){
-        boolean isNonVariant = true;
+    protected boolean isVariant(VariantSourceEntry variantSourceEntry) {
+        boolean isVariant = false;
 
         List<Map<String, String>> samplesData = variantSourceEntry.getSamplesData();
         if (!samplesData.isEmpty()) {
             if (samplesData.stream().map(m -> m.get("GT")).anyMatch(VariantVcfFactory::genotypeHasAlternateAllele)) {
-                isNonVariant = false;
+                isVariant = true;
             }
         }
 
-        return isNonVariant;
+        return isVariant;
     }
 
 

@@ -167,30 +167,14 @@ public class VariantVcfEVSFactory extends VariantAggregatedVcfFactory {
     }
 
     @Override
-    protected void checkVariantInformation(Variant variant, String fileId, String studyId)
-            throws NonVariantException, IncompleteInformationException {
-        VariantSourceEntry variantSourceEntry = variant.getSourceEntry(fileId, studyId);
-        if (isNonVariant(variantSourceEntry)) {
-            throw new NonVariantException("The variant " + variant + " has allele frequency or counts '0'");
-        } else if (!canAlleleFrequenciesBeCalculated(variantSourceEntry)) {
-            throw new IncompleteInformationException(variant);
-        }
-    }
-
-    @Override
-    protected boolean isNonVariant(VariantSourceEntry variantSourceEntry){
-        return attributeIsZeroInVariantSourceEntry(variantSourceEntry, "TAC") ||
-                attributeIsZeroInVariantSourceEntry(variantSourceEntry, "AN");
+    protected boolean isVariant(VariantSourceEntry variantSourceEntry) {
+        return !isAttributeZeroInVariantSourceEntry(variantSourceEntry, "TAC") &&
+                !isAttributeZeroInVariantSourceEntry(variantSourceEntry, "AN");
     }
 
     @Override
     protected boolean canAlleleFrequenciesBeCalculated(VariantSourceEntry variantSourceEntry) {
-        boolean frequenciesCanBeCalculated = false;
-        if (variantSourceEntry.hasAttribute("GTS") && variantSourceEntry.hasAttribute("GTC")) {
-            frequenciesCanBeCalculated = true;
-        }
-
-        return frequenciesCanBeCalculated;
+        return variantSourceEntry.hasAttribute("GTS") && variantSourceEntry.hasAttribute("GTC");
     }
 
 }
