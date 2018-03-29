@@ -629,6 +629,22 @@ public class VariantVcfFactoryTest {
     }
 
     @Test
+    public void variantWhereAllGenotypesAreMissingValues() {
+        String line = "1\t10040\trs123\tT\tC\t.\t.\t.\tGT\t./.\t./.\t./.\t./.\t./.";
+
+        thrown.expect(NonVariantException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
+    }
+
+    @Test
+    public void variantWhereAllGenotypesAreReference() {
+        String line = "1\t10040\trs123\tT\tC\t.\t.\t.\tGT\t0/0\t0|0\t0/0\t0|0\t0/0";
+
+        thrown.expect(NonVariantException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
+    }
+
+    @Test
     public void multiallelicVariantAndOneAlleleHasNoGenotypes() {
         String line = "Y\t10040\trs123\tT\tC,G,A\t.\t.\t.\tGT\t0/0\t0/2\t./.\t2/2\t0/3\t2/3";
 
