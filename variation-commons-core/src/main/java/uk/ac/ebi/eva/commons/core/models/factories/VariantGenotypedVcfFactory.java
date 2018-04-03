@@ -13,15 +13,14 @@ import java.util.TreeMap;
 
 public class VariantGenotypedVcfFactory extends VariantVcfFactory {
 
-    protected void parseSplitSampleData(Variant variant, String fileId, String studyId, String[] fields,
-                                        String[] alternateAlleles, String[] secondaryAlternates,
+    protected void parseSplitSampleData(VariantSourceEntry variantSourceEntry, String[] fields,
                                         int alternateAlleleIdx) {
         if (fields.length < 9) {
             throw new IllegalArgumentException("Genotyped VCFs should have column FORMAT and at least one further " +
                                                        "sample columns, i.e. there should be at least 10 columns");
         }
 
-        String[] formatFields = variant.getSourceEntry(fileId, studyId).getFormat().split(":");
+        String[] formatFields = variantSourceEntry.getFormat().split(":");
 
         for (int i = 9; i < fields.length; i++) {
             Map<String, String> map = new TreeMap<>();
@@ -37,7 +36,7 @@ public class VariantGenotypedVcfFactory extends VariantVcfFactory {
             }
 
             // Add sample to the variant entry in the source file
-            variant.getSourceEntry(fileId, studyId).addSampleData(map);
+            variantSourceEntry.addSampleData(map);
         }
     }
 

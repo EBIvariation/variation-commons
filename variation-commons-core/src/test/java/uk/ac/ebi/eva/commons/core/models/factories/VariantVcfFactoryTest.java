@@ -58,8 +58,7 @@ public class VariantVcfFactoryTest {
         // is common to all the factories. The method 'parseSplitSampleData' doesn't need to do anything
         factory = new VariantVcfFactory() {
             @Override
-            protected void parseSplitSampleData(Variant variant, String fileId, String studyId, String[] fields,
-                                                String[] alternateAlleles, String[] secondaryAlternates,
+            protected void parseSplitSampleData(VariantSourceEntry variantSourceEntry, String[] fields,
                                                 int alternateAlleleIdx) {
             }
         };

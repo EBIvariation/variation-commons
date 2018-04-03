@@ -97,8 +97,7 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
     }
 
     @Override
-    protected void parseSplitSampleData(Variant variant, String fileId, String studyId, String[] fields,
-                                        String[] alternateAlleles, String[] secondaryAlternates,
+    protected void parseSplitSampleData(VariantSourceEntry variantSourceEntry, String[] fields,
                                         int alternateAlleleIdx) {
         if (fields.length > 8) {
             throw new IllegalArgumentException("Aggregated VCFs should not have column FORMAT nor " +

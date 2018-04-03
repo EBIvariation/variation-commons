@@ -78,9 +78,10 @@ public abstract class VariantVcfFactory {
             VariantSourceEntry file = new VariantSourceEntry(fileId, studyId, secondaryAlternates, format);
             variant.addSourceEntry(file);
 
-            parseSplitSampleData(variant, fileId, studyId, fields, alternateAlleles, secondaryAlternates, altAlleleIdx);
+            parseSplitSampleData(file, fields, altAlleleIdx);
             // Fill the rest of fields (after samples because INFO depends on them)
             setOtherFields(variant, fileId, studyId, ids, quality, filter, info, altAlleleIdx, alternateAlleles, line);
+
             checkVariantInformation(variant, fileId, studyId);
 
             variants.add(variant);
@@ -161,9 +162,8 @@ public abstract class VariantVcfFactory {
         return secondaryAlternates;
     }
 
-    protected abstract void parseSplitSampleData(Variant variant, String fileId, String studyId, String[] fields,
-                                        String[] alternateAlleles, String[] secondaryAlternates,
-                                        int alternateAlleleIdx);
+    protected abstract void parseSplitSampleData(VariantSourceEntry variantSourceEntry, String[] fields,
+                                                 int alternateAlleleIdx);
 
 
     protected void setOtherFields(Variant variant, String fileId, String studyId, Set<String> ids, float quality,
