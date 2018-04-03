@@ -437,7 +437,7 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
                isAttributeZeroInVariantSourceEntry(variantSourceEntry, "AN");
     }
 
-    protected` boolean isAttributeZeroInVariantSourceEntry(VariantSourceEntry variantSourceEntry, String attribute) {
+    protected boolean isAttributeZeroInVariantSourceEntry(VariantSourceEntry variantSourceEntry, String attribute) {
         return variantSourceEntry.hasAttribute(attribute) && variantSourceEntry.getAttribute(attribute).equals("0");
     }
 
