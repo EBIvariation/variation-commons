@@ -64,8 +64,7 @@ public class VariantVcfEVSFactory extends VariantAggregatedVcfFactory {
 
     @Override
     protected void setOtherFields(Variant variant, String fileId, String studyId, Set<String> ids, float quality,
-                                  String filter, String info, String format, int numAllele, String[] alternateAlleles,
-                                  String line) {
+                                  String filter, String info, int numAllele, String[] alternateAlleles, String line) {
         // Fields not affected by the structure of REF and ALT fields
         variant.setIds(ids);
         VariantSourceEntry sourceEntry = variant.getSourceEntry(fileId, studyId);
@@ -78,9 +77,7 @@ public class VariantVcfEVSFactory extends VariantAggregatedVcfFactory {
         if (!info.isEmpty()) {
             parseInfo(variant, fileId, studyId, info, numAllele);
         }
-        sourceEntry.setFormat(format);
         sourceEntry.addAttribute("src", line);
-
 
         if (tagMap == null) {   // whether we can parse population stats or not
             parseEVSAttributes(variant, fileId, studyId, numAllele, alternateAlleles);

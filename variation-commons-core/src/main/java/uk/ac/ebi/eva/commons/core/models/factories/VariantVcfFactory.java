@@ -84,8 +84,7 @@ public abstract class VariantVcfFactory {
 
             parseSplitSampleData(variant, fileId, studyId, fields, alternateAlleles, secondaryAlternates, altAlleleIdx);
             // Fill the rest of fields (after samples because INFO depends on them)
-            setOtherFields(variant, fileId, studyId, ids, quality, filter, info, format, altAlleleIdx,
-                           alternateAlleles, line);
+            setOtherFields(variant, fileId, studyId, ids, quality, filter, info, altAlleleIdx, alternateAlleles, line);
             checkVariantInformation(variant, fileId, studyId);
 
             variants.add(variant);
@@ -176,8 +175,8 @@ public abstract class VariantVcfFactory {
                                         int alternateAlleleIdx);
 
 
-    protected void setOtherFields(Variant variant, String fileId, String studyId, Set<String> ids, float quality, String filter,
-                                  String info, String format, int numAllele, String[] alternateAlleles, String line) {
+    protected void setOtherFields(Variant variant, String fileId, String studyId, Set<String> ids, float quality,
+                                  String filter, String info, int numAllele, String[] alternateAlleles, String line) {
         // Fields not affected by the structure of REF and ALT fields
         variant.setIds(ids);
 
