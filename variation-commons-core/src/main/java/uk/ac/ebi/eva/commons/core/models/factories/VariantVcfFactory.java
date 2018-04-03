@@ -62,7 +62,6 @@ public abstract class VariantVcfFactory {
         String[] alternateAlleles = getAlternateAlleles(fields);
         List<VariantCoreFields> generatedKeyFields = buildVariantCoreFields(fields, alternateAlleles);
 
-        Set<String> ids = new HashSet<>(); //EVA-942 - Ignore IDs submitted through VCF
         float quality = getQuality(fields);
         String filter = getFilter(fields);
         String info = getInfo(fields);
@@ -80,7 +79,7 @@ public abstract class VariantVcfFactory {
 
             parseSplitSampleData(file, fields, altAlleleIdx);
             // Fill the rest of fields (after samples because INFO depends on them)
-            setOtherFields(variant, fileId, studyId, ids, quality, filter, info, altAlleleIdx, alternateAlleles, line);
+            setOtherFields(variant, fileId, studyId, quality, filter, info, altAlleleIdx, alternateAlleles, line);
 
             checkVariantInformation(variant, fileId, studyId);
 
@@ -166,11 +165,9 @@ public abstract class VariantVcfFactory {
                                                  int alternateAlleleIdx);
 
 
-    protected void setOtherFields(Variant variant, String fileId, String studyId, Set<String> ids, float quality,
+    protected void setOtherFields(Variant variant, String fileId, String studyId, float quality,
                                   String filter, String info, int numAllele, String[] alternateAlleles, String line) {
         // Fields not affected by the structure of REF and ALT fields
-        variant.setIds(ids);
-
         if (quality > -1) {
             variant.getSourceEntry(fileId, studyId)
                    .addAttribute("QUAL", String.valueOf(quality));

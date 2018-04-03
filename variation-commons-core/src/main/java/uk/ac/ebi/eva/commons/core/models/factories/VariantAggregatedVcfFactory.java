@@ -106,9 +106,9 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
     }
 
     @Override
-    protected void setOtherFields(Variant variant, String fileId, String studyId, Set<String> ids, float quality,
-                                  String filter, String info, int numAllele, String[] alternateAlleles, String line) {
-        super.setOtherFields(variant, fileId, studyId, ids, quality, filter, info, numAllele, alternateAlleles, line);
+    protected void setOtherFields(Variant variant, String fileId, String studyId, float quality, String filter,
+                                  String info, int numAllele, String[] alternateAlleles, String line) {
+        super.setOtherFields(variant, fileId, studyId, quality, filter, info, numAllele, alternateAlleles, line);
 
         VariantSourceEntry variantSourceEntry = variant.getSourceEntry(fileId, studyId);
         if (tagMap == null) {
