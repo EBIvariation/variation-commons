@@ -178,7 +178,7 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
      * @param attributes
      * @param variantStats
      */
-    protected void addStats(Variant variant, VariantSourceEntry sourceEntry, int numAllele, String[] alternateAlleles,
+    private void addStats(Variant variant, VariantSourceEntry sourceEntry, int numAllele, String[] alternateAlleles,
                             Map<String, String> attributes, VariantStatistics variantStats) {
 
         if (attributes.containsKey("AN") && attributes.containsKey("AC")) {
@@ -308,7 +308,7 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
         }
     }
 
-    protected Genotype parseGenotype(String gt, Variant variant, int numAllele, String[] alternateAlleles) {
+    private Genotype parseGenotype(String gt, Variant variant, int numAllele, String[] alternateAlleles) {
         Genotype g;
         Matcher m;
 
