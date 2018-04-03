@@ -190,7 +190,7 @@ public class VariantAggregatedVcfFactoryTest {
     }
 
     @Test
-    public void testVariantWitnNoAlleleCountsOrFrequency() {
+    public void testVariantWithNoAlleleCountsOrFrequency() {
         String line = "1\t1000\t.\tT\tG\t.\t.\tAA=A";
 
         thrown.expect(IncompleteInformationException.class);
@@ -198,7 +198,7 @@ public class VariantAggregatedVcfFactoryTest {
     }
 
     @Test
-    public void testMultiallelicVariantWitnNoAlleleCountsOrFrequency() {
+    public void testMultiallelicVariantWithNoAlleleCountsOrFrequency() {
         String line = "1\t1000\t.\tT\tG,A\t.\t.\tAA=A";
 
         thrown.expect(IncompleteInformationException.class);
