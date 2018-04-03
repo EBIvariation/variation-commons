@@ -151,7 +151,7 @@ public class VariantAggregatedVcfFactoryTest {
 
     @Test
     public void variantWithAlleleCountZero() {
-        String line = "1\t10040\trs123\tT\tC\t.\t.\tAC=0";
+        String line = "1\t10040\trs123\tT\tC\t.\t.\tAN=5;AC=0";
 
         thrown.expect(NonVariantException.class);
         factory.create(FILE_ID, STUDY_ID, line);
@@ -167,7 +167,7 @@ public class VariantAggregatedVcfFactoryTest {
 
     @Test
     public void variantWithAlleleTotalNumberZero() {
-        String line = "1\t10040\trs123\tT\tC\t.\t.\tAN=0";
+        String line = "1\t10040\trs123\tT\tC\t.\t.\tAN=0;AC=5";
 
         thrown.expect(NonVariantException.class);
         factory.create(FILE_ID, STUDY_ID, line);
