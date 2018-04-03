@@ -59,25 +59,21 @@ public abstract class VariantVcfFactory {
             throw new IllegalArgumentException("Not enough fields provided (min 8)");
         }
 
-        String chromosome = getChromosomeWithoutPrefix(fields);
-        int position = getPosition(fields);
+        String[] alternateAlleles = getAlternateAlleles(fields);
+        List<VariantCoreFields> generatedKeyFields = buildVariantCoreFields(fields, alternateAlleles);
+
         Set<String> ids = new HashSet<>(); //EVA-942 - Ignore IDs submitted through VCF
-        String reference = getReference(fields);
-        String[] alternateAlleles = getAlternateAlleles(fields, chromosome, position, reference);
         float quality = getQuality(fields);
         String filter = getFilter(fields);
         String info = getInfo(fields);
         String format = getFormat(fields);
 
-        List<VariantCoreFields> generatedKeyFields = buildVariantCoreFields(chromosome, position, reference,
-                                                                            alternateAlleles);
-
         List<Variant> variants = new LinkedList<>();
         // Now create all the Variant objects read from the VCF record
         for (int altAlleleIdx = 0; altAlleleIdx < alternateAlleles.length; altAlleleIdx++) {
             VariantCoreFields keyFields = generatedKeyFields.get(altAlleleIdx);
-            Variant variant = new Variant(chromosome, keyFields.getStart(), keyFields.getEnd(), keyFields.getReference(),
-                                          keyFields.getAlternate());
+            Variant variant = new Variant(keyFields.getChromosome(), keyFields.getStart(), keyFields.getEnd(),
+                                          keyFields.getReference(), keyFields.getAlternate());
             String[] secondaryAlternates = getSecondaryAlternates(altAlleleIdx, alternateAlleles);
             VariantSourceEntry file = new VariantSourceEntry(fileId, studyId, secondaryAlternates, format);
             variant.addSourceEntry(file);
@@ -91,6 +87,28 @@ public abstract class VariantVcfFactory {
         }
 
         return variants;
+    }
+
+    private String[] getAlternateAlleles(String[] fields) {
+        return fields[4].split(",");
+    }
+
+    private List<VariantCoreFields> buildVariantCoreFields(String[] fields, String[] alternateAlleles) {
+        List<VariantCoreFields> generatedKeyFields = new ArrayList<>();
+
+        String chromosome = getChromosomeWithoutPrefix(fields);
+        int position = getPosition(fields);
+        String reference = getReference(fields);
+        for (int i = 0; i < alternateAlleles.length; i++) { // This index is necessary for getting the samples where the mutated allele is present
+            VariantCoreFields keyFields = new VariantCoreFields(chromosome, position, reference, alternateAlleles[i]);
+
+            // Since the reference and alternate alleles won't necessarily match
+            // the ones read from the VCF file but they are still needed for
+            // instantiating the variants, they must be updated
+            alternateAlleles[i] = keyFields.getAlternate();
+            generatedKeyFields.add(keyFields);
+        }
+        return generatedKeyFields;
     }
 
     /**
@@ -112,20 +130,8 @@ public abstract class VariantVcfFactory {
         return Integer.parseInt(fields[1]);
     }
 
-    private Set<String> getIds(String[] fields) {
-        Set<String> ids = new HashSet<>();
-        if (!fields[2].equals(".")) {    // note!: we store a "." as an empty set, not a set with an empty string
-            ids.addAll(Arrays.asList(fields[2].split(";")));
-        }
-        return ids;
-    }
-
     private String getReference(String[] fields) {
         return fields[3].equals(".") ? "" : fields[3];
-    }
-
-    private String[] getAlternateAlleles(String[] fields, String chromosome, int position, String reference) {
-        return fields[4].split(",");
     }
 
     private float getQuality(String[] fields) {
@@ -144,21 +150,6 @@ public abstract class VariantVcfFactory {
         return (fields.length <= 8 || fields[8].equals(".")) ? "" : fields[8];
     }
 
-    private List<VariantCoreFields> buildVariantCoreFields(String chromosome, int position, String reference,
-                                                          String[] alternateAlleles) {
-        List<VariantCoreFields> generatedKeyFields = new ArrayList<>();
-
-        for (int i = 0; i < alternateAlleles.length; i++) { // This index is necessary for getting the samples where the mutated allele is present
-            VariantCoreFields keyFields = new VariantCoreFields(chromosome, position, reference, alternateAlleles[i]);
-
-            // Since the reference and alternate alleles won't necessarily match
-            // the ones read from the VCF file but they are still needed for
-            // instantiating the variants, they must be updated
-            alternateAlleles[i] = keyFields.getAlternate();
-            generatedKeyFields.add(keyFields);
-        }
-        return generatedKeyFields;
-    }
 
     protected String[] getSecondaryAlternates(int numAllele, String[] alternateAlleles) {
         String[] secondaryAlternates = new String[alternateAlleles.length - 1];

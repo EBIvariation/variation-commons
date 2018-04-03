@@ -33,9 +33,7 @@ public class VariantGenotypedVcfFactory extends VariantVcfFactory {
             // so the loop iterates to sampleFields.length, not formatFields.length
             for (int j = 0; j < sampleFields.length; j++) {
                 String formatField = formatFields[j];
-                String sampleField = processSampleField(alternateAlleleIdx, formatField, sampleFields[j]);
-
-                map.put(formatField, sampleField);
+                map.put(formatField, processSampleField(alternateAlleleIdx, formatField, sampleFields[j]));
             }
 
             // Add sample to the variant entry in the source file
