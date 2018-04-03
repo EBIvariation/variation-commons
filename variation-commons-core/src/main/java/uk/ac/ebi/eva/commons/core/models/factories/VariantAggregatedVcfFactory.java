@@ -410,23 +410,14 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
     @Override
     protected void checkVariantInformation(Variant variant, String fileId, String studyId)
             throws NonVariantException, IncompleteInformationException {
+        super.checkVariantInformation(variant, fileId, studyId);
+
         VariantSourceEntry variantSourceEntry = variant.getSourceEntry(fileId, studyId);
-        if (!isVariant(variantSourceEntry)) {
-            throw new NonVariantException("The variant " + variant + " has allele frequency or counts '0'");
-        } else if (!canAlleleFrequenciesBeCalculated(variantSourceEntry)) {
+        if (!canAlleleFrequenciesBeCalculated(variantSourceEntry)) {
             throw new IncompleteInformationException(variant);
+        } else if (variantFrequencyIsZero(variantSourceEntry)) {
+            throw new NonVariantException("The variant " + variant + " has allele frequency or counts '0'");
         }
-    }
-
-    @Override
-    protected boolean isVariant(VariantSourceEntry variantSourceEntry) {
-        return !isAttributeZeroInVariantSourceEntry(variantSourceEntry, "AF") &&
-               !isAttributeZeroInVariantSourceEntry(variantSourceEntry, "AC") &&
-               !isAttributeZeroInVariantSourceEntry(variantSourceEntry, "AN");
-    }
-
-    protected boolean isAttributeZeroInVariantSourceEntry(VariantSourceEntry variantSourceEntry, String attribute) {
-        return variantSourceEntry.hasAttribute(attribute) && variantSourceEntry.getAttribute(attribute).equals("0");
     }
 
     protected boolean canAlleleFrequenciesBeCalculated(VariantSourceEntry variantSourceEntry) {
@@ -439,5 +430,16 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
 
         return frequenciesCanBeCalculated;
     }
+
+    protected boolean variantFrequencyIsZero(VariantSourceEntry variantSourceEntry) {
+        return isAttributeZeroInVariantSourceEntry(variantSourceEntry, "AF") ||
+               isAttributeZeroInVariantSourceEntry(variantSourceEntry, "AC") ||
+               isAttributeZeroInVariantSourceEntry(variantSourceEntry, "AN");
+    }
+
+    protected` boolean isAttributeZeroInVariantSourceEntry(VariantSourceEntry variantSourceEntry, String attribute) {
+        return variantSourceEntry.hasAttribute(attribute) && variantSourceEntry.getAttribute(attribute).equals("0");
+    }
+
 }
 

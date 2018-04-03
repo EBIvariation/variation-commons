@@ -167,15 +167,14 @@ public class VariantVcfEVSFactory extends VariantAggregatedVcfFactory {
     }
 
     @Override
-    protected boolean isVariant(VariantSourceEntry variantSourceEntry) {
-        return !isAttributeZeroInVariantSourceEntry(variantSourceEntry, "TAC") &&
-                !isAttributeZeroInVariantSourceEntry(variantSourceEntry, "AN");
-    }
-
-    @Override
     protected boolean canAlleleFrequenciesBeCalculated(VariantSourceEntry variantSourceEntry) {
         return variantSourceEntry.hasAttribute("GTS") && variantSourceEntry.hasAttribute("GTC");
     }
 
+    @Override
+    protected boolean variantFrequencyIsZero(VariantSourceEntry variantSourceEntry) {
+        return isAttributeZeroInVariantSourceEntry(variantSourceEntry, "TAC") ||
+                isAttributeZeroInVariantSourceEntry(variantSourceEntry, "AN");
+    }
 }
 
