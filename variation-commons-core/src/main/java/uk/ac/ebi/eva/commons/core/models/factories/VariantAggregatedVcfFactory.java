@@ -109,20 +109,7 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
     @Override
     protected void setOtherFields(Variant variant, String fileId, String studyId, Set<String> ids, float quality,
                                   String filter, String info, int numAllele, String[] alternateAlleles, String line) {
-        // Fields not affected by the structure of REF and ALT fields
-        variant.setIds(ids);
-        VariantSourceEntry sourceEntry = variant.getSourceEntry(fileId, studyId);
-        if (quality > -1) {
-            sourceEntry.addAttribute("QUAL", String.valueOf(quality));
-        }
-        if (!filter.isEmpty()) {
-            sourceEntry.addAttribute("FILTER", filter);
-        }
-        if (!info.isEmpty()) {
-            parseInfo(variant, fileId, studyId, info, numAllele);
-        }
-        sourceEntry.addAttribute("src", line);
-
+        super.setOtherFields(variant, fileId, studyId, ids, quality, filter, info, numAllele, alternateAlleles, line);
 
         if (tagMap == null) {
             parseStats(variant, fileId, studyId, numAllele, alternateAlleles, info);

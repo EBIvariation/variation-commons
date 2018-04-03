@@ -17,8 +17,6 @@
 package uk.ac.ebi.eva.commons.core.models.factories;
 
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
-import uk.ac.ebi.eva.commons.core.models.factories.exception.IncompleteInformationException;
-import uk.ac.ebi.eva.commons.core.models.factories.exception.NonVariantException;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 
@@ -63,30 +61,8 @@ public class VariantVcfEVSFactory extends VariantAggregatedVcfFactory {
     }
 
     @Override
-    protected void setOtherFields(Variant variant, String fileId, String studyId, Set<String> ids, float quality,
-                                  String filter, String info, int numAllele, String[] alternateAlleles, String line) {
-        // Fields not affected by the structure of REF and ALT fields
-        variant.setIds(ids);
-        VariantSourceEntry sourceEntry = variant.getSourceEntry(fileId, studyId);
-        if (quality > -1) {
-            sourceEntry.addAttribute("QUAL", String.valueOf(quality));
-        }
-        if (!filter.isEmpty()) {
-            sourceEntry.addAttribute("FILTER", filter);
-        }
-        if (!info.isEmpty()) {
-            parseInfo(variant, fileId, studyId, info, numAllele);
-        }
-        sourceEntry.addAttribute("src", line);
-
-        if (tagMap == null) {   // whether we can parse population stats or not
-            parseEVSAttributes(variant, fileId, studyId, numAllele, alternateAlleles);
-        } else {
-            parseCohortEVSInfo(variant, sourceEntry, numAllele, alternateAlleles);
-        }
-    }
-
-    private void parseEVSAttributes(Variant variant, String fileId, String studyId, int numAllele, String[] alternateAlleles) {
+    protected void parseStats(Variant variant, String fileId, String studyId, int numAllele, String[] alternateAlleles,
+                            String info) {
         VariantSourceEntry file = variant.getSourceEntry(fileId, studyId);
         VariantStatistics stats = new VariantStatistics(variant);
         if (file.hasAttribute("MAF")) {
@@ -101,12 +77,14 @@ public class VariantVcfEVSFactory extends VariantAggregatedVcfFactory {
             String splitsGTC[] = file.getAttribute("GTC").split(",");
             addGenotypeWithGTS(variant, file, splitsGTC, alternateAlleles, numAllele, stats);
         }
+
         file.setStats(stats);
     }
 
-
-    private void parseCohortEVSInfo(Variant variant, VariantSourceEntry sourceEntry,
-                                    int numAllele, String[] alternateAlleles) {
+    @Override
+    protected void parseCohortStats(Variant variant, String fileId, String studyId, int numAllele,
+                                    String[] alternateAlleles, String info) {
+        VariantSourceEntry sourceEntry = variant.getSourceEntry(fileId, studyId);
         if (tagMap != null) {
             for (String key : sourceEntry.getAttributes().keySet()) {
                 String opencgaTag = reverseTagMap.get(key);
