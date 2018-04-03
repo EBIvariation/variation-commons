@@ -61,30 +61,28 @@ public class VariantVcfEVSFactory extends VariantAggregatedVcfFactory {
     }
 
     @Override
-    protected void parseStats(Variant variant, String fileId, String studyId, int numAllele, String[] alternateAlleles,
+    protected void parseStats(Variant variant, VariantSourceEntry sourceEntry, int numAllele, String[] alternateAlleles,
                             String info) {
-        VariantSourceEntry file = variant.getSourceEntry(fileId, studyId);
         VariantStatistics stats = new VariantStatistics(variant);
-        if (file.hasAttribute("MAF")) {
-            String splitsMAF[] = file.getAttribute("MAF").split(",");
+        if (sourceEntry.hasAttribute("MAF")) {
+            String splitsMAF[] = sourceEntry.getAttribute("MAF").split(",");
             if (splitsMAF.length == 3) {
                 float maf = Float.parseFloat(splitsMAF[2]) / 100;
                 stats.setMaf(maf);
             }
         }
 
-        if (file.hasAttribute("GTS") && file.hasAttribute("GTC")) {
-            String splitsGTC[] = file.getAttribute("GTC").split(",");
-            addGenotypeWithGTS(variant, file, splitsGTC, alternateAlleles, numAllele, stats);
+        if (sourceEntry.hasAttribute("GTS") && sourceEntry.hasAttribute("GTC")) {
+            String splitsGTC[] = sourceEntry.getAttribute("GTC").split(",");
+            addGenotypeWithGTS(variant, sourceEntry, splitsGTC, alternateAlleles, numAllele, stats);
         }
 
-        file.setStats(stats);
+        sourceEntry.setStats(stats);
     }
 
     @Override
-    protected void parseCohortStats(Variant variant, String fileId, String studyId, int numAllele,
+    protected void parseCohortStats(Variant variant, VariantSourceEntry sourceEntry, int numAllele,
                                     String[] alternateAlleles, String info) {
-        VariantSourceEntry sourceEntry = variant.getSourceEntry(fileId, studyId);
         if (tagMap != null) {
             for (String key : sourceEntry.getAttributes().keySet()) {
                 String opencgaTag = reverseTagMap.get(key);

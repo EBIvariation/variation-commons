@@ -71,9 +71,8 @@ public class VariantVcfExacFactory extends VariantAggregatedVcfFactory {
     }
 
     @Override
-    protected void parseStats(Variant variant, String fileId, String studyId, int numAllele, String[] alternateAlleles,
+    protected void parseStats(Variant variant, VariantSourceEntry sourceEntry, int numAllele, String[] alternateAlleles,
                               String info) {
-        VariantSourceEntry sourceEntry = variant.getSourceEntry(fileId, studyId);
         VariantStatistics stats = new VariantStatistics(variant);
 
         if (sourceEntry.hasAttribute(AC_HET)) {   // heterozygous genotype count
@@ -116,9 +115,8 @@ public class VariantVcfExacFactory extends VariantAggregatedVcfFactory {
 
 
     @Override
-    protected void parseCohortStats(Variant variant, String fileId, String studyId, int numAllele, String[] alternateAlleles,
-                                    String info) {
-        VariantSourceEntry sourceEntry = variant.getSourceEntry(fileId, studyId);
+    protected void parseCohortStats(Variant variant, VariantSourceEntry sourceEntry, int numAllele,
+                                    String[] alternateAlleles, String info) {
         String[] attributes = info.split(";");
         Map<String, Integer> ans = new LinkedHashMap<>();
         Map<String, String[]> acs = new LinkedHashMap<>();

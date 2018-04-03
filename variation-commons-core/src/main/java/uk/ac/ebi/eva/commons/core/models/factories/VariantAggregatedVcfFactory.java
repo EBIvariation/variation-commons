@@ -111,16 +111,16 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
                                   String filter, String info, int numAllele, String[] alternateAlleles, String line) {
         super.setOtherFields(variant, fileId, studyId, ids, quality, filter, info, numAllele, alternateAlleles, line);
 
+        VariantSourceEntry variantSourceEntry = variant.getSourceEntry(fileId, studyId);
         if (tagMap == null) {
-            parseStats(variant, fileId, studyId, numAllele, alternateAlleles, info);
+            parseStats(variant, variantSourceEntry, numAllele, alternateAlleles, info);
         } else {
-            parseCohortStats(variant, fileId, studyId, numAllele, alternateAlleles, info);
+            parseCohortStats(variant, variantSourceEntry, numAllele, alternateAlleles, info);
         }
     }
 
-    protected void parseStats(Variant variant, String fileId, String studyId, int numAllele, String[] alternateAlleles,
+    protected void parseStats(Variant variant, VariantSourceEntry sourceEntry, int numAllele, String[] alternateAlleles,
                               String info) {
-        VariantSourceEntry file = variant.getSourceEntry(fileId, studyId);
         VariantStatistics vs = new VariantStatistics(variant);
         Map<String, String> stats = new LinkedHashMap<>();
         String[] splittedInfo = info.split(";");
@@ -133,14 +133,13 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
             }
         }
 
-        addStats(variant, file, numAllele, alternateAlleles, stats, vs);
+        addStats(variant, sourceEntry, numAllele, alternateAlleles, stats, vs);
 
-        file.setStats(vs);
+        sourceEntry.setStats(vs);
     }
 
-    protected void parseCohortStats(Variant variant, String fileId, String studyId, int numAllele,
+    protected void parseCohortStats(Variant variant, VariantSourceEntry sourceEntry, int numAllele,
                                     String[] alternateAlleles, String info) {
-        VariantSourceEntry file = variant.getSourceEntry(fileId, studyId);
         Map<String, Map<String, String>> cohortStats = new LinkedHashMap<>();
         // cohortName -> (statsName -> statsValue): EUR->(AC->3,2)
         String[] splittedInfo = info.split(";");
@@ -163,10 +162,9 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
 
         for (String cohortName : cohortStats.keySet()) {
             VariantStatistics vs = new VariantStatistics(variant);
-            addStats(variant, file, numAllele, alternateAlleles, cohortStats.get(cohortName), vs);
-            file.setCohortStats(cohortName, vs);
+            addStats(variant, sourceEntry, numAllele, alternateAlleles, cohortStats.get(cohortName), vs);
+            sourceEntry.setCohortStats(cohortName, vs);
         }
-
     }
 
     /**
