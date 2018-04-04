@@ -18,6 +18,9 @@ package uk.ac.ebi.eva.commons.core.utils;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -55,4 +58,20 @@ public class CompressionHelper {
         }
         return stringBuilder.toString();
     }
+
+    public static void uncompress(String inputCompressedFile, File outputFile) throws IOException {
+        GZIPInputStream gzipInputStream = new GZIPInputStream(new FileInputStream(inputCompressedFile));
+        FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+
+        byte[] buffer = new byte[1024];
+        final int offset = 0;
+        int length;
+        while ((length = gzipInputStream.read(buffer)) > 0) {
+            fileOutputStream.write(buffer, offset, length);
+        }
+
+        gzipInputStream.close();
+        fileOutputStream.close();
+    }
+
 }
