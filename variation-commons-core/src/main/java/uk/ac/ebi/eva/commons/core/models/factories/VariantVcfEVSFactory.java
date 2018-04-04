@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 EMBL - European Bioinformatics Institute
+ * Copyright 2014-2018 EMBL - European Bioinformatics Institute
  * Copyright 2015 OpenCB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,6 @@ import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 
 import java.util.Properties;
-import java.util.Set;
 
 /**
  * Overrides the methods in VariantAggregatedVcfFactory that take care of the fields QUAL, FILTER and INFO, to support
@@ -61,53 +60,28 @@ public class VariantVcfEVSFactory extends VariantAggregatedVcfFactory {
     }
 
     @Override
-    protected void setOtherFields(Variant variant, String fileId, String studyId, Set<String> ids, float quality,
-                                  String filter, String info, String format, int numAllele, String[] alternateAlleles,
-                                  String line) {
-        // Fields not affected by the structure of REF and ALT fields
-        variant.setIds(ids);
-        VariantSourceEntry sourceEntry = variant.getSourceEntry(fileId, studyId);
-        if (quality > -1) {
-            sourceEntry.addAttribute("QUAL", String.valueOf(quality));
-        }
-        if (!filter.isEmpty()) {
-            sourceEntry.addAttribute("FILTER", filter);
-        }
-        if (!info.isEmpty()) {
-            parseInfo(variant, fileId, studyId, info, numAllele);
-        }
-        sourceEntry.setFormat(format);
-        sourceEntry.addAttribute("src", line);
-
-
-        if (tagMap == null) {   // whether we can parse population stats or not
-            parseEVSAttributes(variant, fileId, studyId, numAllele, alternateAlleles);
-        } else {
-            parseCohortEVSInfo(variant, sourceEntry, numAllele, alternateAlleles);
-        }
-    }
-
-    private void parseEVSAttributes(Variant variant, String fileId, String studyId, int numAllele, String[] alternateAlleles) {
-        VariantSourceEntry file = variant.getSourceEntry(fileId, studyId);
+    protected void parseStats(Variant variant, VariantSourceEntry sourceEntry, int numAllele, String[] alternateAlleles,
+                            String info) {
         VariantStatistics stats = new VariantStatistics(variant);
-        if (file.hasAttribute("MAF")) {
-            String splitsMAF[] = file.getAttribute("MAF").split(",");
+        if (sourceEntry.hasAttribute("MAF")) {
+            String splitsMAF[] = sourceEntry.getAttribute("MAF").split(",");
             if (splitsMAF.length == 3) {
                 float maf = Float.parseFloat(splitsMAF[2]) / 100;
                 stats.setMaf(maf);
             }
         }
 
-        if (file.hasAttribute("GTS") && file.hasAttribute("GTC")) {
-            String splitsGTC[] = file.getAttribute("GTC").split(",");
-            addGenotypeWithGTS(variant, file, splitsGTC, alternateAlleles, numAllele, stats);
+        if (sourceEntry.hasAttribute(GENOTYPE_STRING) && sourceEntry.hasAttribute(GENOTYPE_COUNT)) {
+            String splitsGTC[] = sourceEntry.getAttribute(GENOTYPE_COUNT).split(",");
+            addGenotypeWithGTS(variant, sourceEntry, splitsGTC, alternateAlleles, numAllele, stats);
         }
-        file.setStats(stats);
+
+        sourceEntry.setStats(stats);
     }
 
-
-    private void parseCohortEVSInfo(Variant variant, VariantSourceEntry sourceEntry,
-                                    int numAllele, String[] alternateAlleles) {
+    @Override
+    protected void parseCohortStats(Variant variant, VariantSourceEntry sourceEntry, int numAllele,
+                                    String[] alternateAlleles, String info) {
         if (tagMap != null) {
             for (String key : sourceEntry.getAttributes().keySet()) {
                 String opencgaTag = reverseTagMap.get(key);
@@ -122,19 +96,19 @@ public class VariantVcfEVSFactory extends VariantAggregatedVcfFactory {
                             sourceEntry.setCohortStats(cohort, cohortStats);
                         }
                         switch (opencgaTagSplit[1]) {
-                            case "AC":
+                            case ALLELE_COUNT:
                                 cohortStats.setAltAlleleCount(Integer.parseInt(values[numAllele]));
                                 cohortStats.setRefAlleleCount(Integer.parseInt(
                                         values[values.length - 1]));    // ref allele count is the last one
                                 break;
-                            case "AF":
+                            case ALLELE_FREQUENCY:
                                 cohortStats.setAltAlleleFreq(Float.parseFloat(values[numAllele]));
                                 cohortStats.setRefAlleleFreq(Float.parseFloat(values[values.length - 1]));
                                 break;
-                            case "AN":
+                            case ALLELE_NUMBER:
                                 // TODO implement this. also, take into account that needed fields may not be processed yet
                                 break;
-                            case "GTC":
+                            case GENOTYPE_COUNT:
                                 addGenotypeWithGTS(variant, sourceEntry, values, alternateAlleles, numAllele,
                                                    cohortStats);
                                 break;
@@ -164,5 +138,15 @@ public class VariantVcfEVSFactory extends VariantAggregatedVcfFactory {
         }
     }
 
+    @Override
+    protected boolean canAlleleFrequenciesBeCalculated(VariantSourceEntry variantSourceEntry) {
+        return variantSourceEntry.hasAttribute(GENOTYPE_STRING) && variantSourceEntry.hasAttribute(GENOTYPE_COUNT);
+    }
+
+    @Override
+    protected boolean variantFrequencyIsZero(VariantSourceEntry variantSourceEntry) {
+        return isAttributeZeroInVariantSourceEntry(variantSourceEntry, "TAC") ||
+                isAttributeZeroInVariantSourceEntry(variantSourceEntry, ALLELE_NUMBER);
+    }
 }
 

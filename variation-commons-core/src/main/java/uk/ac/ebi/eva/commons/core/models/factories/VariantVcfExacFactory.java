@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 EMBL - European Bioinformatics Institute
+ * Copyright 2014-2018 EMBL - European Bioinformatics Institute
  * Copyright 2015 OpenCB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -71,9 +71,8 @@ public class VariantVcfExacFactory extends VariantAggregatedVcfFactory {
     }
 
     @Override
-    protected void parseStats(Variant variant, String fileId, String studyId, int numAllele, String[] alternateAlleles,
+    protected void parseStats(Variant variant, VariantSourceEntry sourceEntry, int numAllele, String[] alternateAlleles,
                               String info) {
-        VariantSourceEntry sourceEntry = variant.getSourceEntry(fileId, studyId);
         VariantStatistics stats = new VariantStatistics(variant);
 
         if (sourceEntry.hasAttribute(AC_HET)) {   // heterozygous genotype count
@@ -116,9 +115,8 @@ public class VariantVcfExacFactory extends VariantAggregatedVcfFactory {
 
 
     @Override
-    protected void parseCohortStats(Variant variant, String fileId, String studyId, int numAllele, String[] alternateAlleles,
-                                    String info) {
-        VariantSourceEntry sourceEntry = variant.getSourceEntry(fileId, studyId);
+    protected void parseCohortStats(Variant variant, VariantSourceEntry sourceEntry, int numAllele,
+                                    String[] alternateAlleles, String info) {
         String[] attributes = info.split(";");
         Map<String, Integer> ans = new LinkedHashMap<>();
         Map<String, String[]> acs = new LinkedHashMap<>();
@@ -136,11 +134,11 @@ public class VariantVcfExacFactory extends VariantAggregatedVcfFactory {
                         sourceEntry.setCohortStats(cohortName, cohortStats);
                     }
                     switch (opencgaTagSplit[1]) {
-                        case "AC":
+                        case ALLELE_COUNT:
                             cohortStats.setAltAlleleCount(Integer.parseInt(values[numAllele]));
                             acs.put(cohortName, values);
                             break;
-                        case "AN":
+                        case ALLELE_NUMBER:
                             ans.put(cohortName, Integer.parseInt(values[0]));
                             break;
                         case "HET":
