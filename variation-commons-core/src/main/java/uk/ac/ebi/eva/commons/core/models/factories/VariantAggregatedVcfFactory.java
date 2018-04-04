@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 EMBL - European Bioinformatics Institute
+ * Copyright 2014-2018 EMBL - European Bioinformatics Institute
  * Copyright 2015 OpenCB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,8 +31,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Overrides the methods in VariantVcfFactory that take care of the samples, in order to handle aggregated VCF files
- * which have no samples data (e.g. genotypes).
+ * Implementation of {@link VariantVcfFactory} that handles aggregated VCF files which
+ * have no samples data (e.g. genotypes).
  */
 public class VariantAggregatedVcfFactory extends VariantVcfFactory {
 
