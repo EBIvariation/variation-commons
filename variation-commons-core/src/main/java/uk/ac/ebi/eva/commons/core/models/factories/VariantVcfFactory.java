@@ -25,17 +25,20 @@ import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Class that parses VCF lines to create Variants.
  */
 public abstract class VariantVcfFactory {
+
+    public static final String ALLELE_FREQUENCY = "AF";
+
+    public static final String ALLELE_COUNT = "AC";
+
+    public static final String ALLELE_NUMBER = "AN";
 
     /**
      * Creates a list of Variant objects using the fields in a record of a VCF
@@ -188,15 +191,15 @@ public abstract class VariantVcfFactory {
             String[] splits = var.split("=");
             if (splits.length == 2) {
                 switch (splits[0]) {
-                    case "AC":
+                    case ALLELE_COUNT:
                         String[] counts = splits[1].split(",");
                         file.addAttribute(splits[0], counts[numAllele]);
                         break;
-                    case "AF":
+                    case ALLELE_FREQUENCY:
                         String[] frequencies = splits[1].split(",");
                         file.addAttribute(splits[0], frequencies[numAllele]);
                         break;
-                    case "AN":
+                    case ALLELE_NUMBER:
                         file.addAttribute(splits[0], splits[1]);
                         break;
                     case "NS":

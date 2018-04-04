@@ -27,7 +27,6 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,6 +55,10 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
     protected Properties tagMap;
 
     protected Map<String, String> reverseTagMap;
+
+    public static final String GENOTYPE_COUNT = "GTC";
+
+    public static final String GENOTYPE_STRING = "GTS";
 
     public VariantAggregatedVcfFactory() {
         this(null);
@@ -126,8 +129,9 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
         for (String attribute : splittedInfo) {
             String[] assignment = attribute.split("=");
 
-            if (assignment.length == 2 && (assignment[0].equals("AC") || assignment[0].equals("AN")
-                    || assignment[0].equals("AF") || assignment[0].equals("GTC") || assignment[0].equals("GTS"))) {
+            if (assignment.length == 2 && (assignment[0].equals(ALLELE_COUNT) || assignment[0].equals(ALLELE_NUMBER)
+                    || assignment[0].equals(ALLELE_FREQUENCY) || assignment[0].equals(GENOTYPE_COUNT)
+                    || assignment[0].equals(GENOTYPE_STRING))) {
                 stats.put(assignment[0], assignment[1]);
             }
         }
@@ -180,9 +184,9 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
     private void addStats(Variant variant, VariantSourceEntry sourceEntry, int numAllele, String[] alternateAlleles,
                             Map<String, String> attributes, VariantStatistics variantStats) {
 
-        if (attributes.containsKey("AN") && attributes.containsKey("AC")) {
-            int total = Integer.parseInt(attributes.get("AN"));
-            String[] alleleCountString = attributes.get("AC").split(",");
+        if (attributes.containsKey(ALLELE_NUMBER) && attributes.containsKey(ALLELE_COUNT)) {
+            int total = Integer.parseInt(attributes.get(ALLELE_NUMBER));
+            String[] alleleCountString = attributes.get(ALLELE_COUNT).split(",");
 
             if (alleleCountString.length != alternateAlleles.length) {
                 return;
@@ -216,8 +220,8 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
             variantStats.setMafAllele(mafAllele);
         }
 
-        if (attributes.containsKey("AF")) {
-            String[] afs = attributes.get("AF").split(",");
+        if (attributes.containsKey(ALLELE_FREQUENCY)) {
+            String[] afs = attributes.get(ALLELE_FREQUENCY).split(",");
             if (afs.length == alternateAlleles.length) {
                 variantStats.setAltAlleleFreq(Float.parseFloat(afs[numAllele]));
                 if (variantStats.getMaf() == -1) {  // in case that we receive AFs but no ACs
@@ -240,9 +244,9 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
                 }
             }
         }
-        if (attributes.containsKey("GTC")) {
-            String[] gtcs = attributes.get("GTC").split(",");
-            if (sourceEntry.hasAttribute("GTS")) {    // GTS contains the format like: GTS=GG,GT,TT or GTS=A1A1,A1R,RR
+        if (attributes.containsKey(GENOTYPE_COUNT)) {
+            String[] gtcs = attributes.get(GENOTYPE_COUNT).split(",");
+            if (sourceEntry.hasAttribute(GENOTYPE_STRING)) {    // GTS contains the format like: GTS=GG,GT,TT or GTS=A1A1,A1R,RR
                 addGenotypeWithGTS(variant, sourceEntry, gtcs, alternateAlleles, numAllele, variantStats);
             } else {
                 for (int i = 0; i < gtcs.length; i++) {
@@ -373,8 +377,8 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
 
     protected void addGenotypeWithGTS(Variant variant, VariantSourceEntry sourceEntry, String[] splitsGTC,
                                       String[] alternateAlleles, int numAllele, VariantStatistics cohortStats) {
-        if (sourceEntry.hasAttribute("GTS")) {
-            String splitsGTS[] = sourceEntry.getAttribute("GTS").split(",");
+        if (sourceEntry.hasAttribute(GENOTYPE_STRING)) {
+            String splitsGTS[] = sourceEntry.getAttribute(GENOTYPE_STRING).split(",");
             if (splitsGTC.length == splitsGTS.length) {
                 for (int i = 0; i < splitsGTC.length; i++) {
                     String gt = splitsGTS[i];
@@ -404,9 +408,9 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
 
     protected boolean canAlleleFrequenciesBeCalculated(VariantSourceEntry variantSourceEntry) {
         boolean frequenciesCanBeCalculated = false;
-        if (variantSourceEntry.hasAttribute("AF")) {
+        if (variantSourceEntry.hasAttribute(ALLELE_FREQUENCY)) {
             frequenciesCanBeCalculated = true;
-        } else if (variantSourceEntry.hasAttribute("AN") && variantSourceEntry.hasAttribute("AC")) {
+        } else if (variantSourceEntry.hasAttribute(ALLELE_NUMBER) && variantSourceEntry.hasAttribute(ALLELE_COUNT)) {
             frequenciesCanBeCalculated = true;
         }
 
@@ -414,9 +418,9 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
     }
 
     protected boolean variantFrequencyIsZero(VariantSourceEntry variantSourceEntry) {
-        return isAttributeZeroInVariantSourceEntry(variantSourceEntry, "AF") ||
-               isAttributeZeroInVariantSourceEntry(variantSourceEntry, "AC") ||
-               isAttributeZeroInVariantSourceEntry(variantSourceEntry, "AN");
+        return isAttributeZeroInVariantSourceEntry(variantSourceEntry, ALLELE_FREQUENCY) ||
+               isAttributeZeroInVariantSourceEntry(variantSourceEntry, ALLELE_COUNT) ||
+               isAttributeZeroInVariantSourceEntry(variantSourceEntry, ALLELE_NUMBER);
     }
 
     protected boolean isAttributeZeroInVariantSourceEntry(VariantSourceEntry variantSourceEntry, String attribute) {

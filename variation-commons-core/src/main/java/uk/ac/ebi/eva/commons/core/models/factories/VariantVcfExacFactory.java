@@ -134,11 +134,11 @@ public class VariantVcfExacFactory extends VariantAggregatedVcfFactory {
                         sourceEntry.setCohortStats(cohortName, cohortStats);
                     }
                     switch (opencgaTagSplit[1]) {
-                        case "AC":
+                        case ALLELE_COUNT:
                             cohortStats.setAltAlleleCount(Integer.parseInt(values[numAllele]));
                             acs.put(cohortName, values);
                             break;
-                        case "AN":
+                        case ALLELE_NUMBER:
                             ans.put(cohortName, Integer.parseInt(values[0]));
                             break;
                         case "HET":

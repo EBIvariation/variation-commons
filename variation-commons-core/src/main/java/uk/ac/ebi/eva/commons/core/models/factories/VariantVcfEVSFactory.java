@@ -71,8 +71,8 @@ public class VariantVcfEVSFactory extends VariantAggregatedVcfFactory {
             }
         }
 
-        if (sourceEntry.hasAttribute("GTS") && sourceEntry.hasAttribute("GTC")) {
-            String splitsGTC[] = sourceEntry.getAttribute("GTC").split(",");
+        if (sourceEntry.hasAttribute(GENOTYPE_STRING) && sourceEntry.hasAttribute(GENOTYPE_COUNT)) {
+            String splitsGTC[] = sourceEntry.getAttribute(GENOTYPE_COUNT).split(",");
             addGenotypeWithGTS(variant, sourceEntry, splitsGTC, alternateAlleles, numAllele, stats);
         }
 
@@ -96,19 +96,19 @@ public class VariantVcfEVSFactory extends VariantAggregatedVcfFactory {
                             sourceEntry.setCohortStats(cohort, cohortStats);
                         }
                         switch (opencgaTagSplit[1]) {
-                            case "AC":
+                            case ALLELE_COUNT:
                                 cohortStats.setAltAlleleCount(Integer.parseInt(values[numAllele]));
                                 cohortStats.setRefAlleleCount(Integer.parseInt(
                                         values[values.length - 1]));    // ref allele count is the last one
                                 break;
-                            case "AF":
+                            case ALLELE_FREQUENCY:
                                 cohortStats.setAltAlleleFreq(Float.parseFloat(values[numAllele]));
                                 cohortStats.setRefAlleleFreq(Float.parseFloat(values[values.length - 1]));
                                 break;
-                            case "AN":
+                            case ALLELE_NUMBER:
                                 // TODO implement this. also, take into account that needed fields may not be processed yet
                                 break;
-                            case "GTC":
+                            case GENOTYPE_COUNT:
                                 addGenotypeWithGTS(variant, sourceEntry, values, alternateAlleles, numAllele,
                                                    cohortStats);
                                 break;
@@ -140,13 +140,13 @@ public class VariantVcfEVSFactory extends VariantAggregatedVcfFactory {
 
     @Override
     protected boolean canAlleleFrequenciesBeCalculated(VariantSourceEntry variantSourceEntry) {
-        return variantSourceEntry.hasAttribute("GTS") && variantSourceEntry.hasAttribute("GTC");
+        return variantSourceEntry.hasAttribute(GENOTYPE_STRING) && variantSourceEntry.hasAttribute(GENOTYPE_COUNT);
     }
 
     @Override
     protected boolean variantFrequencyIsZero(VariantSourceEntry variantSourceEntry) {
         return isAttributeZeroInVariantSourceEntry(variantSourceEntry, "TAC") ||
-                isAttributeZeroInVariantSourceEntry(variantSourceEntry, "AN");
+                isAttributeZeroInVariantSourceEntry(variantSourceEntry, ALLELE_NUMBER);
     }
 }
 
