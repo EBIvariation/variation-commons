@@ -21,11 +21,11 @@ import org.junit.rules.TemporaryFolder;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.test.MetaDataInstanceFactory;
 
-import uk.ac.ebi.eva.commons.core.utils.CompressionHelper;
-import uk.ac.ebi.eva.commons.core.utils.FileUtils;
 import uk.ac.ebi.eva.commons.core.models.Aggregation;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
+import uk.ac.ebi.eva.commons.core.utils.CompressionHelper;
+import uk.ac.ebi.eva.commons.core.utils.FileUtils;
 
 import java.io.File;
 import java.io.FileInputStream;

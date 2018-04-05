@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 EMBL - European Bioinformatics Institute
+ * Copyright 2016 EMBL - European Bioinformatics Institute
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 import org.springframework.batch.item.ExecutionContext;
+import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.file.FlatFileParseException;
 import org.springframework.batch.test.MetaDataInstanceFactory;
 
@@ -30,23 +31,19 @@ import uk.ac.ebi.eva.commons.core.utils.FileUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.List;
 import java.util.zip.GZIPInputStream;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-/**
- * {@link VcfReader}
- * <p>
- * input: a Vcf file
- * <p>
- * output: a list of variants each time its `.read()` is called
- */
-public class VcfReaderTest {
+public class UnwindingItemReaderTest {
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
+
+    @Rule
+    public TemporaryFolder temporaryFolderRule = new TemporaryFolder();
 
     private static final String INPUT_FILE_PATH = "/input-files/vcf/genotyped.vcf.gz";
 
@@ -55,9 +52,6 @@ public class VcfReaderTest {
     private static final String FILE_ID = "5";
 
     private static final String STUDY_ID = "7";
-
-    @Rule
-    public TemporaryFolder temporaryFolderRule = new TemporaryFolder();
 
     @Test
     public void shouldReadAllLines() throws Exception {
@@ -70,7 +64,7 @@ public class VcfReaderTest {
         vcfReader.setSaveState(false);
         vcfReader.open(executionContext);
 
-        consumeReader(input, vcfReader);
+        consumeReader(input, new UnwindingItemReader<>(vcfReader));
     }
 
     @Test
@@ -84,9 +78,11 @@ public class VcfReaderTest {
         vcfReader.setSaveState(false);
         vcfReader.open(executionContext);
 
+        UnwindingItemReader unwindedItemReader = new UnwindingItemReader<>(vcfReader);
+
         // consume the reader and check that a wrong variant raise an exception
         exception.expect(FlatFileParseException.class);
-        while (vcfReader.read() != null) {
+        while (unwindedItemReader.read() != null) {
         }
     }
 
@@ -103,28 +99,25 @@ public class VcfReaderTest {
         vcfReader.setSaveState(false);
         vcfReader.open(executionContext);
 
-        consumeReader(input, vcfReader);
+        consumeReader(input, new UnwindingItemReader<>(vcfReader));
     }
 
-    private void consumeReader(File inputFile, VcfReader vcfReader) throws Exception {
-        List<Variant> variants;
-        int count = 0;
+    static void consumeReader(File inputFile, ItemReader<Variant> reader) throws Exception {
+        Variant variant;
+        Long count = 0L;
 
         // consume the reader and check that the variants and the VariantSource have meaningful data
-        while ((variants = vcfReader.read()) != null) {
-            assertTrue(variants.size() > 0);
-
-            for (Variant variant : variants) {
-                assertTrue(variant.getSourceEntries().size() > 0);
-                VariantSourceEntry sourceEntry = variants.get(0).getSourceEntries().iterator().next();
-                assertTrue(sourceEntry.getSamplesData().size() > 0);
-            }
+        while ((variant = reader.read()) != null) {
+            assertTrue(variant.getSourceEntries().size() > 0);
+            VariantSourceEntry sourceEntry = variant.getSourceEntries().iterator().next();
+            assertTrue(sourceEntry.getSamplesData().size() > 0);
 
             count++;
         }
 
         // VcfReader should get all the lines from the file
-        long expectedCount = FileUtils.countNonCommentLines(new GZIPInputStream(new FileInputStream(inputFile)));
-        assertEquals(expectedCount, count);
+        Long expectedCount = FileUtils.countNonCommentLines(new GZIPInputStream(new FileInputStream(inputFile)));
+        assertThat(expectedCount, lessThanOrEqualTo(count));
     }
+
 }
