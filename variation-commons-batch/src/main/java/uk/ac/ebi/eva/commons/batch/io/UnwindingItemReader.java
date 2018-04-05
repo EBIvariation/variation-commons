@@ -36,6 +36,7 @@ import java.util.Iterator;
 public class UnwindingItemReader <T> implements ItemReader<T> {
 
     private final ItemReader<? extends Collection<? extends T>> reader;
+
     private Iterator<? extends T> bufferIterator;
 
     public UnwindingItemReader(ItemReader<? extends Collection<? extends T>> reader) {
