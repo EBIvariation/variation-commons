@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * VCF file reader.
  * <p>
- * This Reader uses a {@link VcfLineMapper} to parse each line.
+ * This Reader uses a {@link GenotypedVcfLineMapper} to parse each line.
  */
 public class VcfReader extends FlatFileItemReader<List<Variant>> {
 
@@ -40,7 +40,7 @@ public class VcfReader extends FlatFileItemReader<List<Variant>> {
 
     public VcfReader(String fileId, String studyId, File file)
             throws IOException {
-        this(new VcfLineMapper(fileId, studyId), file);
+        this(new GenotypedVcfLineMapper(fileId, studyId), file);
     }
 
     public VcfReader(LineMapper<List<Variant>> lineMapper, File file) throws IOException {

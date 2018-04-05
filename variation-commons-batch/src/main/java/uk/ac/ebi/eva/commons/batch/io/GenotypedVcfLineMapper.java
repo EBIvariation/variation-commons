@@ -28,7 +28,7 @@ import java.util.List;
  * <p>
  * The actual implementation is reused from {@link VariantVcfFactory}.
  */
-public class VcfLineMapper implements LineMapper<List<Variant>> {
+public class GenotypedVcfLineMapper implements LineMapper<List<Variant>> {
 
     private final String fileId;
 
@@ -36,7 +36,7 @@ public class VcfLineMapper implements LineMapper<List<Variant>> {
 
     private final VariantVcfFactory factory;
 
-    public VcfLineMapper(String fileId, String studyId) {
+    public GenotypedVcfLineMapper(String fileId, String studyId) {
         this.fileId = fileId;
         this.studyId = studyId;
         this.factory = new VariantGenotypedVcfFactory();
