@@ -26,6 +26,7 @@ import uk.ac.ebi.eva.commons.core.models.factories.VariantVcfExacFactory;
 import uk.ac.ebi.eva.commons.core.models.factories.VariantVcfFactory;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 
+import javax.annotation.Nullable;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
@@ -45,7 +46,7 @@ public class AggregatedVcfLineMapper implements LineMapper<List<Variant>> {
     private VariantVcfFactory factory;
 
     public AggregatedVcfLineMapper(String fileId, String studyId, Aggregation aggregation,
-                                   String mappingFilePath) throws IOException {
+                                   @Nullable String mappingFilePath) throws IOException {
         Assert.notNull(fileId, "file id should not be null");
         Assert.notNull(studyId, "study id should not be null");
         Assert.notNull(aggregation, "aggregation (NONE, BASIC, EXAC, EVS) should not be null");
@@ -54,7 +55,7 @@ public class AggregatedVcfLineMapper implements LineMapper<List<Variant>> {
         this.studyId = studyId;
 
         Properties mappings = null;
-        if(mappingFilePath != null){
+        if (mappingFilePath != null) {
             mappings = FileUtils.getPropertiesFile(new FileInputStream(mappingFilePath));
         }
 
@@ -72,7 +73,7 @@ public class AggregatedVcfLineMapper implements LineMapper<List<Variant>> {
             default:
                 throw new IllegalArgumentException(
                         this.getClass().getSimpleName() + " should be used to read aggregated VCFs only, " +
-                                "but the VariantSource.Aggregation is set to NONE");
+                                "but the VariantSource.Aggregation is set to " + aggregation);
         }
     }
 

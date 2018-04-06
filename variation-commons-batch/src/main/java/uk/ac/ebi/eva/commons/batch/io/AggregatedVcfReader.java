@@ -17,6 +17,7 @@ package uk.ac.ebi.eva.commons.batch.io;
 
 import uk.ac.ebi.eva.commons.core.models.Aggregation;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 
@@ -28,7 +29,7 @@ import java.io.IOException;
 public class AggregatedVcfReader extends VcfReader {
 
     public AggregatedVcfReader(String fileId, String studyId, Aggregation aggregation,
-                               String mappingFilePath, File file) throws IOException {
+                               @Nullable String mappingFilePath, File file) throws IOException {
         super(new AggregatedVcfLineMapper(fileId, studyId, aggregation, mappingFilePath), file);
     }
 }

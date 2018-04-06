@@ -29,6 +29,7 @@ import uk.ac.ebi.eva.commons.core.utils.FileUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
@@ -55,6 +56,16 @@ public class AggregatedVcfReaderTest {
 
     @Rule
     public TemporaryFolder temporaryFolderRule = new TemporaryFolder();
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowOnInvalidAggregation() throws IOException {
+        new AggregatedVcfReader(FILE_ID, STUDY_ID, Aggregation.NONE, null, FileUtils.getResourceFile(INPUT_FILE_PATH));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowOnNullAggregation() throws IOException {
+        new AggregatedVcfReader(FILE_ID, STUDY_ID, null, null, FileUtils.getResourceFile(INPUT_FILE_PATH));
+    }
 
     @Test
     public void shouldReadAllLines() throws Exception {
