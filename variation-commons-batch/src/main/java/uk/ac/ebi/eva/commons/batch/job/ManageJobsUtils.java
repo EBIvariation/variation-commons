@@ -17,6 +17,7 @@ package uk.ac.ebi.eva.commons.batch.job;
 
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.repository.JobRepository;
@@ -28,6 +29,7 @@ import uk.ac.ebi.eva.commons.batch.exception.NoParametersHaveBeenPassedException
 import uk.ac.ebi.eva.commons.batch.exception.NoPreviousJobExecutionException;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Utility class to change job / step status
@@ -36,10 +38,13 @@ public class ManageJobsUtils {
 
     public static void checkIfPropertiesHaveBeenProvided(JobParameters jobParameters)
             throws NoParametersHaveBeenPassedException {
-        // TODO check what happens when InputParameter class is empty because there is no properties file
-        if (jobParameters == null || jobParameters.isEmpty()) {
+        if (jobParameters == null || jobParameters.isEmpty() || allJobParametersValuesAreNull(jobParameters)) {
             throw new NoParametersHaveBeenPassedException();
         }
+    }
+
+    private static boolean allJobParametersValuesAreNull(JobParameters jobParameters) {
+        return jobParameters.getParameters().values().stream().map(JobParameter::getValue).allMatch(Objects::isNull);
     }
 
     public static void checkIfJobNameHasBeenDefined(String jobName) throws NoJobToExecuteException {
