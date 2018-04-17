@@ -15,8 +15,6 @@
  */
 package uk.ac.ebi.eva.commons.batch.exception;
 
-//import static uk.ac.ebi.eva.pipeline.parameters.JobParametersNames.PROPERTY_FILE_PROPERTY;
-
 /**
  * Exception thrown by the runner when no parameters have been passed to a job.
  */

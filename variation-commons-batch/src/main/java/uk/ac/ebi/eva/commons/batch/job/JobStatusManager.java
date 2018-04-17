@@ -34,7 +34,7 @@ import java.util.Objects;
 /**
  * Utility class to change job / step status
  */
-public class ManageJobsUtils {
+public class JobStatusManager {
 
     public static void checkIfPropertiesHaveBeenProvided(JobParameters jobParameters)
             throws NoParametersHaveBeenPassedException {
@@ -53,8 +53,8 @@ public class ManageJobsUtils {
         }
     }
 
-    public static void markLastJobAsFailed(JobRepository jobRepository, String jobName, JobParameters
-            jobParameters) throws NoPreviousJobExecutionException {
+    public static void markLastJobAsFailed(JobRepository jobRepository, String jobName,
+                                           JobParameters jobParameters) throws NoPreviousJobExecutionException {
         JobExecution lastJobExecution = jobRepository.getLastJobExecution(jobName, jobParameters);
         if (lastJobExecution == null) {
             throw new NoPreviousJobExecutionException(jobName, jobParameters);
@@ -64,8 +64,7 @@ public class ManageJobsUtils {
         lastJobExecution.setEndTime(currentTime);
         lastJobExecution.setStatus(BatchStatus.FAILED);
         lastJobExecution.setExitStatus(
-                lastJobExecution.getExitStatus().replaceExitCode("FAILED").addExitDescription("Manually " +
-                        "failed job")
+                lastJobExecution.getExitStatus().replaceExitCode("FAILED").addExitDescription("Manually failed job")
         );
         jobRepository.update(lastJobExecution);
 
