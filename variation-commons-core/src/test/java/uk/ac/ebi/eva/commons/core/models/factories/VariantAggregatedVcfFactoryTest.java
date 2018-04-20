@@ -1,11 +1,11 @@
 /*
- * Copyright 2016 EMBL - European Bioinformatics Institute
+ * Copyright 2018 EMBL - European Bioinformatics Institute
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,9 +15,13 @@
  */
 package uk.ac.ebi.eva.commons.core.models.factories;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
+import uk.ac.ebi.eva.commons.core.models.factories.exception.IncompleteInformationException;
+import uk.ac.ebi.eva.commons.core.models.factories.exception.NonVariantException;
 import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 
@@ -38,6 +42,9 @@ public class VariantAggregatedVcfFactoryTest {
     private static final String STUDY_ID = "studyId";
 
     private VariantAggregatedVcfFactory factory = new VariantAggregatedVcfFactory();
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void parseAC_AN() {
@@ -124,5 +131,77 @@ public class VariantAggregatedVcfFactoryTest {
         VariantAggregatedVcfFactory.getGenotype(5, alleles);    // 2/2
         assertEquals(alleles[0], alleles[1]);
         assertEquals(alleles[0], new Integer(2));
+    }
+
+    @Test
+    public void variantWithAlleleFrequencyZero() {
+        String line = "1\t10040\trs123\tT\tC\t.\t.\tAF=0";
+
+        thrown.expect(NonVariantException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
+    }
+
+    @Test
+    public void multiallelicWithAlleleFrequencyZero() {
+        String line = "1\t10040\trs123\tT\tC,G,A\t.\t.\tAF=0.5,0,0.2";
+
+        thrown.expect(NonVariantException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
+    }
+
+    @Test
+    public void variantWithAlleleCountZero() {
+        String line = "1\t10040\trs123\tT\tC\t.\t.\tAN=5;AC=0";
+
+        thrown.expect(NonVariantException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
+    }
+
+    @Test
+    public void multiAlleleWithOneAlleleCountZero() {
+        String line =  "1\t10040\trs123\tT\tC,G,A\t.\t.\tAN=7;AC=5,0,2";
+
+        thrown.expect(NonVariantException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
+    }
+
+    @Test
+    public void variantWithAlleleTotalNumberZero() {
+        String line = "1\t10040\trs123\tT\tC\t.\t.\tAN=0;AC=5";
+
+        thrown.expect(NonVariantException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
+    }
+
+    @Test
+    public void variantWithAlleleTotalNumberButNotAlleleCount() {
+        String line = "1\t10040\trs123\tT\tC\t.\t.\tAN=5";
+
+        thrown.expect(IncompleteInformationException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
+    }
+
+    @Test
+    public void variantWithAlleleCountButNotAlleleTotalNumber() {
+        String line = "1\t10040\trs123\tT\tC\t.\t.\tAC=5";
+
+        thrown.expect(IncompleteInformationException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
+    }
+
+    @Test
+    public void testVariantWithNoAlleleCountsOrFrequency() {
+        String line = "1\t1000\t.\tT\tG\t.\t.\tAA=A";
+
+        thrown.expect(IncompleteInformationException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
+    }
+
+    @Test
+    public void testMultiallelicVariantWithNoAlleleCountsOrFrequency() {
+        String line = "1\t1000\t.\tT\tG,A\t.\t.\tAA=A";
+
+        thrown.expect(IncompleteInformationException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
     }
 }

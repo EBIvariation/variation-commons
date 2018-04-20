@@ -12,6 +12,7 @@
         <module>variation-commons-core</module>
         <module>variation-commons-mongodb</module>
         <module>variation-commons-jpa</module>
+        <module>variation-commons-batch</module>
     </modules>
 
     <properties>
