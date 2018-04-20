@@ -138,7 +138,6 @@ public class VariantRepositoryTest {
         // And the rs are contained in the returned information, either in the first or the second (order independent)
         assertTrue(variantEntityList.get(0).getIds().contains(ids.get(0)) || variantEntityList.get(0).getIds().contains(ids.get(1)));
         assertTrue(variantEntityList.get(1).getIds().contains(ids.get(0)) || variantEntityList.get(1).getIds().contains(ids.get(1)));
-
     }
 
     @Test

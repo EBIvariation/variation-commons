@@ -265,6 +265,8 @@ public class VariantMongo {
         return id;
     }
 
+    public String getMainId() { return mainId; }
+
     public VariantType getType() {
         return type;
     }
