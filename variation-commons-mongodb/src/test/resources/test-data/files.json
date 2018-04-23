@@ -8,7 +8,8 @@
       "stype": "COLLECTION",
       "_class": "uk.ac.ebi.eva.commons.models.data.VariantSourceEntity",
       "fid": "secondFileId",
-      "fname": "other.vcf.gz"
+      "fname": "other.vcf.gz",
+      "date": { "$date" : "2018-04-23T18:25:43.511Z" }
     },
     {
       "sname": "secondStudyName",
@@ -18,7 +19,8 @@
       "stype": "COLLECTION",
       "_class": "uk.ac.ebi.eva.commons.models.data.VariantSourceEntity",
       "fid": "thirdFileId",
-      "fname": "yet.another.vcf.gz"
+      "fname": "yet.another.vcf.gz",
+      "date": { "$date" : "2018-04-23T18:25:43.511Z" }
     },
     {
       "sname": "UMCG Cardio GenePanel screening",
@@ -29,7 +31,8 @@
       "stype": "CASE_CONTROL",
       "fname": "CAR_Batch123.vcf.gz",
       "samp": {},
-      "sid": "PRJEB6041"
+      "sid": "PRJEB6041",
+      "date": { "$date" : "2016-01-01T18:25:43.511Z" }
     },
     {
       "sname": "firstStudyName",
@@ -40,6 +43,7 @@
       "_class": "uk.ac.ebi.eva.commons.models.data.VariantSourceEntity",
       "fid": "firstFileId",
       "fname": "small.vcf.gz",
+      "date": { "$date" : "2016-01-01T18:25:43.511Z" },
       "samp": {
         "HG03802": 1460,
         "NA19152": 2055,
@@ -2575,6 +2579,7 @@
       },
       "stype": "CASE_CONTROL",
       "fname": "ALL.chr11.phase3_shapeit2_mvncall_integrated_v3plus_nounphased.rsID.genotypes.vcf.gz",
+      "date": { "$date" : "2016-01-01T18:25:43.511Z" },
       "samp": {
         "HG03802": 1460,
         "NA19152": 2055,
@@ -5092,7 +5097,8 @@
       "stype": "CASE_CONTROL",
       "fname": "ESP6500SI-V2-SSA137.updatedRsIds.chr11.snps_indels.vcf.gz",
       "samp": {},
-      "sid": "PRJEB5439"
+      "sid": "PRJEB5439",
+      "date": { "$date" : "2016-01-01T18:25:43.511Z" }
     },
     {
       "sname": "Genome of the Netherlands Release 5",
@@ -5103,7 +5109,8 @@
       "stype": "CASE_CONTROL",
       "fname": "gonl.chr9.snps_indels.r5.vcf.gz",
       "samp": {},
-      "sid": "PRJEB5829"
+      "sid": "PRJEB5829",
+      "date": { "$date" : "2016-01-01T18:25:43.511Z" }
     },
     {
       "sname": "The National FINRISK Study",
@@ -5114,7 +5121,8 @@
       "stype": "CASE_CONTROL",
       "fname": "FINRISK.EVA.AN_FIXED.EVA.eva_1.vcf.gz",
       "samp": {},
-      "sid": "PRJEB7895"
+      "sid": "PRJEB7895",
+      "date": { "$date" : "2016-01-01T18:25:43.511Z" }
     },
     {
       "sname": "UK10K Avon Longitudinal Study of Parents and Children (ALSPAC) Variants",
@@ -5125,7 +5133,8 @@
       "stype": "CASE_CONTROL",
       "fname": "ALSPAC.beagle.anno.csq.shapeit.20131101.sites.vcf.gz",
       "samp": {},
-      "sid": "PRJEB7217"
+      "sid": "PRJEB7217",
+      "date": { "$date" : "2016-01-01T18:25:43.511Z" }
     },
     {
       "sname": "UK10K The Department of Twin Research and Genetic Epidemiology (TwinsUK) Variants",
@@ -5136,7 +5145,8 @@
       "stype": "CASE_CONTROL",
       "fname": "TWINSUK.beagle.anno.csq.shapeit.20131101.sites.vcf.gz",
       "samp": {},
-      "sid": "PRJEB7218"
+      "sid": "PRJEB7218",
+      "date": { "$date" : "2016-01-01T18:25:43.511Z" }
     },
     {
       "sname": "GEUVADIS: Genetic European Variation in Disease",
@@ -5147,7 +5157,8 @@
       "stype": "CASE_CONTROL",
       "fname": "GEEVS_aggregation_v2.EVA.eva_1.vcf.gz",
       "samp": {},
-      "sid": "PRJEB6042"
+      "sid": "PRJEB6042",
+      "date": { "$date" : "2016-01-01T18:25:43.511Z" }
     },
     {
       "sname": "Genome of the Netherlands Release 5",
@@ -5158,7 +5169,8 @@
       "stype": "CASE_CONTROL",
       "fname": "gonl.chr11.snps_indels.r5.vcf.gz",
       "samp": {},
-      "sid": "PRJEB5829"
+      "sid": "PRJEB5829",
+      "date": { "$date" : "2016-01-01T18:25:43.511Z" }
     },
     {
       "sname": "MGP: Medical Genome Project healthy controls from Spanish population",
@@ -5169,7 +5181,8 @@
       "stype": "CASE_CONTROL",
       "fname": "spv.fixed.V2.vcf.gz",
       "samp": {},
-      "sid": "PRJEB8705"
+      "sid": "PRJEB8705",
+      "date": { "$date" : "2016-01-01T18:25:43.511Z" }
     },
     {
       "sname": "1000 Genomes Phase 1 Analysis",
@@ -5189,6 +5202,7 @@
       },
       "stype": "CASE_CONTROL",
       "fname": "ALL.chr11.integrated_phase1_v3.20101123.snps_indels_svs.genotypes.vcf.gz",
+      "date": { "$date" : "2016-01-01T18:25:43.511Z" },
       "samp": {
         "NA19152": 754,
         "NA18543": 529,
@@ -6294,7 +6308,8 @@
       "stype": "CASE_CONTROL",
       "fname": "gonl.SV.r5.eva_1.vcf.gz",
       "samp": {},
-      "sid": "PRJEB5829"
+      "sid": "PRJEB5829",
+      "date": { "$date" : "2016-01-01T18:25:43.511Z" }
     },
     {
       "sname": "GenomeDK Release 1 GATK-Indels calls",
@@ -6305,7 +6320,8 @@
       "stype": "CASE_CONTROL",
       "fname": "genomedk.chr11.gatk_indels.r1.EVA.vcf.gz",
       "samp": {},
-      "sid": "PRJEB8652"
+      "sid": "PRJEB8652",
+      "date": { "$date" : "2016-01-01T18:25:43.511Z" }
     },
     {
       "sname": "GenomeDK Release 1 SoapAsmVar-Indels calls",
@@ -6316,7 +6332,8 @@
       "stype": "CASE_CONTROL",
       "fname": "genomedk.chr11.asmvar_indels.r1.EVA.vcf.gz",
       "samp": {},
-      "sid": "PRJEB8639"
+      "sid": "PRJEB8639",
+      "date": { "$date" : "2016-01-01T18:25:43.511Z" }
     },
     {
       "sname": "The Exome Aggregation Consortium (ExAC) v0.3",
@@ -6327,7 +6344,8 @@
       "stype": "COLLECTION",
       "fname": "ExAC.r0.3.sites.vep.fixed.V3.vcf.gz",
       "samp": {},
-      "sid": "PRJEB8661"
+      "sid": "PRJEB8661",
+      "date": { "$date" : "2016-01-01T18:25:43.511Z" }
     },
     {
       "sname": "Human Variation Data From dbSNP build 144",
@@ -6338,7 +6356,8 @@
       "stype": "COLLECTION",
       "fname": "dbsnp_chr2_20150715_1700.vcf.gz",
       "samp": {},
-      "sid": "PRJX00001"
+      "sid": "PRJX00001",
+      "date": { "$date" : "2016-01-01T18:25:43.511Z" }
     },
     {
       "sname": "Human Variation Data From dbSNP build 144",
@@ -6349,7 +6368,8 @@
       "stype": "COLLECTION",
       "fname": "dbsnp_chr9_20150715_1700.vcf.gz",
       "samp": {},
-      "sid": "PRJX00001"
+      "sid": "PRJX00001",
+      "date": { "$date" : "2016-01-01T18:25:43.511Z" }
     },
     {
       "sname": "Human Variation Data From dbSNP build 144",
@@ -6360,7 +6380,8 @@
       "stype": "COLLECTION",
       "fname": "dbsnp_chr11_20150715_1700.vcf.gz",
       "samp": {},
-      "sid": "PRJX00001"
+      "sid": "PRJX00001",
+      "date": { "$date" : "2016-01-01T18:25:43.511Z" }
     },
     {
       "sid": "PRJNA289433",
@@ -6370,6 +6391,7 @@
       "_class": "uk.ac.ebi.eva.commons.models.data.VariantSourceEntity",
       "stype": "COLLECTION",
       "fname": "chr13.allImputed.EVA.garys.vcf.gz",
+      "date": { "$date" : "2016-01-01T18:25:43.511Z" },
       "samp": {
         "MD_CHW_AAR_13084": 7616,
         "MD_CHW_AAM_6902": 5625,
@@ -17014,6 +17036,7 @@
       },
       "fid": "ERZ367948",
       "sname": "Study of Major Depression in Chinese women",
+      "date": { "$date" : "2016-01-01T18:25:43.511Z" },
       "aggregation": "NONE",
       "st": {
         "nVar": 1203645,
@@ -27679,6 +27702,7 @@
       "fid": "ERZ367955",
       "sname": "Study of Major Depression in Chinese women",
       "aggregation": "NONE",
+      "date": { "$date" : "2016-01-01T18:25:43.511Z" },
       "st": {
         "nVar": 1203645,
         "nTi": 824182,
@@ -27704,6 +27728,7 @@
       },
       "fid": "ERZ329750",
       "sname": "Illumina Platinum Genomes calls for NA12877 and NA12878 against GRCh37",
+      "date": { "$date" : "2016-01-01T18:25:43.511Z" },
       "aggregation": "NONE",
       "st": {
         "nVar": 5494956,
