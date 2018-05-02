@@ -32,6 +32,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.entities.projections.VariantStudySummary;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
@@ -98,6 +102,25 @@ public class VariantStudySummaryServiceTest {
         assertEquals(EXPECTED_UNIQUE_STUDIES_COUNT, uniqueStudies.size());
     }
 
+    @Test
+    public void testListStudiesByFromDate() throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        List<VariantStudySummary> allStudies = service.findByFromDate(dateFormat.parse("2015-12-31"));
+        assertEquals(EXPECTED_UNIQUE_STUDIES_COUNT, allStudies.size());
+
+        List<VariantStudySummary> studiesRightBeforeLastDate = service.findByFromDate(dateFormat.parse("2018-04-22"));
+        assertEquals(1, studiesRightBeforeLastDate.size());
+
+        List<VariantStudySummary> studiestOnLastDate = service.findByFromDate(dateFormat.parse("2018-04-23"));
+        assertEquals(1, studiestOnLastDate.size());
+
+        List<VariantStudySummary> studiesRightAfterLastDate = service.findByFromDate(dateFormat.parse("2018-04-24"));
+        assertEquals(0, studiesRightAfterLastDate.size());
+
+        int nextYear = LocalDate.now().getYear()+1;
+        List<VariantStudySummary> futureStudies = service.findByFromDate(dateFormat.parse(nextYear + "-01-01"));
+        assertEquals(0, futureStudies.size());
+    }
 
     private void assertCorrectCount(int expectedFileCount, VariantStudySummary study) {
         int buggedFongoCount = 0;

@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.projections.VariantStudySummary;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
@@ -45,8 +46,8 @@ public class VariantStudySummaryService {
     /**
      * the equivalent intended query is:
      * db.files.aggregate([
-     * {$group:{_id: {studyId:"$sid",studyName:"$sname"}, filesCount:{$sum:1}}},
-     * {$project:{"studyId" : "$_id.studyId", "studyName" : "$_id.studyName", "_id" : 0, "filesCount":"$filesCount" }}
+     * {$group: {_id : {studyId : "$sid", studyName : "$sname"}, filesCount : {$sum : 1}}},
+     * {$project: {"studyId" : "$_id.studyId", "studyName" : "$_id.studyName", "_id" : 0, "filesCount":"$filesCount" }}
      * ])
      * See also the inner explanation of those 2 stages
      *
@@ -87,6 +88,37 @@ public class VariantStudySummaryService {
                 .as(VariantStudySummary.STUDY_ID)
                 .and(VariantStudySummary.ID + "." + VariantStudySummary.STUDY_NAME)
                 .as(VariantStudySummary.STUDY_NAME);
+    }
+
+    /**
+     * the equivalent intended query is:
+     * db.files.aggregate([
+     * {$match: {date : {$gte : fromDate}}},
+     * {$group: {_id : {studyId : "$sid", studyName : "$sname"}, filesCount : {$sum : 1}}},
+     * {$project: {"studyId" : "$_id.studyId", "studyName" : "$_id.studyName", "_id" : 0, "filesCount":"$filesCount" }}
+     * ])
+     * See also the inner explanation of those 2 stages
+     *
+     * @see #matchByFromDate(Date)
+     * @see #groupAndCount
+     * @see #projectAndFlatten
+     */
+    public List<VariantStudySummary> findByFromDate(Date fromDate) {
+        Aggregation aggregation = Aggregation.newAggregation(
+                matchByFromDate(fromDate),
+                groupAndCount(),
+                projectAndFlatten()
+        );
+
+        AggregationResults<VariantStudySummary> studies = mongoTemplate.aggregate(aggregation,
+                VariantSourceMongo.class,
+                VariantStudySummary.class);
+
+        return studies.getMappedResults();
+    }
+
+    private MatchOperation matchByFromDate(Date fromDate) {
+        return match(Criteria.where("date").gte(fromDate));
     }
 
     /**
