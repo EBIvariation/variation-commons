@@ -63,7 +63,7 @@ public abstract class VariantVcfFactory {
         }
 
         String chromosome = getChromosomeWithoutPrefix(fields);
-        int position = getPosition(fields);
+        long position = getPosition(fields);
         String reference = getReference(fields);
         String[] alternateAlleles = getAlternateAlleles(fields);
 
@@ -101,7 +101,7 @@ public abstract class VariantVcfFactory {
      * Replace "chr" references only at the beginning of the chromosome name.
      * For instance, tomato has SL2.40ch00 and that should be kept that way
      */
-    private String getChromosomeWithoutPrefix(String[] fields) {
+    protected String getChromosomeWithoutPrefix(String[] fields) {
         String chromosome = fields[0];
         boolean ignoreCase = true;
         int startOffset = 0;
@@ -112,35 +112,35 @@ public abstract class VariantVcfFactory {
         return chromosome;
     }
 
-    private int getPosition(String[] fields) {
-        return Integer.parseInt(fields[1]);
+    protected long getPosition(String[] fields) {
+        return Long.parseLong(fields[1]);
     }
 
-    private String getReference(String[] fields) {
+    protected String getReference(String[] fields) {
         return fields[3].equals(".") ? "" : fields[3];
     }
 
-    private String[] getAlternateAlleles(String[] fields) {
+    protected String[] getAlternateAlleles(String[] fields) {
         return fields[4].split(",");
     }
 
-    private float getQuality(String[] fields) {
+    protected float getQuality(String[] fields) {
         return fields[5].equals(".") ? -1 : Float.parseFloat(fields[5]);
     }
 
-    private String getFilter(String[] fields) {
+    protected String getFilter(String[] fields) {
         return fields[6].equals(".") ? "" : fields[6];
     }
 
-    private String getInfo(String[] fields) {
+    protected String getInfo(String[] fields) {
         return fields[7].equals(".") ? "" : fields[7];
     }
 
-    private String getFormat(String[] fields) {
+    protected String getFormat(String[] fields) {
         return (fields.length <= 8 || fields[8].equals(".")) ? "" : fields[8];
     }
 
-    private List<VariantCoreFields> buildVariantCoreFields(String chromosome, int position, String reference,
+    private List<VariantCoreFields> buildVariantCoreFields(String chromosome, long position, String reference,
                                                            String[] alternateAlleles) {
         List<VariantCoreFields> generatedKeyFields = new ArrayList<>();
 

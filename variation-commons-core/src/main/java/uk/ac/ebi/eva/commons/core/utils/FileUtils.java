@@ -21,6 +21,7 @@ import org.springframework.core.io.Resource;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +31,8 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipException;
 
 public class FileUtils {
+
+    private static final String GZIP_FILE_EXTENSION = ".gz";
 
     public static File getResourceFile(String resourcePath) {
         return new File(FileUtils.class.getResource(resourcePath).getFile());
@@ -55,6 +58,8 @@ public class FileUtils {
             inputStream.close();
         } catch (ZipException exception) {
             return false;
+        } catch (FileNotFoundException exception) {
+            return file.getName().endsWith(GZIP_FILE_EXTENSION);
         }
         return true;
     }
