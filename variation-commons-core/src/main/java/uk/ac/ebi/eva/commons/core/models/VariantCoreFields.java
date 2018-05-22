@@ -18,6 +18,8 @@ package uk.ac.ebi.eva.commons.core.models;
 
 import org.apache.commons.lang3.StringUtils;
 
+import uk.ac.ebi.eva.commons.core.models.factories.exception.NonVariantException;
+
 import static java.lang.Math.max;
 
 /**
@@ -43,7 +45,7 @@ public class VariantCoreFields {
 
     public VariantCoreFields(String chromosome, long position, String reference, String alternate) {
         if (reference.equals(alternate)) {
-            throw new IllegalArgumentException("One alternate allele is identical to the reference. Variant found as: "
+            throw new NonVariantException("One alternate allele is identical to the reference. Variant found as: "
                                                        + chromosome + ":" + position + ":" + reference + ">" + alternate);
         }
 
