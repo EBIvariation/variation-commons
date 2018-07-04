@@ -29,7 +29,14 @@ public enum VariantType {
      * MNVs involve multiple nucleotides, without changes in length
      */
     MNV,
-
+    /**
+     * INS denotes insertions
+     */
+    INS,
+    /**
+     * DEL denotes deletions
+     */
+    DEL,
     /**
      * Indels are insertions or deletions of less than SV_THRESHOLD (50) nucleotides
      */
