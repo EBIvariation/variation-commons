@@ -16,15 +16,13 @@
 
 package uk.ac.ebi.eva.commons.core.models;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class VariantClassifier {
-    public static SortedMap<String, VariantClassifierResult> getVariantClassification(String chromosome, long position, String reference,
-                                                       String alleles, int subSNPClass) {
+    public static SortedMap<String, VariantClassifierResult> getVariantClassification(String chromosome, long position,
+                                                                                      String reference, String alleles,
+                                                                                      int subSNPClass) {
         String alphaRegEx = "[A-Z]+";
         String[] alternateAlleles = alleles.split("/");
         SortedMap<String, VariantClassifierResult> variantTypeMap = new TreeMap<>();
@@ -34,6 +32,12 @@ public class VariantClassifier {
         for (int allelesIdx = 0; allelesIdx < alternateAlleles.length; allelesIdx++) {
             alternateAlleles[allelesIdx] = alternateAlleles[allelesIdx].trim();
             String alternate = alternateAlleles[allelesIdx];
+            if (alternate.equals("-")) {
+                alternate = "";
+            }
+            if (reference.equals("-")) {
+                reference = "";
+            }
             if (!alternate.equals(reference)) {
                 VariantCoreFields variantCoreFields = new VariantCoreFields(chromosome, position, reference, alternate);
 

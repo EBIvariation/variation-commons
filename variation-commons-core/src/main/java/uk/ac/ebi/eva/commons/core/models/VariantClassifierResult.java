@@ -18,11 +18,11 @@ package uk.ac.ebi.eva.commons.core.models;
 
 public class VariantClassifierResult {
 
-    private String reference;
+    public String reference;
 
-    private String alternate;
+    public String alternate;
 
-    private VariantType variantType;
+    public VariantType variantType;
 
     public VariantClassifierResult(String reference, String alternate,
                                    VariantType variantType) {
