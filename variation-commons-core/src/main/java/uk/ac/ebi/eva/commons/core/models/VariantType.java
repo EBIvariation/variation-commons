@@ -55,6 +55,9 @@ public enum VariantType {
     /**
      * No alternate alleles found mean that only the reference was reported
      */
-    NO_ALTERNATE
-
+    NO_ALTERNATE,
+    /**
+     * No alternate alleles found mean that only the reference was reported
+     */
+    UNKNOWN
 }

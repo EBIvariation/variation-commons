@@ -31,22 +31,19 @@ public class VariantClassifierTest {
 
     @Test
     public void testGetVariantClassification() {
-        SortedMap<String,VariantClassifierResult> actualResult = VariantClassifier.getVariantClassification(
-                "chr1", 1000L, "A", "A/C", 1);
-        assertEquals(actualResult.get("A/C").variantType, VariantType.SNV);
-
-        actualResult = VariantClassifier.getVariantClassification("chr1", 1000L, "AT",
-                                                            "AT/AG/CG/A/ATG/-", 1);
-        assertEquals(actualResult.get("T/G").variantType, VariantType.SNV);
-        assertEquals(actualResult.get("AT/CG").variantType, VariantType.MNV);
-        assertEquals(actualResult.get("T/").variantType, VariantType.DEL);
-        assertEquals(actualResult.get("/G").variantType, VariantType.INS);
-        assertEquals(actualResult.get("AT/").variantType, VariantType.DEL);
-
-        actualResult = VariantClassifier.getVariantClassification("chr1", 1000L, "-",
-                                                                  " A /  AT", 1);
-        assertEquals(actualResult.get("/A").variantType, VariantType.INS);
-        assertEquals(actualResult.get("/AT").variantType, VariantType.INS);
+        assertEquals(VariantType.SNV, VariantClassifier.getVariantClassification("A", "C",
+                                                                                 1));
+        assertEquals(VariantType.MNV, VariantClassifier.getVariantClassification("AT", "CG",
+                                                                                 1));
+        assertEquals(VariantType.DEL, VariantClassifier.getVariantClassification("T", "",
+                                                                                 1));
+        assertEquals(VariantType.INS, VariantClassifier.getVariantClassification("", "G",
+                                                                                 1));
+        assertEquals(VariantType.INDEL, VariantClassifier.getVariantClassification("A", "GTC",
+                                                                                 2));
+        assertNotEquals(VariantType.INDEL, VariantClassifier.getVariantClassification("A",
+                                                                                      "(LARGEDEL)",
+                                                                                      2));
     }
 
 }

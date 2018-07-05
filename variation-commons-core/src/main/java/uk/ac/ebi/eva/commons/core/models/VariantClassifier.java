@@ -20,55 +20,35 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class VariantClassifier {
-    public static SortedMap<String, VariantClassifierResult> getVariantClassification(String chromosome, long position,
-                                                                                      String reference, String alleles,
-                                                                                      int subSNPClass) {
+    public static VariantType getVariantClassification(String reference, String alternate, int subSNPClass) {
         String alphaRegEx = "[A-Z]+";
-        String[] alternateAlleles = alleles.split("/");
-        SortedMap<String, VariantClassifierResult> variantTypeMap = new TreeMap<>();
 
         reference = reference.trim();
+        alternate = alternate.trim();
 
-        for (int allelesIdx = 0; allelesIdx < alternateAlleles.length; allelesIdx++) {
-            alternateAlleles[allelesIdx] = alternateAlleles[allelesIdx].trim();
-            String alternate = alternateAlleles[allelesIdx];
-            if (alternate.equals("-")) {
-                alternate = "";
-            }
-            if (reference.equals("-")) {
-                reference = "";
-            }
-            if (!alternate.equals(reference)) {
-                VariantCoreFields variantCoreFields = new VariantCoreFields(chromosome, position, reference, alternate);
-
-                String alignedRef = variantCoreFields.getReference();
-                String alignedAlt = variantCoreFields.getAlternate();
-                String refAlt = alignedRef + "/" + alignedAlt;
-
-                if (alignedRef.matches(alphaRegEx) && alignedAlt.matches(alphaRegEx)) {
-                    if (alignedRef.length() == alignedAlt.length()) {
-                        if (alignedRef.length() == 1) {
-                            variantTypeMap.put(refAlt, new VariantClassifierResult(alignedRef, alignedAlt,
-                                                                                       VariantType.SNV));
-                        }
-                        else {
-                            variantTypeMap.put(refAlt, new VariantClassifierResult(alignedRef, alignedAlt,
-                                                                                       VariantType.MNV));
-                        }
+        if (!alternate.equals(reference)) {
+            if (reference.matches(alphaRegEx) && alternate.matches(alphaRegEx)) {
+                if (reference.length() == alternate.length()) {
+                    if (reference.length() == 1) {
+                        return VariantType.SNV;
+                    }
+                    else {
+                        return VariantType.MNV;
                     }
                 }
-                else if (alignedRef.matches(alphaRegEx) && alignedAlt.equals("")) {
-                    variantTypeMap.put(refAlt, new VariantClassifierResult(alignedRef, alignedAlt,
-                                                                               VariantType.DEL));
-                }
-                else if (alignedAlt.matches(alphaRegEx) && alignedRef.equals("")) {
-                    variantTypeMap.put(refAlt, new VariantClassifierResult(alignedRef, alignedAlt,
-                                                                               VariantType.INS));
+                if (alternate.length() > 0 && reference.length() > 0 &&
+                        reference.charAt(0) != alternate.charAt(0) && alternate.length() > reference.length()) {
+                    return VariantType.INDEL;
                 }
             }
-            //else if (alignedRef.matc)
+            else if (reference.matches(alphaRegEx) && alternate.equals("")) {
+                return VariantType.DEL;
+            }
+            else if (alternate.matches(alphaRegEx) && reference.equals("")) {
+                return VariantType.INS;
+            }
         }
 
-        return variantTypeMap;
+        return VariantType.UNKNOWN;
     }
 }
