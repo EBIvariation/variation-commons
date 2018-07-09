@@ -17,6 +17,7 @@ package uk.ac.ebi.eva.commons.core.models;
 
 /**
  * Type of variation, which depends mostly on its length.
+ * See https://docs.google.com/spreadsheets/d/1YH8qDBDu7C6tqULJNCrGw8uBjdW3ZT5OjTkJzGNOZ4E/edit#gid=1433496764
  */
 public enum VariantType {
 
@@ -24,29 +25,38 @@ public enum VariantType {
      * SNVs involve a single nucleotide, without changes in length
      */
     SNV,
-
-    /**
-     * MNVs involve multiple nucleotides, without changes in length
-     */
-    MNV,
-    /**
-     * INS denotes insertions
-     */
-    INS,
     /**
      * DEL denotes deletions
      */
     DEL,
     /**
-     * Indels are insertions or deletions of less than SV_THRESHOLD (50) nucleotides
+     * INS denotes insertions
+     */
+    INS,
+    /**
+     * Indels are insertions and deletions of less than SV_THRESHOLD (50) nucleotides
      */
     INDEL,
-
+    /**
+     * TANDEM_REPEAT - Short Tandem repeats - ex: (A)3/(A)6
+     */
+    TANDEM_REPEAT,
+    /**
+     * Named variation - ex: (ALI06)
+     */
+    SEQUENCE_ALTERATION,
+    /**
+     * No variation was observed - Legacy classification
+     */
+    NO_SEQUENCE_ALTERATION,
+    /**
+     * MNVs involve multiple nucleotides, without changes in length
+     */
+    MNV,
     /**
      * Structural variations are large changes of more than SV_THRESHOLD nucleotides
      */
     SV,
-
     /**
      * Copy-number variations alter the number of copies of a region
      */
@@ -55,9 +65,5 @@ public enum VariantType {
     /**
      * No alternate alleles found mean that only the reference was reported
      */
-    NO_ALTERNATE,
-    /**
-     * No alternate alleles found mean that only the reference was reported
-     */
-    UNKNOWN
+    NO_ALTERNATE
 }

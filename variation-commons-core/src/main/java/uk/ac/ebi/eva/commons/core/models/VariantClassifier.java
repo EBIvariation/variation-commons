@@ -16,39 +16,65 @@
 
 package uk.ac.ebi.eva.commons.core.models;
 
-import java.util.SortedMap;
-import java.util.TreeMap;
-
+/**
+ * Implementation of Variant type classification based on Sequence Ontology (SO) definitions.
+ */
 public class VariantClassifier {
+
+    /***
+     * Get the type of a given variant based on Sequence Ontology (SO) definitions.
+     * See https://docs.google.com/spreadsheets/d/1YH8qDBDu7C6tqULJNCrGw8uBjdW3ZT5OjTkJzGNOZ4E/edit#gid=1433496764
+     * @TODO: might need to be merged eventually into {@link uk.ac.ebi.eva.commons.core.models.AbstractVariant#getType()}
+     *
+     * @param reference Reference allele
+     * @param alternate Alternate allele
+     * @param subSNPClass SubSNP class (as defined in dbSNP variant data)
+     *                    - See https://www.ncbi.nlm.nih.gov/books/NBK21088/table/ch5.ch5_t3/?report=objectonly
+     * @return Type of the variant
+     */
     public static VariantType getVariantClassification(String reference, String alternate, int subSNPClass) {
         String alphaRegEx = "[A-Z]+";
 
         reference = reference.trim();
         alternate = alternate.trim();
 
-        if (!alternate.equals(reference)) {
-            if (reference.matches(alphaRegEx) && alternate.matches(alphaRegEx)) {
-                if (reference.length() == alternate.length()) {
-                    if (reference.length() == 1) {
-                        return VariantType.SNV;
+        if (!reference.equals("NOVARIATION")) {
+            if (subSNPClass == 4) {
+                return VariantType.TANDEM_REPEAT;
+            }
+            if (subSNPClass == 5) {
+                return VariantType.SEQUENCE_ALTERATION;
+            }
+            if (!alternate.equals(reference)) {
+                if (reference.matches(alphaRegEx) && alternate.matches(alphaRegEx)) {
+                    if (reference.length() == alternate.length()) {
+                        if (reference.length() == 1) {
+                            return VariantType.SNV;
+                        }
+                        else {
+                            return VariantType.MNV;
+                        }
                     }
-                    else {
-                        return VariantType.MNV;
+
+                    if (subSNPClass == 2) {
+                        return VariantType.INDEL;
                     }
                 }
-                if (alternate.length() > 0 && reference.length() > 0 &&
-                        reference.charAt(0) != alternate.charAt(0) && alternate.length() > reference.length()) {
-                    return VariantType.INDEL;
+                else if (reference.matches(alphaRegEx) && alternate.equals("")) {
+                    return VariantType.DEL;
                 }
-            }
-            else if (reference.matches(alphaRegEx) && alternate.equals("")) {
-                return VariantType.DEL;
-            }
-            else if (alternate.matches(alphaRegEx) && reference.equals("")) {
-                return VariantType.INS;
+                else if (alternate.matches(alphaRegEx) && reference.equals("")) {
+                    return VariantType.INS;
+                }
             }
         }
-
-        return VariantType.UNKNOWN;
+        else {
+            if (subSNPClass == 6) {
+                return VariantType.NO_SEQUENCE_ALTERATION;
+            }
+        }
+        throw new IllegalArgumentException(String.format("Cannot determine the type of the Variant with Reference: %s, "
+                                                                 + "Alternate: %s and SubSNP class: %d",
+                                                         reference, alternate, subSNPClass));
     }
 }
