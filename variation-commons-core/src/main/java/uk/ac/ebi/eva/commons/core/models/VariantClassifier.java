@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
  */
 public class VariantClassifier {
 
+    private static Pattern alphaRegExPattern = Pattern.compile("[A-Z]+");
     /***
      * Get the type of a given variant based on Sequence Ontology (SO) definitions.
      * See https://docs.google.com/spreadsheets/d/1YH8qDBDu7C6tqULJNCrGw8uBjdW3ZT5OjTkJzGNOZ4E/edit#gid=1433496764
@@ -35,20 +36,14 @@ public class VariantClassifier {
      * @return Type of the variant
      */
     public static VariantType getVariantClassification(String reference, String alternate, int subSNPClass) {
-        Pattern alphaRegExPattern = Pattern.compile("[A-Z]+");
-
         reference = reference.trim();
         alternate = alternate.trim();
-
-        boolean isRefAlpha = alphaRegExPattern.matcher(reference).matches();
-        boolean isAltAlpha = alphaRegExPattern.matcher(alternate).matches();
 
         if (reference.equals("NOVARIATION")) {
             if (subSNPClass == 6) {
                 return VariantType.NO_SEQUENCE_ALTERATION;
             }
-        }
-        else {
+        } else {
             if (subSNPClass == 4) {
                 return VariantType.TANDEM_REPEAT;
             }
@@ -56,16 +51,13 @@ public class VariantClassifier {
                 return VariantType.SEQUENCE_ALTERATION;
             }
             if (!alternate.equals(reference)) {
+                boolean isRefAlpha = alphaRegExPattern.matcher(reference).matches();
+                boolean isAltAlpha = alphaRegExPattern.matcher(alternate).matches();
+
                 if (isRefAlpha && isAltAlpha) {
                     if (reference.length() == alternate.length()) {
-                        if (reference.length() == 1) {
-                            return VariantType.SNV;
-                        }
-                        else {
-                            return VariantType.MNV;
-                        }
+                        return reference.length() == 1? VariantType.SNV: VariantType.MNV;
                     }
-
                     if (subSNPClass == 2) {
                         return VariantType.INDEL;
                     }
