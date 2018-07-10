@@ -24,13 +24,14 @@ import java.util.regex.Pattern;
 public class VariantClassifier {
 
     private static Pattern alphaRegExPattern = Pattern.compile("[A-Z]+");
+
     /***
      * Get the type of a given variant based on Sequence Ontology (SO) definitions.
      * See https://docs.google.com/spreadsheets/d/1YH8qDBDu7C6tqULJNCrGw8uBjdW3ZT5OjTkJzGNOZ4E/edit#gid=1433496764
      * @TODO: might need to be merged eventually into {@link uk.ac.ebi.eva.commons.core.models.AbstractVariant#getType()}
      *
-     * @param reference Reference allele - expects trimmed allele
-     * @param alternate Alternate allele - expects trimmed allele
+     * @param reference Reference allele - expects normalized allele
+     * @param alternate Alternate allele - expects normalized allele
      * @param subSNPClass SubSNP class (as defined in dbSNP variant data)
      *                    - See https://www.ncbi.nlm.nih.gov/books/NBK21088/table/ch5.ch5_t3/?report=objectonly
      * @return Type of the variant
@@ -56,7 +57,7 @@ public class VariantClassifier {
 
                 if (isRefAlpha && isAltAlpha) {
                     if (reference.length() == alternate.length()) {
-                        return reference.length() == 1? VariantType.SNV: VariantType.MNV;
+                        return reference.length() == 1? VariantType.SNV : VariantType.MNV;
                     }
                     if (subSNPClass == 2) {
                         return VariantType.INDEL;
