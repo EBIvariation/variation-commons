@@ -16,6 +16,8 @@
 
 package uk.ac.ebi.eva.commons.core.models;
 
+import java.util.regex.Pattern;
+
 /**
  * Implementation of Variant type classification based on Sequence Ontology (SO) definitions.
  */
@@ -33,12 +35,20 @@ public class VariantClassifier {
      * @return Type of the variant
      */
     public static VariantType getVariantClassification(String reference, String alternate, int subSNPClass) {
-        String alphaRegEx = "[A-Z]+";
+        Pattern alphaRegExPattern = Pattern.compile("[A-Z]+");
 
         reference = reference.trim();
         alternate = alternate.trim();
 
-        if (!reference.equals("NOVARIATION")) {
+        boolean isRefAlpha = alphaRegExPattern.matcher(reference).matches();
+        boolean isAltAlpha = alphaRegExPattern.matcher(alternate).matches();
+
+        if (reference.equals("NOVARIATION")) {
+            if (subSNPClass == 6) {
+                return VariantType.NO_SEQUENCE_ALTERATION;
+            }
+        }
+        else {
             if (subSNPClass == 4) {
                 return VariantType.TANDEM_REPEAT;
             }
@@ -46,7 +56,7 @@ public class VariantClassifier {
                 return VariantType.SEQUENCE_ALTERATION;
             }
             if (!alternate.equals(reference)) {
-                if (reference.matches(alphaRegEx) && alternate.matches(alphaRegEx)) {
+                if (isRefAlpha && isAltAlpha) {
                     if (reference.length() == alternate.length()) {
                         if (reference.length() == 1) {
                             return VariantType.SNV;
@@ -60,17 +70,12 @@ public class VariantClassifier {
                         return VariantType.INDEL;
                     }
                 }
-                else if (reference.matches(alphaRegEx) && alternate.equals("")) {
+                if (isRefAlpha && alternate.equals("")) {
                     return VariantType.DEL;
                 }
-                else if (alternate.matches(alphaRegEx) && reference.equals("")) {
+                if (isAltAlpha && reference.equals("")) {
                     return VariantType.INS;
                 }
-            }
-        }
-        else {
-            if (subSNPClass == 6) {
-                return VariantType.NO_SEQUENCE_ALTERATION;
             }
         }
         throw new IllegalArgumentException(String.format("Cannot determine the type of the Variant with Reference: %s, "

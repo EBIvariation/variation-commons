@@ -30,44 +30,38 @@ public class VariantClassifierTest {
 
     @Test
     public void testGetVariantClassification() throws IllegalArgumentException {
-        assertEquals(VariantType.SNV, VariantClassifier.getVariantClassification("A", "C",
-                                                                                 1));
-        assertEquals(VariantType.DEL, VariantClassifier.getVariantClassification("TT", "",
-                                                                                 2));
-        assertEquals(VariantType.INS, VariantClassifier.getVariantClassification("", "G",
-                                                                                 2));
-        assertEquals(VariantType.INDEL, VariantClassifier.getVariantClassification("A", "GTC",
-                                                                                   2));
-        assertEquals(VariantType.INDEL, VariantClassifier.getVariantClassification("AA", "G",
-                                                                                   2));
-        assertEquals(VariantType.TANDEM_REPEAT, VariantClassifier.getVariantClassification("(A)5",
-                                                                                           "(A)7",
-                                                                                           4));
-        assertEquals(VariantType.SEQUENCE_ALTERATION, VariantClassifier.getVariantClassification("(ALI008)",
-                                                                                           "(LI090)",
-                                                                                           5));
-        assertEquals(VariantType.SEQUENCE_ALTERATION, VariantClassifier.getVariantClassification("ATCZ",
-                                                                                                 "",
-                                                                                                 5));
-        assertEquals(VariantType.SEQUENCE_ALTERATION, VariantClassifier.getVariantClassification("(ALI008)",
-                                                                                                 "(LI090)",
-                                                                                                 5));
+        assertEquals(VariantType.SNV, VariantClassifier.getVariantClassification("A", "C", 1));
+
+        assertEquals(VariantType.DEL, VariantClassifier.getVariantClassification("TT", "", 2));
+        assertEquals(VariantType.INS, VariantClassifier.getVariantClassification("", "G", 2));
+
+        assertEquals(VariantType.INDEL, VariantClassifier.getVariantClassification("A", "GTC", 2));
+        assertEquals(VariantType.INDEL, VariantClassifier.getVariantClassification("AA", "G", 2));
+
+        assertEquals(VariantType.TANDEM_REPEAT, VariantClassifier.getVariantClassification("(A)5", "(A)7", 4));
+
+        assertEquals(VariantType.SEQUENCE_ALTERATION,
+                     VariantClassifier.getVariantClassification("(ALI008)", "(LI090)", 5));
+        assertEquals(VariantType.SEQUENCE_ALTERATION, VariantClassifier.getVariantClassification("ATCZ", "", 5));
+        assertEquals(VariantType.SEQUENCE_ALTERATION,
+                     VariantClassifier.getVariantClassification("(ALI008)", "(LI090)", 5));
+
         assertEquals(VariantType.NO_SEQUENCE_ALTERATION,
                      VariantClassifier.getVariantClassification("NOVARIATION", "", 6));
         assertNotEquals(VariantType.NO_SEQUENCE_ALTERATION,
                      VariantClassifier.getVariantClassification("NOVAR", "", 6));
+
         assertEquals(VariantType.MNV, VariantClassifier.getVariantClassification("AT", "CG",
                                                                                    8));
 
+
+        //Test case where we expect Exceptions to be thrown
+        thrown.expect(IllegalArgumentException.class);
+        VariantClassifier.getVariantClassification("a", "C", 1);
         thrown.expect(IllegalArgumentException.class);
         VariantClassifier.getVariantClassification("AA", "-", 2);
         thrown.expect(IllegalArgumentException.class);
-        assertNotEquals(VariantType.SNV, VariantClassifier.getVariantClassification("a", "C",
-                                                                                    1));
-        thrown.expect(IllegalArgumentException.class);
-        assertNotEquals(VariantType.NO_SEQUENCE_ALTERATION,
-                        VariantClassifier.getVariantClassification("NOVARIATION",
-                                                                   "", 5));
+        VariantClassifier.getVariantClassification("NOVARIATION", "", 5);
     }
 
 }
