@@ -16,17 +16,12 @@
 
 package uk.ac.ebi.eva.commons.core.models;
 
-import org.junit.Rule;
 import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-import org.junit.rules.ExpectedException;
-
 public class VariantClassifierTest {
-
-    @Rule
-    public final ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void testSNVs() {
@@ -34,15 +29,25 @@ public class VariantClassifierTest {
     }
 
     @Test
-    public void testDIVs() {
+    public void testDeletions() {
         assertEquals(VariantType.DEL, VariantClassifier.getVariantClassification("TT", "", 2));
+    }
+
+    @Test
+    public void testInsertions() {
         assertEquals(VariantType.INS, VariantClassifier.getVariantClassification("", "G", 2));
+    }
+
+    @Test
+    public void testINDELs() {
         assertEquals(VariantType.INDEL, VariantClassifier.getVariantClassification("A", "GTC", 2));
         assertEquals(VariantType.INDEL, VariantClassifier.getVariantClassification("AA", "G", 2));
     }
+
     @Test
     public void testSTRs() {
         assertEquals(VariantType.TANDEM_REPEAT, VariantClassifier.getVariantClassification("(A)5", "(A)7", 4));
+        assertEquals(VariantType.TANDEM_REPEAT, VariantClassifier.getVariantClassification("AAAAA", "AAAAAAA", 4));
     }
 
     @Test
@@ -60,16 +65,15 @@ public class VariantClassifierTest {
                      VariantClassifier.getVariantClassification("NOVARIATION", "", 6));
         assertNotEquals(VariantType.NO_SEQUENCE_ALTERATION,
                         VariantClassifier.getVariantClassification("NOVAR", "", 6));
+        assertEquals(VariantType.NO_SEQUENCE_ALTERATION,
+                     VariantClassifier.getVariantClassification("", "", 6));
+        assertEquals(VariantType.NO_SEQUENCE_ALTERATION,
+                     VariantClassifier.getVariantClassification("NOVARIATION", "NOVARIATION", 6));
     }
 
     @Test
     public void testMNVs() {
         assertEquals(VariantType.MNV, VariantClassifier.getVariantClassification("AT", "CG", 8));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testLowerCaseNucleotides() {
-        VariantClassifier.getVariantClassification("a", "C", 1);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -80,10 +84,5 @@ public class VariantClassifierTest {
     @Test(expected = IllegalArgumentException.class)
     public void testHyphensInAlternate() {
         VariantClassifier.getVariantClassification("AA", "-", 2);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testNoVariationInNamedVariant() {
-        VariantClassifier.getVariantClassification("NOVARIATION", "", 5);
     }
 }

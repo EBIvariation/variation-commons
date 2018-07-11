@@ -25,54 +25,50 @@ public class VariantClassifier {
 
     private static Pattern alphaRegExPattern = Pattern.compile("[A-Z]+");
 
-    /***
+    /**
      * Get the type of a given variant based on Sequence Ontology (SO) definitions.
-     * See https://docs.google.com/spreadsheets/d/1YH8qDBDu7C6tqULJNCrGw8uBjdW3ZT5OjTkJzGNOZ4E/edit#gid=1433496764
+     * See <a href="https://docs.google.com/spreadsheets/d/1YH8qDBDu7C6tqULJNCrGw8uBjdW3ZT5OjTkJzGNOZ4E/edit#gid=1433496764">documentation</a>.
      * @TODO: might need to be merged eventually into {@link uk.ac.ebi.eva.commons.core.models.AbstractVariant#getType()}
      *
      * @param reference Reference allele - expects normalized allele
      * @param alternate Alternate allele - expects normalized allele
-     * @param subSNPClass SubSNP class (as defined in dbSNP variant data)
-     *                    - See https://www.ncbi.nlm.nih.gov/books/NBK21088/table/ch5.ch5_t3/?report=objectonly
+     * @param subSnpClass SubSNP class (as defined in dbSNP variant data) - See <a href="https://www.ncbi.nlm.nih.gov/books/NBK21088/table/ch5.ch5_t3/?report=objectonly">definitions</a>
      * @return Type of the variant
      */
-    public static VariantType getVariantClassification(String reference, String alternate, int subSNPClass) {
-        reference = reference.trim();
-        alternate = alternate.trim();
+    public static VariantType getVariantClassification(String reference, String alternate, int subSnpClass) {
+        reference = reference.trim().toUpperCase();
+        alternate = alternate.trim().toUpperCase();
 
-        if (reference.equals("NOVARIATION")) {
-            if (subSNPClass == 6) {
+        if (reference.equals("NOVARIATION") || alternate.equals(reference)) {
                 return VariantType.NO_SEQUENCE_ALTERATION;
-            }
         } else {
-            if (subSNPClass == 4) {
+            if (subSnpClass == 4) {
                 return VariantType.TANDEM_REPEAT;
             }
-            if (subSNPClass == 5) {
+            if (subSnpClass == 5) {
                 return VariantType.SEQUENCE_ALTERATION;
             }
-            if (!alternate.equals(reference)) {
-                boolean isRefAlpha = alphaRegExPattern.matcher(reference).matches();
-                boolean isAltAlpha = alphaRegExPattern.matcher(alternate).matches();
 
-                if (isRefAlpha && isAltAlpha) {
-                    if (reference.length() == alternate.length()) {
-                        return reference.length() == 1? VariantType.SNV : VariantType.MNV;
-                    }
-                    if (subSNPClass == 2) {
-                        return VariantType.INDEL;
-                    }
+            boolean isRefAlpha = alphaRegExPattern.matcher(reference).matches();
+            boolean isAltAlpha = alphaRegExPattern.matcher(alternate).matches();
+
+            if (isRefAlpha && isAltAlpha) {
+                if (reference.length() == alternate.length()) {
+                    return reference.length() == 1? VariantType.SNV : VariantType.MNV;
                 }
-                if (isRefAlpha && alternate.equals("")) {
-                    return VariantType.DEL;
+                if (subSnpClass == 2) {
+                    return VariantType.INDEL;
                 }
-                if (isAltAlpha && reference.equals("")) {
-                    return VariantType.INS;
-                }
+            }
+            if (isRefAlpha && alternate.isEmpty()) {
+                return VariantType.DEL;
+            }
+            if (isAltAlpha && reference.isEmpty()) {
+                return VariantType.INS;
             }
         }
         throw new IllegalArgumentException(String.format("Cannot determine the type of the Variant with Reference: %s, "
                                                                  + "Alternate: %s and SubSNP class: %d",
-                                                         reference, alternate, subSNPClass));
+                                                         reference, alternate, subSnpClass));
     }
 }
