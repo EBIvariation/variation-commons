@@ -16,38 +16,54 @@
 package uk.ac.ebi.eva.commons.core.models;
 
 /**
- * Type of variation, which depends mostly on its length.
+ * Type of variation, per Sequence Ontology (SO) definitions, which depends mostly on its length.
+ * See <a href="https://docs.google.com/spreadsheets/d/1YH8qDBDu7C6tqULJNCrGw8uBjdW3ZT5OjTkJzGNOZ4E/edit#gid=1433496764">Sequence Ontology definitions</a>.
  */
 public enum VariantType {
 
     /**
-     * SNVs involve a single nucleotide, without changes in length
+     * SO:0001483 - SNVs involve a single nucleotide, without changes in length
      */
     SNV,
-
     /**
-     * MNVs involve multiple nucleotides, without changes in length
+     * SO:0000159 - DEL denotes deletions
      */
-    MNV,
-
+    DEL,
     /**
-     * Indels are insertions or deletions of less than SV_THRESHOLD (50) nucleotides
+     * SO:0000667 - INS denotes insertions
+     */
+    INS,
+    /**
+     * SO:1000032 - Indels are insertions and deletions of less than SV_THRESHOLD (50) nucleotides
      */
     INDEL,
-
+    /**
+     * SO:0000705 - Short tandem repeats and microsatellites - ex: (A)3/(A)6
+     */
+    TANDEM_REPEAT,
+    /**
+     * SO:0001059 - Named variation - ex: (ALI06)
+     */
+    SEQUENCE_ALTERATION,
+    /**
+     * SO:0002073 - No variation was observed
+     */
+    NO_SEQUENCE_ALTERATION,
+    /**
+     * No alternate alleles found mean that only the reference was reported
+     * @deprecated after <a href="https://www.ebi.ac.uk/panda/jira/browse/EVA-1220">decision to conform variant types to SO definitions</a>. Use NO_SEQUENCE_ALTERATION instead.
+     */
+    NO_ALTERNATE,
+    /**
+     * SO:0002007 - MNVs involve multiple nucleotides, without changes in length
+     */
+    MNV,
     /**
      * Structural variations are large changes of more than SV_THRESHOLD nucleotides
      */
     SV,
-
     /**
      * Copy-number variations alter the number of copies of a region
      */
-    CNV,
-
-    /**
-     * No alternate alleles found mean that only the reference was reported
-     */
-    NO_ALTERNATE
-
+    CNV
 }
