@@ -118,7 +118,8 @@ public class VariantWithSamplesAndAnnotationsService {
                 variantMongo.getStart(),
                 variantMongo.getEnd(),
                 variantMongo.getReference(),
-                variantMongo.getAlternate());
+                variantMongo.getAlternate(),
+                variantMongo.getMainId());
         variant.setIds(variantMongo.getIds());
         Table<String, String, Map<String, VariantStatistics>> variantStatisticsMongosTable
                 = variantStatsMongoToTable(variantMongo.getVariantStatsMongo(), variantMongo);

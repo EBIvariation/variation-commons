@@ -310,6 +310,10 @@ public class VariantMongo {
         return ids;
     }
 
+    public String getMainId() {
+        return mainId;
+    }
+
     public Set<VariantSourceEntryMongo> getSourceEntries() {
         return variantSourceEntries;
     }

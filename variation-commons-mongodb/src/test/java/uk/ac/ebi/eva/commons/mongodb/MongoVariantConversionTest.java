@@ -88,7 +88,7 @@ public class MongoVariantConversionTest {
     }
 
     private VariantWithSamplesAndAnnotation buildBasicVariant() {
-        VariantWithSamplesAndAnnotation variant = new VariantWithSamplesAndAnnotation(CHROMOSOME, START, END, REFERENCE, ALTERNATE);
+        VariantWithSamplesAndAnnotation variant = new VariantWithSamplesAndAnnotation(CHROMOSOME, START, END, REFERENCE, ALTERNATE, null);
         variant.setIds(Collections.singleton(RS_666));
         return variant;
     }
@@ -159,7 +159,8 @@ public class MongoVariantConversionTest {
     }
 
     private BasicDBObject buildMongoBasicVariant() {
-        VariantWithSamplesAndAnnotation variant = new VariantWithSamplesAndAnnotation(CHROMOSOME, START, END, REFERENCE, ALTERNATE);
+        VariantWithSamplesAndAnnotation variant = new VariantWithSamplesAndAnnotation(CHROMOSOME, START, END, REFERENCE,
+                                                                                      ALTERNATE, null);
         BasicDBObject mongoVariant = new BasicDBObject("_id", VARIANT_ID)
                 .append(VariantMongo.IDS_FIELD, Collections.singleton(RS_666))
                 .append(VariantMongo.TYPE_FIELD, variant.getType().name())

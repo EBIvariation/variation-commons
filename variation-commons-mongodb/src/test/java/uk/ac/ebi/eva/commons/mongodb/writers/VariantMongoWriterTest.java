@@ -109,8 +109,8 @@ public class VariantMongoWriterTest {
 
     @Test
     public void variantsShouldBeWrittenIntoMongoDb() throws Exception {
-        Variant variant1 = new Variant("1", 1, 2, "A", "T");
-        Variant variant2 = new Variant("2", 3, 4, "C", "G");
+        Variant variant1 = new Variant("1", 1, 2, "A", "T", null);
+        Variant variant2 = new Variant("2", 3, 4, "C", "G", null);
 
         DBCollection dbCollection = mongoOperations.getCollection(COLLECTION_NAME);
 
@@ -143,7 +143,7 @@ public class VariantMongoWriterTest {
 
     @Test
     public void writeTwiceSameVariantShouldUpdate() throws Exception {
-        Variant variant1 = new Variant("1", 1, 2, "A", "T");
+        Variant variant1 = new Variant("1", 1, 2, "A", "T", null);
         variant1.addSourceEntry(new VariantSourceEntry("test_file", "test_study_id"));
 
         VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, false);
@@ -359,7 +359,7 @@ public class VariantMongoWriterTest {
 
     private Variant buildVariantWithStats(String chromosome, long start, long end, String reference, String alternate,
                                           VariantSourceEntry variantSourceEntry) {
-        Variant variant = new Variant(chromosome, start, end, reference, alternate);
+        Variant variant = new Variant(chromosome, start, end, reference, alternate, null);
         variantSourceEntry.setCohortStats("cohortStats", new VariantStatistics(reference, alternate, VariantType.SNV));
         variant.addSourceEntry(variantSourceEntry);
 

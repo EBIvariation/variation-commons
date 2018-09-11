@@ -47,7 +47,7 @@ public class VariantGenotypedVcfFactoryTest {
         String line = "1\t10040\trs123\tT\tC\t.\t.\t.\tGT\t0/0\t0/1\t0/.\t./1\t1/1"; // 5 samples
 
         // Initialize expected variants
-        Variant var0 = new Variant("1", 10041, 10041 + "C".length() - 1, "T", "C");
+        Variant var0 = new Variant("1", 10041, 10041 + "C".length() - 1, "T", "C", null);
         VariantSourceEntry file0 = new VariantSourceEntry(FILE_ID, STUDY_ID);
         var0.addSourceEntry(file0);
 
@@ -83,11 +83,11 @@ public class VariantGenotypedVcfFactoryTest {
         String line = "1\t123456\t.\tT\tC,G\t110\tPASS\t.\tGT:AD:DP:GQ:PL\t0/1:10,5:17:94:94,0,286\t0/2:3,8:15:43:222,0,43\t0/0:.:18:.:.\t1/2:7,6:13:99:162,0,180"; // 4 samples
 
         // Initialize expected variants
-        Variant var0 = new Variant("1", 123456, 123456, "T", "C");
+        Variant var0 = new Variant("1", 123456, 123456, "T", "C", null);
         VariantSourceEntry file0 = new VariantSourceEntry(FILE_ID, STUDY_ID);
         var0.addSourceEntry(file0);
 
-        Variant var1 = new Variant("1", 123456, 123456, "T", "G");
+        Variant var1 = new Variant("1", 123456, 123456, "T", "G", null);
         VariantSourceEntry file1 = new VariantSourceEntry(FILE_ID, STUDY_ID);
         var1.addSourceEntry(file1);
 
@@ -176,11 +176,11 @@ public class VariantGenotypedVcfFactoryTest {
         String line = "1\t10040\trs123\tT\tC,GC\t.\t.\t.\tGT\t0/0\t0/1\t0/2\t1/1\t1/2\t2/2"; // 6 samples
 
         // Initialize expected variants
-        Variant var0 = new Variant("1", 10041, 10041 + "C".length() - 1, "T", "C");
+        Variant var0 = new Variant("1", 10041, 10041 + "C".length() - 1, "T", "C", null);
         VariantSourceEntry file0 = new VariantSourceEntry(FILE_ID, STUDY_ID);
         var0.addSourceEntry(file0);
 
-        Variant var1 = new Variant("1", 10050, 10050 + "GC".length() - 1, "T", "GC");
+        Variant var1 = new Variant("1", 10050, 10050 + "GC".length() - 1, "T", "GC", null);
         VariantSourceEntry file1 = new VariantSourceEntry(FILE_ID, STUDY_ID);
         var1.addSourceEntry(file1);
 
@@ -250,7 +250,7 @@ public class VariantGenotypedVcfFactoryTest {
         String line = "1\t1407616\t.\tC\tG\t43.74\tPASS\t.\tGT:AD:DP:GQ:PL\t./.:.:.:.:.\t1/1:0,2:2:6:71,6,0\t./.:.:.:.:.\t./.:.:.:.:.";
 
         // Initialize expected variants
-        Variant var0 = new Variant("1", 1407616, 1407616, "C", "G");
+        Variant var0 = new Variant("1", 1407616, 1407616, "C", "G", null);
         VariantSourceEntry file0 = new VariantSourceEntry(FILE_ID, STUDY_ID);
         var0.addSourceEntry(file0);
 
@@ -328,11 +328,11 @@ public class VariantGenotypedVcfFactoryTest {
                 + "0/1:10,5:17:94:94,0,286\t0/2:3,8:15:43:222,0,43\t0/0:.:18:.:.\t0/2:7,6:13:0:162,0,180"; // 4 samples
 
         // Initialize expected variants
-        Variant var0 = new Variant("1", 123456, 123456, "T", "C");
+        Variant var0 = new Variant("1", 123456, 123456, "T", "C", null);
         VariantSourceEntry file0 = new VariantSourceEntry(FILE_ID, STUDY_ID);
         var0.addSourceEntry(file0);
 
-        Variant var1 = new Variant("1", 123456, 123456, "T", "G");
+        Variant var1 = new Variant("1", 123456, 123456, "T", "G", null);
         VariantSourceEntry file1 = new VariantSourceEntry(FILE_ID, STUDY_ID);
         var1.addSourceEntry(file1);
 
@@ -470,7 +470,7 @@ public class VariantGenotypedVcfFactoryTest {
     @Test
     public void infoAttributesWontBeValidated() {
         List<Variant> expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 1000, 1000, "T", "G"));
+        expResult.add(new Variant("1", 1000, 1000, "T", "G", null));
         String line;
 
         // the variant is valid if it has some alternate genotypes, even if AF, AC or AN are zero

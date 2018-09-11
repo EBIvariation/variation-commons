@@ -67,7 +67,7 @@ public class VariantVcfFactoryTest {
     @Test
     public void testRemoveChrPrefixInAnyCase() {
         List<Variant> expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 1000, 1000, "T", "G"));
+        expResult.add(new Variant("1", 1000, 1000, "T", "G", null));
         String line;
 
         line = "chr1\t1000\t.\tT\tG\t.\t.\t.";
@@ -89,7 +89,7 @@ public class VariantVcfFactoryTest {
         String line = "1\t1000\trs123\tTCACCC\tTGACGG\t.\t.\t.";
 
         List<Variant> expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 1001, 1005, "CACCC", "GACGG"));
+        expResult.add(new Variant("1", 1001, 1005, "CACCC", "GACGG", null));
 
         List<Variant> result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
@@ -98,7 +98,7 @@ public class VariantVcfFactoryTest {
         line = "1\t1000\trs123\tTCACCC\tTGACGC\t.\t.\t.";
 
         expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 1001, 1004, "CACC", "GACG"));
+        expResult.add(new Variant("1", 1001, 1004, "CACC", "GACG", null));
 
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
@@ -109,7 +109,7 @@ public class VariantVcfFactoryTest {
         String line = "1\t1000\trs123\t.\tTGACGC\t.\t.\t.";
 
         List<Variant> expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 1000, 1000 + "TGACGC".length() - 1, "", "TGACGC"));
+        expResult.add(new Variant("1", 1000, 1000 + "TGACGC".length() - 1, "", "TGACGC", null));
 
         List<Variant> result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
@@ -120,7 +120,7 @@ public class VariantVcfFactoryTest {
         String line = "1\t999\trs123\tGTCACCC\tG\t.\t.\t.";
 
         List<Variant> expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 1000, 1000 + "TCACCC".length() - 1, "TCACCC", ""));
+        expResult.add(new Variant("1", 1000, 1000 + "TCACCC".length() - 1, "TCACCC", "", null));
 
         List<Variant> result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
@@ -131,68 +131,68 @@ public class VariantVcfFactoryTest {
         String line = "1\t1000\trs123\tCGATT\tTAC\t.\t.\t.";
 
         List<Variant> expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 1000, 1000 + "CGATT".length() - 1, "CGATT", "TAC"));
+        expResult.add(new Variant("1", 1000, 1000 + "CGATT".length() - 1, "CGATT", "TAC", null));
         List<Variant> result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
 
         line = "1\t1000\trs123\tAT\tA\t.\t.\t.";
         expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 1001, 1001, "T", ""));
+        expResult.add(new Variant("1", 1001, 1001, "T", "", null));
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
 
         line = "1\t1000\trs123\tGATC\tG\t.\t.\t.";
         expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 1001, 1003, "ATC", ""));
+        expResult.add(new Variant("1", 1001, 1003, "ATC", "", null));
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
 
         line = "1\t1000\trs123\t.\tATC\t.\t.\t.";
         expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 1000, 1002, "", "ATC"));
+        expResult.add(new Variant("1", 1000, 1002, "", "ATC", null));
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
 
         line = "1\t1000\trs123\tA\tATC\t.\t.\t.";
         expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 1001, 1002, "", "TC"));
+        expResult.add(new Variant("1", 1001, 1002, "", "TC", null));
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
 
         line = "1\t1000\trs123\tAC\tACT\t.\t.\t.";
         expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 1002, 1002, "", "T"));
+        expResult.add(new Variant("1", 1002, 1002, "", "T", null));
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
 
         // Printing those that are not currently managed
         line = "1\t1000\trs123\tAT\tT\t.\t.\t.";
         expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 1000, 1000, "A", ""));
+        expResult.add(new Variant("1", 1000, 1000, "A", "", null));
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
 
         line = "1\t1000\trs123\tATC\tTC\t.\t.\t.";
         expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 1000, 1000, "A", ""));
+        expResult.add(new Variant("1", 1000, 1000, "A", "", null));
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
 
         line = "1\t1000\trs123\tATC\tAC\t.\t.\t.";
         expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 1001, 1001, "T", ""));
+        expResult.add(new Variant("1", 1001, 1001, "T", "", null));
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
 
         line = "1\t1000\trs123\tAC\tATC\t.\t.\t.";
         expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 1001, 1001, "", "T"));
+        expResult.add(new Variant("1", 1001, 1001, "", "T", null));
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
 
         line = "1\t1000\trs123\tATC\tGC\t.\t.\t.";
         expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 1000, 1001, "AT", "G"));
+        expResult.add(new Variant("1", 1000, 1001, "AT", "G", null));
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
     }
@@ -203,9 +203,9 @@ public class VariantVcfFactoryTest {
 
         // Check proper conversion of main fields
         List<Variant> expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 10040, 10040 + "TGACGTAACGAT".length() - 1, "TGACGTAACGAT", ""));
-        expResult.add(new Variant("1", 10050, 10050 + "A".length() - 1, "A", "G"));
-        expResult.add(new Variant("1", 10048, 10048 + "CGATT".length() - 1, "CGATT", "TAC"));
+        expResult.add(new Variant("1", 10040, 10040 + "TGACGTAACGAT".length() - 1, "TGACGTAACGAT", "", null));
+        expResult.add(new Variant("1", 10050, 10050 + "A".length() - 1, "A", "G", null));
+        expResult.add(new Variant("1", 10048, 10048 + "CGATT".length() - 1, "CGATT", "TAC", null));
 
         List<Variant> result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
@@ -218,7 +218,7 @@ public class VariantVcfFactoryTest {
         // test that an ID is properly handled
         String line = "1\t1000\trs123\tC\tT\t.\t.\t.";
         List<Variant> expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 1000, 1000, "C", "T"));
+        expResult.add(new Variant("1", 1000, 1000, "C", "T", null));
         List<Variant> result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
         //EVA-942 - Since we ignore IDs submitted through VCF, they are no longer part of the expected result
@@ -227,7 +227,7 @@ public class VariantVcfFactoryTest {
         // test that the ';' is used as the ID separator (as of VCF 4.2)
         line = "1\t1000\trs123;rs456\tC\tT\t.\t.\t.";
         expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 1000, 1000, "C", "T"));
+        expResult.add(new Variant("1", 1000, 1000, "C", "T", null));
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
         assertEquals(emptySet, result.get(0).getIds());
@@ -235,7 +235,7 @@ public class VariantVcfFactoryTest {
         // test that a missing ID ('.') is not added to the IDs set
         line = "1\t1000\t.\tC\tT\t.\t.\t.";
         expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 1000, 1000, "C", "T"));
+        expResult.add(new Variant("1", 1000, 1000, "C", "T", null));
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
         assertEquals(emptySet, result.get(0).getIds());
