@@ -47,14 +47,15 @@ public class VariantWithSamplesAndAnnotation extends AbstractVariant {
         sourceEntries = new HashMap<>();
     }
 
-    public VariantWithSamplesAndAnnotation(String chromosome, long start, long end, String reference, String alternate) {
-        super(chromosome, start, end, reference, alternate);
+    public VariantWithSamplesAndAnnotation(String chromosome, long start, long end, String reference, String alternate,
+                                           String mainId) {
+        super(chromosome, start, end, reference, alternate, mainId);
         sourceEntries = new HashMap<>();
     }
 
     public VariantWithSamplesAndAnnotation(IVariant variant, List<String> sampleNames) {
         super(variant.getChromosome(), variant.getStart(), variant.getEnd(), variant.getReference(),
-              variant.getAlternate());
+              variant.getAlternate(), variant.getMainId());
         this.sourceEntries = new HashMap<>();
         for (IVariantSourceEntry entry : variant.getSourceEntries()) {
             VariantSourceEntryWithSampleNames entryWithSampleNames = new VariantSourceEntryWithSampleNames(entry,
