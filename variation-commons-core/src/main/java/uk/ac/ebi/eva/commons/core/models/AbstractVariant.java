@@ -102,12 +102,11 @@ public abstract class AbstractVariant implements IVariant {
         this.hgvs = new HashMap<>();
     }
 
-    public AbstractVariant(String chromosome, long start, long end, String reference, String alternate, String mainId) {
-        this(chromosome, start, end, reference, alternate);
-        this.mainId = mainId;
+    public AbstractVariant(String chromosome, long start, long end, String reference, String alternate) {
+        this(chromosome, start, end, reference, alternate, null);
     }
 
-    public AbstractVariant(String chromosome, long start, long end, String reference, String alternate) {
+    public AbstractVariant(String chromosome, long start, long end, String reference, String alternate, String mainId) {
         if (end < start) {
             throw new IllegalArgumentException("End position must be equal or greater than the start position");
         }
@@ -120,7 +119,7 @@ public abstract class AbstractVariant implements IVariant {
         this.end = end;
         this.reference = (reference != null) ? reference : "";
         this.alternate = (alternate != null) ? alternate : "";
-        this.mainId = null;
+        this.mainId = mainId;
 
         this.ids = new HashSet<>();
         this.dbsnpIds = new HashSet<>();
