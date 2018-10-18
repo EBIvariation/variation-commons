@@ -44,7 +44,7 @@ public abstract class AbstractVariant implements IVariant {
      * deleted nucleotide is in position 6, the start is position 6</li>
      * </ul>
      */
-    private final long start;
+    private long start;
 
     /**
      * Position where the genomic variation ends.
@@ -56,17 +56,17 @@ public abstract class AbstractVariant implements IVariant {
      * deleted nucleotide is in position 9, the end is position 9</li>
      * </ul>
      */
-    private final long end;
+    private long end;
 
     /**
      * Reference allele.
      */
-    private final String reference;
+    private String reference;
 
     /**
      * Alternate allele.
      */
-    private final String alternate;
+    private String alternate;
 
     /**
      * Among all the identifiers used for this genomic variation, the one that is considered the most relevant.
@@ -179,6 +179,13 @@ public abstract class AbstractVariant implements IVariant {
 
     public String getMainId() {
         return mainId;
+    }
+
+    public void renormalizeVariant(long newStart, long newEnd, String newReference, String newAlternate) {
+        this.start = newStart;
+        this.end = newEnd;
+        this.reference = newReference;
+        this.alternate = newAlternate;
     }
 
     public void setMainId(String mainId) {
