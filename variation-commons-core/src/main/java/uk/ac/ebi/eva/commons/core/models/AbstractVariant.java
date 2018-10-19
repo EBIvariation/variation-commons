@@ -107,18 +107,13 @@ public abstract class AbstractVariant implements IVariant {
     }
 
     public AbstractVariant(String chromosome, long start, long end, String reference, String alternate, String mainId) {
-        if (end < start) {
-            throw new IllegalArgumentException("End position must be equal or greater than the start position");
-        }
-
         if (chromosome == null || chromosome.trim().equals("")) {
             throw new IllegalArgumentException("Chromosome name cannot be empty");
         }
         this.chromosome = chromosome;
-        this.start = start;
-        this.end = end;
-        this.reference = (reference != null) ? reference : "";
-        this.alternate = (alternate != null) ? alternate : "";
+        this.setCoordinates(start, end);
+        this.setReference(reference);
+        this.setAlternate(alternate);
         this.mainId = mainId;
 
         this.ids = new HashSet<>();
@@ -181,11 +176,23 @@ public abstract class AbstractVariant implements IVariant {
         return mainId;
     }
 
-    public void renormalizeVariant(long newStart, long newEnd, String newReference, String newAlternate) {
-        this.start = newStart;
-        this.end = newEnd;
-        this.reference = newReference;
-        this.alternate = newAlternate;
+    public void setReference(String reference) {
+        this.reference = (reference != null) ? reference : "";
+    }
+
+    public void setAlternate(String alternate) {
+        this.alternate = (alternate != null) ? alternate : "";
+    }
+
+    private void setCoordinates(long start, long end) {
+        if (start < 0 || end < 0) {
+            throw new IllegalArgumentException("Variant co-ordinate cannot be negative: " + this.toString());
+        }
+        if (end < start) {
+            throw new IllegalArgumentException("End position must be equal or greater than the start position");
+        }
+        this.start = start;
+        this.end = end;
     }
 
     public void setMainId(String mainId) {
@@ -228,6 +235,12 @@ public abstract class AbstractVariant implements IVariant {
 
     public Map<String, Set<String>> getHgvs() {
         return Collections.unmodifiableMap(hgvs);
+    }
+
+    public void renormalize(long newStart, long newEnd, String newReference, String newAlternate) {
+        this.setCoordinates(newStart, newEnd);
+        this.setReference(newReference);
+        this.setAlternate(newAlternate);
     }
 
     @Override
