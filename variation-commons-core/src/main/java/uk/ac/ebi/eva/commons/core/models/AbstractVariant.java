@@ -176,17 +176,20 @@ public abstract class AbstractVariant implements IVariant {
         return mainId;
     }
 
-    public void setReference(String reference) {
+    private void setReference(String reference) {
         this.reference = (reference != null) ? reference : "";
     }
 
-    public void setAlternate(String alternate) {
+    private void setAlternate(String alternate) {
         this.alternate = (alternate != null) ? alternate : "";
     }
 
     private void setCoordinates(long start, long end) {
-        if (start < 0 || end < 0) {
-            throw new IllegalArgumentException("Variant co-ordinate cannot be negative: " + this.toString());
+        if (start < 0) {
+            throw new IllegalArgumentException("Variant start coordinate cannot be negative");
+        }
+        if (end < 0) {
+            throw new IllegalArgumentException("Variant end coordinate cannot be negative");
         }
         if (end < start) {
             throw new IllegalArgumentException("End position must be equal or greater than the start position");
