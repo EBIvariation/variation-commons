@@ -39,9 +39,9 @@ public class AbstractVariantTest {
 
     @Test
     public void testNegativeStartCoordinateInRenormalization() throws IllegalArgumentException {
+        Variant variant = new Variant("1", 1, 1, "C", "T");
         exception.expect(IllegalArgumentException.class);
         exception.expectMessage(CoreMatchers.equalTo("Variant start coordinate cannot be negative"));
-        Variant variant = new Variant("1", 1, 1, "C", "T");
         variant.renormalize(-1, 1, "A", "T");
     }
 
@@ -54,9 +54,9 @@ public class AbstractVariantTest {
 
     @Test
     public void testNegativeEndCoordinateInRenormalization() throws IllegalArgumentException {
+        Variant variant = new Variant("1", 1, 1, "C", "T");
         exception.expect(IllegalArgumentException.class);
         exception.expectMessage(CoreMatchers.equalTo("Variant end coordinate cannot be negative"));
-        Variant variant = new Variant("1", 1, 1, "C", "T");
         variant.renormalize(1, -1, "A", "T");
     }
 
@@ -70,10 +70,10 @@ public class AbstractVariantTest {
 
     @Test
     public void testStartHigherThanEndInRenormalization() throws IllegalArgumentException {
+        Variant variant = new Variant("1", 1, 1, "C", "T");
         exception.expect(IllegalArgumentException.class);
         exception.expectMessage(
                 CoreMatchers.equalTo("End position must be equal or greater than the start position"));
-        Variant variant = new Variant("1", 1, 1, "C", "T");
         variant.renormalize(1, 0, "A", "T");
     }
 
