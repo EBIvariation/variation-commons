@@ -29,6 +29,14 @@ public abstract class AbstractVariant implements IVariant {
 
     public static final int SV_THRESHOLD = 50;
 
+    public static final String VARIANT_START_COORDINATE_CANNOT_BE_NEGATIVE =
+            "Variant start coordinate cannot be negative";
+
+    public static final String VARIANT_END_COORDINATE_CANNOT_BE_NEGATIVE = "Variant end coordinate cannot be negative";
+
+    public static final String END_POSITION_MUST_BE_EQUAL_OR_GREATER_THAN_THE_START_POSITION =
+            "End position must be equal or greater than the start position";
+
     /**
      * Chromosome where the genomic variation occurred.
      */
@@ -186,13 +194,13 @@ public abstract class AbstractVariant implements IVariant {
 
     private void setCoordinates(long start, long end) {
         if (start < 0) {
-            throw new IllegalArgumentException("Variant start coordinate cannot be negative");
+            throw new IllegalArgumentException(VARIANT_START_COORDINATE_CANNOT_BE_NEGATIVE);
         }
         if (end < 0) {
-            throw new IllegalArgumentException("Variant end coordinate cannot be negative");
+            throw new IllegalArgumentException(VARIANT_END_COORDINATE_CANNOT_BE_NEGATIVE);
         }
         if (end < start) {
-            throw new IllegalArgumentException("End position must be equal or greater than the start position");
+            throw new IllegalArgumentException(END_POSITION_MUST_BE_EQUAL_OR_GREATER_THAN_THE_START_POSITION);
         }
         this.start = start;
         this.end = end;

@@ -33,7 +33,7 @@ public class AbstractVariantTest {
     @Test
     public void testNegativeStartCoordinateInConstructor() throws IllegalArgumentException {
         exception.expect(IllegalArgumentException.class);
-        exception.expectMessage(CoreMatchers.equalTo("Variant start coordinate cannot be negative"));
+        exception.expectMessage(CoreMatchers.equalTo(AbstractVariant.VARIANT_START_COORDINATE_CANNOT_BE_NEGATIVE));
         new Variant("1", -1, 1, "C", "T");
     }
 
@@ -41,14 +41,14 @@ public class AbstractVariantTest {
     public void testNegativeStartCoordinateInRenormalization() throws IllegalArgumentException {
         Variant variant = new Variant("1", 1, 1, "C", "T");
         exception.expect(IllegalArgumentException.class);
-        exception.expectMessage(CoreMatchers.equalTo("Variant start coordinate cannot be negative"));
+        exception.expectMessage(CoreMatchers.equalTo(AbstractVariant.VARIANT_START_COORDINATE_CANNOT_BE_NEGATIVE));
         variant.renormalize(-1, 1, "A", "T");
     }
 
     @Test
     public void testNegativeEndCoordinateInConstructor() throws IllegalArgumentException {
         exception.expect(IllegalArgumentException.class);
-        exception.expectMessage(CoreMatchers.equalTo("Variant end coordinate cannot be negative"));
+        exception.expectMessage(CoreMatchers.equalTo(AbstractVariant.VARIANT_END_COORDINATE_CANNOT_BE_NEGATIVE));
         new Variant("1", 1, -1, "C", "T");
     }
 
@@ -56,7 +56,7 @@ public class AbstractVariantTest {
     public void testNegativeEndCoordinateInRenormalization() throws IllegalArgumentException {
         Variant variant = new Variant("1", 1, 1, "C", "T");
         exception.expect(IllegalArgumentException.class);
-        exception.expectMessage(CoreMatchers.equalTo("Variant end coordinate cannot be negative"));
+        exception.expectMessage(CoreMatchers.equalTo(AbstractVariant.VARIANT_END_COORDINATE_CANNOT_BE_NEGATIVE));
         variant.renormalize(1, -1, "A", "T");
     }
 
@@ -64,7 +64,7 @@ public class AbstractVariantTest {
     public void testStartHigherThanEndInConstructor() throws IllegalArgumentException {
         exception.expect(IllegalArgumentException.class);
         exception.expectMessage(
-                CoreMatchers.equalTo("End position must be equal or greater than the start position"));
+                CoreMatchers.equalTo(AbstractVariant.END_POSITION_MUST_BE_EQUAL_OR_GREATER_THAN_THE_START_POSITION));
         new Variant("1", 2, 1, "C", "T");
     }
 
@@ -73,7 +73,7 @@ public class AbstractVariantTest {
         Variant variant = new Variant("1", 1, 1, "C", "T");
         exception.expect(IllegalArgumentException.class);
         exception.expectMessage(
-                CoreMatchers.equalTo("End position must be equal or greater than the start position"));
+                CoreMatchers.equalTo(AbstractVariant.END_POSITION_MUST_BE_EQUAL_OR_GREATER_THAN_THE_START_POSITION));
         variant.renormalize(1, 0, "A", "T");
     }
 
@@ -98,9 +98,17 @@ public class AbstractVariantTest {
         assertEquals("C", variant.getReference());
         assertEquals("T", variant.getAlternate());
 
+        variant = new Variant("1", 1, 1, null, "T");
+        assertEquals("", variant.getReference());
+        assertEquals("T", variant.getAlternate());
+
         variant = new Variant("1", 1, 1, "", "T");
         assertEquals("", variant.getReference());
         assertEquals("T", variant.getAlternate());
+
+        variant = new Variant("1", 1, 1, "T", null);
+        assertEquals("T", variant.getReference());
+        assertEquals("", variant.getAlternate());
 
         variant = new Variant("1", 1, 1, "T", "");
         assertEquals("T", variant.getReference());
@@ -114,7 +122,17 @@ public class AbstractVariantTest {
         assertEquals("A", variant.getReference());
         assertEquals("AT", variant.getAlternate());
 
+        variant = new Variant("1", 1, 1, null, "T");
+        variant.renormalize(1, 2, "A", "AT");
+        assertEquals("A", variant.getReference());
+        assertEquals("AT", variant.getAlternate());
+
         variant = new Variant("1", 1, 1, "T", "");
+        variant.renormalize(1, 2, "AT", "A");
+        assertEquals("AT", variant.getReference());
+        assertEquals("A", variant.getAlternate());
+
+        variant = new Variant("1", 1, 1, "T", null);
         variant.renormalize(1, 2, "AT", "A");
         assertEquals("AT", variant.getReference());
         assertEquals("A", variant.getAlternate());
