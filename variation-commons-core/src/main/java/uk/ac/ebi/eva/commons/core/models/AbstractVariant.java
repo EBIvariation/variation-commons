@@ -29,12 +29,12 @@ public abstract class AbstractVariant implements IVariant {
 
     public static final int SV_THRESHOLD = 50;
 
-    public static final String VARIANT_START_COORDINATE_CANNOT_BE_NEGATIVE =
+    protected static final String VARIANT_START_COORDINATE_CANNOT_BE_NEGATIVE =
             "Variant start coordinate cannot be negative";
 
-    public static final String VARIANT_END_COORDINATE_CANNOT_BE_NEGATIVE = "Variant end coordinate cannot be negative";
+    protected static final String VARIANT_END_COORDINATE_CANNOT_BE_NEGATIVE = "Variant end coordinate cannot be negative";
 
-    public static final String END_POSITION_MUST_BE_EQUAL_OR_GREATER_THAN_THE_START_POSITION =
+    protected static final String END_POSITION_MUST_BE_EQUAL_OR_GREATER_THAN_THE_START_POSITION =
             "End position must be equal or greater than the start position";
 
     /**
