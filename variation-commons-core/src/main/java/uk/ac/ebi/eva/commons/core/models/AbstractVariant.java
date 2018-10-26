@@ -29,6 +29,14 @@ public abstract class AbstractVariant implements IVariant {
 
     public static final int SV_THRESHOLD = 50;
 
+    protected static final String VARIANT_START_COORDINATE_CANNOT_BE_NEGATIVE =
+            "Variant start coordinate cannot be negative";
+
+    protected static final String VARIANT_END_COORDINATE_CANNOT_BE_NEGATIVE = "Variant end coordinate cannot be negative";
+
+    protected static final String END_POSITION_MUST_BE_EQUAL_OR_GREATER_THAN_THE_START_POSITION =
+            "End position must be equal or greater than the start position";
+
     /**
      * Chromosome where the genomic variation occurred.
      */
@@ -44,7 +52,7 @@ public abstract class AbstractVariant implements IVariant {
      * deleted nucleotide is in position 6, the start is position 6</li>
      * </ul>
      */
-    private final long start;
+    private long start;
 
     /**
      * Position where the genomic variation ends.
@@ -56,17 +64,17 @@ public abstract class AbstractVariant implements IVariant {
      * deleted nucleotide is in position 9, the end is position 9</li>
      * </ul>
      */
-    private final long end;
+    private long end;
 
     /**
      * Reference allele.
      */
-    private final String reference;
+    private String reference;
 
     /**
      * Alternate allele.
      */
-    private final String alternate;
+    private String alternate;
 
     /**
      * Among all the identifiers used for this genomic variation, the one that is considered the most relevant.
@@ -107,18 +115,13 @@ public abstract class AbstractVariant implements IVariant {
     }
 
     public AbstractVariant(String chromosome, long start, long end, String reference, String alternate, String mainId) {
-        if (end < start) {
-            throw new IllegalArgumentException("End position must be equal or greater than the start position");
-        }
-
         if (chromosome == null || chromosome.trim().equals("")) {
             throw new IllegalArgumentException("Chromosome name cannot be empty");
         }
         this.chromosome = chromosome;
-        this.start = start;
-        this.end = end;
-        this.reference = (reference != null) ? reference : "";
-        this.alternate = (alternate != null) ? alternate : "";
+        this.setCoordinates(start, end);
+        this.setReference(reference);
+        this.setAlternate(alternate);
         this.mainId = mainId;
 
         this.ids = new HashSet<>();
@@ -181,6 +184,28 @@ public abstract class AbstractVariant implements IVariant {
         return mainId;
     }
 
+    private void setReference(String reference) {
+        this.reference = (reference != null) ? reference : "";
+    }
+
+    private void setAlternate(String alternate) {
+        this.alternate = (alternate != null) ? alternate : "";
+    }
+
+    private void setCoordinates(long start, long end) {
+        if (start < 0) {
+            throw new IllegalArgumentException(VARIANT_START_COORDINATE_CANNOT_BE_NEGATIVE);
+        }
+        if (end < 0) {
+            throw new IllegalArgumentException(VARIANT_END_COORDINATE_CANNOT_BE_NEGATIVE);
+        }
+        if (end < start) {
+            throw new IllegalArgumentException(END_POSITION_MUST_BE_EQUAL_OR_GREATER_THAN_THE_START_POSITION);
+        }
+        this.start = start;
+        this.end = end;
+    }
+
     public void setMainId(String mainId) {
         this.mainId = mainId;
     }
@@ -221,6 +246,12 @@ public abstract class AbstractVariant implements IVariant {
 
     public Map<String, Set<String>> getHgvs() {
         return Collections.unmodifiableMap(hgvs);
+    }
+
+    public void renormalize(long newStart, long newEnd, String newReference, String newAlternate) {
+        this.setCoordinates(newStart, newEnd);
+        this.setReference(newReference);
+        this.setAlternate(newAlternate);
     }
 
     @Override
