@@ -97,22 +97,6 @@ public class AbstractVariantTest {
         Variant variant = new Variant("1", 1, 1, "C", "T");
         assertEquals("C", variant.getReference());
         assertEquals("T", variant.getAlternate());
-
-        variant = new Variant("1", 1, 1, null, "T");
-        assertEquals("", variant.getReference());
-        assertEquals("T", variant.getAlternate());
-
-        variant = new Variant("1", 1, 1, "", "T");
-        assertEquals("", variant.getReference());
-        assertEquals("T", variant.getAlternate());
-
-        variant = new Variant("1", 1, 1, "T", null);
-        assertEquals("T", variant.getReference());
-        assertEquals("", variant.getAlternate());
-
-        variant = new Variant("1", 1, 1, "T", "");
-        assertEquals("T", variant.getReference());
-        assertEquals("", variant.getAlternate());
     }
 
     @Test
@@ -121,18 +105,63 @@ public class AbstractVariantTest {
         variant.renormalize(1, 2, "A", "AT");
         assertEquals("A", variant.getReference());
         assertEquals("AT", variant.getAlternate());
+    }
 
-        variant = new Variant("1", 1, 1, null, "T");
+    @Test
+    public void testNullRefAssignmentInConstructor() {
+        Variant variant = new Variant("1", 1, 1, null, "T");
+        assertEquals("", variant.getReference());
+        assertEquals("T", variant.getAlternate());
+    }
+
+    @Test
+    public void testNullRefAssignmentInRenormalization() {
+        Variant variant = new Variant("1", 1, 1, null, "T");
         variant.renormalize(1, 2, "A", "AT");
         assertEquals("A", variant.getReference());
         assertEquals("AT", variant.getAlternate());
+    }
 
-        variant = new Variant("1", 1, 1, "T", "");
+    @Test
+    public void testEmptyRefAssignmentInConstructor() {
+        Variant variant = new Variant("1", 1, 1, "", "T");
+        assertEquals("", variant.getReference());
+        assertEquals("T", variant.getAlternate());
+    }
+
+    @Test
+    public void testEmptyRefAssignmentInRenormalization() {
+        Variant variant = new Variant("1", 1, 1, "", "T");
+        variant.renormalize(1, 2, "A", "AT");
+        assertEquals("A", variant.getReference());
+        assertEquals("AT", variant.getAlternate());
+    }
+
+    @Test
+    public void testNullAltAssignmentInConstructor() {
+        Variant variant = new Variant("1", 1, 1, "T", null);
+        assertEquals("T", variant.getReference());
+        assertEquals("", variant.getAlternate());
+    }
+
+    @Test
+    public void testNullAltAssignmentInRenormalization() {
+        Variant variant = new Variant("1", 1, 1, "T", null);
         variant.renormalize(1, 2, "AT", "A");
         assertEquals("AT", variant.getReference());
         assertEquals("A", variant.getAlternate());
+    }
 
-        variant = new Variant("1", 1, 1, "T", null);
+    @Test
+    public void testEmptyAltAssignmentInConstructor() {
+        Variant variant = new Variant("1", 1, 1, "T", "");
+        assertEquals("T", variant.getReference());
+        assertEquals("", variant.getAlternate());
+    }
+
+    @Test
+    public void testEmptyAltAssignmentInRenormalization() {
+        Variant variant = new Variant("1", 1, 1, "T", "");
         variant.renormalize(1, 2, "AT", "A");
         assertEquals("AT", variant.getReference());
         assertEquals("A", variant.getAlternate());
