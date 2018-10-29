@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 EMBL - European Bioinformatics Institute
+ * Copyright 2018 EMBL - European Bioinformatics Institute
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,9 @@ package uk.ac.ebi.eva.commons.core.models;
 
 /**
  * Type of variation, per Sequence Ontology (SO) definitions, which depends mostly on its length.
- * See <a href="https://docs.google.com/spreadsheets/d/1YH8qDBDu7C6tqULJNCrGw8uBjdW3ZT5OjTkJzGNOZ4E/edit#gid=1433496764">Sequence Ontology definitions</a>.
+ * See <a href="https://docs.google.com/spreadsheets/d/1YH8qDBDu7C6tqULJNCrGw8uBjdW3ZT5OjTkJzGNOZ4E/edit#gid=1433496764">Sequence Ontology definitions</a>,
+ * <a href="http://www.sequenceontology.org/browser/current_release/term/SO:0001537">Structural variant</a>
+ * and <a href="http://www.sequenceontology.org/browser/current_release/term/SO:0001019">Copy number variation</a>.
  */
 public enum VariantType {
 
@@ -59,11 +61,11 @@ public enum VariantType {
      */
     MNV,
     /**
-     * Structural variations are large changes of more than SV_THRESHOLD nucleotides
+     * SO:0001537 - Structural variations are large changes of more than SV_THRESHOLD nucleotides
      */
     SV,
     /**
-     * Copy-number variations alter the number of copies of a region
+     * SO:0001019 - Copy-number variations alter the number of copies of a region
      */
     CNV
 }
