@@ -144,7 +144,7 @@ public abstract class AbstractVariant implements IVariant {
         } else if (this.reference.startsWith("(") && this.reference.endsWith(")")
                    || this.alternate.startsWith("(") && this.alternate.endsWith(")")) {
             return VariantType.SEQUENCE_ALTERATION;
-        } else if (reference.length() == alternate.length()) {
+        } else if (!reference.equals(".") && reference.length() == alternate.length()) {
             if (getLength() > 1) {
                 return VariantType.MNV;
             } else {

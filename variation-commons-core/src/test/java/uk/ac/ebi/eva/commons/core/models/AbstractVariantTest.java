@@ -135,4 +135,42 @@ public class AbstractVariantTest {
         assertEquals("", variant.getAlternate());
     }
 
+    @Test
+    public void testGetTypeNoVariant() {
+        assertEquals(VariantType.NO_ALTERNATE, new Variant("1", 1, 1, "T", ".").getType());
+    }
+
+    @Test
+    public void testGetTypeSequenceAlteration() {
+        assertEquals(VariantType.SEQUENCE_ALTERATION, new Variant("1", 1, 1, "", "(100 BP ins)").getType());
+        assertEquals(VariantType.SEQUENCE_ALTERATION, new Variant("1", 1, 1, "T", "(100 BP ins)").getType());
+        assertEquals(VariantType.SEQUENCE_ALTERATION, new Variant("1", 1, 1, "(100 BP del)", "").getType());
+        assertEquals(VariantType.SEQUENCE_ALTERATION, new Variant("1", 1, 1, "(100 BP del)", "T").getType());
+    }
+
+    @Test
+    public void testGetTypeMNV() {
+        assertEquals(VariantType.MNV, new Variant("1", 1, 1, "TAC", "CAT").getType());
+        assertEquals(VariantType.MNV, new Variant("1", 1, 1, "TACGGGG", "CATTTTT").getType());
+    }
+
+    @Test
+    public void testGetTypeSNV() {
+        assertEquals(VariantType.SNV, new Variant("1", 1, 1, "G", "T").getType());
+    }
+
+    @Test
+    public void testGetTypeIndel() {
+        assertEquals(VariantType.INDEL, new Variant("1", 1, 1, "T", "<DEL>").getType());
+        assertEquals(VariantType.INDEL, new Variant("1", 1, 1, "T", "<INS>").getType());
+        assertEquals(VariantType.INDEL, new Variant("1", 1, 1, ".", "T").getType());
+        assertEquals(VariantType.INDEL, new Variant("1", 1, 1, "", "T").getType());
+        assertEquals(VariantType.INDEL, new Variant("1", 1, 1, "GGGGCCC", "TGA").getType());
+    }
+
+    @Test
+    public void testGetTypeSV() {
+        assertEquals(VariantType.SV,
+                     new Variant("1", 1, 1, "T", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA").getType());
+    }
 }
