@@ -142,10 +142,10 @@ public class AbstractVariantTest {
 
     @Test
     public void testGetTypeSequenceAlteration() {
-        assertEquals(VariantType.SEQUENCE_ALTERATION, new Variant("1", 1, 1, "", "(100 BP ins)").getType());
-        assertEquals(VariantType.SEQUENCE_ALTERATION, new Variant("1", 1, 1, "T", "(100 BP ins)").getType());
-        assertEquals(VariantType.SEQUENCE_ALTERATION, new Variant("1", 1, 1, "(100 BP del)", "").getType());
-        assertEquals(VariantType.SEQUENCE_ALTERATION, new Variant("1", 1, 1, "(100 BP del)", "T").getType());
+        assertEquals(VariantType.SEQUENCE_ALTERATION, new Variant("1", 1, 1, "", "<100 BP ins>").getType());
+        assertEquals(VariantType.SEQUENCE_ALTERATION, new Variant("1", 1, 1, "T", "<100 BP ins>").getType());
+        assertEquals(VariantType.SEQUENCE_ALTERATION, new Variant("1", 1, 1, "<100 BP del>", "").getType());
+        assertEquals(VariantType.SEQUENCE_ALTERATION, new Variant("1", 1, 1, "<100 BP del>", "T").getType());
     }
 
     @Test
@@ -160,11 +160,20 @@ public class AbstractVariantTest {
     }
 
     @Test
+    public void testGetTypeInsertion() {
+        assertEquals(VariantType.INS, new Variant("1", 1, 1, "", "T").getType());
+        assertEquals(VariantType.INS, new Variant("1", 1, 1, "", "TAG").getType());
+    }
+
+    @Test
+    public void testGetTypeDeletion() {
+        assertEquals(VariantType.DEL, new Variant("1", 1, 1, "T", "").getType());
+        assertEquals(VariantType.DEL, new Variant("1", 1, 1, "TAG", "").getType());
+    }
+
+    @Test
     public void testGetTypeIndel() {
-        assertEquals(VariantType.INDEL, new Variant("1", 1, 1, "T", "<DEL>").getType());
-        assertEquals(VariantType.INDEL, new Variant("1", 1, 1, "T", "<INS>").getType());
         assertEquals(VariantType.INDEL, new Variant("1", 1, 1, ".", "T").getType());
-        assertEquals(VariantType.INDEL, new Variant("1", 1, 1, "", "T").getType());
         assertEquals(VariantType.INDEL, new Variant("1", 1, 1, "GGGGCCC", "TGA").getType());
     }
 

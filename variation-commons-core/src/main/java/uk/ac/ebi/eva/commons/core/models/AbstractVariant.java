@@ -141,8 +141,8 @@ public abstract class AbstractVariant implements IVariant {
     public VariantType getType() {
         if (this.alternate.equals(".")) {
             return VariantType.NO_ALTERNATE;
-        } else if (this.reference.startsWith("(") && this.reference.endsWith(")")
-                   || this.alternate.startsWith("(") && this.alternate.endsWith(")")) {
+        } else if (this.reference.startsWith("<") && this.reference.endsWith(">")
+                   || this.alternate.startsWith("<") && this.alternate.endsWith(">")) {
             return VariantType.SEQUENCE_ALTERATION;
         } else if (!reference.equals(".") && reference.length() == alternate.length()) {
             if (getLength() > 1) {
@@ -151,13 +151,20 @@ public abstract class AbstractVariant implements IVariant {
                 return VariantType.SNV;
             }
         } else if (getLength() <= SV_THRESHOLD) {
-            /*
-            * 3 possibilities for being an INDEL:
-            * - The value of the ALT field is <DEL> or <INS>
-            * - The REF allele is . but the ALT is not
-            * - The REF field length is different than the ALT field length
-            */
-            return VariantType.INDEL;
+            VariantCoreFields normalizedAlleles = new VariantCoreFields(chromosome, start, reference, alternate);
+            if (normalizedAlleles.getReference().isEmpty()) {
+                return VariantType.INS;
+            } else if (normalizedAlleles.getAlternate().isEmpty()) {
+                return VariantType.DEL;
+            } else {
+                /*
+                 * 2 possibilities for being an INDEL:
+                 * - The REF allele is . but the ALT is not
+                 * - The REF field length is different than the ALT field length and there are no context bases that
+                 *     normalization could remove to leave one of the alleles empty
+                 */
+                return VariantType.INDEL;
+            }
         } else {
             return VariantType.SV;
         }
