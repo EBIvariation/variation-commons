@@ -34,6 +34,13 @@
             <groupId>uk.ac.ebi.eva</groupId>
             <artifactId>variation-commons-core</artifactId>
             <version>0.7-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/test/resources/variation-commons-core-0.7-SNAPSHOT.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>uk.ac.ebi.eva</groupId>
+            <artifactId>biodata-models</artifactId>
+            <version>0.4.7</version>
         </dependency>
     </dependencies>
 

@@ -40,4 +40,5 @@ public interface IVariantSource {
 
     IVariantGlobalStats getStats();
 
+    void addMetadata(String key, Object value);
 }

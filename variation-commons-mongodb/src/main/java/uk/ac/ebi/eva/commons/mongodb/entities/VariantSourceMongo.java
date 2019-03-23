@@ -183,4 +183,9 @@ public class VariantSourceMongo implements IVariantSource {
         this.stats = stats;
     }
 
+    @Override
+    public void addMetadata(String key, Object value) {
+        this.metadata.put(key, value);
+    }
+
 }
