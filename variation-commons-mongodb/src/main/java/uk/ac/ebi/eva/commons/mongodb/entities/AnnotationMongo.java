@@ -216,7 +216,7 @@ public class AnnotationMongo implements IAnnotation {
         consequenceTypes.forEach(this::addConsequenceType);
     }
 
-    private void addConsequenceType(ConsequenceTypeMongo consequenceType) {
+    public void addConsequenceType(ConsequenceTypeMongo consequenceType) {
         consequenceTypes.add(consequenceType);
         xrefs.addAll(generateXrefsFromConsequenceType(consequenceType));
     }
