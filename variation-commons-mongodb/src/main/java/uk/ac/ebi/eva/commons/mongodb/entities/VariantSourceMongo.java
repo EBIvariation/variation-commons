@@ -55,6 +55,10 @@ public class VariantSourceMongo implements IVariantSource {
 
     public final static String METADATA_FIELD = "meta";
 
+    public final static String METADATA_FILEFORMAT_FIELD = "fileformat";
+
+    public final static String METADATA_HEADER_FIELD = "header";
+
     @Field(value = FILEID_FIELD)
     private String fileId;
 
@@ -84,6 +88,12 @@ public class VariantSourceMongo implements IVariantSource {
 
     @Field(value = STATISTICS_FIELD)
     private VariantGlobalStatsMongo stats;
+
+//    @Field(value = METADATA_FILEFORMAT_FIELD)
+//    private String MetadataFileformatField;
+
+//    @Field(value = METADATA_HEADER_FIELD)
+//    private String MetadataHeaderField;
 
     VariantSourceMongo() {
         //Empty spring constructor
@@ -183,4 +193,11 @@ public class VariantSourceMongo implements IVariantSource {
         this.stats = stats;
     }
 
+//    public String getMetadataFileformatField() {
+//        return MetadataFileformatField;
+//    }
+//
+//    public String getMetadataHeaderField() {
+//        return MetadataHeaderField;
+//    }
 }
