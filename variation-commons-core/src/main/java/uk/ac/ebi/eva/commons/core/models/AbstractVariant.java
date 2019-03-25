@@ -68,11 +68,17 @@ public abstract class AbstractVariant implements IVariant {
 
     /**
      * Reference allele.
+     *
+     * Should be normalized, i.e. no common bases should be present in both reference and alternate.
+     * Also, empty alleles are allowed.
      */
     private String reference;
 
     /**
      * Alternate allele.
+     *
+     * Should be normalized, i.e. no common bases should be present in both reference and alternate.
+     * Also, empty alleles are allowed.
      */
     private String alternate;
 
@@ -151,17 +157,16 @@ public abstract class AbstractVariant implements IVariant {
                 return VariantType.SNV;
             }
         } else if (getLength() <= SV_THRESHOLD) {
-            VariantCoreFields normalizedAlleles = new VariantCoreFields(chromosome, start, reference, alternate);
-            if (normalizedAlleles.getReference().isEmpty()) {
+            if (reference.isEmpty()) {
                 return VariantType.INS;
-            } else if (normalizedAlleles.getAlternate().isEmpty()) {
+            } else if (alternate.isEmpty()) {
                 return VariantType.DEL;
             } else {
                 /*
                  * 2 possibilities for being an INDEL:
                  * - The REF allele is . but the ALT is not
-                 * - The REF field length is different than the ALT field length and there are no context bases that
-                 *     normalization could remove to leave one of the alleles empty
+                 * - The REF field length is different than the ALT field length and there are no context bases ("no
+                 *      context bases" can be detected by checking if one of the alleles is empty)
                  */
                 return VariantType.INDEL;
             }
