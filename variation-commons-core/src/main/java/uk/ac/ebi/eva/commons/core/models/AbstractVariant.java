@@ -46,8 +46,8 @@ public abstract class AbstractVariant implements IVariant {
      * Position where the genomic variation starts.
      * <ul>
      * <li>SNVs have the same start and end position</li>
-     * <li>Insertions start in the last present position: if the first nucleotide
-     * is inserted in position 6, the start is position 5</li>
+     * <li>Insertions start in the position after the last unmodified nucleotide: if the first
+     * nucleotide is inserted between positions 6 and 7, the start is position 7</li>
      * <li>Deletions start in the first previously present position: if the first
      * deleted nucleotide is in position 6, the start is position 6</li>
      * </ul>
@@ -58,8 +58,8 @@ public abstract class AbstractVariant implements IVariant {
      * Position where the genomic variation ends.
      * <ul>
      * <li>SNVs have the same start and end positions</li>
-     * <li>Insertions end in the first present position: if the last nucleotide
-     * is inserted in position 9, the end is position 10</li>
+     * <li>Insertions end in the last inserted position: if 4 nucleotides are inserted between positions 5 and 6,
+     * the end is position 9</li>
      * <li>Deletions ends in the last previously present position: if the last
      * deleted nucleotide is in position 9, the end is position 9</li>
      * </ul>
@@ -68,11 +68,17 @@ public abstract class AbstractVariant implements IVariant {
 
     /**
      * Reference allele.
+     *
+     * Should be normalized, i.e. no common bases should be present in both reference and alternate.
+     * Also, empty alleles are allowed.
      */
     private String reference;
 
     /**
      * Alternate allele.
+     *
+     * Should be normalized, i.e. no common bases should be present in both reference and alternate.
+     * Also, empty alleles are allowed.
      */
     private String alternate;
 
@@ -141,20 +147,29 @@ public abstract class AbstractVariant implements IVariant {
     public VariantType getType() {
         if (this.alternate.equals(".")) {
             return VariantType.NO_ALTERNATE;
-        } else if (reference.length() == alternate.length()) {
+        } else if (this.reference.startsWith("<") && this.reference.endsWith(">")
+                   || this.alternate.startsWith("<") && this.alternate.endsWith(">")) {
+            return VariantType.SEQUENCE_ALTERATION;
+        } else if (!reference.equals(".") && reference.length() == alternate.length()) {
             if (getLength() > 1) {
                 return VariantType.MNV;
             } else {
                 return VariantType.SNV;
             }
         } else if (getLength() <= SV_THRESHOLD) {
-            /*
-            * 3 possibilities for being an INDEL:
-            * - The value of the ALT field is <DEL> or <INS>
-            * - The REF allele is . but the ALT is not
-            * - The REF field length is different than the ALT field length
-            */
-            return VariantType.INDEL;
+            if (reference.isEmpty()) {
+                return VariantType.INS;
+            } else if (alternate.isEmpty()) {
+                return VariantType.DEL;
+            } else {
+                /*
+                 * 2 possibilities for being an INDEL:
+                 * - The REF allele is . but the ALT is not
+                 * - The REF field length is different than the ALT field length and there are no context bases ("no
+                 *      context bases" can be detected by checking if one of the alleles is empty)
+                 */
+                return VariantType.INDEL;
+            }
         } else {
             return VariantType.SV;
         }
