@@ -46,8 +46,8 @@ public abstract class AbstractVariant implements IVariant {
      * Position where the genomic variation starts.
      * <ul>
      * <li>SNVs have the same start and end position</li>
-     * <li>Insertions start in the last present position: if the first nucleotide
-     * is inserted in position 6, the start is position 5</li>
+     * <li>Insertions start in the position after the last unmodified nucleotide: if the first
+     * nucleotide is inserted between positions 6 and 7, the start is position 7</li>
      * <li>Deletions start in the first previously present position: if the first
      * deleted nucleotide is in position 6, the start is position 6</li>
      * </ul>
@@ -58,8 +58,8 @@ public abstract class AbstractVariant implements IVariant {
      * Position where the genomic variation ends.
      * <ul>
      * <li>SNVs have the same start and end positions</li>
-     * <li>Insertions end in the first present position: if the last nucleotide
-     * is inserted in position 9, the end is position 10</li>
+     * <li>Insertions end in the last inserted position: if 4 nucleotides are inserted between positions 5 and 6,
+     * the end is position 9</li>
      * <li>Deletions ends in the last previously present position: if the last
      * deleted nucleotide is in position 9, the end is position 9</li>
      * </ul>
