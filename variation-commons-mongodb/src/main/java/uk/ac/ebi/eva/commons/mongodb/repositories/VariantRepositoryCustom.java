@@ -20,6 +20,8 @@ package uk.ac.ebi.eva.commons.mongodb.repositories;
 
 import org.springframework.data.domain.Pageable;
 import uk.ac.ebi.eva.commons.core.models.Region;
+import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
+import uk.ac.ebi.eva.commons.core.utils.BeaconAllelRequest;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.filter.VariantRepositoryFilter;
 
@@ -77,4 +79,5 @@ interface VariantRepositoryCustom {
      */
     Set<String> findDistinctChromosomes();
 
+    List<VariantMongo> findByChromosomeAndOtherBeaconFilters(BeaconAllelRequest request);
 }

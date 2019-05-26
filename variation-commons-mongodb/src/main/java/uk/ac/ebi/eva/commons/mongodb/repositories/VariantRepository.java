@@ -60,4 +60,5 @@ public interface VariantRepository extends MongoRepository<VariantMongo, String>
 
     @Query(value = "{'chr': ?0, 'files.sid': {$in : ?1}}}")
     VariantMongo findOneByChromosomeAndStudyInSorted(String chr, List<String> studyIds, Sort sort);
+
 }

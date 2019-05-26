@@ -7,7 +7,7 @@
     <groupId>uk.ac.ebi.eva</groupId>
     <artifactId>variation-commons</artifactId>
     <packaging>pom</packaging>
-    <version>0.7-SNAPSHOT</version>
+    <version>0.7.1-SNAPSHOT</version>
     <modules>
         <module>variation-commons-core</module>
         <module>variation-commons-mongodb</module>
