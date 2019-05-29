@@ -48,9 +48,6 @@ public interface VariantSourceRepository extends MongoRepository<VariantSourceMo
 
     long countByFileIdIn(List<String> fileIds);
 
-    @Query(value = "{'meta.reference': ?0}")
-    List<VariantSourceMongo> findByAssemblyId(String assemblyId);
-
     default Table<String, String, List<String>> findAndIndexSamples() {
         List<VariantSourceMongo> variantSourceEntities = findAll();
 

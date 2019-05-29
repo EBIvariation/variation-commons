@@ -17,7 +17,6 @@ package uk.ac.ebi.eva.commons.mongodb.services;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import org.apache.commons.validator.Var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,10 +27,9 @@ import uk.ac.ebi.eva.commons.core.models.IAnnotationMetadata;
 import uk.ac.ebi.eva.commons.core.models.Region;
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
-import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotation;
-import uk.ac.ebi.eva.commons.core.utils.BeaconAllelRequest;
+import uk.ac.ebi.eva.commons.core.utils.BeaconAlleleRequest;
 import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMetadataMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
@@ -271,10 +269,13 @@ public class VariantWithSamplesAndAnnotationsService {
         return variantRepository.findDistinctChromosomes();
     }
 
-    public List<VariantMongo> findByChromosomeAndOtherBeaconFilters(BeaconAllelRequest request){
+   /* public List<VariantMongo> findByChromosomeAndOtherBeaconFilters(BeaconAlleleRequest request){
         return variantRepository.findByChromosomeAndOtherBeaconFilters(request);
+    }*/
+
+    public List<VariantMongo> findbyChromosomeAndOtherBeaconFilters(String chr,List<VariantRepositoryFilter> filters){
+        return variantRepository.findByChromosomeAndOtherBeaconFilters(chr,filters);
     }
-    
     /**
      * Returns the lowest start coordinate for the variants in a given chromosome and study(ies)
      * @param chromosome Chromosome

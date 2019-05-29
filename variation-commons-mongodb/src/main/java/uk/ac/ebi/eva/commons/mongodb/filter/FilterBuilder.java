@@ -21,6 +21,7 @@ package uk.ac.ebi.eva.commons.mongodb.filter;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -43,6 +44,18 @@ public class FilterBuilder {
                    .build();
     }
 
+    public List<VariantRepositoryFilter> getBeaconFilters(Long start,Long startMin,Long startMax,Long end,Long endMin,Long endMax,String referenceBases,String alternateBases,VariantType variantType,List<String> studies){
+        return this.withStart(start)
+                .withStartMin(startMin)
+                .withStartMax(startMax)
+                .withEnd(end)
+                .withEndMin(endMin)
+                .withEndMax(endMax)
+                .withReferenceBases(referenceBases)
+                .withAlternates(alternateBases)
+                .withVariantTypes(variantType)
+                .withStudies(studies).build();
+    }
     public List<VariantRepositoryFilter> build() {
         return filters;
     }
@@ -96,6 +109,12 @@ public class FilterBuilder {
         return this;
     }
 
+    public FilterBuilder withVariantTypes(VariantType variantType){
+        if(variantType!=null){
+            filters.add(new VariantRepositoryTypeFilter(new ArrayList<>(Arrays.asList(variantType))));
+        }
+        return this;
+    }
     public FilterBuilder withAlternates(List<String> alternates) {
         if (alternates != null && !alternates.isEmpty()) {
             filters.add(new VariantRepositoryAlternateFilter(alternates));
@@ -103,4 +122,59 @@ public class FilterBuilder {
         return this;
     }
 
+    public FilterBuilder withAlternates(String alternate){
+        if(alternate!=null){
+            filters.add(new VariantRepositoryAlternateFilter(new ArrayList<>(Arrays.asList(alternate))));
+        }
+        return this;
+    }
+
+    public FilterBuilder withReferenceBases(String referenceBases){
+        if(referenceBases!=null){
+            filters.add(new VariantRepositoryReferenceBasesFilter(new ArrayList<>(Arrays.asList(referenceBases))));
+        }
+        return this;
+    }
+
+    public FilterBuilder withStart(Long start){
+        if(start!=null){
+            filters.add(new VariantRepositoryStartFilter(start,RelationalOperator.EQ));
+        }
+        return this;
+    }
+
+    public FilterBuilder withStartMin(Long startMin){
+        if(startMin!=null){
+            filters.add(new VariantRepositoryStartFilter(startMin,RelationalOperator.GTE));
+        }
+        return this;
+    }
+
+    public FilterBuilder withStartMax(Long startMax){
+        if(startMax!=null){
+            filters.add(new VariantRepositoryStartFilter(startMax,RelationalOperator.LTE));
+        }
+        return this;
+    }
+
+    public FilterBuilder withEnd(Long end){
+        if(end!=null){
+            filters.add(new VariantRepositoryEndFilter(end,RelationalOperator.EQ));
+        }
+        return this;
+    }
+
+    public FilterBuilder withEndMin(Long endMin){
+        if(endMin!=null){
+            filters.add(new VariantRepositoryEndFilter(endMin,RelationalOperator.GTE));
+        }
+        return this;
+    }
+
+    public FilterBuilder withEndMax(Long endMax){
+        if(endMax!=null){
+            filters.add(new VariantRepositoryEndFilter(endMax,RelationalOperator.LTE));
+        }
+        return this;
+    }
 }

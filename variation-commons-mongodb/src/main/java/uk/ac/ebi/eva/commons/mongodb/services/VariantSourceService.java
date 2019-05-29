@@ -43,7 +43,4 @@ public class VariantSourceService {
     public long countByFileIdIn(List<String> fileIds) {
         return repository.countByFileIdIn(fileIds);
     }
-
-    public List<VariantSourceMongo> findbyAssemblyId(String assemblyId){ return repository.findByAssemblyId(assemblyId); }
-
 }

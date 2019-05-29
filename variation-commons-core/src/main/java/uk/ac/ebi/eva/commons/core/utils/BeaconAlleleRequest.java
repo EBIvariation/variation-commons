@@ -1,24 +1,27 @@
 package uk.ac.ebi.eva.commons.core.utils;
 
 import java.util.List;
-
-public class BeaconAllelRequest {
-    String chr;
+public class BeaconAlleleRequest {
+    String referenceName;
     Long start;
-    String startMin;
-    String startMax;
+    Long startMin;
+    Long startMax;
     Long end;
-    String endMin;
-    String endMax;
+    Long endMin;
+    Long endMax;
     String referenceBases;
     String alternateBases;
     String variantType;
     String assemblyId;
-    List<String> studies;
+    List<String> datasetIds;
     String includeDatasetResponses;
 
-    public BeaconAllelRequest(String chr, Long start, String startMin, String startMax, Long end, String endMin, String endMax, String referenceBases, String alternateBases, String variantType, String assemblyId, List<String> studies, String includeDatasetResponses) {
-        this.chr = chr;
+    public BeaconAlleleRequest(){
+        ;
+    }
+
+    public BeaconAlleleRequest(String referenceName, Long start, Long startMin, Long startMax, Long end, Long endMin, Long endMax, String referenceBases, String alternateBases, String variantType, String assemblyId, List<String> datasetIds, String includeDatasetResponses) {
+        this.referenceName = referenceName;
         this.start = start;
         this.startMin = startMin;
         this.startMax = startMax;
@@ -29,16 +32,16 @@ public class BeaconAllelRequest {
         this.alternateBases = alternateBases;
         this.variantType = variantType;
         this.assemblyId = assemblyId;
-        this.studies = studies;
+        this.datasetIds = datasetIds;
         this.includeDatasetResponses = includeDatasetResponses;
     }
 
-    public String getChr() {
-        return chr;
+    public String getReferenceName() {
+        return referenceName;
     }
 
-    public void setChr(String chr) {
-        this.chr = chr;
+    public void setReferenceName(String referenceName) {
+        this.referenceName = referenceName;
     }
 
     public Long getStart() {
@@ -49,19 +52,19 @@ public class BeaconAllelRequest {
         this.start = start;
     }
 
-    public String getStartMin() {
+    public Long getStartMin() {
         return startMin;
     }
 
-    public void setStartMin(String startMin) {
+    public void setStartMin(Long startMin) {
         this.startMin = startMin;
     }
 
-    public String getStartMax() {
+    public Long getStartMax() {
         return startMax;
     }
 
-    public void setStartMax(String startMax) {
+    public void setStartMax(Long startMax) {
         this.startMax = startMax;
     }
 
@@ -73,19 +76,19 @@ public class BeaconAllelRequest {
         this.end = end;
     }
 
-    public String getEndMin() {
+    public Long getEndMin() {
         return endMin;
     }
 
-    public void setEndMin(String endMin) {
+    public void setEndMin(Long endMin) {
         this.endMin = endMin;
     }
 
-    public String getEndMax() {
+    public Long getEndMax() {
         return endMax;
     }
 
-    public void setEndMax(String endMax) {
+    public void setEndMax(Long endMax) {
         this.endMax = endMax;
     }
 
@@ -121,12 +124,12 @@ public class BeaconAllelRequest {
         this.assemblyId = assemblyId;
     }
 
-    public List<String> getStudies() {
-        return studies;
+    public List<String> getDatasetIds() {
+        return datasetIds;
     }
 
-    public void setStudies(List<String> studies) {
-        this.studies = studies;
+    public void setDatasetIds(List<String> datasetIds) {
+        this.datasetIds = datasetIds;
     }
 
     public String getIncludeDatasetResponses() {
