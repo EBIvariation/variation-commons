@@ -19,7 +19,6 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
 
 import java.util.Arrays;
