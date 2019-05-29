@@ -29,7 +29,6 @@ import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotation;
-import uk.ac.ebi.eva.commons.core.utils.BeaconAlleleRequest;
 import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMetadataMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
@@ -268,10 +267,6 @@ public class VariantWithSamplesAndAnnotationsService {
     public Set<String> findDistinctChromosomes() {
         return variantRepository.findDistinctChromosomes();
     }
-
-   /* public List<VariantMongo> findByChromosomeAndOtherBeaconFilters(BeaconAlleleRequest request){
-        return variantRepository.findByChromosomeAndOtherBeaconFilters(request);
-    }*/
 
     public List<VariantMongo> findbyChromosomeAndOtherBeaconFilters(String chr,List<VariantRepositoryFilter> filters){
         return variantRepository.findByChromosomeAndOtherBeaconFilters(chr,filters);

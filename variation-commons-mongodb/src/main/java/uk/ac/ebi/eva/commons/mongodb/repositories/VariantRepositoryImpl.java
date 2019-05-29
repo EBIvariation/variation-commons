@@ -107,47 +107,7 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
         return new HashSet<>(mongoTemplate.getCollection(mongoTemplate.getCollectionName(VariantMongo.class))
                 .distinct(VariantMongo.CHROMOSOME_FIELD));
     }
-    /*
-    @Override
-    public List<VariantMongo> findByChromosomeAndOtherBeaconFilters(BeaconAlleleRequest request){
 
-        Query query=new Query();
-
-        query.addCriteria(Criteria.where(VariantMongo.CHROMOSOME_FIELD).is(request.getReferenceName()));
-        query.addCriteria(Criteria.where(VariantMongo.REFERENCE_FIELD).is(request.getReferenceBases()));
-
-        if(request.getStart()!=null)
-            query.addCriteria(Criteria.where(VariantMongo.START_FIELD).is(request.getStart()));
-
-        if(request.getStartMin()!=null)
-            query.addCriteria(Criteria.where(VariantMongo.START_FIELD).gte(request.getStartMin()));
-
-        if(request.getStartMax()!=null)
-            query.addCriteria(Criteria.where(VariantMongo.START_FIELD).lte(request.getStartMax()));
-
-        if(request.getEnd()!=null)
-            query.addCriteria(Criteria.where(VariantMongo.END_FIELD).is(request.getEnd()));
-
-        if(request.getEndMin()!=null)
-            query.addCriteria(Criteria.where(VariantMongo.END_FIELD).gte(request.getEndMin()));
-
-        if(request.getEndMax()!=null)
-            query.addCriteria(Criteria.where(VariantMongo.END_FIELD).lte(request.getEndMax()));
-
-        if(request.getVariantType()!=null)
-            query.addCriteria(Criteria.where(VariantMongo.TYPE_FIELD).is(request.getVariantType()));
-
-        if(request.getAlternateBases()!=null)
-            query.addCriteria(Criteria.where(VariantMongo.ALTERNATE_FIELD).is(request.getAlternateBases()));
-        if(request.getDatasetIds()!=null) {
-            List<Criteria> studyCriteriaList = new ArrayList<>();
-            request.getDatasetIds().forEach(study -> studyCriteriaList.add(
-                    Criteria.where(VariantMongo.FILES_FIELD + ".sid").is(study)));
-            query.addCriteria(new Criteria().orOperator(studyCriteriaList.toArray(new Criteria[studyCriteriaList.size()])));
-        }
-        return mongoTemplate.find(query,VariantMongo.class);
-    }
-    */
     @Override
     public List<VariantMongo> findByChromosomeAndOtherBeaconFilters(String chr, List<VariantRepositoryFilter> filters) {
         Query query = new Query();

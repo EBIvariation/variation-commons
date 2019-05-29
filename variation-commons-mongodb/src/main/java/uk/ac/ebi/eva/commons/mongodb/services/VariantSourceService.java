@@ -43,4 +43,5 @@ public class VariantSourceService {
     public long countByFileIdIn(List<String> fileIds) {
         return repository.countByFileIdIn(fileIds);
     }
+
 }
