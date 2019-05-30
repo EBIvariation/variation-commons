@@ -271,6 +271,7 @@ public class VariantWithSamplesAndAnnotationsService {
     public List<VariantMongo> findbyChromosomeAndOtherBeaconFilters(String chr,List<VariantRepositoryFilter> filters){
         return variantRepository.findByChromosomeAndOtherBeaconFilters(chr,filters);
     }
+
     /**
      * Returns the lowest start coordinate for the variants in a given chromosome and study(ies)
      * @param chromosome Chromosome
