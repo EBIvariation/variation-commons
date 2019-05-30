@@ -77,5 +77,6 @@ interface VariantRepositoryCustom {
      */
     Set<String> findDistinctChromosomes();
 
-    List<VariantMongo> findByChromosomeAndOtherBeaconFilters(String chr,List<VariantRepositoryFilter> filters);
+    List<VariantMongo> findByChromosomeAndOtherBeaconFilters(String chr, List<VariantRepositoryFilter> filters);
+
 }
