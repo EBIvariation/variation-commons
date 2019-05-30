@@ -114,6 +114,7 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
         query.addCriteria(Criteria.where(VariantMongo.CHROMOSOME_FIELD).is(chr));
         return findByComplexFiltersHelper(query, filters, null, null);
     }
+
     private List<VariantMongo> findByComplexFiltersHelper(Query query, List<VariantRepositoryFilter> filters,
                                                           List<String> exclude, Pageable pageable) {
 
