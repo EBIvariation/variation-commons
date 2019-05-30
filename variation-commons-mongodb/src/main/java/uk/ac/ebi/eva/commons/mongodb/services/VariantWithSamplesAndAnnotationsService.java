@@ -268,7 +268,7 @@ public class VariantWithSamplesAndAnnotationsService {
         return variantRepository.findDistinctChromosomes();
     }
 
-    public List<VariantMongo> findbyChromosomeAndOtherBeaconFilters(String chr,List<VariantRepositoryFilter> filters){
+    public List<VariantMongo> findbyChromosomeAndOtherBeaconFilters(String chr, List<VariantRepositoryFilter> filters) {
         return variantRepository.findByChromosomeAndOtherBeaconFilters(chr, filters);
     }
 
