@@ -269,7 +269,7 @@ public class VariantWithSamplesAndAnnotationsService {
     }
 
     public List<VariantMongo> findbyChromosomeAndOtherBeaconFilters(String chr,List<VariantRepositoryFilter> filters){
-        return variantRepository.findByChromosomeAndOtherBeaconFilters(chr,filters);
+        return variantRepository.findByChromosomeAndOtherBeaconFilters(chr, filters);
     }
 
     /**
