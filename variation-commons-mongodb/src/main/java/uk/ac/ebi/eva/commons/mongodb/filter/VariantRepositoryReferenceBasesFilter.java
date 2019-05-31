@@ -26,7 +26,7 @@ public class VariantRepositoryReferenceBasesFilter extends VariantRepositoryFilt
 
     private static final String FIELD = VariantMongo.REFERENCE_FIELD;
 
-    public VariantRepositoryReferenceBasesFilter(List<String> referenceBases){
+    public VariantRepositoryReferenceBasesFilter(List<String> referenceBases) {
         super(FIELD,referenceBases,RelationalOperator.IN);
     }
 }
