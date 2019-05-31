@@ -37,29 +37,34 @@ public class FilterBuilder {
                                                                            List<String> studies,
                                                                            List<String> consequenceType) {
         return this.withMaf(maf)
-                .withPolyphenScore(polyphenScore)
-                .withSiftScore(siftScore)
-                .withStudies(studies)
-                .withConsequenceType(consequenceType)
-                .build();
+                   .withPolyphenScore(polyphenScore)
+                   .withSiftScore(siftScore)
+                   .withStudies(studies)
+                   .withConsequenceType(consequenceType)
+                   .build();
     }
 
-    public List<VariantRepositoryFilter> getBeaconFilters(Long start, Long startMin, Long startMax, Long end,
-                                                          Long endMin, Long endMax, String referenceBases,
-                                                          String alternateBases, VariantType variantType,
-                                                          List<String> studies) {
+    public List<VariantRepositoryFilter> getBeaconFilters(Long start,
+                                                          Long startMin,
+                                                          Long startMax,
+                                                          Long end,
+                                                          Long endMin,
+                                                          Long endMax,
+                                                          String referenceBases,
+                                                          String alternateBases,
+                                                          VariantType variantType,
+                                                          List<String> studies){
         return this.withStart(start)
-                .withStartMin(startMin)
-                .withStartMax(startMax)
-                .withEnd(end)
-                .withEndMin(endMin)
-                .withEndMax(endMax)
-                .withReferenceBases(referenceBases)
-                .withAlternates(alternateBases)
-                .withVariantTypes(variantType)
-                .withStudies(studies).build();
+                   .withStartMin(startMin)
+                   .withStartMax(startMax)
+                   .withEnd(end)
+                   .withEndMin(endMin)
+                   .withEndMax(endMax)
+                   .withReferenceBases(referenceBases)
+                   .withAlternates(alternateBases)
+                   .withVariantTypes(variantType)
+                   .withStudies(studies).build();
     }
-
     public List<VariantRepositoryFilter> build() {
         return filters;
     }
