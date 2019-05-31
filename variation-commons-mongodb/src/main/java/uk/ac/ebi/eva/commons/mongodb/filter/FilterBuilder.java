@@ -65,6 +65,7 @@ public class FilterBuilder {
                    .withVariantTypes(variantType)
                    .withStudies(studies).build();
     }
+
     public List<VariantRepositoryFilter> build() {
         return filters;
     }
