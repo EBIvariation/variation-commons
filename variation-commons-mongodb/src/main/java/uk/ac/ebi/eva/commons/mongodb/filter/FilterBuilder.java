@@ -53,7 +53,7 @@ public class FilterBuilder {
                                                           String referenceBases,
                                                           String alternateBases,
                                                           VariantType variantType,
-                                                          List<String> studies){
+                                                          List<String> studies) {
         return this.withStart(start)
                    .withStartMin(startMin)
                    .withStartMax(startMax)
