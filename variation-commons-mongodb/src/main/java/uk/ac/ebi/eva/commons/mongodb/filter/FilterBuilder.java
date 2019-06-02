@@ -18,6 +18,7 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.filter;
 
+import uk.ac.ebi.eva.commons.core.models.Region;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
 
 import java.util.ArrayList;
@@ -44,22 +45,14 @@ public class FilterBuilder {
                    .build();
     }
 
-    public List<VariantRepositoryFilter> getBeaconFilters(Long start,
-                                                          Long startMin,
-                                                          Long startMax,
-                                                          Long end,
-                                                          Long endMin,
-                                                          Long endMax,
+    public List<VariantRepositoryFilter> getBeaconFilters(Region startRange,
+                                                          Region endRange,
                                                           String referenceBases,
                                                           String alternateBases,
                                                           VariantType variantType,
                                                           List<String> studies) {
-        return this.withStart(start)
-                   .withStartMin(startMin)
-                   .withStartMax(startMax)
-                   .withEnd(end)
-                   .withEndMin(endMin)
-                   .withEndMax(endMax)
+        return this.withStart(startRange)
+                   .withEnd(endRange)
                    .withReferenceBases(referenceBases)
                    .withAlternates(alternateBases)
                    .withVariantTypes(variantType)
@@ -147,45 +140,24 @@ public class FilterBuilder {
         return this;
     }
 
-    public FilterBuilder withStart(Long start) {
-        if (start != null) {
-            filters.add(new VariantRepositoryStartFilter(start, RelationalOperator.EQ));
+    public FilterBuilder withStart(Region startRange) {
+        if (startRange.getStart() != null) {
+            filters.add(new VariantRepositoryStartFilter(startRange.getStart(), RelationalOperator.GTE));
+        }
+        if (startRange.getEnd() != null) {
+            filters.add(new VariantRepositoryStartFilter(startRange.getEnd(), RelationalOperator.LTE));
         }
         return this;
     }
 
-    public FilterBuilder withStartMin(Long startMin) {
-        if (startMin != null) {
-            filters.add(new VariantRepositoryStartFilter(startMin, RelationalOperator.GTE));
+    public FilterBuilder withEnd(Region endRange) {
+        if (endRange.getStart() != null) {
+            filters.add(new VariantRepositoryEndFilter(endRange.getStart(), RelationalOperator.GTE));
+        }
+        if (endRange.getEnd() != null) {
+            filters.add(new VariantRepositoryEndFilter(endRange.getEnd(), RelationalOperator.LTE));
         }
         return this;
     }
 
-    public FilterBuilder withStartMax(Long startMax) {
-        if (startMax != null) {
-            filters.add(new VariantRepositoryStartFilter(startMax, RelationalOperator.LTE));
-        }
-        return this;
-    }
-
-    public FilterBuilder withEnd(Long end) {
-        if (end != null) {
-            filters.add(new VariantRepositoryEndFilter(end, RelationalOperator.EQ));
-        }
-        return this;
-    }
-
-    public FilterBuilder withEndMin(Long endMin) {
-        if (endMin != null) {
-            filters.add(new VariantRepositoryEndFilter(endMin, RelationalOperator.GTE));
-        }
-        return this;
-    }
-
-    public FilterBuilder withEndMax(Long endMax) {
-        if (endMax != null) {
-            filters.add(new VariantRepositoryEndFilter(endMax, RelationalOperator.LTE));
-        }
-        return this;
-    }
 }
