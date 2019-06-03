@@ -125,6 +125,16 @@ public class VariantWithSamplesAndAnnotationServiceTest {
         assertEquals("T", variantMongoList.get(0).getAlternate());
         assertEquals(VariantType.SNV, variantMongoList.get(0).getType());
 
+
+        filters= new FilterBuilder().getBeaconFilters("A", "T", VariantType.SNV, null);
+        assertEquals(true,service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).size()> 0);
+
+        filters= new FilterBuilder().getBeaconFilters("A", "T", null, null);
+        assertEquals(true,service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).size()> 0);
+
+        filters= new FilterBuilder().getBeaconFilters("A", null, VariantType.SNV, null);
+        assertEquals(true,service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).size()> 0);
+
         endRange = new Region("9", new Long(10098), new Long(10098));
         assertEquals(false, service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).size() > 0);
 
