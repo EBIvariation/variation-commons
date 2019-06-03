@@ -114,20 +114,20 @@ public class VariantWithSamplesAndAnnotationServiceTest {
 
     @Test
     public void testfindbyRegionAndOtherBeaconFilters() {
-        Region startRange = new Region("9",new Long(10099),new Long(10099));
-        Region endRange = new Region("9", new Long(10099),new Long(10099));
-        List<VariantRepositoryFilter> filters = new FilterBuilder().getBeaconFilters("A", "T", VariantType.SNV,Arrays.asList("PRJEB5829"));
-        List<VariantMongo> variantMongoList =  service.findbyRegionAndOtherBeaconFilters(startRange,endRange,filters);
+        Region startRange = new Region("9", new Long(10099), new Long(10099));
+        Region endRange = new Region("9", new Long(10099), new Long(10099));
+        List<VariantRepositoryFilter> filters = new FilterBuilder().getBeaconFilters("A", "T", VariantType.SNV, Arrays.asList("PRJEB5829"));
+        List<VariantMongo> variantMongoList = service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters);
 
-        assertEquals(true,variantMongoList.size()>0);
-        assertEquals("9",variantMongoList.get(0).getChromosome());
-        assertEquals("A",variantMongoList.get(0).getReference());
-        assertEquals("T",variantMongoList.get(0).getAlternate());
-        assertEquals(VariantType.SNV,variantMongoList.get(0).getType());;
+        assertEquals(true, variantMongoList.size() > 0);
+        assertEquals("9", variantMongoList.get(0).getChromosome());
+        assertEquals("A", variantMongoList.get(0).getReference());
+        assertEquals("T", variantMongoList.get(0).getAlternate());
+        assertEquals(VariantType.SNV, variantMongoList.get(0).getType());
 
-        endRange = new Region("9", new Long(10098),new Long(10098));
-        assertEquals(false,service.findbyRegionAndOtherBeaconFilters(startRange,endRange,filters).size()>0);
-        
+        endRange = new Region("9", new Long(10098), new Long(10098));
+        assertEquals(false, service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).size() > 0);
+
     }
 
 }
