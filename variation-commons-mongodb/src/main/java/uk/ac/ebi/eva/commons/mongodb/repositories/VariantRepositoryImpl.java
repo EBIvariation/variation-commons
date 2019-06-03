@@ -109,9 +109,22 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
     }
 
     @Override
-    public List<VariantMongo> findByChromosomeAndOtherBeaconFilters(String chr, List<VariantRepositoryFilter> filters) {
+    public List<VariantMongo> findByRegionAndOtherBeaconFilters(Region startRange, Region endRange, List<VariantRepositoryFilter> filters) {
         Query query = new Query();
-        query.addCriteria(Criteria.where(VariantMongo.CHROMOSOME_FIELD).is(chr));
+        query.addCriteria(Criteria.where(VariantMongo.CHROMOSOME_FIELD).is(startRange.getChromosome()));
+
+        Criteria startCriteria = getRegionRangeCriteria(startRange, VariantMongo.START_FIELD);
+        Criteria endCriteria = getRegionRangeCriteria(endRange, VariantMongo.END_FIELD);
+        if (startCriteria != null) {
+            query.addCriteria(startCriteria);
+            System.out.println(startCriteria.getCriteriaObject());
+        }
+
+        if (endCriteria != null) {
+            query.addCriteria(endCriteria);
+            System.out.println(endCriteria.getCriteriaObject());
+        }
+
         return findByComplexFiltersHelper(query, filters, null, null);
     }
 
@@ -188,4 +201,17 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
         return new Criteria().orOperator(orRegionCriteria.toArray(new Criteria[orRegionCriteria.size()]));
     }
 
+    private Criteria getRegionRangeCriteria(Region region, String fileld) {
+        if (region.getStart() == null && region.getEnd() == null) {
+            return null;
+        }
+        Criteria criteria = Criteria.where(fileld);
+        if (region.getStart() != null) {
+            criteria.gte(region.getStart());
+        }
+        if (region.getEnd() != null) {
+            criteria.lte(region.getEnd());
+        }
+        return criteria;
+    }
 }

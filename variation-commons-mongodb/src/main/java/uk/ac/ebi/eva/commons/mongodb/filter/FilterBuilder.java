@@ -45,15 +45,11 @@ public class FilterBuilder {
                    .build();
     }
 
-    public List<VariantRepositoryFilter> getBeaconFilters(Region startRange,
-                                                          Region endRange,
-                                                          String referenceBases,
+    public List<VariantRepositoryFilter> getBeaconFilters(String referenceBases,
                                                           String alternateBases,
                                                           VariantType variantType,
                                                           List<String> studies) {
-        return this.withStart(startRange)
-                   .withEnd(endRange)
-                   .withReferenceBases(referenceBases)
+        return this.withReferenceBases(referenceBases)
                    .withAlternates(alternateBases)
                    .withVariantTypes(variantType)
                    .withStudies(studies).build();
@@ -136,26 +132,6 @@ public class FilterBuilder {
     public FilterBuilder withReferenceBases(String referenceBases) {
         if (referenceBases != null) {
             filters.add(new VariantRepositoryReferenceBasesFilter(new ArrayList<>(Arrays.asList(referenceBases))));
-        }
-        return this;
-    }
-
-    public FilterBuilder withStart(Region startRange) {
-        if (startRange.getStart() != null) {
-            filters.add(new VariantRepositoryStartFilter(startRange.getStart(), RelationalOperator.GTE));
-        }
-        if (startRange.getEnd() != null) {
-            filters.add(new VariantRepositoryStartFilter(startRange.getEnd(), RelationalOperator.LTE));
-        }
-        return this;
-    }
-
-    public FilterBuilder withEnd(Region endRange) {
-        if (endRange.getStart() != null) {
-            filters.add(new VariantRepositoryEndFilter(endRange.getStart(), RelationalOperator.GTE));
-        }
-        if (endRange.getEnd() != null) {
-            filters.add(new VariantRepositoryEndFilter(endRange.getEnd(), RelationalOperator.LTE));
         }
         return this;
     }

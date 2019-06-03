@@ -268,8 +268,8 @@ public class VariantWithSamplesAndAnnotationsService {
         return variantRepository.findDistinctChromosomes();
     }
 
-    public List<VariantMongo> findbyChromosomeAndOtherBeaconFilters(String chr, List<VariantRepositoryFilter> filters) {
-        return variantRepository.findByChromosomeAndOtherBeaconFilters(chr, filters);
+    public List<VariantMongo> findbyRegionAndOtherBeaconFilters(Region startRange, Region endRange, List<VariantRepositoryFilter> filters) {
+        return variantRepository.findByRegionAndOtherBeaconFilters(startRange, endRange, filters);
     }
 
     /**
