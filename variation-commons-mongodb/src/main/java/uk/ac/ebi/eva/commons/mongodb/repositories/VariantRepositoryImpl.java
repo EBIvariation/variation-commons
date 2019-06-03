@@ -118,12 +118,10 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
         Criteria endCriteria = getRegionRangeCriteria(endRange, VariantMongo.END_FIELD);
         if (startCriteria != null) {
             query.addCriteria(startCriteria);
-            System.out.println(startCriteria.getCriteriaObject());
         }
 
         if (endCriteria != null) {
             query.addCriteria(endCriteria);
-            System.out.println(endCriteria.getCriteriaObject());
         }
 
         return findByComplexFiltersHelper(query, filters, null, null);
