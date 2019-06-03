@@ -268,7 +268,8 @@ public class VariantWithSamplesAndAnnotationsService {
         return variantRepository.findDistinctChromosomes();
     }
 
-    public List<VariantMongo> findbyRegionAndOtherBeaconFilters(Region startRange, Region endRange, List<VariantRepositoryFilter> filters) {
+    public List<VariantMongo> findbyRegionAndOtherBeaconFilters(Region startRange, Region endRange,
+                                                                List<VariantRepositoryFilter> filters) {
         return variantRepository.findByRegionAndOtherBeaconFilters(startRange, endRange, filters);
     }
 

@@ -109,7 +109,8 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
     }
 
     @Override
-    public List<VariantMongo> findByRegionAndOtherBeaconFilters(Region startRange, Region endRange, List<VariantRepositoryFilter> filters) {
+    public List<VariantMongo> findByRegionAndOtherBeaconFilters(Region startRange, Region endRange,
+                                                                List<VariantRepositoryFilter> filters) {
         Query query = new Query();
         query.addCriteria(Criteria.where(VariantMongo.CHROMOSOME_FIELD).is(startRange.getChromosome()));
 
