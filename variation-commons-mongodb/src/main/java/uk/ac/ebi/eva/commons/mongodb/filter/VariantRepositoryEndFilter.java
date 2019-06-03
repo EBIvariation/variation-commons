@@ -24,7 +24,7 @@ public class VariantRepositoryEndFilter extends VariantRepositoryFilter<Long> {
 
     private static String FIELD = VariantMongo.END_FIELD;
 
-    public VariantRepositoryEndFilter(Long end,RelationalOperator relationalOperator) {
-        super(FIELD,end,relationalOperator);
+    public VariantRepositoryEndFilter(Long end, RelationalOperator relationalOperator) {
+        super(FIELD, end, relationalOperator);
     }
 }
