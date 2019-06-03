@@ -27,9 +27,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import uk.ac.ebi.eva.commons.core.models.Region;
+import uk.ac.ebi.eva.commons.core.models.VariantType;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotation;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
+import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
+import uk.ac.ebi.eva.commons.mongodb.filter.FilterBuilder;
+import uk.ac.ebi.eva.commons.mongodb.filter.VariantRepositoryFilter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,6 +110,24 @@ public class VariantWithSamplesAndAnnotationServiceTest {
     public void testCountTotalNumberOfVariants() {
         // the returned number of variants should be the same as the number of variants in the test database
         assertEquals(498, service.countTotalNumberOfVariants());
+    }
+
+    @Test
+    public void testfindbyRegionAndOtherBeaconFilters() {
+        Region startRange = new Region("9",new Long(10099),new Long(10099));
+        Region endRange = new Region("9", new Long(10099),new Long(10099));
+        List<VariantRepositoryFilter> filters = new FilterBuilder().getBeaconFilters("A", "T", VariantType.SNV,Arrays.asList("PRJEB5829"));
+        List<VariantMongo> variantMongoList =  service.findbyRegionAndOtherBeaconFilters(startRange,endRange,filters);
+
+        assertEquals(true,variantMongoList.size()>0);
+        assertEquals("9",variantMongoList.get(0).getChromosome());
+        assertEquals("A",variantMongoList.get(0).getReference());
+        assertEquals("T",variantMongoList.get(0).getAlternate());
+        assertEquals(VariantType.SNV,variantMongoList.get(0).getType());;
+
+        endRange = new Region("9", new Long(10098),new Long(10098));
+        assertEquals(false,service.findbyRegionAndOtherBeaconFilters(startRange,endRange,filters).size()>0);
+        
     }
 
 }
