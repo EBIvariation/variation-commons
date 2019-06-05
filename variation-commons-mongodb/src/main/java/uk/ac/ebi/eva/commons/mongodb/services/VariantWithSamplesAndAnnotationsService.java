@@ -32,6 +32,7 @@ import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotation;
 import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMetadataMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantStatisticsMongo;
 import uk.ac.ebi.eva.commons.mongodb.filter.VariantRepositoryFilter;
@@ -271,6 +272,14 @@ public class VariantWithSamplesAndAnnotationsService {
     public List<VariantMongo> findbyRegionAndOtherBeaconFilters(Region startRange, Region endRange,
                                                                 List<VariantRepositoryFilter> filters) {
         return variantRepository.findByRegionAndOtherBeaconFilters(startRange, endRange, filters);
+    }
+
+    public Set<String> findAllDistinctDatasetIds() {
+        return variantRepository.findAllDistinctDatasetIds();
+    }
+
+    public List<VariantSourceMongo> findAllForBeacon() {
+        return variantSourceRepository.findAllForBeacon();
     }
 
     /**

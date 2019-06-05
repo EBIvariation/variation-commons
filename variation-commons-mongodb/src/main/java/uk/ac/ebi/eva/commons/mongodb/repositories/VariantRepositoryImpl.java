@@ -127,6 +127,12 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
         return findByComplexFiltersHelper(query, filters, null, null);
     }
 
+    @Override
+    public Set<String> findAllDistinctDatasetIds() {
+        return new HashSet<>(mongoTemplate.getCollection(mongoTemplate.getCollectionName(VariantMongo.class))
+                .distinct(VariantMongo.FILES_FIELD + ".sid"));
+    }
+
     private List<VariantMongo> findByComplexFiltersHelper(Query query, List<VariantRepositoryFilter> filters,
                                                           List<String> exclude, Pageable pageable) {
 
