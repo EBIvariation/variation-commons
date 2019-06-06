@@ -274,16 +274,8 @@ public class VariantWithSamplesAndAnnotationsService {
         return variantRepository.findByRegionAndOtherBeaconFilters(startRange, endRange, filters);
     }
 
-    public Set<String> findAllDistinctDatasetIds() {
-        return variantRepository.findAllDistinctDatasetIds();
-    }
-
     public List<VariantSourceMongo> findAllForBeacon() {
         return variantSourceRepository.findAllForBeacon();
-    }
-
-    public Map<String, Integer> getGenotypeCount() {
-        return variantRepository.getGenotypeCount();
     }
 
     /**

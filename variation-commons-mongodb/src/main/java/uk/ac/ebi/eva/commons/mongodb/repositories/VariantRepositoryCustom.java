@@ -81,7 +81,4 @@ interface VariantRepositoryCustom {
     List<VariantMongo> findByRegionAndOtherBeaconFilters(Region startRange, Region endRange,
                                                          List<VariantRepositoryFilter> filters);
 
-    Set<String> findAllDistinctDatasetIds();
-
-    Map<String,Integer> getGenotypeCount();
 }
