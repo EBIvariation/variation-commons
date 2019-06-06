@@ -282,6 +282,10 @@ public class VariantWithSamplesAndAnnotationsService {
         return variantSourceRepository.findAllForBeacon();
     }
 
+    public Map<String, Integer> getGenotypeCount() {
+        return variantRepository.getGenotypeCount();
+    }
+
     /**
      * Returns the lowest start coordinate for the variants in a given chromosome and study(ies)
      * @param chromosome Chromosome

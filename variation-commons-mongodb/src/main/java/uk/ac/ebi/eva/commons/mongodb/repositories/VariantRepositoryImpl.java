@@ -18,6 +18,7 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.repositories;
 
+import com.mongodb.BasicDBObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,18 +27,17 @@ import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import uk.ac.ebi.eva.commons.core.models.Region;
+import uk.ac.ebi.eva.commons.core.models.genotype.GenoTypeCountMapper;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.AnnotationIndexMongo;
 import uk.ac.ebi.eva.commons.mongodb.filter.VariantRepositoryFilter;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Concrete implementation of the VariantRepository interface (relationship inferred by Spring),
@@ -131,6 +131,50 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
     public Set<String> findAllDistinctDatasetIds() {
         return new HashSet<>(mongoTemplate.getCollection(mongoTemplate.getCollectionName(VariantMongo.class))
                 .distinct(VariantMongo.FILES_FIELD + ".sid"));
+    }
+
+    @Override
+    public Map<String, Integer> getGenotypeCount() {
+
+
+        Map<String,Integer> mapper1=getGenotypeCountHelper("0|1");
+        Map<String,Integer> mapper2=getGenotypeCountHelper("1|0");
+        Map<String,Integer> genoTypeMapper=new HashMap<>();
+
+        mapper1.forEach((studyId,count)->{
+                genoTypeMapper.put(studyId,count+mapper2.get(studyId));
+        });
+
+        return genoTypeMapper;
+    }
+
+    private Map<String, Integer> getGenotypeCountHelper(String parameter) {
+
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.unwind("files"),
+                Aggregation.group("files.sid").addToSet("st.numGt."+parameter)
+                        .as("mapper"));
+
+        AggregationResults<GenoTypeCountMapper> genoTypeCountMappers=mongoTemplate.aggregate(aggregation,
+                mongoTemplate.getCollectionName(VariantMongo.class),GenoTypeCountMapper.class);
+
+        List<GenoTypeCountMapper> result = genoTypeCountMappers.getMappedResults();
+
+        Map<String,Integer> genoTypeMapper = new HashMap<>();
+
+        result.forEach(genotype -> {
+            genotype.setCount(0);
+            genotype.getMapper().forEach(mapper->{
+                Arrays.asList(mapper.substring(1,mapper.length()-2).split(",")).forEach(arrayval->{
+                    if(!arrayval.trim().equals("")){
+                        genotype.setCount(genotype.getCount()+Integer.parseInt(arrayval.trim()));
+                    }
+                });
+            });
+            genoTypeMapper.put(genotype.getStudyId(),genotype.getCount());
+        });
+
+        return genoTypeMapper;
     }
 
     private List<VariantMongo> findByComplexFiltersHelper(Query query, List<VariantRepositoryFilter> filters,

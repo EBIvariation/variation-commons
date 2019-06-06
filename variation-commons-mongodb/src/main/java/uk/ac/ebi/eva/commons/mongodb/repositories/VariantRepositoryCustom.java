@@ -24,6 +24,7 @@ import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.filter.VariantRepositoryFilter;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -81,4 +82,6 @@ interface VariantRepositoryCustom {
                                                          List<VariantRepositoryFilter> filters);
 
     Set<String> findAllDistinctDatasetIds();
+
+    Map<String,Integer> getGenotypeCount();
 }
