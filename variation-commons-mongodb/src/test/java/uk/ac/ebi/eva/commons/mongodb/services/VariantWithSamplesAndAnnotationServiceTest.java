@@ -116,7 +116,8 @@ public class VariantWithSamplesAndAnnotationServiceTest {
     public void testfindbyRegionAndOtherBeaconFilters() {
         Region startRange = new Region("9", 10099L, 10099L);
         Region endRange = new Region("9", 10099L, 10099L);
-List<VariantRepositoryFilter> filters = new FilterBuilder().getBeaconFilters("A", "T", VariantType.SNV, Collections.singletonList("PRJEB5829"));
+        List<VariantRepositoryFilter> filters = new FilterBuilder().getBeaconFilters("A", "T",
+                VariantType.SNV, Collections.singletonList("PRJEB5829"));
         List<VariantMongo> variantMongoList = service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters);
 
         assertTrue(variantMongoList.size() > 0);
@@ -140,5 +141,21 @@ List<VariantRepositoryFilter> filters = new FilterBuilder().getBeaconFilters("A"
 
     }
 
+    @Test
+    public void testfindbyRegionAndOtherBeaconFiltersWithRanges() {
+        Region startRange = new Region("11", 190238L, 190276L);
+        Region endRange = new Region("11", 190238L, 190276L);
+
+        List<VariantRepositoryFilter> filters = new FilterBuilder().getBeaconFilters("A", null, null, null);
+        assertEquals(2, service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).size());
+
+        filters= new FilterBuilder().getBeaconFilters("A", "T", null, null);
+        assertEquals(1, service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).size());
+        assertEquals("11_190238_A_T", service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).get(0).getId());
+
+        filters= new FilterBuilder().getBeaconFilters("A", "C", null, null);
+        assertEquals(1, service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).size());
+        assertEquals("11_190276_A_C", service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).get(0).getId());
+    }
 }
 
