@@ -274,7 +274,7 @@ public class VariantWithSamplesAndAnnotationsService {
         return variantRepository.findByRegionAndOtherBeaconFilters(startRange, endRange, filters);
     }
 
-    public List<VariantSourceMongo> findAllForBeacon() {
+    public List<VariantSourceMongo> findAllVariantSourcesForBeacon() {
         return variantSourceRepository.findAllForBeacon();
     }
 
