@@ -18,11 +18,10 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.filter;
 
-import uk.ac.ebi.eva.commons.core.models.Region;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -45,10 +44,8 @@ public class FilterBuilder {
                    .build();
     }
 
-    public List<VariantRepositoryFilter> getBeaconFilters(String referenceBases,
-                                                          String alternateBases,
-                                                          VariantType variantType,
-                                                          List<String> studies) {
+    public List<VariantRepositoryFilter> getBeaconFilters(String referenceBases, String alternateBases,
+                                                          VariantType variantType, List<String> studies) {
         return this.withReferenceBases(referenceBases)
                    .withAlternates(alternateBases)
                    .withVariantTypes(variantType)
@@ -110,7 +107,7 @@ public class FilterBuilder {
 
     public FilterBuilder withVariantTypes(VariantType variantType) {
         if (variantType != null) {
-            filters.add(new VariantRepositoryTypeFilter(new ArrayList<>(Arrays.asList(variantType))));
+            filters.add(new VariantRepositoryTypeFilter(Collections.singletonList(variantType)));
         }
         return this;
     }
@@ -124,14 +121,14 @@ public class FilterBuilder {
 
     public FilterBuilder withAlternates(String alternate) {
         if (alternate != null) {
-            filters.add(new VariantRepositoryAlternateFilter(new ArrayList<>(Arrays.asList(alternate))));
+            filters.add(new VariantRepositoryAlternateFilter(Collections.singletonList(alternate)));
         }
         return this;
     }
 
     public FilterBuilder withReferenceBases(String referenceBases) {
         if (referenceBases != null) {
-            filters.add(new VariantRepositoryReferenceBasesFilter(new ArrayList<>(Arrays.asList(referenceBases))));
+            filters.add(new VariantRepositoryReferenceBasesFilter(Collections.singletonList(referenceBases)));
         }
         return this;
     }
