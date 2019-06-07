@@ -54,6 +54,8 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
 
     private static final String GENE_IDS_FIELD = VariantMongo.ANNOTATION_FIELD + "." + AnnotationIndexMongo.XREFS_FIELD;
 
+    private Boolean pageable_flag = true;
+
     @Autowired
     public VariantRepositoryImpl(MongoDbFactory mongoDbFactory, MappingMongoConverter mappingMongoConverter) {
         mongoTemplate = new MongoTemplate(mongoDbFactory, mappingMongoConverter);
@@ -124,7 +126,10 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
             query.addCriteria(endCriteria);
         }
 
-        return findByComplexFiltersHelper(query, filters, null, null);
+        pageable_flag=false;
+        List<VariantMongo> variantMongoList = findByComplexFiltersHelper(query, filters, null, null);
+        pageable_flag=true;
+        return variantMongoList;
     }
 
     private List<VariantMongo> findByComplexFiltersHelper(Query query, List<VariantRepositoryFilter> filters,
@@ -138,7 +143,10 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
         query.with(new Sort(Sort.Direction.ASC, sortProperties));
 
         Pageable pageable1 = (pageable != null) ? pageable : new PageRequest(0, 10);
-        query.with(pageable1);
+
+        if(pageable_flag==true) {
+            query.with(pageable1);
+        }
 
         if (exclude != null && !exclude.isEmpty()) {
             exclude.forEach(e -> query.fields().exclude(e));
