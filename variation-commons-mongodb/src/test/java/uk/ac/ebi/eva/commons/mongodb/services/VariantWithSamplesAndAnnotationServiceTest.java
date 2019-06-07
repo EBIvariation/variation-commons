@@ -114,12 +114,12 @@ public class VariantWithSamplesAndAnnotationServiceTest {
 
     @Test
     public void testfindbyRegionAndOtherBeaconFilters() {
-        Region startRange = new Region("9", new Long(10099), new Long(10099));
-        Region endRange = new Region("9", new Long(10099), new Long(10099));
-        List<VariantRepositoryFilter> filters = new FilterBuilder().getBeaconFilters("A", "T", VariantType.SNV, Arrays.asList("PRJEB5829"));
+        Region startRange = new Region("9", 10099L, 10099L);
+        Region endRange = new Region("9", 10099L, 10099L);
+List<VariantRepositoryFilter> filters = new FilterBuilder().getBeaconFilters("A", "T", VariantType.SNV, Collections.singletonList("PRJEB5829"));
         List<VariantMongo> variantMongoList = service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters);
 
-        assertEquals(true, variantMongoList.size() > 0);
+        assertTrue(variantMongoList.size() > 0);
         assertEquals("9", variantMongoList.get(0).getChromosome());
         assertEquals("A", variantMongoList.get(0).getReference());
         assertEquals("T", variantMongoList.get(0).getAlternate());
@@ -127,16 +127,16 @@ public class VariantWithSamplesAndAnnotationServiceTest {
 
 
         filters= new FilterBuilder().getBeaconFilters("A", "T", VariantType.SNV, null);
-        assertEquals(true,service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).size()> 0);
+        assertTrue(service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).size() > 0);
 
         filters= new FilterBuilder().getBeaconFilters("A", "T", null, null);
-        assertEquals(true,service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).size()> 0);
+        assertTrue(service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).size() > 0);
 
         filters= new FilterBuilder().getBeaconFilters("A", null, VariantType.SNV, null);
-        assertEquals(true,service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).size()> 0);
+        assertTrue(service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).size() > 0);
 
-        endRange = new Region("9", new Long(10098), new Long(10098));
-        assertEquals(false, service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).size() > 0);
+        endRange = new Region("9", 10098L, 10098L);
+        assertFalse(service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).size() > 0);
 
     }
 
