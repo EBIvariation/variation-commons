@@ -54,7 +54,6 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
 
     private static final String GENE_IDS_FIELD = VariantMongo.ANNOTATION_FIELD + "." + AnnotationIndexMongo.XREFS_FIELD;
 
-    private Boolean pageable_flag = true;
 
     @Autowired
     public VariantRepositoryImpl(MongoDbFactory mongoDbFactory, MappingMongoConverter mappingMongoConverter) {
@@ -125,11 +124,15 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
         if (endCriteria != null) {
             query.addCriteria(endCriteria);
         }
-
-        pageable_flag=false;
-        List<VariantMongo> variantMongoList = findByComplexFiltersHelper(query, filters, null, null);
-        pageable_flag=true;
+        Pageable pageable = new PageRequest(0,(int)getVariantMongoTotalCountHelper());
+        List<VariantMongo> variantMongoList = findByComplexFiltersHelper(query, filters, null, pageable);
         return variantMongoList;
+    }
+
+    private long getVariantMongoTotalCountHelper() {
+        Aggregation aggregation = Aggregation.newAggregation(Aggregation.group().count().as("count"));
+        AggregationResults<VariantAggregationCount> aggregationResults= mongoTemplate.aggregate(aggregation,VariantMongo.class,VariantAggregationCount.class);
+        return aggregationResults.getMappedResults().get(0).getCount();
     }
 
     private List<VariantMongo> findByComplexFiltersHelper(Query query, List<VariantRepositoryFilter> filters,
@@ -144,9 +147,7 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
 
         Pageable pageable1 = (pageable != null) ? pageable : new PageRequest(0, 10);
 
-        if(pageable_flag==true) {
-            query.with(pageable1);
-        }
+        query.with(pageable1);
 
         if (exclude != null && !exclude.isEmpty()) {
             exclude.forEach(e -> query.fields().exclude(e));
