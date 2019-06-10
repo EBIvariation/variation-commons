@@ -25,8 +25,7 @@ public class BeaconError {
 
     private String errorMessage;
 
-    public BeaconError() {
-    }
+    public BeaconError() { }
 
     public BeaconError(int errorCode, String errorMessage) {
         this.errorCode = errorCode;

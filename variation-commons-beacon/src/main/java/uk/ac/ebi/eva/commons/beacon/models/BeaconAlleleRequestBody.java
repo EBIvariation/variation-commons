@@ -52,8 +52,7 @@ public class BeaconAlleleRequestBody {
 
     private String includeDatasetResponses;
 
-    public BeaconAlleleRequestBody() {
-    }
+    public BeaconAlleleRequestBody() { }
 
     public BeaconAlleleRequestBody(String referenceName, Long start, Long startMin, Long startMax, Long end,
                                    Long endMin, Long endMax, String referenceBases, String alternateBases,
