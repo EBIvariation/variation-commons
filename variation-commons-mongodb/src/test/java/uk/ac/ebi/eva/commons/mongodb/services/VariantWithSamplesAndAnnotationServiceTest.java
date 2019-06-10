@@ -134,20 +134,16 @@ public class VariantWithSamplesAndAnnotationServiceTest {
 
 
         filters = new FilterBuilder().getBeaconFilters("A", "T", VariantType.SNV, null);
-        assertTrue(service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters,
-                pageable).size() > 0);
+        assertTrue(service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters, pageable).size() > 0);
 
         filters = new FilterBuilder().getBeaconFilters("A", "T", null, null);
-        assertTrue(service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters,
-                pageable).size() > 0);
+        assertTrue(service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters, pageable).size() > 0);
 
         filters = new FilterBuilder().getBeaconFilters("A", null, VariantType.SNV, null);
-        assertTrue(service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters,
-                pageable).size() > 0);
+        assertTrue(service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters, pageable).size() > 0);
 
         endRange = new Region("9", 10098L, 10098L);
-        assertFalse(service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters,
-                pageable).size() > 0);
+        assertFalse(service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters, pageable).size() > 0);
 
     }
 
