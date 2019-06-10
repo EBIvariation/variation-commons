@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -116,9 +117,14 @@ public class VariantWithSamplesAndAnnotationServiceTest {
     public void testfindbyRegionAndOtherBeaconFilters() {
         Region startRange = new Region("9", 10099L, 10099L);
         Region endRange = new Region("9", 10099L, 10099L);
+
+        Pageable pageable = new PageRequest(0, 1000);
+
         List<VariantRepositoryFilter> filters = new FilterBuilder().getBeaconFilters("A", "T",
                 VariantType.SNV, Collections.singletonList("PRJEB5829"));
-        List<VariantMongo> variantMongoList = service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters);
+
+        List<VariantMongo> variantMongoList = service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters,
+                pageable);
 
         assertTrue(variantMongoList.size() > 0);
         assertEquals("9", variantMongoList.get(0).getChromosome());
@@ -127,17 +133,21 @@ public class VariantWithSamplesAndAnnotationServiceTest {
         assertEquals(VariantType.SNV, variantMongoList.get(0).getType());
 
 
-        filters= new FilterBuilder().getBeaconFilters("A", "T", VariantType.SNV, null);
-        assertTrue(service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).size() > 0);
+        filters = new FilterBuilder().getBeaconFilters("A", "T", VariantType.SNV, null);
+        assertTrue(service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters,
+                pageable).size() > 0);
 
-        filters= new FilterBuilder().getBeaconFilters("A", "T", null, null);
-        assertTrue(service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).size() > 0);
+        filters = new FilterBuilder().getBeaconFilters("A", "T", null, null);
+        assertTrue(service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters,
+                pageable).size() > 0);
 
-        filters= new FilterBuilder().getBeaconFilters("A", null, VariantType.SNV, null);
-        assertTrue(service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).size() > 0);
+        filters = new FilterBuilder().getBeaconFilters("A", null, VariantType.SNV, null);
+        assertTrue(service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters,
+                pageable).size() > 0);
 
         endRange = new Region("9", 10098L, 10098L);
-        assertFalse(service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).size() > 0);
+        assertFalse(service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters,
+                pageable).size() > 0);
 
     }
 
@@ -146,16 +156,28 @@ public class VariantWithSamplesAndAnnotationServiceTest {
         Region startRange = new Region("11", 190238L, 190276L);
         Region endRange = new Region("11", 190238L, 190276L);
 
+        Pageable pageable = new PageRequest(0, 1000);
+
         List<VariantRepositoryFilter> filters = new FilterBuilder().getBeaconFilters("A", null, null, null);
-        assertEquals(2, service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).size());
 
-        filters= new FilterBuilder().getBeaconFilters("A", "T", null, null);
-        assertEquals(1, service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).size());
-        assertEquals("11_190238_A_T", service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).get(0).getId());
+        assertEquals(2, service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters,
+                pageable).size());
 
-        filters= new FilterBuilder().getBeaconFilters("A", "C", null, null);
-        assertEquals(1, service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).size());
-        assertEquals("11_190276_A_C", service.findbyRegionAndOtherBeaconFilters(startRange, endRange, filters).get(0).getId());
+        filters = new FilterBuilder().getBeaconFilters("A", "T", null, null);
+
+        assertEquals(1, service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters,
+                pageable).size());
+
+        assertEquals("11_190238_A_T", service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters,
+                pageable).get(0).getId());
+
+        filters = new FilterBuilder().getBeaconFilters("A", "C", null, null);
+
+        assertEquals(1, service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters,
+                pageable).size());
+
+        assertEquals("11_190276_A_C", service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters,
+                pageable).get(0).getId());
     }
 }
 

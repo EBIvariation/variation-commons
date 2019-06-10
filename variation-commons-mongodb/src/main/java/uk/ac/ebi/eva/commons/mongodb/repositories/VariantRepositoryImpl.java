@@ -111,7 +111,8 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
 
     @Override
     public List<VariantMongo> findByRegionAndOtherBeaconFilters(Region startRange, Region endRange,
-                                                                List<VariantRepositoryFilter> filters) {
+                                                                List<VariantRepositoryFilter> filters,
+                                                                Pageable pageable) {
         Query query = new Query();
         query.addCriteria(Criteria.where(VariantMongo.CHROMOSOME_FIELD).is(startRange.getChromosome()));
 
@@ -124,11 +125,29 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
         if (endCriteria != null) {
             query.addCriteria(endCriteria);
         }
-        Pageable pageable = new PageRequest(0,(int)mongoTemplate.count(query,VariantMongo.class));
         List<VariantMongo> variantMongoList = findByComplexFiltersHelper(query, filters, null, pageable);
         return variantMongoList;
     }
 
+    @Override
+    public Long countByRegionAndOtherBeaconFilters(Region startRange, Region endRange,
+                                                   List<VariantRepositoryFilter> filters) {
+
+        Criteria criteria = Criteria.where(VariantMongo.CHROMOSOME_FIELD).is(startRange.getChromosome());
+        Criteria startCriteria = getRegionRangeCriteria(startRange, VariantMongo.START_FIELD);
+        Criteria endCriteria = getRegionRangeCriteria(endRange, VariantMongo.END_FIELD);
+
+        if (startCriteria != null) {
+            criteria = new Criteria().andOperator(criteria,startCriteria);
+        }
+
+        if (endCriteria != null) {
+            criteria = new Criteria().andOperator(criteria,endCriteria);
+        }
+
+        return countByComplexFiltersHelper(criteria,filters);
+
+    }
     private List<VariantMongo> findByComplexFiltersHelper(Query query, List<VariantRepositoryFilter> filters,
                                                           List<String> exclude, Pageable pageable) {
 
