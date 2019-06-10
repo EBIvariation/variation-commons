@@ -124,15 +124,9 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
         if (endCriteria != null) {
             query.addCriteria(endCriteria);
         }
-        Pageable pageable = new PageRequest(0,(int)getVariantMongoTotalCountHelper());
+        Pageable pageable = new PageRequest(0,(int)mongoTemplate.count(query,VariantMongo.class));
         List<VariantMongo> variantMongoList = findByComplexFiltersHelper(query, filters, null, pageable);
         return variantMongoList;
-    }
-
-    private long getVariantMongoTotalCountHelper() {
-        Aggregation aggregation = Aggregation.newAggregation(Aggregation.group().count().as("count"));
-        AggregationResults<VariantAggregationCount> aggregationResults= mongoTemplate.aggregate(aggregation,VariantMongo.class,VariantAggregationCount.class);
-        return aggregationResults.getMappedResults().get(0).getCount();
     }
 
     private List<VariantMongo> findByComplexFiltersHelper(Query query, List<VariantRepositoryFilter> filters,
