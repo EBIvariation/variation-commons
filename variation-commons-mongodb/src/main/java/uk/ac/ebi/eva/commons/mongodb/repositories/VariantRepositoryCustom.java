@@ -24,7 +24,6 @@ import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.filter.VariantRepositoryFilter;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -81,6 +80,5 @@ interface VariantRepositoryCustom {
     List<VariantMongo> findByRegionAndOtherBeaconFilters(Region startRange, Region endRange,
                                                          List<VariantRepositoryFilter> filters, Pageable pageable);
 
-    Long countByRegionAndOtherBeaconFilters(Region startRange, Region endRange,
-                                               List<VariantRepositoryFilter> filters);
+    Long countByRegionAndOtherBeaconFilters(Region startRange, Region endRange, List<VariantRepositoryFilter> filters);
 }

@@ -54,7 +54,6 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
 
     private static final String GENE_IDS_FIELD = VariantMongo.ANNOTATION_FIELD + "." + AnnotationIndexMongo.XREFS_FIELD;
 
-
     @Autowired
     public VariantRepositoryImpl(MongoDbFactory mongoDbFactory, MappingMongoConverter mappingMongoConverter) {
         mongoTemplate = new MongoTemplate(mongoDbFactory, mappingMongoConverter);
@@ -118,6 +117,7 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
 
         Criteria startCriteria = getRegionRangeCriteria(startRange, VariantMongo.START_FIELD);
         Criteria endCriteria = getRegionRangeCriteria(endRange, VariantMongo.END_FIELD);
+
         if (startCriteria != null) {
             query.addCriteria(startCriteria);
         }
@@ -132,7 +132,6 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
     @Override
     public Long countByRegionAndOtherBeaconFilters(Region startRange, Region endRange,
                                                    List<VariantRepositoryFilter> filters) {
-
         Criteria criteria = Criteria.where(VariantMongo.CHROMOSOME_FIELD).is(startRange.getChromosome());
         Criteria startCriteria = getRegionRangeCriteria(startRange, VariantMongo.START_FIELD);
         Criteria endCriteria = getRegionRangeCriteria(endRange, VariantMongo.END_FIELD);
@@ -146,8 +145,8 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
         }
 
         return countByComplexFiltersHelper(criteria,filters);
-
     }
+
     private List<VariantMongo> findByComplexFiltersHelper(Query query, List<VariantRepositoryFilter> filters,
                                                           List<String> exclude, Pageable pageable) {
 
@@ -159,7 +158,6 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
         query.with(new Sort(Sort.Direction.ASC, sortProperties));
 
         Pageable pageable1 = (pageable != null) ? pageable : new PageRequest(0, 10);
-
         query.with(pageable1);
 
         if (exclude != null && !exclude.isEmpty()) {
@@ -226,13 +224,17 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
         if (region.getStart() == null && region.getEnd() == null) {
             return null;
         }
+
         Criteria criteria = Criteria.where(fileld);
+
         if (region.getStart() != null) {
             criteria.gte(region.getStart());
         }
+
         if (region.getEnd() != null) {
             criteria.lte(region.getEnd());
         }
+
         return criteria;
     }
 }
