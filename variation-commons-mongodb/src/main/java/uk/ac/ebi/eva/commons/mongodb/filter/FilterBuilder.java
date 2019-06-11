@@ -21,6 +21,7 @@ package uk.ac.ebi.eva.commons.mongodb.filter;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -41,6 +42,14 @@ public class FilterBuilder {
                    .withStudies(studies)
                    .withConsequenceType(consequenceType)
                    .build();
+    }
+
+    public List<VariantRepositoryFilter> getBeaconFilters(String referenceBases, String alternateBases,
+                                                          VariantType variantType, List<String> studies) {
+        return this.withReferenceBases(referenceBases)
+                   .withAlternates(alternateBases)
+                   .withVariantTypes(variantType)
+                   .withStudies(studies).build();
     }
 
     public List<VariantRepositoryFilter> build() {
@@ -96,9 +105,30 @@ public class FilterBuilder {
         return this;
     }
 
+    public FilterBuilder withVariantTypes(VariantType variantType) {
+        if (variantType != null) {
+            filters.add(new VariantRepositoryTypeFilter(Collections.singletonList(variantType)));
+        }
+        return this;
+    }
+
     public FilterBuilder withAlternates(List<String> alternates) {
         if (alternates != null && !alternates.isEmpty()) {
             filters.add(new VariantRepositoryAlternateFilter(alternates));
+        }
+        return this;
+    }
+
+    public FilterBuilder withAlternates(String alternate) {
+        if (alternate != null) {
+            filters.add(new VariantRepositoryAlternateFilter(Collections.singletonList(alternate)));
+        }
+        return this;
+    }
+
+    public FilterBuilder withReferenceBases(String referenceBases) {
+        if (referenceBases != null) {
+            filters.add(new VariantRepositoryReferenceBasesFilter(Collections.singletonList(referenceBases)));
         }
         return this;
     }

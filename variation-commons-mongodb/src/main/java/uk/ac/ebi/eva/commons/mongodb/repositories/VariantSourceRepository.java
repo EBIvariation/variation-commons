@@ -19,6 +19,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
 
 import java.util.Arrays;
@@ -46,6 +47,9 @@ public interface VariantSourceRepository extends MongoRepository<VariantSourceMo
     List<VariantSourceMongo> findByFileIdIn(List<String> fileIds, Pageable pageable);
 
     long countByFileIdIn(List<String> fileIds);
+
+    @Query(value = "{}" , fields = "{sid:1,sname:1,date:1,st:1}")
+    List<VariantSourceMongo> findAllForBeacon();
 
     default Table<String, String, List<String>> findAndIndexSamples() {
         List<VariantSourceMongo> variantSourceEntities = findAll();

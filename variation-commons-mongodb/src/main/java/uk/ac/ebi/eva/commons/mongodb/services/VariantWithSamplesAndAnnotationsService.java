@@ -32,6 +32,7 @@ import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotation;
 import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMetadataMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
+import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantStatisticsMongo;
 import uk.ac.ebi.eva.commons.mongodb.filter.VariantRepositoryFilter;
@@ -266,6 +267,17 @@ public class VariantWithSamplesAndAnnotationsService {
 
     public Set<String> findDistinctChromosomes() {
         return variantRepository.findDistinctChromosomes();
+    }
+
+    public List<VariantMongo> findByRegionAndOtherBeaconFilters(Region startRange, Region endRange,
+                                                                List<VariantRepositoryFilter> filters,
+                                                                Pageable pageable) {
+        return variantRepository.findByRegionAndOtherBeaconFilters(startRange, endRange, filters, pageable);
+    }
+
+    public Long countByRegionAndOtherBeaconFilters(Region startRange, Region endRange,
+                                                      List<VariantRepositoryFilter> filters) {
+        return variantRepository.countByRegionAndOtherBeaconFilters(startRange, endRange, filters);
     }
 
     /**

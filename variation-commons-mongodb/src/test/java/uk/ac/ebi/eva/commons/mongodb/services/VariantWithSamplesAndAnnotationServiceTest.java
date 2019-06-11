@@ -23,13 +23,18 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import uk.ac.ebi.eva.commons.core.models.Region;
+import uk.ac.ebi.eva.commons.core.models.VariantType;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotation;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
+import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
+import uk.ac.ebi.eva.commons.mongodb.filter.FilterBuilder;
+import uk.ac.ebi.eva.commons.mongodb.filter.VariantRepositoryFilter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -108,5 +113,67 @@ public class VariantWithSamplesAndAnnotationServiceTest {
         assertEquals(498, service.countTotalNumberOfVariants());
     }
 
+    @Test
+    public void testfindbyRegionAndOtherBeaconFilters() {
+        Region startRange = new Region("9", 10099L, 10099L);
+        Region endRange = new Region("9", 10099L, 10099L);
+
+        Pageable pageable = new PageRequest(0, 1000);
+
+        List<VariantRepositoryFilter> filters = new FilterBuilder().getBeaconFilters("A", "T",
+                VariantType.SNV, Collections.singletonList("PRJEB5829"));
+
+        List<VariantMongo> variantMongoList = service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters,
+                pageable);
+
+        assertTrue(variantMongoList.size() > 0);
+        assertEquals("9", variantMongoList.get(0).getChromosome());
+        assertEquals("A", variantMongoList.get(0).getReference());
+        assertEquals("T", variantMongoList.get(0).getAlternate());
+        assertEquals(VariantType.SNV, variantMongoList.get(0).getType());
+
+
+        filters = new FilterBuilder().getBeaconFilters("A", "T", VariantType.SNV, null);
+        assertTrue(service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters, pageable).size() > 0);
+
+        filters = new FilterBuilder().getBeaconFilters("A", "T", null, null);
+        assertTrue(service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters, pageable).size() > 0);
+
+        filters = new FilterBuilder().getBeaconFilters("A", null, VariantType.SNV, null);
+        assertTrue(service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters, pageable).size() > 0);
+
+        endRange = new Region("9", 10098L, 10098L);
+        assertFalse(service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters, pageable).size() > 0);
+
+    }
+
+    @Test
+    public void testfindbyRegionAndOtherBeaconFiltersWithRanges() {
+        Region startRange = new Region("11", 190238L, 190276L);
+        Region endRange = new Region("11", 190238L, 190276L);
+
+        Pageable pageable = new PageRequest(0, 1000);
+
+        List<VariantRepositoryFilter> filters = new FilterBuilder().getBeaconFilters("A", null, null, null);
+
+        assertEquals(2, service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters,
+                pageable).size());
+
+        filters = new FilterBuilder().getBeaconFilters("A", "T", null, null);
+
+        assertEquals(1, service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters,
+                pageable).size());
+
+        assertEquals("11_190238_A_T", service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters,
+                pageable).get(0).getId());
+
+        filters = new FilterBuilder().getBeaconFilters("A", "C", null, null);
+
+        assertEquals(1, service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters,
+                pageable).size());
+
+        assertEquals("11_190276_A_C", service.findByRegionAndOtherBeaconFilters(startRange, endRange, filters,
+                pageable).get(0).getId());
+    }
 }
 

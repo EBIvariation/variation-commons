@@ -108,6 +108,45 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
                 .distinct(VariantMongo.CHROMOSOME_FIELD));
     }
 
+    @Override
+    public List<VariantMongo> findByRegionAndOtherBeaconFilters(Region startRange, Region endRange,
+                                                                List<VariantRepositoryFilter> filters,
+                                                                Pageable pageable) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where(VariantMongo.CHROMOSOME_FIELD).is(startRange.getChromosome()));
+
+        Criteria startCriteria = getRegionRangeCriteria(startRange, VariantMongo.START_FIELD);
+        Criteria endCriteria = getRegionRangeCriteria(endRange, VariantMongo.END_FIELD);
+
+        if (startCriteria != null) {
+            query.addCriteria(startCriteria);
+        }
+
+        if (endCriteria != null) {
+            query.addCriteria(endCriteria);
+        }
+        List<VariantMongo> variantMongoList = findByComplexFiltersHelper(query, filters, null, pageable);
+        return variantMongoList;
+    }
+
+    private Criteria getRegionRangeCriteria(Region region, String field) {
+        if (region.getStart() == null && region.getEnd() == null) {
+            return null;
+        }
+
+        Criteria criteria = Criteria.where(field);
+
+        if (region.getStart() != null) {
+            criteria.gte(region.getStart());
+        }
+
+        if (region.getEnd() != null) {
+            criteria.lte(region.getEnd());
+        }
+
+        return criteria;
+    }
+
     private List<VariantMongo> findByComplexFiltersHelper(Query query, List<VariantRepositoryFilter> filters,
                                                           List<String> exclude, Pageable pageable) {
 
@@ -135,6 +174,24 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
                 query.addCriteria(criteria);
             }
         }
+    }
+
+    @Override
+    public Long countByRegionAndOtherBeaconFilters(Region startRange, Region endRange,
+                                                   List<VariantRepositoryFilter> filters) {
+        Criteria criteria = Criteria.where(VariantMongo.CHROMOSOME_FIELD).is(startRange.getChromosome());
+        Criteria startCriteria = getRegionRangeCriteria(startRange, VariantMongo.START_FIELD);
+        Criteria endCriteria = getRegionRangeCriteria(endRange, VariantMongo.END_FIELD);
+
+        if (startCriteria != null) {
+            criteria = new Criteria().andOperator(criteria,startCriteria);
+        }
+
+        if (endCriteria != null) {
+            criteria = new Criteria().andOperator(criteria,endCriteria);
+        }
+
+        return countByComplexFiltersHelper(criteria,filters);
     }
 
     private long countByComplexFiltersHelper(Criteria existingCriteria, List<VariantRepositoryFilter> filters) {
@@ -180,5 +237,4 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
 
         return new Criteria().orOperator(orRegionCriteria.toArray(new Criteria[orRegionCriteria.size()]));
     }
-
 }
