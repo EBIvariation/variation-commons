@@ -22,6 +22,7 @@ package uk.ac.ebi.eva.commons.beacon.models;
 import java.util.Map;
 
 public interface BeaconOrganization {
+
     public String getId();
 
     public String getName();
