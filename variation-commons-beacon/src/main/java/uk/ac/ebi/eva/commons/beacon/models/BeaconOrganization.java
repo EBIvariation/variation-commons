@@ -28,9 +28,9 @@ public class BeaconOrganization {
     private static final String NAME = "European Variation Archive (EMBL-EBI)";
 
     private static final String DESCRIPTION = "EMBL-EBI makes the world's public biological data freely available " +
-            "to the " + "scientific community via a range of services and tools, performs basic research and " +
-            "provides " + "professional training in bioinformatics.The European Variation Archive is an open-access" +
-            " database of " + "all types of genetic variation data from all species.";
+            "to the scientific community via a range of services and tools, performs basic research and " +
+            "provides professional training in bioinformatics. The European Variation Archive is an open-access" +
+            " database of all types of genetic variation data from all species.";
 
     private static final String ADDRESS = "Wellcome Genome Campus, Hinxton, Cambridgeshire, CB10 1SD, United Kingdom";
 
