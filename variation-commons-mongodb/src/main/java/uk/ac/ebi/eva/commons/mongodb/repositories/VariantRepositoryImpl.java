@@ -129,12 +129,12 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
         return variantMongoList;
     }
 
-    private Criteria getRegionRangeCriteria(Region region, String fileld) {
+    private Criteria getRegionRangeCriteria(Region region, String field) {
         if (region.getStart() == null && region.getEnd() == null) {
             return null;
         }
 
-        Criteria criteria = Criteria.where(fileld);
+        Criteria criteria = Criteria.where(field);
 
         if (region.getStart() != null) {
             criteria.gte(region.getStart());

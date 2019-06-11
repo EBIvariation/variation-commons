@@ -44,7 +44,7 @@ public class VariantSourceService {
         return repository.countByFileIdIn(fileIds);
     }
 
-    public List<VariantSourceMongo> findAllVariantSourcesForBeacon() {
-        return repository.findAllForBeacon();
+    public List<VariantSource> findAllVariantSourcesForBeacon() {
+        return convert(repository.findAllForBeacon());
     }
 }
