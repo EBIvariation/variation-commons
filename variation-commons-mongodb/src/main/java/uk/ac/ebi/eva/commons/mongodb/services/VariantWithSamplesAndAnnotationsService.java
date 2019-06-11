@@ -280,10 +280,6 @@ public class VariantWithSamplesAndAnnotationsService {
         return variantRepository.countByRegionAndOtherBeaconFilters(startRange, endRange, filters);
     }
 
-    public List<VariantSourceMongo> findAllVariantSourcesForBeacon() {
-        return variantSourceRepository.findAllForBeacon();
-    }
-
     /**
      * Returns the lowest start coordinate for the variants in a given chromosome and study(ies)
      * @param chromosome Chromosome
