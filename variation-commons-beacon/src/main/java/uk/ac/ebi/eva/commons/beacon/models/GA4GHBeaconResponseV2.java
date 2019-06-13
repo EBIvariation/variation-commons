@@ -19,23 +19,29 @@
 
 package uk.ac.ebi.eva.commons.beacon.models;
 
-import java.util.Map;
+import java.util.List;
 
-public interface BeaconOrganization {
+public interface GA4GHBeaconResponseV2 {
 
     String getId();
 
     String getName();
 
+    String getApiVersion();
+
+    BeaconOrganization getOrganization();
+
     String getDescription();
 
-    String getAddress();
+    String getVersion();
 
     String getWelcomeUrl();
 
-    String getContactUrl();
+    String getAlternativeUrl();
 
-    String getLogoUrl();
+    String getCreateDateTime();
 
-    Map<String, String> getInfo();
+    String getUpdateDateTime();
+
+    List<BeaconDataset> getDatasets();
 }
