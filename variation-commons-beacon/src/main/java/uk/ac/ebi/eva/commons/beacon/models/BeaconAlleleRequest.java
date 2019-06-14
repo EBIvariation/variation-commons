@@ -21,7 +21,7 @@ package uk.ac.ebi.eva.commons.beacon.models;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-public class BeaconAlleleRequestBody {
+public class BeaconAlleleRequest {
 
     @NotNull(message = "referenceName should not be null")
     private String referenceName;
@@ -52,9 +52,9 @@ public class BeaconAlleleRequestBody {
 
     private String includeDatasetResponses;
 
-    public BeaconAlleleRequestBody() { }
+    public BeaconAlleleRequest() { }
 
-    public BeaconAlleleRequestBody(String referenceName, Long start, Long startMin, Long startMax, Long end,
+    public BeaconAlleleRequest(String referenceName, Long start, Long startMin, Long startMax, Long end,
                                    Long endMin, Long endMax, String referenceBases, String alternateBases,
                                    String variantType, String assemblyId, List<String> datasetIds,
                                    String includeDatasetResponses) {

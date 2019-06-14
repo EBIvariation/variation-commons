@@ -29,17 +29,17 @@ public class BeaconAlleleResponse {
 
     private Boolean exists;
 
-    private BeaconAlleleRequestBody alleleRequest;
+    private BeaconAlleleRequest alleleRequest;
 
     private BeaconError error;
 
-    private List<DatasetAlleleResponse> datasetAlleleResponses;
+    private List<BeaconDatasetAlleleResponse> datasetAlleleResponses;
 
     public BeaconAlleleResponse() { }
 
     public BeaconAlleleResponse(String beaconId, String apiVersion, Boolean exists,
-                                      BeaconAlleleRequestBody alleleRequest, BeaconError error,
-                                      List<DatasetAlleleResponse> datasetAlleleResponses) {
+                                      BeaconAlleleRequest alleleRequest, BeaconError error,
+                                      List<BeaconDatasetAlleleResponse> datasetAlleleResponses) {
         this.beaconId = beaconId;
         this.apiVersion = apiVersion;
         this.exists = exists;
@@ -72,11 +72,11 @@ public class BeaconAlleleResponse {
         this.exists = exists;
     }
 
-    public BeaconAlleleRequestBody getAlleleRequest() {
+    public BeaconAlleleRequest getAlleleRequest() {
         return alleleRequest;
     }
 
-    public void setAlleleRequest(BeaconAlleleRequestBody alleleRequest) {
+    public void setAlleleRequest(BeaconAlleleRequest alleleRequest) {
         this.alleleRequest = alleleRequest;
     }
 
@@ -88,11 +88,11 @@ public class BeaconAlleleResponse {
         this.error = error;
     }
 
-    public List<DatasetAlleleResponse> getDatasetAlleleResponses() {
+    public List<BeaconDatasetAlleleResponse> getDatasetAlleleResponses() {
         return datasetAlleleResponses;
     }
 
-    public void setDatasetAlleleResponses(List<DatasetAlleleResponse> datasetAlleleResponses) {
+    public void setDatasetAlleleResponses(List<BeaconDatasetAlleleResponse> datasetAlleleResponses) {
         this.datasetAlleleResponses = datasetAlleleResponses;
     }
 }

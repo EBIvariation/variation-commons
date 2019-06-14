@@ -21,7 +21,7 @@ package uk.ac.ebi.eva.commons.beacon.models;
 
 import java.util.HashMap;
 
-public class DatasetAlleleResponse {
+public class BeaconDatasetAlleleResponse {
 
     private String datasetId;
 
@@ -43,14 +43,14 @@ public class DatasetAlleleResponse {
 
     private HashMap<String,String> info;
 
-    public DatasetAlleleResponse() { }
+    public BeaconDatasetAlleleResponse() { }
 
-    public DatasetAlleleResponse(String datasetId, boolean exists) {
+    public BeaconDatasetAlleleResponse(String datasetId, boolean exists) {
         this.datasetId = datasetId;
         this.exists = exists;
     }
 
-    public DatasetAlleleResponse(String datasetId, boolean exists, BeaconError error, Float frequency,
+    public BeaconDatasetAlleleResponse(String datasetId, boolean exists, BeaconError error, Float frequency,
                                  Long variantCount, Long callCount, Long sampleCount, String note,
                                  String externalUrl, HashMap<String, String> info) {
         this.datasetId = datasetId;
