@@ -21,7 +21,7 @@ package uk.ac.ebi.eva.commons.beacon.models;
 
 import java.util.List;
 
-public interface GA4GHBeaconResponseV2 {
+public interface Beacon {
 
     String getId();
 

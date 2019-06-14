@@ -19,13 +19,9 @@
 
 package uk.ac.ebi.eva.commons.beacon.models;
 
-import uk.ac.ebi.eva.commons.beacon.models.BeaconAlleleRequestBody;
-import uk.ac.ebi.eva.commons.beacon.models.BeaconError;
-import uk.ac.ebi.eva.commons.beacon.models.DatasetAlleleResponse;
-
 import java.util.List;
 
-public class GA4GHBeaconQueryResponseV2 {
+public class BeaconAlleleResponse {
 
     private String beaconId;
 
@@ -39,9 +35,9 @@ public class GA4GHBeaconQueryResponseV2 {
 
     private List<DatasetAlleleResponse> datasetAlleleResponses;
 
-    public GA4GHBeaconQueryResponseV2() { }
+    public BeaconAlleleResponse() { }
 
-    public GA4GHBeaconQueryResponseV2(String beaconId, String apiVersion, Boolean exists,
+    public BeaconAlleleResponse(String beaconId, String apiVersion, Boolean exists,
                                       BeaconAlleleRequestBody alleleRequest, BeaconError error,
                                       List<DatasetAlleleResponse> datasetAlleleResponses) {
         this.beaconId = beaconId;
