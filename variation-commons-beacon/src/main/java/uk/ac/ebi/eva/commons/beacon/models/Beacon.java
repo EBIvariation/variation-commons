@@ -21,6 +21,9 @@ package uk.ac.ebi.eva.commons.beacon.models;
 
 import java.util.List;
 
+/**
+ * Metadata describing an instance of a Beacon.
+ */
 public interface Beacon {
 
     String getId();
