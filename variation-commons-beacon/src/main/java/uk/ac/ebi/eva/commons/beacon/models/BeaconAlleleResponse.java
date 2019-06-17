@@ -22,7 +22,7 @@ package uk.ac.ebi.eva.commons.beacon.models;
 import java.util.List;
 
 /*
- * Allele response as interpreted by the beacon
+ * Response entity to a beacon query for allele information.
  */
 public class BeaconAlleleResponse {
 
