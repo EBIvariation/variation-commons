@@ -21,8 +21,8 @@ package uk.ac.ebi.eva.commons.beacon.models;
 
 import java.util.HashMap;
 
-/*
- * Response enitity for getting information about the beacon
+/**
+ * Response containing information about an allele in a particular dataset, and made against a Beacon.
  */
 public class BeaconDatasetAlleleResponse {
 

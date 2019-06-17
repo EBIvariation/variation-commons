@@ -21,8 +21,8 @@ package uk.ac.ebi.eva.commons.beacon.models;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-/*
- * Allele request as interpreted by the beacon
+/**
+ * Allele request against a beacon. The allele must be mapped against a sequence in a genome, and a range can be optionally specified.
  */
 public class BeaconAlleleRequest {
 

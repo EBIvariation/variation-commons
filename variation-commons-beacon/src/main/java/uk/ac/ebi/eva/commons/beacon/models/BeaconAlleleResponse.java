@@ -21,8 +21,8 @@ package uk.ac.ebi.eva.commons.beacon.models;
 
 import java.util.List;
 
-/*
- * Response entity to a beacon query for allele information.
+/**
+ * Response to a query for information about an allele, made against a Beacon.
  */
 public class BeaconAlleleResponse {
 

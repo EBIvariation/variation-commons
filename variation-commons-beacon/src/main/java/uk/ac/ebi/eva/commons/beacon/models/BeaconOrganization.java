@@ -21,7 +21,7 @@ package uk.ac.ebi.eva.commons.beacon.models;
 
 import java.util.Map;
 
-/*
+/**
  * Metadata describing the organization owning the beacon
  */
 public interface BeaconOrganization {
