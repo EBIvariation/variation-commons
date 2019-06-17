@@ -21,7 +21,7 @@ package uk.ac.ebi.eva.commons.beacon.models;
 
 /**
  * Beacon-specific error. This should be non-null in exceptional situations only,
- * in which case exists has to be null
+ * in which case "exists" has to be null
  */
 public class BeaconError {
 
