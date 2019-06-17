@@ -21,6 +21,9 @@ package uk.ac.ebi.eva.commons.beacon.models;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+/*
+ * Allele request as interpreted by the beacon
+ */
 public class BeaconAlleleRequest {
 
     @NotNull(message = "referenceName should not be null")

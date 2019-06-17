@@ -21,6 +21,9 @@ package uk.ac.ebi.eva.commons.beacon.models;
 
 import java.util.List;
 
+/*
+ * Allele response as interpreted by the beacon
+ */
 public class BeaconAlleleResponse {
 
     private String beaconId;

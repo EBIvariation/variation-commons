@@ -21,6 +21,9 @@ package uk.ac.ebi.eva.commons.beacon.models;
 
 import java.util.Map;
 
+/*
+ * Organization owning the beacon
+ */
 public interface BeaconOrganization {
 
     String getId();
