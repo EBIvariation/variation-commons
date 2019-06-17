@@ -38,8 +38,8 @@ public class BeaconAlleleResponse {
     public BeaconAlleleResponse() { }
 
     public BeaconAlleleResponse(String beaconId, String apiVersion, Boolean exists,
-                                      BeaconAlleleRequest alleleRequest, BeaconError error,
-                                      List<BeaconDatasetAlleleResponse> datasetAlleleResponses) {
+                                BeaconAlleleRequest alleleRequest, BeaconError error,
+                                List<BeaconDatasetAlleleResponse> datasetAlleleResponses) {
         this.beaconId = beaconId;
         this.apiVersion = apiVersion;
         this.exists = exists;

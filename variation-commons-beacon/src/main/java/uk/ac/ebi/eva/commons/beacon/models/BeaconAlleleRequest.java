@@ -55,9 +55,9 @@ public class BeaconAlleleRequest {
     public BeaconAlleleRequest() { }
 
     public BeaconAlleleRequest(String referenceName, Long start, Long startMin, Long startMax, Long end,
-                                   Long endMin, Long endMax, String referenceBases, String alternateBases,
-                                   String variantType, String assemblyId, List<String> datasetIds,
-                                   String includeDatasetResponses) {
+                               Long endMin, Long endMax, String referenceBases, String alternateBases,
+                               String variantType, String assemblyId, List<String> datasetIds,
+                               String includeDatasetResponses) {
         this.referenceName = referenceName;
         this.start = start;
         this.startMin = startMin;

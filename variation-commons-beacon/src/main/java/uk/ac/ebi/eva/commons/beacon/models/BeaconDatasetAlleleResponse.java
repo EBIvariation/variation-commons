@@ -51,8 +51,8 @@ public class BeaconDatasetAlleleResponse {
     }
 
     public BeaconDatasetAlleleResponse(String datasetId, boolean exists, BeaconError error, Float frequency,
-                                 Long variantCount, Long callCount, Long sampleCount, String note,
-                                 String externalUrl, HashMap<String, String> info) {
+                                       Long variantCount, Long callCount, Long sampleCount, String note,
+                                       String externalUrl, HashMap<String, String> info) {
         this.datasetId = datasetId;
         this.exists = exists;
         this.error = error;
