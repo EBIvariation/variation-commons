@@ -21,21 +21,24 @@ package uk.ac.ebi.eva.commons.beacon.models;
 
 import java.util.Map;
 
+/**
+ * Metadata describing the organization owning the beacon
+ */
 public interface BeaconOrganization {
 
-    public String getId();
+    String getId();
 
-    public String getName();
+    String getName();
 
-    public String getDescription();
+    String getDescription();
 
-    public String getAddress();
+    String getAddress();
 
-    public String getWelcomeUrl();
+    String getWelcomeUrl();
 
-    public String getContactUrl();
+    String getContactUrl();
 
-    public String getLogoUrl();
+    String getLogoUrl();
 
-    public Map<String, String> getInfo();
+    Map<String, String> getInfo();
 }

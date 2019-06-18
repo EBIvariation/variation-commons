@@ -19,36 +19,32 @@
 
 package uk.ac.ebi.eva.commons.beacon.models;
 
+import java.util.List;
+
 /**
- * Beacon-specific error. This should be non-null in exceptional situations only,
- * in which case "exists" has to be null
+ * Metadata describing an instance of a Beacon.
  */
-public class BeaconError {
+public interface Beacon {
 
-    private int errorCode;
+    String getId();
 
-    private String errorMessage;
+    String getName();
 
-    public BeaconError() { }
+    String getApiVersion();
 
-    public BeaconError(int errorCode, String errorMessage) {
-        this.errorCode = errorCode;
-        this.errorMessage = errorMessage;
-    }
+    BeaconOrganization getOrganization();
 
-    public int getErrorCode() {
-        return errorCode;
-    }
+    String getDescription();
 
-    public void setErrorCode(int errorCode) {
-        this.errorCode = errorCode;
-    }
+    String getVersion();
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+    String getWelcomeUrl();
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
+    String getAlternativeUrl();
+
+    String getCreateDateTime();
+
+    String getUpdateDateTime();
+
+    List<BeaconDataset> getDatasets();
 }

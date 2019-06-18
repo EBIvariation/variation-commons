@@ -19,6 +19,9 @@
 
 package uk.ac.ebi.eva.commons.beacon.models;
 
+/**
+ * Metadata about a dataset available in a Beacon.
+ */
 public class BeaconDataset {
 
     private String id;

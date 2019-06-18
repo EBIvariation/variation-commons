@@ -21,9 +21,12 @@ package uk.ac.ebi.eva.commons.beacon.models;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-public class BeaconAlleleRequestBody {
+/**
+ * Allele request against a beacon. The allele must be mapped against a sequence in a genome, and a range can be optionally specified.
+ */
+public class BeaconAlleleRequest {
 
-    @NotNull(message = "referenceName should not be null")
+    @NotNull(message = "A reference name must be provided")
     private String referenceName;
 
     private Long start;
@@ -38,26 +41,26 @@ public class BeaconAlleleRequestBody {
 
     private Long endMax;
 
-    @NotNull(message = "referenceBases should not be null")
+    @NotNull(message = "ReferenceBases must be provided")
     private String referenceBases;
 
     private String alternateBases;
 
     private String variantType;
 
-    @NotNull(message = "assemblyId should not be null")
+    @NotNull(message = "An assemblyId must be provided")
     private String assemblyId;
 
     private List<String> datasetIds;
 
     private String includeDatasetResponses;
 
-    public BeaconAlleleRequestBody() { }
+    public BeaconAlleleRequest() { }
 
-    public BeaconAlleleRequestBody(String referenceName, Long start, Long startMin, Long startMax, Long end,
-                                   Long endMin, Long endMax, String referenceBases, String alternateBases,
-                                   String variantType, String assemblyId, List<String> datasetIds,
-                                   String includeDatasetResponses) {
+    public BeaconAlleleRequest(String referenceName, Long start, Long startMin, Long startMax, Long end,
+                               Long endMin, Long endMax, String referenceBases, String alternateBases,
+                               String variantType, String assemblyId, List<String> datasetIds,
+                               String includeDatasetResponses) {
         this.referenceName = referenceName;
         this.start = start;
         this.startMin = startMin;
