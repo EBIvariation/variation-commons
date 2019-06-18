@@ -41,14 +41,14 @@ public class BeaconAlleleRequest {
 
     private Long endMax;
 
-    @NotNull(message = "referenceBases should not be null")
+    @NotNull(message = "ReferenceBases must be provided")
     private String referenceBases;
 
     private String alternateBases;
 
     private String variantType;
 
-    @NotNull(message = "assemblyId should not be null")
+    @NotNull(message = "An assemblyId must be provided")
     private String assemblyId;
 
     private List<String> datasetIds;
