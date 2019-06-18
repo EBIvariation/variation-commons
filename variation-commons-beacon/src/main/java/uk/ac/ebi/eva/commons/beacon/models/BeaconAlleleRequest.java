@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class BeaconAlleleRequest {
 
-    @NotNull(message = "referenceName should not be null")
+    @NotNull(message = "A reference name must be provided")
     private String referenceName;
 
     private Long start;
