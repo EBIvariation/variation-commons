@@ -48,7 +48,7 @@ public interface VariantSourceRepository extends MongoRepository<VariantSourceMo
 
     long countByFileIdIn(List<String> fileIds);
 
-    @Query(value = "{}" , fields = "{sid:1,sname:1,date:1,st:1}")
+    @Query(value = "{}" , fields = "{sid:1,fid:1,sname:1,date:1,st:1}")
     List<VariantSourceMongo> findAllForBeacon();
 
     default Table<String, String, List<String>> findAndIndexSamples() {
