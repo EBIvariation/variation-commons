@@ -40,4 +40,8 @@ public class FeatureService {
     private List<FeatureCoordinates> convert(List<FeatureCoordinatesMongo> features) {
         return features.stream().map(FeatureCoordinates::new).collect(Collectors.toList());
     }
+
+    public List<FeatureCoordinates> findAllByGeneIds(List<String> geneIds) {
+        return convert(repository.findAllByIdIn(geneIds));
+    }
 }

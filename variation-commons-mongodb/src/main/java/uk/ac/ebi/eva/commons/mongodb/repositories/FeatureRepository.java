@@ -30,4 +30,5 @@ public interface FeatureRepository extends MongoRepository<FeatureCoordinatesMon
 
     List<FeatureCoordinatesMongo> findByIdOrName(String id, String name);
 
+    List<FeatureCoordinatesMongo> findAllByIdIn(List<String> ids);
 }
