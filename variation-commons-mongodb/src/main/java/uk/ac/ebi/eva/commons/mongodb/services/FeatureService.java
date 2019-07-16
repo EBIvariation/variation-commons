@@ -41,7 +41,7 @@ public class FeatureService {
         return features.stream().map(FeatureCoordinates::new).collect(Collectors.toList());
     }
 
-    public List<FeatureCoordinates> findAllByGeneIds(List<String> geneIds) {
-        return convert(repository.findAllByIdIn(geneIds));
+    public List<FeatureCoordinates> findAllByGeneIdsOrGeneNames(List<String> geneIds, List<String> geneNames) {
+        return convert(repository.findAllByIdInOrNameIn(geneIds, geneNames));
     }
 }
