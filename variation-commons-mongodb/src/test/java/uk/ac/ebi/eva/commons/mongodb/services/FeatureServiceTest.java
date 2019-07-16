@@ -25,34 +25,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import uk.ac.ebi.eva.commons.core.models.FeatureCoordinates;
-import uk.ac.ebi.eva.commons.core.models.Region;
-import uk.ac.ebi.eva.commons.core.models.VariantType;
-import uk.ac.ebi.eva.commons.mongodb.entities.FeatureCoordinatesMongo;
-import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
-import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
-import uk.ac.ebi.eva.commons.mongodb.filter.FilterBuilder;
-import uk.ac.ebi.eva.commons.mongodb.filter.VariantRepositoryFilter;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -70,9 +53,13 @@ public class FeatureServiceTest {
     @Autowired
     private FeatureService featureService;
 
-    private String GENE_ID_EXISTING = "ENSG00000223972";
+    private String GENE_ID_EXISTING1 = "ENSG00000223972";
 
-    private String GENE_NAME_EXISITNG = "DDX11L1";
+    private String GENE_NAME_EXISITNG1 = "DDX11L1";
+
+    private String GENE_ID_EXISTING2 = "ENST00000456328";
+
+    private String GENE_NAME_EXISITNG2 = "DDX11L1-202";
 
     private String GENE_ID_NON_EXISTING = "NonExisitngGeneId";
 
@@ -80,19 +67,18 @@ public class FeatureServiceTest {
 
     @Test
     public void testGeneIdorGeneName() {
-        List<FeatureCoordinates> featureCoordinates = findByIdOrNameHelper(GENE_ID_EXISTING,
-                GENE_NAME_EXISITNG);
-        assertEquals(GENE_ID_EXISTING, featureCoordinates.get(0).getId());
-        assertEquals(GENE_NAME_EXISITNG, featureCoordinates.get(0).getName());
+        List<FeatureCoordinates> featureCoordinates = findByIdOrNameHelper(GENE_ID_EXISTING1,
+                GENE_NAME_EXISITNG1);
+        assertEquals(GENE_ID_EXISTING1, featureCoordinates.get(0).getId());
+        assertEquals(GENE_NAME_EXISITNG1, featureCoordinates.get(0).getName());
 
-        featureCoordinates = findByIdOrNameHelper(GENE_ID_EXISTING, null);
-        assertEquals(GENE_ID_EXISTING, featureCoordinates.get(0).getId());
-        assertEquals(GENE_NAME_EXISITNG, featureCoordinates.get(0).getName());
+        featureCoordinates = findByIdOrNameHelper(GENE_ID_EXISTING1, null);
+        assertEquals(GENE_ID_EXISTING1, featureCoordinates.get(0).getId());
+        assertEquals(GENE_NAME_EXISITNG1, featureCoordinates.get(0).getName());
 
-        featureCoordinates = findByIdOrNameHelper(null, GENE_NAME_EXISITNG);
-        assertEquals(GENE_ID_EXISTING, featureCoordinates.get(0).getId());
-        assertEquals(GENE_NAME_EXISITNG, featureCoordinates.get(0).getName());
-
+        featureCoordinates = findByIdOrNameHelper(null, GENE_NAME_EXISITNG1);
+        assertEquals(GENE_ID_EXISTING1, featureCoordinates.get(0).getId());
+        assertEquals(GENE_NAME_EXISITNG1, featureCoordinates.get(0).getName());
     }
 
     private List<FeatureCoordinates> findByIdOrNameHelper(String id, String name) {
@@ -110,24 +96,22 @@ public class FeatureServiceTest {
 
         featureCoordinates = findByIdOrNameHelper(null, GENE_NAME_NON_EXISITNG);
         assertTrue(featureCoordinates.size() == 0);
-
     }
 
     @Test
     public void testGeneIdsorGeneNames() {
-        List<FeatureCoordinates> featureCoordinates = findByIdsOrNamesHelper(Arrays.asList(GENE_ID_EXISTING),
-                Arrays.asList(GENE_NAME_EXISITNG));
-        assertEquals(GENE_ID_EXISTING, featureCoordinates.get(0).getId());
-        assertEquals(GENE_NAME_EXISITNG, featureCoordinates.get(0).getName());
+        List<FeatureCoordinates> featureCoordinates = findByIdsOrNamesHelper(Arrays.asList(GENE_ID_EXISTING1),
+                Arrays.asList(GENE_NAME_EXISITNG1));
+        assertEquals(GENE_ID_EXISTING1, featureCoordinates.get(0).getId());
+        assertEquals(GENE_NAME_EXISITNG1, featureCoordinates.get(0).getName());
 
-        featureCoordinates = findByIdsOrNamesHelper(Arrays.asList(GENE_ID_EXISTING), null);
-        assertEquals(GENE_ID_EXISTING, featureCoordinates.get(0).getId());
-        assertEquals(GENE_NAME_EXISITNG, featureCoordinates.get(0).getName());
+        featureCoordinates = findByIdsOrNamesHelper(Arrays.asList(GENE_ID_EXISTING1), null);
+        assertEquals(GENE_ID_EXISTING1, featureCoordinates.get(0).getId());
+        assertEquals(GENE_NAME_EXISITNG1, featureCoordinates.get(0).getName());
 
-        featureCoordinates = findByIdsOrNamesHelper(null, Arrays.asList(GENE_NAME_EXISITNG));
-        assertEquals(GENE_ID_EXISTING, featureCoordinates.get(0).getId());
-        assertEquals(GENE_NAME_EXISITNG, featureCoordinates.get(0).getName());
-
+        featureCoordinates = findByIdsOrNamesHelper(null, Arrays.asList(GENE_NAME_EXISITNG1));
+        assertEquals(GENE_ID_EXISTING1, featureCoordinates.get(0).getId());
+        assertEquals(GENE_NAME_EXISITNG1, featureCoordinates.get(0).getName());
     }
 
     private List<FeatureCoordinates> findByIdsOrNamesHelper(List<String> id, List<String> name) {
@@ -135,7 +119,29 @@ public class FeatureServiceTest {
     }
 
     @Test
-    public void testGeneIdsorGeneNamesNonExisting() {
+    public void testGeneIdsOrGeneNamesForMultipleElements() {
+        List<FeatureCoordinates> featureCoordinates = findByIdsOrNamesHelper(Arrays.asList(GENE_ID_EXISTING1,
+                GENE_ID_EXISTING2), Arrays.asList(GENE_NAME_EXISITNG1, GENE_NAME_EXISITNG2));
+        assertEquals(GENE_ID_EXISTING1, featureCoordinates.get(0).getId());
+        assertEquals(GENE_NAME_EXISITNG1, featureCoordinates.get(0).getName());
+        assertEquals(GENE_ID_EXISTING2, featureCoordinates.get(1).getId());
+        assertEquals(GENE_NAME_EXISITNG2, featureCoordinates.get(1).getName());
+
+        featureCoordinates = findByIdsOrNamesHelper(Arrays.asList(GENE_ID_EXISTING1, GENE_ID_EXISTING2), null);
+        assertEquals(GENE_ID_EXISTING1, featureCoordinates.get(0).getId());
+        assertEquals(GENE_NAME_EXISITNG1, featureCoordinates.get(0).getName());
+        assertEquals(GENE_ID_EXISTING2, featureCoordinates.get(1).getId());
+        assertEquals(GENE_NAME_EXISITNG2, featureCoordinates.get(1).getName());
+
+        featureCoordinates = findByIdsOrNamesHelper(null, Arrays.asList(GENE_NAME_EXISITNG1, GENE_NAME_EXISITNG2));
+        assertEquals(GENE_ID_EXISTING1, featureCoordinates.get(0).getId());
+        assertEquals(GENE_NAME_EXISITNG1, featureCoordinates.get(0).getName());
+        assertEquals(GENE_ID_EXISTING2, featureCoordinates.get(1).getId());
+        assertEquals(GENE_NAME_EXISITNG2, featureCoordinates.get(1).getName());
+    }
+
+    @Test
+    public void testGeneIdsOrGeneNamesNonExisting() {
         List<FeatureCoordinates> featureCoordinates = findByIdsOrNamesHelper(Arrays.asList(GENE_ID_NON_EXISTING),
                 Arrays.asList(GENE_NAME_NON_EXISITNG));
         assertTrue(featureCoordinates.size() == 0);
@@ -145,6 +151,5 @@ public class FeatureServiceTest {
 
         featureCoordinates = findByIdsOrNamesHelper(null, Arrays.asList(GENE_NAME_NON_EXISITNG));
         assertTrue(featureCoordinates.size() == 0);
-
     }
 }
