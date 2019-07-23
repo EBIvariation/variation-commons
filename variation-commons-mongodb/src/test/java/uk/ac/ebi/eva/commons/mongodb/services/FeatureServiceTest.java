@@ -92,10 +92,10 @@ public class FeatureServiceTest {
         assertEquals(0, featureCoordinates.size());
 
         featureCoordinates = findByIdOrNameHelper(GENE_ID_NON_EXISTING, null);
-        assertTrue(featureCoordinates.size() == 0);
+        assertEquals(0, featureCoordinates.size());
 
         featureCoordinates = findByIdOrNameHelper(null, GENE_NAME_NON_EXISITNG);
-        assertTrue(featureCoordinates.size() == 0);
+        assertEquals(0, featureCoordinates.size());
     }
 
     @Test
@@ -144,12 +144,12 @@ public class FeatureServiceTest {
     public void testGeneIdsOrGeneNamesNonExisting() {
         List<FeatureCoordinates> featureCoordinates = findByIdsOrNamesHelper(Arrays.asList(GENE_ID_NON_EXISTING),
                 Arrays.asList(GENE_NAME_NON_EXISITNG));
-        assertTrue(featureCoordinates.size() == 0);
+        assertEquals(0, featureCoordinates.size());
 
         featureCoordinates = findByIdsOrNamesHelper(Arrays.asList(GENE_ID_NON_EXISTING), null);
-        assertTrue(featureCoordinates.size() == 0);
+        assertEquals(0, featureCoordinates.size());
 
         featureCoordinates = findByIdsOrNamesHelper(null, Arrays.asList(GENE_NAME_NON_EXISITNG));
-        assertTrue(featureCoordinates.size() == 0);
+        assertEquals(0, featureCoordinates.size());
     }
 }
