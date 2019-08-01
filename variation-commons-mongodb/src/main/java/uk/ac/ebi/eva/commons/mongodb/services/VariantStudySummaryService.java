@@ -33,6 +33,8 @@ import java.util.List;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.project;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.skip;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.limit;
 
 /**
  * Mongo persistence service that returns {@link VariantStudySummary} projections
@@ -58,6 +60,21 @@ public class VariantStudySummaryService {
         Aggregation aggregation = Aggregation.newAggregation(
                 groupAndCount(),
                 projectAndFlatten()
+        );
+
+        AggregationResults<VariantStudySummary> studies = mongoTemplate.aggregate(aggregation,
+                VariantSourceMongo.class,
+                VariantStudySummary.class);
+
+        return studies.getMappedResults();
+    }
+
+    public List<VariantStudySummary> findAll(int pageNumber, int pageSize) {
+        Aggregation aggregation = Aggregation.newAggregation(
+                groupAndCount(),
+                projectAndFlatten(),
+                skip(pageNumber*pageSize),
+                limit(pageSize)
         );
 
         AggregationResults<VariantStudySummary> studies = mongoTemplate.aggregate(aggregation,
