@@ -115,6 +115,11 @@ public class VariantStudySummaryServiceTest {
     }
 
     @Test
+    public void testCountStudies() {
+        assertEquals(EXPECTED_UNIQUE_STUDIES_COUNT, service.countAll());
+    }
+
+    @Test
     public void testListStudiesByFromDate() throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         List<VariantStudySummary> allStudies = service.findByFromDate(dateFormat.parse("2015-12-31"));

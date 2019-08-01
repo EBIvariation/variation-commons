@@ -84,6 +84,23 @@ public class VariantStudySummaryService {
         return studies.getMappedResults();
     }
 
+    public int countAll() {
+        Aggregation aggregation = Aggregation.newAggregation(
+                groupAndCount(),
+                group().count().as("count")
+        );
+        return mongoTemplate.aggregate(aggregation, VariantSourceMongo.class, CountAggregation.class)
+                .getMappedResults().get(0).getCount();
+    }
+
+    private class CountAggregation {
+        int count;
+
+        public int getCount() {
+            return count;
+        }
+    }
+
     /**
      * Group by both "studyName" and "studyId", and count the documents in the group into an accumulator field
      * "filesCount". The idea behind grouping by 2 fields is to include both fields without further projections or
