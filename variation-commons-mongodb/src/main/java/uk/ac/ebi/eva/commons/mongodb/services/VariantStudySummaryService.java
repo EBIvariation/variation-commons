@@ -89,8 +89,12 @@ public class VariantStudySummaryService {
                 groupAndCount(),
                 group().count().as("count")
         );
-        return mongoTemplate.aggregate(aggregation, VariantSourceMongo.class, CountAggregation.class)
-                .getMappedResults().get(0).getCount();
+        List<CountAggregation> countAggregations = mongoTemplate.aggregate(aggregation, VariantSourceMongo.class,
+                CountAggregation.class).getMappedResults();
+        if(countAggregations.isEmpty())
+            return 0;
+        else
+            return countAggregations.get(0).getCount();
     }
 
     private class CountAggregation {
