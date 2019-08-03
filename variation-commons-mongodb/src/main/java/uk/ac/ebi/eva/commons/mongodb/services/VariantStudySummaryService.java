@@ -91,10 +91,10 @@ public class VariantStudySummaryService {
         );
         List<CountAggregation> countAggregations = mongoTemplate.aggregate(aggregation, VariantSourceMongo.class,
                 CountAggregation.class).getMappedResults();
-        if(countAggregations.isEmpty())
+        if (countAggregations.isEmpty()) {
             return 0;
-        else
-            return countAggregations.get(0).getCount();
+        }
+        return countAggregations.get(0).getCount();
     }
 
     private class CountAggregation {
