@@ -60,9 +60,9 @@ public class VariantStudySummaryServiceTest {
 
     private static final int EXPECTED_UNIQUE_STUDIES_COUNT = 18;
 
-    private static final int FIRST_PAGE_NUMBER = 0;
-    private static final int SECOND_PAGE_NUMBER = 1;
-    private static final int PAGE_SIZE = 10;
+    private static final long FIRST_PAGE_NUMBER = 0;
+    private static final long SECOND_PAGE_NUMBER = 1;
+    private static final long PAGE_SIZE = 10;
     private static final int FIRST_PAGE_EXPECTED_UNIQUE_STUDIES_COUNT = 10;
     private static final int SECOND_PAGE_EXPECTED_UNIQUE_STUDIES_COUNT = 8;
 

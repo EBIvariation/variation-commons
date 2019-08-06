@@ -69,11 +69,11 @@ public class VariantStudySummaryService {
         return studies.getMappedResults();
     }
 
-    public List<VariantStudySummary> findAll(int pageNumber, int pageSize) {
+    public List<VariantStudySummary> findAll(long pageNumber, long pageSize) {
         Aggregation aggregation = Aggregation.newAggregation(
                 groupAndCount(),
                 projectAndFlatten(),
-                skip((long)(pageNumber*pageSize)),
+                skip(pageNumber*pageSize),
                 limit(pageSize)
         );
 
