@@ -73,7 +73,7 @@ public class VariantStudySummaryService {
         Aggregation aggregation = Aggregation.newAggregation(
                 groupAndCount(),
                 projectAndFlatten(),
-                skip(pageNumber*pageSize),
+                skip((long)(pageNumber*pageSize)),
                 limit(pageSize)
         );
 
