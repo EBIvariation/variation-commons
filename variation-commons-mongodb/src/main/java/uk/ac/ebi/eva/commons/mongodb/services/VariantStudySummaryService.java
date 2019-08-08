@@ -33,6 +33,8 @@ import java.util.List;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.project;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.skip;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.limit;
 
 /**
  * Mongo persistence service that returns {@link VariantStudySummary} projections
@@ -65,6 +67,42 @@ public class VariantStudySummaryService {
                 VariantStudySummary.class);
 
         return studies.getMappedResults();
+    }
+
+    public List<VariantStudySummary> findAll(long pageNumber, long pageSize) {
+        Aggregation aggregation = Aggregation.newAggregation(
+                groupAndCount(),
+                projectAndFlatten(),
+                skip(pageNumber*pageSize),
+                limit(pageSize)
+        );
+
+        AggregationResults<VariantStudySummary> studies = mongoTemplate.aggregate(aggregation,
+                VariantSourceMongo.class,
+                VariantStudySummary.class);
+
+        return studies.getMappedResults();
+    }
+
+    public int countAll() {
+        Aggregation aggregation = Aggregation.newAggregation(
+                groupAndCount(),
+                group().count().as("count")
+        );
+        List<CountAggregation> countAggregations = mongoTemplate.aggregate(aggregation, VariantSourceMongo.class,
+                CountAggregation.class).getMappedResults();
+        if (countAggregations.isEmpty()) {
+            return 0;
+        }
+        return countAggregations.get(0).getCount();
+    }
+
+    private class CountAggregation {
+        int count;
+
+        public int getCount() {
+            return count;
+        }
     }
 
     /**

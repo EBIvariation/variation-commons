@@ -60,6 +60,12 @@ public class VariantStudySummaryServiceTest {
 
     private static final int EXPECTED_UNIQUE_STUDIES_COUNT = 18;
 
+    private static final long FIRST_PAGE_NUMBER = 0;
+    private static final long SECOND_PAGE_NUMBER = 1;
+    private static final long PAGE_SIZE = 10;
+    private static final int FIRST_PAGE_EXPECTED_UNIQUE_STUDIES_COUNT = 10;
+    private static final int SECOND_PAGE_EXPECTED_UNIQUE_STUDIES_COUNT = 8;
+
     private static final int EXPECTED_FILE_COUNT_FROM_FIRST_STUDY_ID = 1;
     private static final int EXPECTED_FILE_COUNT_FROM_SECOND_STUDY_ID = 2;
 
@@ -100,6 +106,17 @@ public class VariantStudySummaryServiceTest {
     public void testListStudies() {
         List<VariantStudySummary> uniqueStudies = service.findAll();
         assertEquals(EXPECTED_UNIQUE_STUDIES_COUNT, uniqueStudies.size());
+    }
+
+    @Test
+    public void testListsStudiesWithPagination() {
+        assertEquals(FIRST_PAGE_EXPECTED_UNIQUE_STUDIES_COUNT, service.findAll(FIRST_PAGE_NUMBER, PAGE_SIZE).size());
+        assertEquals(SECOND_PAGE_EXPECTED_UNIQUE_STUDIES_COUNT, service.findAll(SECOND_PAGE_NUMBER, PAGE_SIZE).size());
+    }
+
+    @Test
+    public void testCountStudies() {
+        assertEquals(EXPECTED_UNIQUE_STUDIES_COUNT, service.countAll());
     }
 
     @Test
