@@ -1,0 +1,10 @@
+{
+  "defaultLocusRange": [
+    {
+      "_id": "5dcfc21a84fa156b8b674b08",
+      "chr" : "JH658330.1",
+      "start" : 1,
+      "end" : 1000000
+    }
+  ]
+}

@@ -37,8 +37,8 @@ public class DefaultLocusRangeMetadataService {
         return convert(repository.findAllByOrderByChromosomeAscStartAscEndAsc());
     }
 
-    private List<DefaultLocusRangeMetadata> convert(List<DefaultLocusRangeMetadataMongo> annotationMetadatas) {
-        return annotationMetadatas.stream().map(DefaultLocusRangeMetadata::new).collect(Collectors.toList());
+    private List<DefaultLocusRangeMetadata> convert(List<DefaultLocusRangeMetadataMongo> defaultLocusRangeMetadatas) {
+        return defaultLocusRangeMetadatas.stream().map(DefaultLocusRangeMetadata::new).collect(Collectors.toList());
     }
 
 }

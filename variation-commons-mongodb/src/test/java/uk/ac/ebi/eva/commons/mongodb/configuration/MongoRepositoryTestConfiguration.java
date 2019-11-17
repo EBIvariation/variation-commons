@@ -45,6 +45,14 @@ public class MongoRepositoryTestConfiguration {
     }
 
     @Bean
+    public String mongoCollectionsDefaultLocusRangeMetadata(
+            @Value("${eva.mongo.collections.default-locus-range-metadata:#{null}}")
+                    String collectionDefaultLocusRangeMetadata) {
+        Assert.notNull(collectionDefaultLocusRangeMetadata);
+        return collectionDefaultLocusRangeMetadata;
+    }
+
+    @Bean
     public String mongoCollectionsAnnotations(
             @Value("${eva.mongo.collections.annotations:#{null}}") String collectionAnnotations) {
         Assert.notNull(collectionAnnotations);

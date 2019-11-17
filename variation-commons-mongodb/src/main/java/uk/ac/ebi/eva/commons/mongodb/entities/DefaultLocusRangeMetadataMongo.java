@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.entities;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import uk.ac.ebi.eva.commons.core.models.IDefaultLocusRangeMetadata;
@@ -25,11 +26,14 @@ import uk.ac.ebi.eva.commons.core.models.IDefaultLocusRangeMetadata;
 @Document(collection = "#{mongoCollectionsDefaultLocusRangeMetadata}")
 public class DefaultLocusRangeMetadataMongo implements IDefaultLocusRangeMetadata {
 
-    private static final String CHROMOSOME_FIELD = "chromosome";
+    private static final String CHROMOSOME_FIELD = "chr";
 
     private static final String START_FIELD = "start";
 
     private static final String END_FIELD = "end";
+
+    @Id
+    private String id;
 
     @Field(CHROMOSOME_FIELD)
     private String chromosome;
@@ -44,10 +48,19 @@ public class DefaultLocusRangeMetadataMongo implements IDefaultLocusRangeMetadat
         // Empty document constructor for spring-data
     }
 
-    public DefaultLocusRangeMetadataMongo(String chromosome, long start, long end) {
+    public DefaultLocusRangeMetadataMongo(String id, String chromosome, long start, long end) {
+        this.id = id;
         this.chromosome = chromosome;
         this.start = start;
         this.end = end;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getChromosome() {
@@ -78,6 +91,7 @@ public class DefaultLocusRangeMetadataMongo implements IDefaultLocusRangeMetadat
 
         DefaultLocusRangeMetadataMongo that = (DefaultLocusRangeMetadataMongo) o;
 
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (start != that.start) return false;
         if (end != that.end) return false;
         return chromosome.equals(that.chromosome);
@@ -85,7 +99,8 @@ public class DefaultLocusRangeMetadataMongo implements IDefaultLocusRangeMetadat
 
     @Override
     public int hashCode() {
-        int result = chromosome.hashCode();
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (chromosome != null ? chromosome.hashCode() : 0);
         result = 31 * result + (int) (start ^ (start >>> 32));
         result = 31 * result + (int) (end ^ (end >>> 32));
         return result;
