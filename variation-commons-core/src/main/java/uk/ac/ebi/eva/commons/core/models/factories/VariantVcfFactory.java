@@ -139,8 +139,8 @@ public abstract class VariantVcfFactory {
         this.includeIds = includeIds;
     }
 
-    public void getIncludeId(boolean includeId) {
-        this.includeIds = includeId;
+    public boolean getIncludeIds() {
+        return includeIds;
     }
 
     protected String getReference(String[] fields) {
