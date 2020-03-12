@@ -23,6 +23,7 @@ import org.junit.rules.ExpectedException;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -48,9 +49,15 @@ public class VariantVcfFactoryTest {
 
     @BeforeClass
     public static void setupClass() {
-        // create an object of the abstract class VariantVcfFactory to test the code to parse the basic VCF fields, that
-        // is common to all the factories. The method 'parseSplitSampleData' doesn't need to do anything
-        factory = new VariantVcfFactory() {
+        factory = instantiateAbstractVcfFactory();
+    }
+
+    /**
+     * Create an object of the abstract class VariantVcfFactory to test the code to parse the basic VCF fields, that
+     * is common to all the factories. The method 'parseSplitSampleData' doesn't need to do anything
+     */
+    private static VariantVcfFactory instantiateAbstractVcfFactory() {
+        return new VariantVcfFactory() {
             @Override
             protected void parseSplitSampleData(VariantSourceEntry variantSourceEntry, String[] fields,
                                                 int alternateAlleleIdx) {
@@ -233,5 +240,27 @@ public class VariantVcfFactoryTest {
         result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
         assertEquals(emptySet, result.get(0).getIds());
+
+        // needed for eva-accession-clustering, test that ID is read if explicitly configured
+        VariantVcfFactory accessionedVariantFactory = instantiateAbstractVcfFactory();
+        accessionedVariantFactory.setIncludeIds(true);
+
+        line = "1\t1000\trs123\tC\tT\t.\t.\t.";
+        expResult = new LinkedList<>();
+        expResult.add(new Variant("1", 1000, 1000, "C", "T"));
+        Set<String> expectedIds = Collections.singleton("rs123");
+        expResult.get(0).setIds(expectedIds);
+        result = accessionedVariantFactory.create(FILE_ID, STUDY_ID, line);
+        assertEquals(expResult, result);
+        assertEquals(expectedIds, result.get(0).getIds());
+
+        line = "1\t1000\trs123;.\tC\tT\t.\t.\t.";
+        expResult = new LinkedList<>();
+        expResult.add(new Variant("1", 1000, 1000, "C", "T"));
+        expectedIds = Collections.singleton("rs123");
+        expResult.get(0).setIds(expectedIds);
+        result = accessionedVariantFactory.create(FILE_ID, STUDY_ID, line);
+        assertEquals(expResult, result);
+        assertEquals(expectedIds, result.get(0).getIds());
     }
 }
