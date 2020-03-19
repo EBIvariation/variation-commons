@@ -217,7 +217,7 @@ public class VariantVcfFactoryTest {
     @Test
     public void testVariantIds() {
         //EVA-942 - Since we ignore IDs submitted through VCF, they are no longer part of the expected result
-        Set<String> emptySet = new HashSet<>();
+        Set<String> emptySet = Collections.emptySet();;
 
         // test that an ID is ignored
         checkIds(factory, "1\t1000\trs123\tC\tT\t.\t.\t.", emptySet);
@@ -244,12 +244,12 @@ public class VariantVcfFactoryTest {
                  Stream.of("rs123", "rs456").collect(Collectors.toSet()));
     }
 
-    private void checkIds(VariantVcfFactory accessionedVariantFactory, String vcfLine, Set<String> expectedIds) {
+    private void checkIds(VariantVcfFactory variantVcfFactory, String vcfLine, Set<String> expectedIds) {
         List<Variant> expectedVariants = new LinkedList<>();
         expectedVariants.add(new Variant("1", 1000, 1000, "C", "T"));
         expectedVariants.get(0).setIds(expectedIds);
 
-        List<Variant> parsedVariants = accessionedVariantFactory.create(FILE_ID, STUDY_ID, vcfLine);
+        List<Variant> parsedVariants = variantVcfFactory.create(FILE_ID, STUDY_ID, vcfLine);
 
         assertEquals(expectedVariants, parsedVariants);
         assertEquals(expectedIds, parsedVariants.get(0).getIds());
