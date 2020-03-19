@@ -216,8 +216,8 @@ public class VariantVcfFactoryTest {
 
     @Test
     public void testVariantIds() {
-        //EVA-942 - Since we ignore IDs submitted through VCF, they are no longer part of the expected result
-        Set<String> emptySet = Collections.emptySet();;
+        // EVA-942 - Unless configured (see below), by default we ignore IDs from submitter's VCF
+        Set<String> emptySet = Collections.emptySet();
 
         // test that an ID is ignored
         checkIds(factory, "1\t1000\trs123\tC\tT\t.\t.\t.", emptySet);
@@ -229,7 +229,7 @@ public class VariantVcfFactoryTest {
         checkIds(factory, "1\t1000\t.\tC\tT\t.\t.\t.", emptySet);
 
 
-        // needed for eva-accession-clustering, test that ID is read if explicitly configured
+        // EVA-1898 - needed for eva-accession-clustering, test that ID is read if explicitly configured
         VariantVcfFactory accessionedVariantFactory = instantiateAbstractVcfFactory();
         accessionedVariantFactory.setIncludeIds(true);
 
@@ -237,11 +237,16 @@ public class VariantVcfFactoryTest {
         checkIds(accessionedVariantFactory, "1\t1000\trs123\tC\tT\t.\t.\t.", Collections.singleton("rs123"));
 
         // test that a missing ID ('.') is not added to the IDs set
+        checkIds(factory, "1\t1000\t.\tC\tT\t.\t.\t.", emptySet);
         checkIds(accessionedVariantFactory, "1\t1000\trs123;.\tC\tT\t.\t.\t.", Collections.singleton("rs123"));
 
         // test that the ';' is used as the ID separator (as of VCF 4.2)
         checkIds(accessionedVariantFactory, "1\t1000\trs123;rs456\tC\tT\t.\t.\t.",
                  Stream.of("rs123", "rs456").collect(Collectors.toSet()));
+
+        // test that the ',' is NOT used as the ID separator (as of VCF 4.2)
+        checkIds(accessionedVariantFactory, "1\t1000\trs123,rs456\tC\tT\t.\t.\t.",
+                 Collections.singleton("rs123,rs456"));
     }
 
     private void checkIds(VariantVcfFactory variantVcfFactory, String vcfLine, Set<String> expectedIds) {
