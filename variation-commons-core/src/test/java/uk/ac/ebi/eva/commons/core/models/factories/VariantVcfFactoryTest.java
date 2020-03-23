@@ -23,10 +23,13 @@ import org.junit.rules.ExpectedException;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 
@@ -48,9 +51,15 @@ public class VariantVcfFactoryTest {
 
     @BeforeClass
     public static void setupClass() {
-        // create an object of the abstract class VariantVcfFactory to test the code to parse the basic VCF fields, that
-        // is common to all the factories. The method 'parseSplitSampleData' doesn't need to do anything
-        factory = new VariantVcfFactory() {
+        factory = instantiateAbstractVcfFactory();
+    }
+
+    /**
+     * Create an object of the abstract class VariantVcfFactory to test the code to parse the basic VCF fields, that
+     * is common to all the factories. The method 'parseSplitSampleData' doesn't need to do anything
+     */
+    private static VariantVcfFactory instantiateAbstractVcfFactory() {
+        return new VariantVcfFactory() {
             @Override
             protected void parseSplitSampleData(VariantSourceEntry variantSourceEntry, String[] fields,
                                                 int alternateAlleleIdx) {
@@ -207,31 +216,47 @@ public class VariantVcfFactoryTest {
 
     @Test
     public void testVariantIds() {
+        // EVA-942 - Unless configured (see below), by default we ignore IDs from submitter's VCF
+        Set<String> emptySet = Collections.emptySet();
 
-        Set<String> emptySet = new HashSet<>();
-        // test that an ID is properly handled
-        String line = "1\t1000\trs123\tC\tT\t.\t.\t.";
-        List<Variant> expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 1000, 1000, "C", "T"));
-        List<Variant> result = factory.create(FILE_ID, STUDY_ID, line);
-        assertEquals(expResult, result);
-        //EVA-942 - Since we ignore IDs submitted through VCF, they are no longer part of the expected result
-        assertEquals(emptySet, result.get(0).getIds());
+        // test that an ID is ignored
+        checkIds(factory, "1\t1000\trs123\tC\tT\t.\t.\t.", emptySet);
 
-        // test that the ';' is used as the ID separator (as of VCF 4.2)
-        line = "1\t1000\trs123;rs456\tC\tT\t.\t.\t.";
-        expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 1000, 1000, "C", "T"));
-        result = factory.create(FILE_ID, STUDY_ID, line);
-        assertEquals(expResult, result);
-        assertEquals(emptySet, result.get(0).getIds());
+        // test that several ID are ignored
+        checkIds(factory, "1\t1000\trs123;rs456\tC\tT\t.\t.\t.", emptySet);
 
         // test that a missing ID ('.') is not added to the IDs set
-        line = "1\t1000\t.\tC\tT\t.\t.\t.";
-        expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 1000, 1000, "C", "T"));
-        result = factory.create(FILE_ID, STUDY_ID, line);
-        assertEquals(expResult, result);
-        assertEquals(emptySet, result.get(0).getIds());
+        checkIds(factory, "1\t1000\t.\tC\tT\t.\t.\t.", emptySet);
+
+
+        // EVA-1898 - needed for eva-accession-clustering, test that ID is read if explicitly configured
+        VariantVcfFactory accessionedVariantFactory = instantiateAbstractVcfFactory();
+        accessionedVariantFactory.setIncludeIds(true);
+
+        // test that an ID is properly read
+        checkIds(accessionedVariantFactory, "1\t1000\trs123\tC\tT\t.\t.\t.", Collections.singleton("rs123"));
+
+        // test that a missing ID ('.') is not added to the IDs set
+        checkIds(factory, "1\t1000\t.\tC\tT\t.\t.\t.", emptySet);
+        checkIds(accessionedVariantFactory, "1\t1000\trs123;.\tC\tT\t.\t.\t.", Collections.singleton("rs123"));
+
+        // test that the ';' is used as the ID separator (as of VCF 4.2)
+        checkIds(accessionedVariantFactory, "1\t1000\trs123;rs456\tC\tT\t.\t.\t.",
+                 Stream.of("rs123", "rs456").collect(Collectors.toSet()));
+
+        // test that the ',' is NOT used as the ID separator (as of VCF 4.2)
+        checkIds(accessionedVariantFactory, "1\t1000\trs123,rs456\tC\tT\t.\t.\t.",
+                 Collections.singleton("rs123,rs456"));
+    }
+
+    private void checkIds(VariantVcfFactory variantVcfFactory, String vcfLine, Set<String> expectedIds) {
+        List<Variant> expectedVariants = new LinkedList<>();
+        expectedVariants.add(new Variant("1", 1000, 1000, "C", "T"));
+        expectedVariants.get(0).setIds(expectedIds);
+
+        List<Variant> parsedVariants = variantVcfFactory.create(FILE_ID, STUDY_ID, vcfLine);
+
+        assertEquals(expectedVariants, parsedVariants);
+        assertEquals(expectedIds, parsedVariants.get(0).getIds());
     }
 }

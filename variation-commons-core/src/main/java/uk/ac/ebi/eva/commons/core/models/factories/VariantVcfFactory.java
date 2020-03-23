@@ -25,9 +25,13 @@ import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Abstract class to parse the basic fields in VCF lines
@@ -39,6 +43,8 @@ public abstract class VariantVcfFactory {
     public static final String ALLELE_COUNT = "AC";
 
     public static final String ALLELE_NUMBER = "AN";
+
+    protected boolean includeIds = false;
 
     /**
      * Creates a list of Variant objects using the fields in a record of a VCF
@@ -64,6 +70,7 @@ public abstract class VariantVcfFactory {
 
         String chromosome = getChromosomeWithoutPrefix(fields);
         long position = getPosition(fields);
+        Set<String> ids = getIds(fields);
         String reference = getReference(fields);
         String[] alternateAlleles = getAlternateAlleles(fields);
 
@@ -87,7 +94,7 @@ public abstract class VariantVcfFactory {
 
             parseSplitSampleData(file, fields, altAlleleIdx);
             // Fill the rest of fields (after samples because INFO depends on them)
-            setOtherFields(variant, fileId, studyId, quality, filter, info, altAlleleIdx, alternateAlleles, line);
+            setOtherFields(variant, fileId, studyId, ids, quality, filter, info, altAlleleIdx, alternateAlleles, line);
 
             checkVariantInformation(variant, fileId, studyId);
 
@@ -114,6 +121,26 @@ public abstract class VariantVcfFactory {
 
     protected long getPosition(String[] fields) {
         return Long.parseLong(fields[1]);
+    }
+
+    protected Set<String> getIds(String[] fields) {
+        if (includeIds) {
+            String idsString = fields[2];
+            Set<String> ids = Arrays.stream(idsString.split(";"))
+                                    .filter(id -> !".".equals(id))
+                                    .collect(Collectors.toSet());
+            return ids;
+        } else {
+            return Collections.emptySet();
+        }
+    }
+
+    public void setIncludeIds(boolean includeIds) {
+        this.includeIds = includeIds;
+    }
+
+    public boolean getIncludeIds() {
+        return includeIds;
     }
 
     protected String getReference(String[] fields) {
@@ -172,9 +199,13 @@ public abstract class VariantVcfFactory {
                                                  int alternateAlleleIdx);
 
 
-    protected void setOtherFields(Variant variant, String fileId, String studyId, float quality,
+    protected void setOtherFields(Variant variant, String fileId, String studyId, Set<String> ids, float quality,
                                   String filter, String info, int numAllele, String[] alternateAlleles, String line) {
         // Fields not affected by the structure of REF and ALT fields
+        if (!ids.isEmpty()) {
+            variant.setMainId(ids.iterator().next());
+            variant.setIds(ids);
+        }
         if (quality > -1) {
             variant.getSourceEntry(fileId, studyId)
                    .addAttribute("QUAL", String.valueOf(quality));

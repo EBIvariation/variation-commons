@@ -81,4 +81,12 @@ public class AggregatedVcfLineMapper implements LineMapper<List<Variant>> {
     public List<Variant> mapLine(String line, int lineNumber) throws Exception {
         return factory.create(fileId, studyId, line);
     }
+
+    public void setIncludeIds(boolean includeIds) {
+        factory.setIncludeIds(includeIds);
+    }
+
+    public boolean getIncludeIds() {
+        return factory.getIncludeIds();
+    }
 }

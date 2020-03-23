@@ -46,4 +46,12 @@ public class GenotypedVcfLineMapper implements LineMapper<List<Variant>> {
     public List<Variant> mapLine(String line, int lineNumber) {
         return factory.create(fileId, studyId, line);
     }
+
+    public void setIncludeIds(boolean includeIds) {
+        factory.setIncludeIds(includeIds);
+    }
+
+    public boolean getIncludeIds() {
+        return factory.getIncludeIds();
+    }
 }
