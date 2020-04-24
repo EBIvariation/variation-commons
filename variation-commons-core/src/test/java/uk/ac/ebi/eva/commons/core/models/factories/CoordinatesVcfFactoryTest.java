@@ -46,9 +46,6 @@ public class CoordinatesVcfFactoryTest {
 
     private static VariantVcfFactory factory;
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
     @BeforeClass
     public static void setupClass() {
         factory = new CoordinatesVcfFactory();
