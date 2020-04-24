@@ -17,6 +17,7 @@ package uk.ac.ebi.eva.commons.batch.io;
 
 import org.springframework.batch.item.file.LineMapper;
 
+import uk.ac.ebi.eva.commons.core.models.factories.CoordinatesVcfFactory;
 import uk.ac.ebi.eva.commons.core.models.factories.VariantVcfFactory;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 

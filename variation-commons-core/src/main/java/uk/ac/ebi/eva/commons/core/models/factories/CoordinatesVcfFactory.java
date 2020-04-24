@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.eva.commons.batch.io;
+package uk.ac.ebi.eva.commons.core.models.factories;
 
 import uk.ac.ebi.eva.commons.core.models.VariantCoreFields;
 import uk.ac.ebi.eva.commons.core.models.factories.VariantVcfFactory;
@@ -32,8 +32,14 @@ import java.util.Set;
 /**
  * Transforms a String (in VCF format) to a list of variants, keeping only the basic fields (coordinates):
  * chromosome, position, id, reference, alternate.
+ *
+ * Unlike the other factories, the id is stored by default.
  */
 public class CoordinatesVcfFactory extends VariantVcfFactory {
+
+    public CoordinatesVcfFactory() {
+        includeIds = true;
+    }
 
     @Override
     public List<Variant> create(String fileId, String studyId, String line)
@@ -62,18 +68,6 @@ public class CoordinatesVcfFactory extends VariantVcfFactory {
             variants.add(variant);
         }
         return variants;
-    }
-
-    @Override
-    protected Set<String> getIds(String[] fields) {
-        String[] idsSplit = fields[2].split(";");
-        Set<String> ids;
-        if (idsSplit.length == 1 && ".".equals(idsSplit[0])) {
-            ids = Collections.emptySet();
-        } else {
-            ids = new HashSet<>(Arrays.asList(idsSplit));
-        }
-        return ids;
     }
 
     @Override
