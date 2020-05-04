@@ -18,6 +18,7 @@ package uk.ac.ebi.eva.commons.core.models;
 import uk.ac.ebi.eva.commons.core.models.stats.VariantGlobalStats;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -75,7 +76,7 @@ public class VariantSource implements IVariantSource {
         this.aggregation = aggregation;
         this.date = date;
         this.samplesPosition = samplesPosition;
-        this.metadata = metadata;
+        this.metadata = (metadata != null) ? metadata : new HashMap<>();
         if (stats != null) {
             this.stats = new VariantGlobalStats(stats);
         }
@@ -129,6 +130,11 @@ public class VariantSource implements IVariantSource {
     @Override
     public VariantGlobalStats getStats() {
         return stats;
+    }
+
+    @Override
+    public void addMetadata(String key, Object value) {
+        this.metadata.put(key, value);
     }
 
     @Override

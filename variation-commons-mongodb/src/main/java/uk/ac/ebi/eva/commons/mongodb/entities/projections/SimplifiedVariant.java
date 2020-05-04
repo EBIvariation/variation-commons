@@ -94,4 +94,23 @@ public class SimplifiedVariant {
         }
     }
 
+    public String getChromosome() {
+        return chromosome;
+    }
+
+    public int getStart() {
+        return (int) start;
+    }
+
+    public int getEnd() {
+        return (int) end;
+    }
+
+    public String getReference() {
+        return reference;
+    }
+
+    public String getAlternate() {
+        return alternate;
+    }
 }

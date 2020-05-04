@@ -73,7 +73,7 @@ public class AggregatedVcfLineMapper implements LineMapper<List<Variant>> {
             default:
                 throw new IllegalArgumentException(
                         this.getClass().getSimpleName() + " should be used to read aggregated VCFs only, " +
-                                "but the VariantSource.Aggregation is set to " + aggregation);
+                                "but the Aggregation is set to " + aggregation);
         }
     }
 
