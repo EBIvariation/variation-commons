@@ -22,7 +22,7 @@ import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.SamplePhenotypeMongo;
 
 import java.util.Set;
 
-@Document(collection = "#{mongoCollectionsSamples}")
+@Document(collection = "#{@mongoCollectionsSamples}")
 public class SampleMongo {
 
     public static final String SEX_FIELD = "sex";
