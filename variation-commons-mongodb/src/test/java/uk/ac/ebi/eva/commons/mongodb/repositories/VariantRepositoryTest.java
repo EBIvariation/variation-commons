@@ -19,7 +19,9 @@
 package uk.ac.ebi.eva.commons.mongodb.repositories;
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import com.lordofthejars.nosqlunit.mongodb.MongoDbConfigurationBuilder;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,15 +30,18 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import uk.ac.ebi.eva.commons.core.models.Region;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
+import uk.ac.ebi.eva.commons.mongodb.configuration.EvaRepositoriesConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.filter.FilterBuilder;
 import uk.ac.ebi.eva.commons.mongodb.filter.VariantRepositoryFilter;
+import uk.ac.ebi.eva.commons.mongodb.test.rule.FixSpringMongoDbRule;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,7 +51,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -55,21 +59,25 @@ import static org.junit.Assert.assertTrue;
 /**
  * Tests for VariantRepository
  * <p>
- * Uses in memory Mongo database spoof Fongo, and loading data from json using lordofthejars nosqlunit.
+ * Load data from json using lordofthejars nosqlunit.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class})
+@RunWith(SpringRunner.class)
+@TestPropertySource("classpath:eva.properties")
 @UsingDataSet(locations = {
         "/test-data/variants.json",
         "/test-data/annotations.json",
         "/test-data/files.json"})
+@ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class, EvaRepositoriesConfiguration.class})
 public class VariantRepositoryTest {
+
+    private static final String TEST_DB = "test-db";
 
     @Autowired
     private ApplicationContext applicationContext;
 
     @Rule
-    public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test-db");
+    public MongoDbRule mongoDbRule = new FixSpringMongoDbRule(
+            MongoDbConfigurationBuilder.mongoDb().databaseName(TEST_DB).build());
 
     @Autowired
     private VariantRepository variantRepository;
@@ -458,34 +466,38 @@ public class VariantRepositoryTest {
         Sort ascendingStartOrder = new Sort(Sort.Direction.ASC, "start");
         Sort descendingStartOrder = new Sort(Sort.Direction.DESC, "start");
 
+        //Non-existent variant
+        assertTrue(variantRepository.findAllByChromosomeAndStudyInSorted("11", Collections.singletonList("PRJEB"),
+                                                                         ascendingStartOrder).isEmpty());
+
         // first and last variant for one study
         VariantMongo firstVariant =
-                variantRepository.findOneByChromosomeAndStudyInSorted("11", Collections.singletonList("PRJEB8661"),
-                                                                      ascendingStartOrder);
+                variantRepository.findAllByChromosomeAndStudyInSorted("11", Collections.singletonList("PRJEB8661"),
+                                                                      ascendingStartOrder).get(0);
         VariantMongo lastVariant =
-                variantRepository.findOneByChromosomeAndStudyInSorted("11", Collections.singletonList("PRJEB8661"),
-                                                                      descendingStartOrder);
+                variantRepository.findAllByChromosomeAndStudyInSorted("11", Collections.singletonList("PRJEB8661"),
+                                                                      descendingStartOrder).get(0);
         assertEquals(193051L, firstVariant.getStart());
         assertEquals(193959L, lastVariant.getStart());
 
         // first and last variant for two studies
         firstVariant =
-                variantRepository.findOneByChromosomeAndStudyInSorted("11", Arrays.asList("PRJEB8661", "PRJEB6930"),
-                                                                      ascendingStartOrder);
+                variantRepository.findAllByChromosomeAndStudyInSorted("11", Arrays.asList("PRJEB8661", "PRJEB6930"),
+                                                                      ascendingStartOrder).get(0);
         lastVariant =
-                variantRepository.findOneByChromosomeAndStudyInSorted("11", Arrays.asList("PRJEB8661", "PRJEB6930"),
-                                                                      descendingStartOrder);
+                variantRepository.findAllByChromosomeAndStudyInSorted("11", Arrays.asList("PRJEB8661", "PRJEB6930"),
+                                                                      descendingStartOrder).get(0);
         assertEquals(190010L, firstVariant.getStart());
         assertEquals(194190L, lastVariant.getStart());
 
 
         // in a chromosome with one variant, the first and the last variants are the same
         firstVariant =
-                variantRepository.findOneByChromosomeAndStudyInSorted("9", Collections.singletonList("PRJEB5829"),
-                                                                      ascendingStartOrder);
+                variantRepository.findAllByChromosomeAndStudyInSorted("9", Collections.singletonList("PRJEB5829"),
+                                                                      ascendingStartOrder).get(0);
         lastVariant =
-                variantRepository.findOneByChromosomeAndStudyInSorted("9", Collections.singletonList("PRJEB5829"),
-                                                                      descendingStartOrder);
+                variantRepository.findAllByChromosomeAndStudyInSorted("9", Collections.singletonList("PRJEB5829"),
+                                                                      descendingStartOrder).get(0);
         assertEquals(firstVariant.getId(), lastVariant.getId());
         assertEquals(10099L, firstVariant.getStart());
 

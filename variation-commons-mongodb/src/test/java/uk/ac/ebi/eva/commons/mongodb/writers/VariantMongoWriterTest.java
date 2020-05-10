@@ -16,23 +16,32 @@
 
 package uk.ac.ebi.eva.commons.mongodb.writers;
 
-import com.mongodb.BasicDBList;
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
+import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import com.lordofthejars.nosqlunit.mongodb.MongoDbConfigurationBuilder;
+import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+import com.mongodb.client.ListIndexesIterable;
+import com.mongodb.client.MongoCollection;
+
+import org.bson.Document;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
+import uk.ac.ebi.eva.commons.mongodb.configuration.EvaRepositoriesConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
+import uk.ac.ebi.eva.commons.mongodb.test.rule.FixSpringMongoDbRule;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -45,6 +54,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
@@ -73,8 +83,17 @@ import static uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceE
  * Testing {@link VariantMongoWriter}
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class})
+@TestPropertySource("classpath:eva.properties")
+@UsingDataSet(locations = {
+        "/test-data/annotation_metadata.json",
+        "/test-data/annotations.json",
+        "/test-data/features.json",
+        "/test-data/files.json",
+        "/test-data/variants.json"})
+@ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class, EvaRepositoriesConfiguration.class})
 public class VariantMongoWriterTest {
+
+    private static final String TEST_DB = "test-db";
 
     private static final String MAIN_ID = "b";
 
@@ -83,6 +102,14 @@ public class VariantMongoWriterTest {
     private static final HashSet<String> DBSNP_IDS = new HashSet<>(Arrays.asList("d", MAIN_ID, "e"));
 
     private static final String COLLECTION_NAME = "variants";
+
+    //Required by nosql-unit
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    @Rule
+    public MongoDbRule mongoDbRule = new FixSpringMongoDbRule(
+            MongoDbConfigurationBuilder.mongoDb().databaseName(TEST_DB).build());
 
     @Autowired
     private MongoOperations mongoOperations;
@@ -99,7 +126,7 @@ public class VariantMongoWriterTest {
 
     @Test
     public void noVariantsNothingShouldBeWritten() throws UnknownHostException {
-        DBCollection dbCollection = mongoOperations.getCollection(COLLECTION_NAME);
+        MongoCollection dbCollection = mongoOperations.getCollection(COLLECTION_NAME);
 
         VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, false);
         variantMongoWriter.doWrite(emptyList());
@@ -112,7 +139,7 @@ public class VariantMongoWriterTest {
         Variant variant1 = new Variant("1", 1, 2, "A", "T");
         Variant variant2 = new Variant("2", 3, 4, "C", "G");
 
-        DBCollection dbCollection = mongoOperations.getCollection(COLLECTION_NAME);
+        MongoCollection dbCollection = mongoOperations.getCollection(COLLECTION_NAME);
 
         VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, false);
         variantMongoWriter.write(Collections.singletonList(variant1));
@@ -123,22 +150,25 @@ public class VariantMongoWriterTest {
 
     @Test
     public void indexesShouldBeCreatedInBackground() throws UnknownHostException {
-        DBCollection dbCollection = mongoOperations.getCollection(COLLECTION_NAME);
+        MongoCollection dbCollection = mongoOperations.getCollection(COLLECTION_NAME);
 
         new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, false);
 
-        List<DBObject> indexInfo = dbCollection.getIndexInfo();
+        ListIndexesIterable<Document> indexesInfo = dbCollection.listIndexes();
 
-        Set<String> createdIndexes = indexInfo.stream().map(index -> index.get("name").toString())
-                                              .collect(Collectors.toSet());
+        Set<String> createdIndexes = StreamSupport.stream(
+                indexesInfo.map(index -> index.get("name").toString()).spliterator(), false).collect(
+                Collectors.toSet());
         Set<String> expectedIndexes = new HashSet<>();
         expectedIndexes.addAll(Arrays.asList("annot.xrefs_1", "files.sid_1_files.fid_1", "chr_1_start_1_end_1",
                                              "annot.so_1", "_id_", "ids_1"));
         assertEquals(expectedIndexes, createdIndexes);
 
-        indexInfo.stream().filter(index -> !("_id_".equals(index.get("name").toString())))
-                 .forEach(index -> assertEquals("true", index.get(VariantMongoWriter.BACKGROUND_INDEX).toString()));
-
+        for(Document indexInfo: indexesInfo) {
+            if (!("_id_".equals(indexInfo.get("name").toString()))) {
+                assertEquals("true", indexInfo.get(VariantMongoWriter.BACKGROUND_INDEX).toString());
+            }
+        }
     }
 
     @Test
@@ -150,14 +180,14 @@ public class VariantMongoWriterTest {
         variantMongoWriter.write(Collections.singletonList(variant1));
 
         variantMongoWriter.write(Collections.singletonList(variant1));
-        DBObject storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
-        assertEquals(1, ((BasicDBList) storedVariant.get(FILES_FIELD)).size());
+        Document storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
+        assertEquals(1, ((List<Document>) storedVariant.get(FILES_FIELD)).size());
     }
 
-    private DBObject assertThereIsOnlyOneDocumentAndReturnIt() {
-        DBCollection dbCollection = mongoOperations.getCollection(COLLECTION_NAME);
+    private Document assertThereIsOnlyOneDocumentAndReturnIt() {
+        MongoCollection<Document> dbCollection = mongoOperations.getCollection(COLLECTION_NAME);
         assertEquals(1, dbCollection.count());
-        return dbCollection.findOne();
+        return dbCollection.find().first();
     }
 
     @Test
@@ -174,12 +204,12 @@ public class VariantMongoWriterTest {
         VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, true);
         variantMongoWriter.write(Collections.singletonList(variant));
 
-        DBObject storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
-        final BasicDBList variantSources = (BasicDBList) storedVariant.get(FILES_FIELD);
+        Document storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
+        final List<Document> variantSources = (List<Document>) storedVariant.get(FILES_FIELD);
         assertNotNull(variantSources);
         assertFalse(variantSources.isEmpty());
-        assertEquals(fileId, ((DBObject) variantSources.get(0)).get(FILEID_FIELD));
-        assertEquals(studyId, ((DBObject) variantSources.get(0)).get(STUDYID_FIELD));
+        assertEquals(fileId, variantSources.get(0).get(FILEID_FIELD));
+        assertEquals(studyId, variantSources.get(0).get(STUDYID_FIELD));
         assertEquals(String.format("%s_%s_%s_%s", chromosome, start, reference, alternate), storedVariant.get("_id"));
         assertEquals(chromosome, storedVariant.get(CHROMOSOME_FIELD));
         assertEquals(start, storedVariant.get(START_FIELD));
@@ -195,7 +225,7 @@ public class VariantMongoWriterTest {
         VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, true, false);
         variantMongoWriter.write(Collections.singletonList(variant));
 
-        DBObject storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
+        Document storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
         assertNotNull(storedVariant.get(STATISTICS_FIELD));
     }
 
@@ -206,7 +236,7 @@ public class VariantMongoWriterTest {
         VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, false);
         variantMongoWriter.write(Collections.singletonList(variant));
 
-        DBObject storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
+        Document storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
         assertNull(storedVariant.get(STATISTICS_FIELD));
     }
 
@@ -220,13 +250,13 @@ public class VariantMongoWriterTest {
         VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, true);
         variantMongoWriter.write(Collections.singletonList(variant));
 
-        DBObject storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
-        assertBasicDBListEquals(IDS, (BasicDBList) storedVariant.get(IDS_FIELD));
-        assertBasicDBListEquals(DBSNP_IDS, (BasicDBList) storedVariant.get(DBSNP_IDS_FIELD));
+        Document storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
+        assertDocumentListEquals(IDS, (List<Document>) storedVariant.get(IDS_FIELD));
+        assertDocumentListEquals(DBSNP_IDS, (List<Document>) storedVariant.get(DBSNP_IDS_FIELD));
         assertEquals(MAIN_ID, storedVariant.get(MAIN_ID_FIELD));
     }
 
-    private void assertBasicDBListEquals(Collection<String> expected, BasicDBList actual) {
+    private void assertDocumentListEquals(Collection<String> expected, List<Document> actual) {
         for (String expectedElement : expected) {
             assertTrue(actual.contains(expectedElement));
         }
@@ -240,7 +270,7 @@ public class VariantMongoWriterTest {
         VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, true);
         variantMongoWriter.write(Collections.singletonList(variant));
 
-        DBObject storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
+        Document storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
         assertNull(storedVariant.get(IDS_FIELD));
         assertNull(storedVariant.get(MAIN_ID_FIELD));
         assertNull(storedVariant.get(DBSNP_IDS_FIELD));
@@ -254,8 +284,8 @@ public class VariantMongoWriterTest {
         VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, true);
         variantMongoWriter.write(Collections.singletonList(variant));
 
-        DBObject storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
-        assertBasicDBListEquals(IDS, (BasicDBList) storedVariant.get(IDS_FIELD));
+        Document storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
+        assertDocumentListEquals(IDS, (List<Document>) storedVariant.get(IDS_FIELD));
         assertNull(storedVariant.get(MAIN_ID_FIELD));
         assertNull(storedVariant.get(DBSNP_IDS_FIELD));
     }
@@ -269,9 +299,9 @@ public class VariantMongoWriterTest {
         VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, true);
         variantMongoWriter.write(Collections.singletonList(variant));
 
-        DBObject storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
+        Document storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
         assertNull(storedVariant.get(IDS_FIELD));
-        assertBasicDBListEquals(DBSNP_IDS, (BasicDBList) storedVariant.get(DBSNP_IDS_FIELD));
+        assertDocumentListEquals(DBSNP_IDS, (List<Document>) storedVariant.get(DBSNP_IDS_FIELD));
         assertEquals(MAIN_ID, storedVariant.get(MAIN_ID_FIELD));
     }
 
@@ -288,9 +318,9 @@ public class VariantMongoWriterTest {
         variantMongoWriter.write(Collections.singletonList(variant));
         variantMongoWriter.write(Collections.singletonList(updatedDbsnpVariant));
 
-        DBObject storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
-        assertBasicDBListEquals(IDS, (BasicDBList) storedVariant.get(IDS_FIELD));
-        assertBasicDBListEquals(DBSNP_IDS, (BasicDBList) storedVariant.get(DBSNP_IDS_FIELD));
+        Document storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
+        assertDocumentListEquals(IDS, (List<Document>) storedVariant.get(IDS_FIELD));
+        assertDocumentListEquals(DBSNP_IDS, (List<Document>) storedVariant.get(DBSNP_IDS_FIELD));
         assertEquals(MAIN_ID, storedVariant.get(MAIN_ID_FIELD));
     }
 
@@ -308,11 +338,11 @@ public class VariantMongoWriterTest {
         VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, true);
         variantMongoWriter.write(Collections.singletonList(variant));
 
-        DBObject storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
-        final BasicDBList variantSources = (BasicDBList) storedVariant.get(FILES_FIELD);
+        Document storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
+        final List<Document> variantSources = (List<Document>) storedVariant.get(FILES_FIELD);
         assertNotNull(variantSources);
         assertFalse(variantSources.isEmpty());
-        DBObject sourceEntry = (DBObject) variantSources.get(0);
+        Document sourceEntry = (Document) variantSources.get(0);
         assertEquals(fileId, sourceEntry.get(FILEID_FIELD));
         assertEquals(studyId, sourceEntry.get(STUDYID_FIELD));
         assertNotNull(sourceEntry.get(ALTERNATES_FIELD));
@@ -330,8 +360,8 @@ public class VariantMongoWriterTest {
         variantMongoWriter.write(Collections.singletonList(variant));
         variantMongoWriter.write(Collections.singletonList(newVariant));
 
-        DBObject storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
-        assertEquals(2, ((BasicDBList) storedVariant.get(FILES_FIELD)).size());
+        Document storedVariant = assertThereIsOnlyOneDocumentAndReturnIt();
+        assertEquals(2, ((List<Document>) storedVariant.get(FILES_FIELD)).size());
     }
 
     private Variant buildVariantWithStats(String chromosome, long start, long end, String reference, String alternate,

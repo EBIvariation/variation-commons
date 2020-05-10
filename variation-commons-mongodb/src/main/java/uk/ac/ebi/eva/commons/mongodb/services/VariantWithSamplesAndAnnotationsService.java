@@ -32,7 +32,6 @@ import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotation;
 import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMetadataMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
-import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantStatisticsMongo;
 import uk.ac.ebi.eva.commons.mongodb.filter.VariantRepositoryFilter;
@@ -288,8 +287,9 @@ public class VariantWithSamplesAndAnnotationsService {
      */
     public Long findChromosomeLowestReportedCoordinate(String chromosome, List<String> studyIds) {
         Sort startAscendingSort = new Sort(Sort.Direction.ASC, VariantMongo.START_FIELD);
-        VariantMongo variant = variantRepository.findOneByChromosomeAndStudyInSorted(chromosome, studyIds,
-                                                                                     startAscendingSort);
+        List<VariantMongo> variants = variantRepository.findAllByChromosomeAndStudyInSorted(chromosome, studyIds,
+                                                                                            startAscendingSort);
+        VariantMongo variant = variants.isEmpty() ? null:variants.get(0);
         return getVariantStart(variant);
     }
 
@@ -301,8 +301,9 @@ public class VariantWithSamplesAndAnnotationsService {
      */
     public Long findChromosomeHighestReportedCoordinate(String chromosome, List<String> studyIds) {
         Sort startDescendingSort = new Sort(Sort.Direction.DESC, VariantMongo.START_FIELD);
-        VariantMongo variant = variantRepository.findOneByChromosomeAndStudyInSorted(chromosome, studyIds,
-                                                                                     startDescendingSort);
+        List<VariantMongo> variants = variantRepository.findAllByChromosomeAndStudyInSorted(chromosome, studyIds,
+                                                                                            startDescendingSort);
+        VariantMongo variant = variants.isEmpty() ? null:variants.get(0);
         return getVariantStart(variant);
     }
 

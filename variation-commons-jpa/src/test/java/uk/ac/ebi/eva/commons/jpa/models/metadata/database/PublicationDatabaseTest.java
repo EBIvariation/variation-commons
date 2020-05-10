@@ -4,8 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.jpa.JpaSystemException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.eva.commons.jpa.models.metadata.DatabaseTestConfiguration;
@@ -29,6 +30,7 @@ import static org.junit.Assert.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
+@TestPropertySource({"classpath:application.properties"})
 @ContextConfiguration(classes = DatabaseTestConfiguration.class)
 public class PublicationDatabaseTest {
 
@@ -192,7 +194,7 @@ public class PublicationDatabaseTest {
      *
      * @todo How to report this kind of errors?
      */
-    @Test(expected = JpaSystemException.class)
+    @Test(expected = DataIntegrityViolationException.class)
     public void testUpdateDuplicate() {
         Publication savedPublication1 = repository.save(publication1);
         Publication savedPublication3 = repository.save(publication3);

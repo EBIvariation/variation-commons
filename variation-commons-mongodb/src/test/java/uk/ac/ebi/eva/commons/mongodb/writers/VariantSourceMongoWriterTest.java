@@ -16,10 +16,12 @@
 
 package uk.ac.ebi.eva.commons.mongodb.writers;
 
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
+import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.ListIndexesIterable;
+import com.mongodb.client.MongoCollection;
 
+import org.bson.Document;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,18 +30,20 @@ import org.junit.runner.RunWith;
 import uk.ac.ebi.eva.commons.core.models.Aggregation;
 import uk.ac.ebi.eva.commons.core.models.StudyType;
 
+import uk.ac.ebi.eva.commons.mongodb.configuration.EvaRepositoriesConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantGlobalStatsMongo;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.StreamSupport;
 
 
 import static org.junit.Assert.assertEquals;
@@ -53,7 +57,14 @@ import static org.junit.Assert.assertNotNull;
  * date, aggregation. Stats are not there because those are written by the statistics job.
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class})
+@UsingDataSet(locations = {
+        "/test-data/annotation_metadata.json",
+        "/test-data/annotations.json",
+        "/test-data/features.json",
+        "/test-data/files.json",
+        "/test-data/variants.json"})
+@TestPropertySource("classpath:eva.properties")
+@ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class, EvaRepositoriesConfiguration.class})
 public class VariantSourceMongoWriterTest {
 
     private static final String COLLECTION_FILES_NAME = "files";
@@ -67,6 +78,10 @@ public class VariantSourceMongoWriterTest {
     private static final StudyType STUDY_TYPE = StudyType.COLLECTION;
 
     private static final Aggregation AGGREGATION = Aggregation.NONE;
+
+    private static final String UNIQUE_INDEX = "unique";
+
+    private static final String BACKGROUND_INDEX = "background";
 
     @Autowired
     private MongoOperations mongoOperations;
@@ -83,19 +98,18 @@ public class VariantSourceMongoWriterTest {
 
     @Test
     public void shouldWriteAllFieldsIntoMongoDb() throws Exception {
-        DBCollection fileCollection = mongoOperations.getCollection (COLLECTION_FILES_NAME);
+        MongoCollection<Document> fileCollection = mongoOperations.getCollection (COLLECTION_FILES_NAME);
         VariantSourceMongoWriter filesWriter = new VariantSourceMongoWriter(
                 mongoOperations, COLLECTION_FILES_NAME);
 
         VariantSourceMongo variantSource = getVariantSource();
         filesWriter.write(Collections.singletonList(variantSource));
 
-        DBCursor cursor = fileCollection.find();
+        FindIterable<Document> cursor = fileCollection.find();
         int count = 0;
 
-        while (cursor.hasNext()) {
+        for (Document next: cursor) {
             count++;
-            DBObject next = cursor.next();
             assertNotNull(next.get(VariantSourceMongo.FILEID_FIELD));
             assertNotNull(next.get(VariantSourceMongo.FILENAME_FIELD));
             assertNotNull(next.get(VariantSourceMongo.STUDYID_FIELD));
@@ -105,7 +119,7 @@ public class VariantSourceMongoWriterTest {
             assertNotNull(next.get(VariantSourceMongo.SAMPLES_FIELD));
             assertNotNull(next.get(VariantSourceMongo.DATE_FIELD));
 
-            DBObject meta = (DBObject) next.get(VariantSourceMongo.METADATA_FIELD);
+            Document meta = (Document) next.get(VariantSourceMongo.METADATA_FIELD);
             assertNotNull(meta);
             assertNotNull(meta.get("ALT"));
             assertNotNull(meta.get("FILTER"));
@@ -117,7 +131,7 @@ public class VariantSourceMongoWriterTest {
 
     @Test
     public void shouldWriteSamplesWithDotsInName() throws Exception {
-        DBCollection fileCollection = mongoOperations.getCollection(COLLECTION_FILES_NAME);
+        MongoCollection<Document> fileCollection = mongoOperations.getCollection(COLLECTION_FILES_NAME);
 
         VariantSourceMongoWriter filesWriter = new VariantSourceMongoWriter(
                 mongoOperations, COLLECTION_FILES_NAME);
@@ -131,11 +145,10 @@ public class VariantSourceMongoWriterTest {
 
         filesWriter.write(Collections.singletonList(variantSource));
 
-        DBCursor cursor = fileCollection.find();
+        FindIterable<Document> cursor = fileCollection.find();
 
-        while (cursor.hasNext()) {
-            DBObject next = cursor.next();
-            DBObject samples = (DBObject) next.get(VariantSourceMongo.SAMPLES_FIELD);
+        for (Document next: cursor) {
+            Document samples = (Document) next.get(VariantSourceMongo.SAMPLES_FIELD);
             Set<String> keySet = samples.keySet();
 
             Set<String> expectedKeySet = new TreeSet<>(Arrays.asList("EUnothing", "NA£dot", "JP-dash"));
@@ -145,26 +158,28 @@ public class VariantSourceMongoWriterTest {
 
     @Test
     public void shouldCreateUniqueFileIndex() throws Exception {
-        DBCollection fileCollection = mongoOperations.getCollection (COLLECTION_FILES_NAME);
+        MongoCollection<Document> fileCollection = mongoOperations.getCollection (COLLECTION_FILES_NAME);
         VariantSourceMongoWriter filesWriter = new VariantSourceMongoWriter( mongoOperations, COLLECTION_FILES_NAME);
 
         VariantSourceMongo variantSource = getVariantSource();
         filesWriter.write(Collections.singletonList(variantSource));
 
-        List<DBObject> indexInfo = fileCollection.getIndexInfo();
+        ListIndexesIterable<Document> indexesInfo = fileCollection.listIndexes();
 
-        Set<String> createdIndexes = indexInfo.stream().map(index -> index.get("name").toString())
-                .collect(Collectors.toSet());
+        Set<String> createdIndexes = StreamSupport.stream(
+                indexesInfo.map(index -> index.get("name").toString()).spliterator(), false)
+                                                  .collect(Collectors.toSet());
         Set<String> expectedIndexes = new HashSet<>();
         expectedIndexes.addAll(Arrays.asList(VariantSourceMongoWriter.UNIQUE_FILE_INDEX_NAME, "_id_"));
         assertEquals(expectedIndexes, createdIndexes);
 
-        DBObject uniqueIndex = indexInfo.stream().filter(
-                index -> (VariantSourceMongoWriter.UNIQUE_FILE_INDEX_NAME.equals(index.get("name").toString())))
-                .findFirst().get();
-        assertNotNull(uniqueIndex);
-        assertEquals("true", uniqueIndex.get(VariantSourceMongoWriter.UNIQUE_INDEX).toString());
-        assertEquals("true", uniqueIndex.get(VariantSourceMongoWriter.BACKGROUND_INDEX).toString());
+        for(Document indexInfo: indexesInfo) {
+            if (VariantSourceMongoWriter.UNIQUE_FILE_INDEX_NAME.equals(indexInfo.get("name").toString())) {
+                assertNotNull(indexInfo);
+                assertEquals("true", indexInfo.get(UNIQUE_INDEX).toString());
+                assertEquals("true", indexInfo.get(BACKGROUND_INDEX).toString());
+            }
+        }
     }
 
     private VariantSourceMongo getVariantSource() throws Exception {

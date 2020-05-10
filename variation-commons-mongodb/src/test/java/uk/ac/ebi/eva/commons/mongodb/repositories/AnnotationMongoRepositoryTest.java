@@ -16,17 +16,23 @@
 package uk.ac.ebi.eva.commons.mongodb.repositories;
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import com.lordofthejars.nosqlunit.mongodb.MongoDbConfigurationBuilder;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import uk.ac.ebi.eva.commons.mongodb.configuration.EvaRepositoriesConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
+import uk.ac.ebi.eva.commons.mongodb.test.rule.FixSpringMongoDbRule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,25 +40,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class})
+@RunWith(SpringRunner.class)
+@TestPropertySource("classpath:eva.properties")
 @UsingDataSet(locations = {
         "/test-data/variants.json",
         "/test-data/annotations.json"})
+@ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class, EvaRepositoriesConfiguration.class})
 public class AnnotationMongoRepositoryTest {
 
-    public static final String TEST_DB = "test-db";
+    private static final String TEST_DB = "test-db";
 
     @Autowired
     private ApplicationContext applicationContext;
 
     @Rule
-    public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb(TEST_DB);
+    public MongoDbRule mongoDbRule = new FixSpringMongoDbRule(
+            MongoDbConfigurationBuilder.mongoDb().databaseName(TEST_DB).build());
 
     @Autowired
     private AnnotationRepository repository;
@@ -78,9 +85,9 @@ public class AnnotationMongoRepositoryTest {
     @Test
     public void testFindAnnotationsOfVariants() {
         List<VariantMongo> documents = new ArrayList<>();
-        documents.add(variantRepository.findOne("9_10099_A_T"));
-        documents.add(variantRepository.findOne("11_190020_G_A"));
-        documents.add(variantRepository.findOne("11_190010_G_A"));
+        documents.add(variantRepository.findById("9_10099_A_T").get());
+        documents.add(variantRepository.findById("11_190020_G_A").get());
+        documents.add(variantRepository.findById("11_190010_G_A").get());
         Set<AnnotationMongo> annotations = repository.findAnnotationsOfVariants(documents);
         assertNotNull(annotations);
         assertEquals(3, annotations.size());
@@ -89,9 +96,9 @@ public class AnnotationMongoRepositoryTest {
     @Test
     public void testAndIndex() {
         List<VariantMongo> documents = new ArrayList<>();
-        documents.add(variantRepository.findOne("9_10099_A_T"));
-        documents.add(variantRepository.findOne("11_190020_G_A"));
-        documents.add(variantRepository.findOne("11_190010_G_A"));
+        documents.add(variantRepository.findById("9_10099_A_T").get());
+        documents.add(variantRepository.findById("11_190020_G_A").get());
+        documents.add(variantRepository.findById("11_190010_G_A").get());
         Map<String, Set<AnnotationMongo>> annotations = repository.findAndIndexAnnotationsOfVariants(documents);
         assertNotNull(annotations);
         assertEquals(3, annotations.size());

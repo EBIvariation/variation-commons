@@ -16,20 +16,30 @@
 
 package uk.ac.ebi.eva.commons.mongodb.writers;
 
-import com.mongodb.DBCollection;
+import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import com.lordofthejars.nosqlunit.mongodb.MongoDbConfigurationBuilder;
+import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+import com.mongodb.client.MongoCollection;
+
+import org.bson.Document;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import uk.ac.ebi.eva.commons.mongodb.configuration.EvaRepositoriesConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.entities.SampleMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.SamplePhenotypeMongo;
+import uk.ac.ebi.eva.commons.mongodb.test.rule.FixSpringMongoDbRule;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,8 +50,17 @@ import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class})
+@UsingDataSet(locations = {
+        "/test-data/annotation_metadata.json",
+        "/test-data/annotations.json",
+        "/test-data/features.json",
+        "/test-data/files.json",
+        "/test-data/variants.json"})
+@TestPropertySource("classpath:eva.properties")
+@ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class, EvaRepositoriesConfiguration.class})
 public class SampleMongoWriterTest {
+
+    private static final String TEST_DB = "test-db";
 
     @Autowired
     private MongoOperations mongoOperations;
@@ -49,9 +68,17 @@ public class SampleMongoWriterTest {
     @Value("${eva.mongo.collections.samples}")
     private String samplesCollection;
 
-    private DBCollection dbCollection;
+    private MongoCollection dbCollection;
 
     private SampleMongoWriter sampleMongoWriter;
+
+    //Required by nosql-unit
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    @Rule
+    public MongoDbRule mongoDbRule = new FixSpringMongoDbRule(
+            MongoDbConfigurationBuilder.mongoDb().databaseName(TEST_DB).build());
 
     @Before
     public void setUp() {
@@ -120,7 +147,7 @@ public class SampleMongoWriterTest {
         sampleMongoWriter.write(Collections.singletonList(sample2));
 
         assertEquals(1, dbCollection.count());
-        assertEquals("id1", dbCollection.find().next().get("_id"));
+        assertEquals("id1", ((Document)dbCollection.find().first()).get("_id"));
     }
 
     private Set<SamplePhenotypeMongo> buildPhenotypeSet(SamplePhenotypeMongo... phenotypes) {

@@ -18,85 +18,76 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.configuration;
 
-import com.github.fakemongo.Fongo;
-import com.mongodb.MongoClient;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.data.mongodb.MongoDbFactory;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
-import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper;
-import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.util.Assert;
 
 @Configuration
-@Import({EvaRepositoriesConfiguration.class})
-@PropertySource({"classpath:eva.properties"})
+@EntityScan(basePackages = {"uk.ac.ebi.eva.commons.mongodb.entities"})
+@EnableMongoRepositories(basePackages = "uk.ac.ebi.eva.commons.mongodb.repositories")
+@EnableMongoAuditing
+@AutoConfigureDataMongo
 public class MongoRepositoryTestConfiguration {
 
+    @Value("${mongodb.read-preference}")
+    private String readPreference;
+
+    @Value("${eva.mongo.collections.annotation-metadata:#{null}}")
+    private String collectionAnnotationMetadata;
+
+    @Value("${eva.mongo.collections.annotations:#{null}}")
+    private String collectionAnnotations;
+
+    @Value("${eva.mongo.collections.features:#{null}}")
+    private String collectionFeatures;
+
+    @Value("${eva.mongo.collections.variants:#{null}}")
+    private String collectionVariants;
+
+    @Value("${eva.mongo.collections.files:#{null}}")
+    private String collectionFiles;
+
+    @Value("${eva.mongo.collections.samples:#{null}}")
+    private String collectionSamples;
+
     @Bean
-    public String mongoCollectionsAnnotationMetadata(
-            @Value("${eva.mongo.collections.annotation-metadata:#{null}}") String collectionAnnotationMetadata) {
+    public String mongoCollectionsAnnotationMetadata() {
         Assert.notNull(collectionAnnotationMetadata);
         return collectionAnnotationMetadata;
     }
 
     @Bean
-    public String mongoCollectionsAnnotations(
-            @Value("${eva.mongo.collections.annotations:#{null}}") String collectionAnnotations) {
+    public String mongoCollectionsAnnotations() {
         Assert.notNull(collectionAnnotations);
         return collectionAnnotations;
     }
 
     @Bean
-    public String mongoCollectionsFeatures(
-            @Value("${eva.mongo.collections.features:#{null}}") String collectionFeatures) {
+    public String mongoCollectionsFeatures() {
         Assert.notNull(collectionFeatures);
         return collectionFeatures;
     }
 
     @Bean
-    public String mongoCollectionsVariants(
-            @Value("${eva.mongo.collections.variants:#{null}}") String collectionVariants) {
+    public String mongoCollectionsVariants() {
         Assert.notNull(collectionVariants);
         return collectionVariants;
     }
 
     @Bean
-    public String mongoCollectionsFiles(@Value("${eva.mongo.collections.files:#{null}}") String collectionFiles) {
+    public String mongoCollectionsFiles() {
         Assert.notNull(collectionFiles);
         return collectionFiles;
     }
 
     @Bean
-    public String mongoCollectionsSamples(@Value("${eva.mongo.collections.samples:#{null}}") String collectionSamples) {
+    public String mongoCollectionsSamples() {
         Assert.notNull(collectionSamples);
         return collectionSamples;
-    }
-
-    @Bean
-    public MongoClient mongoClient() {
-        return new Fongo("defaultInstance").getMongo();
-    }
-
-    @Bean
-    public MongoTemplate mongoTemplate(MongoDbFactory mongoDbFactory,
-                                       MappingMongoConverter mappingMongoConverter) throws Exception {
-        mappingMongoConverter.setTypeMapper(new DefaultMongoTypeMapper(null));
-        // Customization: replace dots with pound sign
-        mappingMongoConverter.setMapKeyDotReplacement("£");
-        return new MongoTemplate(mongoDbFactory, mappingMongoConverter);
-    }
-
-    @Bean
-    public MongoDbFactory mongoDbFactory(MongoClient mongoClient) throws Exception {
-        return new SimpleMongoDbFactory(mongoClient, this.getDatabaseName());
-    }
-
-    private String getDatabaseName() {
-        return "test-db";
     }
 }

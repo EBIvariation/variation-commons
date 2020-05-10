@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,15 +31,19 @@ import uk.ac.ebi.eva.commons.jpa.models.metadata.FileGenerator;
 import uk.ac.ebi.eva.commons.jpa.models.metadata.Organisation;
 import uk.ac.ebi.eva.commons.jpa.models.metadata.Study;
 
+import java.util.Optional;
+
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
+@TestPropertySource({"classpath:application.properties"})
 @ContextConfiguration(classes = DatabaseTestConfiguration.class)
 public class StudyDatabaseTest {
 
@@ -207,11 +212,13 @@ public class StudyDatabaseTest {
         assertEquals(study2, savedStudy2);
 
         // check that just study2 has a file generator, and that file generator is the analysis 1
-        Study studyFromRepository1 = repository.findOne(savedStudy1.getId());
-        Study studyFromRepository2 = repository.findOne(savedStudy2.getId());
-        assertEquals(studyFromRepository1.getFileGenerators().size(), 0);
-        assertEquals(studyFromRepository2.getFileGenerators().size(), 1);
-        assertEquals(studyFromRepository2.getFileGenerators().iterator().next(), analysis1);
+        Optional<Study> studyFromRepository1 = repository.findById(savedStudy1.getId());
+        Optional<Study> studyFromRepository2 = repository.findById(savedStudy2.getId());
+        assertTrue(studyFromRepository1.isPresent());
+        assertTrue(studyFromRepository2.isPresent());
+        assertEquals(studyFromRepository1.get().getFileGenerators().size(), 0);
+        assertEquals(studyFromRepository2.get().getFileGenerators().size(), 1);
+        assertEquals(studyFromRepository2.get().getFileGenerators().iterator().next(), analysis1);
 
         // check that just one analysis have been saved and that can be retrieved using Analysis
         // and FileGenerator repositories

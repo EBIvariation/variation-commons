@@ -15,20 +15,27 @@
  */
 package uk.ac.ebi.eva.commons.mongodb;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
+import com.lordofthejars.nosqlunit.mongodb.MongoDbConfigurationBuilder;
+import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+
+import org.bson.Document;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
+import uk.ac.ebi.eva.commons.mongodb.configuration.EvaRepositoriesConfiguration;
+import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
-import uk.ac.ebi.eva.commons.mongodb.configuration.MongoOperationsConfiguration;
+import uk.ac.ebi.eva.commons.mongodb.test.rule.FixSpringMongoDbRule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,9 +50,11 @@ import static uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceE
 import static uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo.STUDYID_FIELD;
 
 @RunWith(SpringRunner.class)
-@TestPropertySource({"classpath:test-mongo.properties"})
-@ContextConfiguration(classes = {MongoOperationsConfiguration.class})
+@TestPropertySource({"classpath:eva.properties"})
+@ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class, EvaRepositoriesConfiguration.class})
 public class VariantSourceEntryConversionTest {
+
+    private static final String TEST_DB = "test-db";
 
     public static final String FILE_ID = "f1";
     public static final String STUDY_ID = "s1";
@@ -53,15 +62,23 @@ public class VariantSourceEntryConversionTest {
     @Autowired
     private MongoOperations mongoOperations;
 
+    //Required by nosql-unit
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    @Rule
+    public MongoDbRule mongoDbRule = new FixSpringMongoDbRule(
+            MongoDbConfigurationBuilder.mongoDb().databaseName(TEST_DB).build());
+
     @Test
     public void testConvertVariantSourceEntryWithoutStatsToMongo() {
         VariantSourceEntryMongo variantSourceEntryMongo = new VariantSourceEntryMongo(createVariantSourceEntry());
-        DBObject converted = (DBObject) mongoOperations.getConverter().convertToMongoType(variantSourceEntryMongo);
+        Document converted = (Document) mongoOperations.getConverter().convertToMongoType(variantSourceEntryMongo);
         Assert.assertEquals(FILE_ID, converted.get(FILEID_FIELD));
         Assert.assertEquals(STUDY_ID, converted.get(STUDYID_FIELD));
         Assert.assertEquals(FORMAT, converted.get(FORMAT_FIELD));
-        Assert.assertEquals(3, ((BasicDBObject) converted.get(ATTRIBUTES_FIELD)).size());
-        Assert.assertEquals(3, ((BasicDBObject) converted.get(SAMPLES_FIELD)).size());
+        Assert.assertEquals(3, ((Document) converted.get(ATTRIBUTES_FIELD)).size());
+        Assert.assertEquals(3, ((Document) converted.get(SAMPLES_FIELD)).size());
     }
 
     private VariantSourceEntry createVariantSourceEntry() {
@@ -97,23 +114,23 @@ public class VariantSourceEntryConversionTest {
         Assert.assertEquals(3, variantSource.getSamples().size());
     }
 
-    private BasicDBObject createMongoVariantSourceEntry() {
-        BasicDBObject mongoFile = new BasicDBObject(FILEID_FIELD, FILE_ID)
+    private Document createMongoVariantSourceEntry() {
+        Document mongoFile = new Document(FILEID_FIELD, FILE_ID)
                 .append(STUDYID_FIELD, STUDY_ID);
         mongoFile.append(ATTRIBUTES_FIELD,
-                         new BasicDBObject("QUAL", "0.01").append("AN", "2")
+                         new Document("QUAL", "0.01").append("AN", "2")
                         .append("MAX" + VariantSourceEntryMongo.CHARACTER_TO_REPLACE_DOTS + "PROC", "2"));
         mongoFile.append(FORMAT_FIELD, FORMAT);
-        BasicDBObject genotypeCodes = new BasicDBObject();
+        Document genotypeCodes = new Document();
         genotypeCodes.append("def", "0/0");
         genotypeCodes.append("0/1", Arrays.asList(1));
         genotypeCodes.append("1/1", Arrays.asList(2));
         mongoFile.append(SAMPLES_FIELD, genotypeCodes);
 
-        mongoFile.put(SAMPLES_FIELD, new BasicDBObject());
-        ((DBObject) mongoFile.get(SAMPLES_FIELD)).put("def", "0/0");
-        ((DBObject) mongoFile.get(SAMPLES_FIELD)).put("0/1", Arrays.asList(25));
-        ((DBObject) mongoFile.get(SAMPLES_FIELD)).put("1/1", Arrays.asList(35));
+        mongoFile.put(SAMPLES_FIELD, new Document());
+        ((Document) mongoFile.get(SAMPLES_FIELD)).put("def", "0/0");
+        ((Document) mongoFile.get(SAMPLES_FIELD)).put("0/1", Arrays.asList(25));
+        ((Document) mongoFile.get(SAMPLES_FIELD)).put("1/1", Arrays.asList(35));
 
         return mongoFile;
     }
