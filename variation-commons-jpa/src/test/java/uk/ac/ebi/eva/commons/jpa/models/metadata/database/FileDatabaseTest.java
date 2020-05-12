@@ -21,7 +21,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.eva.commons.jpa.models.metadata.DatabaseTestConfiguration;
@@ -34,7 +33,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@TestPropertySource({"classpath:application.properties"})
 @Transactional
 @ContextConfiguration(classes = DatabaseTestConfiguration.class)
 public class FileDatabaseTest {
