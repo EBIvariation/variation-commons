@@ -66,6 +66,6 @@ public interface VariantRepository extends MongoRepository<VariantMongo, String>
     Stream<VariantMongo> findAllByChromosomeAndStudyInSorted(String chr, List<String> studyIds, Sort sort);
 
     default VariantMongo findOneByChromosomeAndStudyInSorted(String chr, List<String> studyIds, Sort sort) {
-        return findAllByChromosomeAndStudyInSorted(chr, studyIds, sort).findFirst().get();
+         return findAllByChromosomeAndStudyInSorted(chr, studyIds, sort).findFirst().orElse(null);
     }
 }
