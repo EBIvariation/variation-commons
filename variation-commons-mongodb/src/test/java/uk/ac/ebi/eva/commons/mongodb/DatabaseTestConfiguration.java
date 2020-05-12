@@ -29,9 +29,17 @@ public class DatabaseTestConfiguration {
     @Value("${db.collections.annotation-metadata.name}")
     public String mongoCollectionsAnnotationMetadata;
 
+    @Value("${db.collections.default-locus-range-metadata.name}")
+    public String mongoCollectionsDefaultLocusRangeMetadata;
+
     @Bean
     public String mongoCollectionsAnnotationMetadata() {
         return mongoCollectionsAnnotationMetadata;
+    }
+
+    @Bean
+    public String mongoCollectionsDefaultLocusRangeMetadata() {
+        return mongoCollectionsDefaultLocusRangeMetadata;
     }
 
 }
