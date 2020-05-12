@@ -34,59 +34,42 @@ import org.springframework.util.Assert;
 @AutoConfigureDataMongo
 public class MongoRepositoryTestConfiguration {
 
-    @Value("${mongodb.read-preference}")
-    private String readPreference;
-
-    @Value("${eva.mongo.collections.annotation-metadata:#{null}}")
-    private String collectionAnnotationMetadata;
-
-    @Value("${eva.mongo.collections.annotations:#{null}}")
-    private String collectionAnnotations;
-
-    @Value("${eva.mongo.collections.features:#{null}}")
-    private String collectionFeatures;
-
-    @Value("${eva.mongo.collections.variants:#{null}}")
-    private String collectionVariants;
-
-    @Value("${eva.mongo.collections.files:#{null}}")
-    private String collectionFiles;
-
-    @Value("${eva.mongo.collections.samples:#{null}}")
-    private String collectionSamples;
-
     @Bean
-    public String mongoCollectionsAnnotationMetadata() {
+    public String mongoCollectionsAnnotationMetadata(
+            @Value("${eva.mongo.collections.annotation-metadata:#{null}}") String collectionAnnotationMetadata) {
         Assert.notNull(collectionAnnotationMetadata);
         return collectionAnnotationMetadata;
     }
 
     @Bean
-    public String mongoCollectionsAnnotations() {
+    public String mongoCollectionsAnnotations(
+            @Value("${eva.mongo.collections.annotations:#{null}}") String collectionAnnotations) {
         Assert.notNull(collectionAnnotations);
         return collectionAnnotations;
     }
 
     @Bean
-    public String mongoCollectionsFeatures() {
+    public String mongoCollectionsFeatures(
+            @Value("${eva.mongo.collections.features:#{null}}") String collectionFeatures) {
         Assert.notNull(collectionFeatures);
         return collectionFeatures;
     }
 
     @Bean
-    public String mongoCollectionsVariants() {
+    public String mongoCollectionsVariants(
+            @Value("${eva.mongo.collections.variants:#{null}}") String collectionVariants) {
         Assert.notNull(collectionVariants);
         return collectionVariants;
     }
 
     @Bean
-    public String mongoCollectionsFiles() {
+    public String mongoCollectionsFiles(@Value("${eva.mongo.collections.files:#{null}}") String collectionFiles) {
         Assert.notNull(collectionFiles);
         return collectionFiles;
     }
 
     @Bean
-    public String mongoCollectionsSamples() {
+    public String mongoCollectionsSamples(@Value("${eva.mongo.collections.samples:#{null}}") String collectionSamples) {
         Assert.notNull(collectionSamples);
         return collectionSamples;
     }
