@@ -466,38 +466,34 @@ public class VariantRepositoryTest {
         Sort ascendingStartOrder = new Sort(Sort.Direction.ASC, "start");
         Sort descendingStartOrder = new Sort(Sort.Direction.DESC, "start");
 
-        //Non-existent variant
-        assertTrue(variantRepository.findAllByChromosomeAndStudyInSorted("11", Collections.singletonList("PRJEB"),
-                                                                         ascendingStartOrder).isEmpty());
-
         // first and last variant for one study
         VariantMongo firstVariant =
-                variantRepository.findAllByChromosomeAndStudyInSorted("11", Collections.singletonList("PRJEB8661"),
-                                                                      ascendingStartOrder).get(0);
+                variantRepository.findOneByChromosomeAndStudyInSorted("11", Collections.singletonList("PRJEB8661"),
+                                                                      ascendingStartOrder);
         VariantMongo lastVariant =
-                variantRepository.findAllByChromosomeAndStudyInSorted("11", Collections.singletonList("PRJEB8661"),
-                                                                      descendingStartOrder).get(0);
+                variantRepository.findOneByChromosomeAndStudyInSorted("11", Collections.singletonList("PRJEB8661"),
+                                                                      descendingStartOrder);
         assertEquals(193051L, firstVariant.getStart());
         assertEquals(193959L, lastVariant.getStart());
 
         // first and last variant for two studies
         firstVariant =
-                variantRepository.findAllByChromosomeAndStudyInSorted("11", Arrays.asList("PRJEB8661", "PRJEB6930"),
-                                                                      ascendingStartOrder).get(0);
+                variantRepository.findOneByChromosomeAndStudyInSorted("11", Arrays.asList("PRJEB8661", "PRJEB6930"),
+                                                                      ascendingStartOrder);
         lastVariant =
-                variantRepository.findAllByChromosomeAndStudyInSorted("11", Arrays.asList("PRJEB8661", "PRJEB6930"),
-                                                                      descendingStartOrder).get(0);
+                variantRepository.findOneByChromosomeAndStudyInSorted("11", Arrays.asList("PRJEB8661", "PRJEB6930"),
+                                                                      descendingStartOrder);
         assertEquals(190010L, firstVariant.getStart());
         assertEquals(194190L, lastVariant.getStart());
 
 
         // in a chromosome with one variant, the first and the last variants are the same
         firstVariant =
-                variantRepository.findAllByChromosomeAndStudyInSorted("9", Collections.singletonList("PRJEB5829"),
-                                                                      ascendingStartOrder).get(0);
+                variantRepository.findOneByChromosomeAndStudyInSorted("9", Collections.singletonList("PRJEB5829"),
+                                                                      ascendingStartOrder);
         lastVariant =
-                variantRepository.findAllByChromosomeAndStudyInSorted("9", Collections.singletonList("PRJEB5829"),
-                                                                      descendingStartOrder).get(0);
+                variantRepository.findOneByChromosomeAndStudyInSorted("9", Collections.singletonList("PRJEB5829"),
+                                                                      descendingStartOrder);
         assertEquals(firstVariant.getId(), lastVariant.getId());
         assertEquals(10099L, firstVariant.getStart());
 

@@ -287,9 +287,8 @@ public class VariantWithSamplesAndAnnotationsService {
      */
     public Long findChromosomeLowestReportedCoordinate(String chromosome, List<String> studyIds) {
         Sort startAscendingSort = new Sort(Sort.Direction.ASC, VariantMongo.START_FIELD);
-        List<VariantMongo> variants = variantRepository.findAllByChromosomeAndStudyInSorted(chromosome, studyIds,
-                                                                                            startAscendingSort);
-        VariantMongo variant = variants.isEmpty() ? null:variants.get(0);
+        VariantMongo variant = variantRepository.findOneByChromosomeAndStudyInSorted(chromosome, studyIds,
+                                                                                     startAscendingSort);
         return getVariantStart(variant);
     }
 
@@ -301,9 +300,8 @@ public class VariantWithSamplesAndAnnotationsService {
      */
     public Long findChromosomeHighestReportedCoordinate(String chromosome, List<String> studyIds) {
         Sort startDescendingSort = new Sort(Sort.Direction.DESC, VariantMongo.START_FIELD);
-        List<VariantMongo> variants = variantRepository.findAllByChromosomeAndStudyInSorted(chromosome, studyIds,
-                                                                                            startDescendingSort);
-        VariantMongo variant = variants.isEmpty() ? null:variants.get(0);
+        VariantMongo variant = variantRepository.findOneByChromosomeAndStudyInSorted(chromosome, studyIds,
+                                                                                     startDescendingSort);
         return getVariantStart(variant);
     }
 

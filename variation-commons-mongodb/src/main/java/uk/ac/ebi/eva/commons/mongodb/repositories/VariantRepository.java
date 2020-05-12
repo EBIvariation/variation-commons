@@ -27,6 +27,7 @@ import uk.ac.ebi.eva.commons.core.models.VariantType;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Spring MongoRepository for {@link VariantMongo} class.
@@ -62,5 +63,9 @@ public interface VariantRepository extends MongoRepository<VariantMongo, String>
                                                                  List<String> studyIds);
 
     @Query(value = "{'chr': ?0, 'files.sid': {$in : ?1}}}")
-    List<VariantMongo> findAllByChromosomeAndStudyInSorted(String chr, List<String> studyIds, Sort sort);
+    Stream<VariantMongo> findAllByChromosomeAndStudyInSorted(String chr, List<String> studyIds, Sort sort);
+
+    default VariantMongo findOneByChromosomeAndStudyInSorted(String chr, List<String> studyIds, Sort sort) {
+        return findAllByChromosomeAndStudyInSorted(chr, studyIds, sort).findFirst().get();
+    }
 }
