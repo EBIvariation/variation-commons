@@ -102,7 +102,7 @@ public class VariantMongoWriter extends MongoItemWriter<IVariant> {
     }
 
     @Override
-    protected void doWrite(List<? extends IVariant> variants) {
+    public void doWrite(List<? extends IVariant> variants) {
         BulkWriteOperation bulk = mongoOperations.getCollection(collection).initializeUnorderedBulkOperation();
         for (IVariant variant : variants) {
             bulk.find(generateQuery(variant)).upsert().updateOne(generateUpdate(variant));
