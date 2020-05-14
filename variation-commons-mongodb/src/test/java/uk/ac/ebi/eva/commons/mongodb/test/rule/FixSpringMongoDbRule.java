@@ -22,7 +22,6 @@ import com.lordofthejars.nosqlunit.mongodb.SpringMongoDbRule;
 
 /**
  * Temporary fix until nosql unit rc-6 or final is released
- * TODO Move this to the core module (used in the release and deprecate module)
  */
 public class FixSpringMongoDbRule extends SpringMongoDbRule {
 
