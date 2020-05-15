@@ -16,7 +16,9 @@
 package uk.ac.ebi.eva.commons.mongodb.repositories;
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import com.lordofthejars.nosqlunit.mongodb.MongoDbConfigurationBuilder;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,22 +29,26 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
+
 import uk.ac.ebi.eva.commons.core.models.IVariantGlobalStats;
+import uk.ac.ebi.eva.commons.mongodb.configuration.EvaRepositoriesConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
+import uk.ac.ebi.eva.commons.mongodb.test.rule.FixSpringMongoDbRule;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class})
+@RunWith(SpringRunner.class)
+@TestPropertySource("classpath:eva.properties")
 @UsingDataSet(locations = {"/test-data/files.json"})
+@ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class, EvaRepositoriesConfiguration.class})
 public class VariantSourceRepositoryTest {
 
     protected static Logger logger = LoggerFactory.getLogger(VariantSourceRepositoryTest.class);
@@ -62,7 +68,8 @@ public class VariantSourceRepositoryTest {
     private VariantSourceRepository repository;
 
     @Rule
-    public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb(TEST_DB);
+    public MongoDbRule mongoDbRule = new FixSpringMongoDbRule(
+            MongoDbConfigurationBuilder.mongoDb().databaseName(TEST_DB).build());
 
     @Test
     public void testFindAll() {

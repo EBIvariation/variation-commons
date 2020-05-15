@@ -15,26 +15,35 @@
  */
 package uk.ac.ebi.eva.commons.mongodb;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
+import com.lordofthejars.nosqlunit.mongodb.MongoDbConfigurationBuilder;
+import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+
+import org.bson.Document;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
 import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
+import uk.ac.ebi.eva.commons.mongodb.configuration.EvaRepositoriesConfiguration;
+import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantStatisticsMongo;
-import uk.ac.ebi.eva.commons.mongodb.configuration.MongoOperationsConfiguration;
+import uk.ac.ebi.eva.commons.mongodb.test.rule.FixSpringMongoDbRule;
 
 @RunWith(SpringRunner.class)
-@TestPropertySource({"classpath:test-mongo.properties"})
-@ContextConfiguration(classes = {MongoOperationsConfiguration.class})
+@TestPropertySource({"classpath:eva.properties"})
+@ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class, EvaRepositoriesConfiguration.class})
 public class VariantStatsConversionTest {
+
+    private static final String TEST_DB = "test-db";
 
     public static final String FILE_ID = "f1";
     public static final String STUDY_ID = "s1";
@@ -48,6 +57,14 @@ public class VariantStatsConversionTest {
 
     @Autowired
     private MongoOperations mongoOperations;
+
+    //Required by nosql-unit
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    @Rule
+    public MongoDbRule mongoDbRule = new FixSpringMongoDbRule(
+            MongoDbConfigurationBuilder.mongoDb().databaseName(TEST_DB).build());
 
     @Test
     public void testConvertVariantStatsToMongo() {
@@ -71,7 +88,7 @@ public class VariantStatsConversionTest {
         stats.addGenotype(new Genotype("0/1"), 50);
         stats.addGenotype(new Genotype("1/1"), 10);
         VariantStatisticsMongo variantStatsMongo = new VariantStatisticsMongo(STUDY_ID, FILE_ID, COHORT_ID, stats);
-        DBObject converted = (DBObject) mongoOperations.getConverter().convertToMongoType(variantStatsMongo);
+        Document converted = (Document) mongoOperations.getConverter().convertToMongoType(variantStatsMongo);
 
         Assert.assertEquals(STUDY_ID, converted.get(VariantStatisticsMongo.STUDY_ID));
         Assert.assertEquals(FILE_ID, converted.get(VariantStatisticsMongo.FILE_ID));
@@ -82,13 +99,13 @@ public class VariantStatsConversionTest {
         Assert.assertEquals(MISSING_ALLELES, converted.get(VariantStatisticsMongo.MISSALLELE_FIELD));
         Assert.assertEquals(MISSING_GENOTYPES, converted.get(VariantStatisticsMongo.MISSGENOTYPE_FIELD));
         Assert.assertNotNull(converted.get(VariantStatisticsMongo.NUMGT_FIELD));
-        Assert.assertEquals(3, ((BasicDBObject) converted.get(VariantStatisticsMongo.NUMGT_FIELD)).size());
+        Assert.assertEquals(3, ((Document) converted.get(VariantStatisticsMongo.NUMGT_FIELD)).size());
 
     }
 
     @Test
     public void testConvertMongoToVariantStats() {
-        BasicDBObject mongoStats = new BasicDBObject(VariantStatisticsMongo.MAF_FIELD, 0.1);
+        Document mongoStats = new Document(VariantStatisticsMongo.MAF_FIELD, 0.1);
         mongoStats.append(VariantStatisticsMongo.STUDY_ID, STUDY_ID);
         mongoStats.append(VariantStatisticsMongo.FILE_ID, FILE_ID);
         mongoStats.append(VariantStatisticsMongo.COHORT_ID, COHORT_ID);
@@ -98,7 +115,7 @@ public class VariantStatsConversionTest {
         mongoStats.append(VariantStatisticsMongo.MISSALLELE_FIELD, 10);
         mongoStats.append(VariantStatisticsMongo.MISSGENOTYPE_FIELD, 5);
 
-        BasicDBObject genotypes = new BasicDBObject();
+        Document genotypes = new Document();
         genotypes.append("0/0", 100);
         genotypes.append("0/1", 50);
         genotypes.append("1/1", 10);

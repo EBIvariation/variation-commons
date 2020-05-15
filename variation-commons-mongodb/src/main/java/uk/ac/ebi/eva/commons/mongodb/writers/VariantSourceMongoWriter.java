@@ -15,7 +15,9 @@
  */
 
 package uk.ac.ebi.eva.commons.mongodb.writers;
-import com.mongodb.BasicDBObject;
+
+import com.mongodb.client.model.IndexOptions;
+import org.bson.Document;
 import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.util.Assert;
@@ -23,7 +25,6 @@ import org.springframework.util.Assert;
 import uk.ac.ebi.eva.commons.core.models.IVariantSource;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,12 +34,6 @@ import java.util.stream.Collectors;
 public class VariantSourceMongoWriter extends MongoItemWriter<IVariantSource> {
 
     public static final String UNIQUE_FILE_INDEX_NAME = "unique_file";
-
-    public static final String BACKGROUND_INDEX = "background";
-
-    public static final String UNIQUE_INDEX = "unique";
-
-    public static final String INDEX_NAME = "name";
 
     private MongoOperations mongoOperations;
 
@@ -58,11 +53,11 @@ public class VariantSourceMongoWriter extends MongoItemWriter<IVariantSource> {
     }
 
     private void createIndexes() {
+        IndexOptions indexOptions = new IndexOptions().background(true).unique(true).name(UNIQUE_FILE_INDEX_NAME);
         mongoOperations.getCollection(collection).createIndex(
-                new BasicDBObject(VariantSourceMongo.STUDYID_FIELD, 1).append(VariantSourceMongo.FILEID_FIELD, 1)
-                        .append(VariantSourceMongo.FILENAME_FIELD, 1),
-                new BasicDBObject(BACKGROUND_INDEX, true).append(UNIQUE_INDEX, true)
-                        .append(INDEX_NAME, UNIQUE_FILE_INDEX_NAME));
+                new Document(VariantSourceMongo.STUDYID_FIELD, 1).append(VariantSourceMongo.FILEID_FIELD, 1)
+                                                                 .append(VariantSourceMongo.FILENAME_FIELD, 1),
+                indexOptions);
     }
 
     @Override

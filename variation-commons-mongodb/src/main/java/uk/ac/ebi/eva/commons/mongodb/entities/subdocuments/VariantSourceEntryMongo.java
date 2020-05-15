@@ -15,10 +15,11 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.entities.subdocuments;
 
-import com.mongodb.BasicDBObject;
+import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.mapping.Field;
+
 import uk.ac.ebi.eva.commons.core.models.IVariantSourceEntry;
 import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.core.utils.CompressionHelper;
@@ -66,7 +67,7 @@ public class VariantSourceEntryMongo {
     private String[] alternates;
 
     @Field(ATTRIBUTES_FIELD)
-    private BasicDBObject attributes;
+    private Document attributes;
 
     @Field(FORMAT_FIELD)
     private String format;
@@ -115,7 +116,7 @@ public class VariantSourceEntryMongo {
         }
     }
 
-    private BasicDBObject buildSampleData(List<Map<String, String>> samplesData) {
+    private Document buildSampleData(List<Map<String, String>> samplesData) {
         Map<Genotype, List<Integer>> genotypeCodes = classifySamplesByGenotype(samplesData);
 
         // Get the most common genotype
@@ -127,7 +128,7 @@ public class VariantSourceEntryMongo {
         // "def" : 0|0,
         // "0|1" : [ 41, 311, 342, 358, 881, 898, 903 ],
         // "1|0" : [ 262, 290, 300, 331, 343, 369, 374, 391, 879, 918, 930 ]
-        BasicDBObject mongoSamples = new BasicDBObject();
+        Document mongoSamples = new Document();
         if (mostCommonGenotype != null) {
             mongoSamples.append(DEFAULT, mostCommonGenotype.generateDatabaseString());
         }
@@ -172,8 +173,8 @@ public class VariantSourceEntryMongo {
         return genotypeCodes;
     }
 
-    private BasicDBObject buildAttributes(Map<String, String> attributes) {
-        BasicDBObject attrs = null;
+    private Document buildAttributes(Map<String, String> attributes) {
+        Document attrs = null;
         for (Map.Entry<String, String> entry : attributes.entrySet()) {
             Object value = entry.getValue();
             if (entry.getKey().equals("src")) {
@@ -191,7 +192,7 @@ public class VariantSourceEntryMongo {
             }
 
             if (attrs == null) {
-                attrs = new BasicDBObject(entry.getKey().replace('.', CHARACTER_TO_REPLACE_DOTS), value);
+                attrs = new Document(entry.getKey().replace('.', CHARACTER_TO_REPLACE_DOTS), value);
             } else {
                 attrs.append(entry.getKey().replace('.', CHARACTER_TO_REPLACE_DOTS), value);
             }

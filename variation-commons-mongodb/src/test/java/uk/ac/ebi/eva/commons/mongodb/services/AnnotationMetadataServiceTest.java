@@ -16,27 +16,32 @@
 package uk.ac.ebi.eva.commons.mongodb.services;
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import com.lordofthejars.nosqlunit.mongodb.MongoDbConfigurationBuilder;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import uk.ac.ebi.eva.commons.core.models.AnnotationMetadata;
+import uk.ac.ebi.eva.commons.mongodb.configuration.EvaRepositoriesConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
+import uk.ac.ebi.eva.commons.mongodb.test.rule.FixSpringMongoDbRule;
 
 import java.util.List;
 
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class})
+@RunWith(SpringRunner.class)
+@TestPropertySource("classpath:eva.properties")
 @UsingDataSet(locations = {"/test-data/annotation_metadata.json"})
+@ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class, EvaRepositoriesConfiguration.class})
 public class AnnotationMetadataServiceTest {
 
     private static final String TEST_DB = "test-db";
@@ -48,7 +53,8 @@ public class AnnotationMetadataServiceTest {
     private AnnotationMetadataService service;
 
     @Rule
-    public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb(TEST_DB);
+    public MongoDbRule mongoDbRule = new FixSpringMongoDbRule(
+            MongoDbConfigurationBuilder.mongoDb().databaseName(TEST_DB).build());
 
     @Test
     public void testFindAllByOrderByCacheVersionDescVepVersionDescSize() throws Exception {

@@ -24,7 +24,7 @@ import uk.ac.ebi.eva.commons.core.models.IAnnotationMetadata;
 /**
  * Mapped class for annotations metadata collection in mongo
  */
-@Document(collection = "#{mongoCollectionsAnnotationMetadata}")
+@Document(collection = "#{@mongoCollectionsAnnotationMetadata}")
 public class AnnotationMetadataMongo implements IAnnotationMetadata {
 
     private static final String VEP_VERSION_FIELD = "vepv";

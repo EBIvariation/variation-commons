@@ -35,13 +35,14 @@ import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.AnnotationIndexMongo;
 import uk.ac.ebi.eva.commons.mongodb.filter.VariantRepositoryFilter;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Concrete implementation of the VariantRepository interface (relationship inferred by Spring),
- * due to a custom DBObject to VariantEntity conversion
+ * due to a custom Document to VariantEntity conversion
  * <p>
  * <p>It also implements the VariantRepositoryCustom interface,
  * to provide an explicit implementation of the region query, using a margin for efficiency.
@@ -104,8 +105,9 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
 
     @Override
     public Set<String> findDistinctChromosomes() {
-        return new HashSet<>(mongoTemplate.getCollection(mongoTemplate.getCollectionName(VariantMongo.class))
-                .distinct(VariantMongo.CHROMOSOME_FIELD));
+        return StreamSupport.stream(mongoTemplate.getCollection(mongoTemplate.getCollectionName(VariantMongo.class))
+                                                 .distinct(VariantMongo.CHROMOSOME_FIELD, String.class).spliterator(),
+                                    false).collect(Collectors.toSet());
     }
 
     @Override

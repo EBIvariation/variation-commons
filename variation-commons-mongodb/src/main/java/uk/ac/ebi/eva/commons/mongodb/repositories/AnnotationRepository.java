@@ -16,6 +16,7 @@
 package uk.ac.ebi.eva.commons.mongodb.repositories;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
 import uk.ac.ebi.eva.commons.core.models.IAnnotationMetadata;
 import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo;
@@ -31,6 +32,7 @@ import java.util.Set;
 /**
  * Repository to access the annotation collection.
  */
+@Repository
 public interface AnnotationRepository extends MongoRepository<AnnotationMongo, String> {
 
     Set<AnnotationMongo> findByIdIn(Collection<String> ids);
@@ -77,14 +79,14 @@ public interface AnnotationRepository extends MongoRepository<AnnotationMongo, S
 
 
     default AnnotationMongo findOne(String chromosome, long start, String referenceAllele, String alternativeAllele,
-                                    String vepVersion, String vepCacheVersion) {
-        return findOne(AnnotationMongo.buildAnnotationId(
-                chromosome,
-                start,
-                referenceAllele,
-                alternativeAllele,
-                vepVersion,
-                vepCacheVersion));
+                                              String vepVersion, String vepCacheVersion) {
+        return findById(AnnotationMongo.buildAnnotationId(chromosome,
+                                                          start,
+                                                          referenceAllele,
+                                                          alternativeAllele,
+                                                          vepVersion,
+                                                          vepCacheVersion)).get();
+
     }
 
 }

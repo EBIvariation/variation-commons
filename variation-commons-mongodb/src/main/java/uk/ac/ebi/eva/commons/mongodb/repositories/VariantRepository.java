@@ -21,16 +21,20 @@ package uk.ac.ebi.eva.commons.mongodb.repositories;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
+import org.springframework.stereotype.Repository;
+
 import uk.ac.ebi.eva.commons.core.models.VariantType;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Spring MongoRepository for {@link VariantMongo} class.
  * <p>
  * Methods include querying by id, and by region.
  */
+@Repository
 public interface VariantRepository extends MongoRepository<VariantMongo, String>,
         VariantRepositoryCustom {
 
@@ -59,5 +63,9 @@ public interface VariantRepository extends MongoRepository<VariantMongo, String>
                                                                  List<String> studyIds);
 
     @Query(value = "{'chr': ?0, 'files.sid': {$in : ?1}}}")
-    VariantMongo findOneByChromosomeAndStudyInSorted(String chr, List<String> studyIds, Sort sort);
+    Stream<VariantMongo> findAllByChromosomeAndStudyInSorted(String chr, List<String> studyIds, Sort sort);
+
+    default VariantMongo findOneByChromosomeAndStudyInSorted(String chr, List<String> studyIds, Sort sort) {
+         return findAllByChromosomeAndStudyInSorted(chr, studyIds, sort).findFirst().orElse(null);
+    }
 }

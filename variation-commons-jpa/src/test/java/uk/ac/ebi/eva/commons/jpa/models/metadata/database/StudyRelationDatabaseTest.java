@@ -98,7 +98,7 @@ public class StudyRelationDatabaseTest {
         checkChildStudiesInParent(parentStudy1, childStudies);
         checkParentStudiesInChildren(parentStudy1, childStudies);
 
-        Iterable<Study> savedChildStudies = repository.save(childStudies);
+        Iterable<Study> savedChildStudies = repository.saveAll(childStudies);
         checkChildStudiesInParent(parentStudy1, new HashSet<>((Collection<Study>) savedChildStudies));
         checkParentStudiesInChildren(parentStudy1, savedChildStudies);
 

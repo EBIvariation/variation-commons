@@ -16,6 +16,7 @@
 package uk.ac.ebi.eva.commons.mongodb.repositories;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
 import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMetadataMongo;
 
@@ -24,6 +25,7 @@ import java.util.List;
 /**
  * Spring MongoRepository for querying collection of AnnotationMetadataMongo documents
  */
+@Repository
 public interface AnnotationMetadataRepository extends MongoRepository<AnnotationMetadataMongo, String> {
 
     /**

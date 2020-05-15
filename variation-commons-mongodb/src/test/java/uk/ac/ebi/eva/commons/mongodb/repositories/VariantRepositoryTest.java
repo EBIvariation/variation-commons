@@ -19,7 +19,9 @@
 package uk.ac.ebi.eva.commons.mongodb.repositories;
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import com.lordofthejars.nosqlunit.mongodb.MongoDbConfigurationBuilder;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,15 +30,18 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import uk.ac.ebi.eva.commons.core.models.Region;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
+import uk.ac.ebi.eva.commons.mongodb.configuration.EvaRepositoriesConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.filter.FilterBuilder;
 import uk.ac.ebi.eva.commons.mongodb.filter.VariantRepositoryFilter;
+import uk.ac.ebi.eva.commons.mongodb.test.rule.FixSpringMongoDbRule;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,7 +51,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbRule.MongoDbRuleBuilder.newMongoDbRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -55,21 +59,25 @@ import static org.junit.Assert.assertTrue;
 /**
  * Tests for VariantRepository
  * <p>
- * Uses in memory Mongo database spoof Fongo, and loading data from json using lordofthejars nosqlunit.
+ * Load data from json using lordofthejars nosqlunit.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class})
+@RunWith(SpringRunner.class)
+@TestPropertySource("classpath:eva.properties")
 @UsingDataSet(locations = {
         "/test-data/variants.json",
         "/test-data/annotations.json",
         "/test-data/files.json"})
+@ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class, EvaRepositoriesConfiguration.class})
 public class VariantRepositoryTest {
+
+    private static final String TEST_DB = "test-db";
 
     @Autowired
     private ApplicationContext applicationContext;
 
     @Rule
-    public MongoDbRule mongoDbRule = newMongoDbRule().defaultSpringMongoDb("test-db");
+    public MongoDbRule mongoDbRule = new FixSpringMongoDbRule(
+            MongoDbConfigurationBuilder.mongoDb().databaseName(TEST_DB).build());
 
     @Autowired
     private VariantRepository variantRepository;

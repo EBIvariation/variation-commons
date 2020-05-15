@@ -39,7 +39,7 @@ import java.util.Set;
 /**
  * Mapped class for variant collection in mongo
  */
-@Document(collection = "#{mongoCollectionsVariants}")
+@Document(collection = "#{@mongoCollectionsVariants}")
 public class VariantMongo {
 
     private static final int CHUNK_SIZE_SMALL = 1000;

@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * Mapped class for variant source collection in mongo
  */
-@Document(collection = "#{mongoCollectionsFiles}")
+@Document(collection = "#{@mongoCollectionsFiles}")
 public class VariantSourceMongo implements IVariantSource {
 
     public final static String FILEID_FIELD = "fid";

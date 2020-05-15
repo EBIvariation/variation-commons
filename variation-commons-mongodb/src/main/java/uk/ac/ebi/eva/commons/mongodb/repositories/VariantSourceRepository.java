@@ -20,6 +20,8 @@ import com.google.common.collect.Table;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
+import org.springframework.stereotype.Repository;
+
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
 
 import java.util.Arrays;
@@ -34,6 +36,7 @@ import java.util.Map;
  * Methods include: finding all "VariantSourceMongo"s in the collection, finding "VariantSourceMongo"s with either
  * studyId matching given value, or studyName matching given value.
  */
+@Repository
 public interface VariantSourceRepository extends MongoRepository<VariantSourceMongo, String> {
 
     List<VariantSourceMongo> findAll();
