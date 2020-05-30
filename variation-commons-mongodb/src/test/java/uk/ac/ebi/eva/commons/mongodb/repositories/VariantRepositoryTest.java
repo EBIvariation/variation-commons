@@ -106,6 +106,18 @@ public class VariantRepositoryTest {
     }
 
     @Test
+    public void checkSourceLinePresence() throws IOException {
+
+        VariantMongo variantEntityWithSourceLine = variantRepository.findById("11_190010_G_A").get();
+
+        assertFalse(variantEntityWithSourceLine.getSourceEntries().isEmpty());
+        assertFalse(variantEntityWithSourceLine.getIds().isEmpty());
+        assertEquals("NC_027300.1\t369\t.\tC\tT\t23494.8\tPASS\t.",
+                     variantEntityWithSourceLine.getSourceEntries().stream().findFirst().get().getAttributes()
+                                                .get("src"));
+    }
+
+    @Test
     public void testVariantIdIsFound() {
         List<String> ids = new ArrayList<>();
         ids.add("rs148957270");
