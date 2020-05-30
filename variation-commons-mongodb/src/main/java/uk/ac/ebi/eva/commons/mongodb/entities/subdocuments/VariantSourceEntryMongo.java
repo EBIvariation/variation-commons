@@ -16,6 +16,7 @@
 package uk.ac.ebi.eva.commons.mongodb.entities.subdocuments;
 
 import org.bson.Document;
+import org.bson.types.Binary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -224,8 +225,9 @@ public class VariantSourceEntryMongo {
         for (String key : attributes.keySet()) {
             if (key.equals("src")) {
                 try {
+                    Binary binaryObject = attributes.get(key, org.bson.types.Binary.class);
                     temp.put(key.replace(CHARACTER_TO_REPLACE_DOTS, '.'),
-                            CompressionHelper.gunzip((byte[]) attributes.get(key)));
+                            CompressionHelper.gunzip(binaryObject.getData()));
                 } catch (IOException e) {
                     logger.error("Error decompressing src field", e);
                 }
