@@ -46,6 +46,8 @@ public abstract class VariantVcfFactory {
 
     protected boolean includeIds = false;
 
+    protected boolean requireEvidence = true;
+
     /**
      * Creates a list of Variant objects using the fields in a record of a VCF
      * file. A new Variant object is created per allele, so several of them can
@@ -139,7 +141,7 @@ public abstract class VariantVcfFactory {
         this.includeIds = includeIds;
     }
 
-    public boolean getIncludeIds() {
+    public boolean isIncludeIds() {
         return includeIds;
     }
 
@@ -165,6 +167,14 @@ public abstract class VariantVcfFactory {
 
     protected String getFormat(String[] fields) {
         return (fields.length <= 8 || fields[8].equals(".")) ? "" : fields[8];
+    }
+
+    public boolean isRequireEvidence() {
+        return requireEvidence;
+    }
+
+    public void setRequireEvidence(boolean requireEvidence) {
+        this.requireEvidence = requireEvidence;
     }
 
     private List<VariantCoreFields> buildVariantCoreFields(String chromosome, long position, String reference,

@@ -86,7 +86,15 @@ public class AggregatedVcfLineMapper implements LineMapper<List<Variant>> {
         factory.setIncludeIds(includeIds);
     }
 
-    public boolean getIncludeIds() {
-        return factory.getIncludeIds();
+    public boolean isIncludeIds() {
+        return factory.isIncludeIds();
+    }
+
+    public void setRequireEvidence(boolean includeIds) {
+        factory.setRequireEvidence(includeIds);
+    }
+
+    public boolean isRequireEvidence() {
+        return factory.isRequireEvidence();
     }
 }

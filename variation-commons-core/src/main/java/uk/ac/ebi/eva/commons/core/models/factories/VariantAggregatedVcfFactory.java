@@ -183,7 +183,7 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
      * @param variantStats
      */
     private void addStats(Variant variant, VariantSourceEntry sourceEntry, int numAllele, String[] alternateAlleles,
-                            Map<String, String> attributes, VariantStatistics variantStats) {
+                          Map<String, String> attributes, VariantStatistics variantStats) {
 
         if (attributes.containsKey(ALLELE_NUMBER) && attributes.containsKey(ALLELE_COUNT)) {
             int total = Integer.parseInt(attributes.get(ALLELE_NUMBER));
@@ -325,7 +325,7 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
         m = singleRef.matcher(gt);
         if (m.matches()) { // R
             g = new Genotype(variant.getReference() + "/" + variant.getReference(), variant.getReference(),
-                    variant.getAlternate());
+                             variant.getAlternate());
             return g;
         }
 
@@ -346,7 +346,7 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
         m = refRef.matcher(gt);
         if (m.matches()) { // RR
             g = new Genotype(variant.getReference() + "/" + variant.getReference(), variant.getReference(),
-                    variant.getAlternate());
+                             variant.getAlternate());
             return g;
         }
 
@@ -399,11 +399,13 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
             throws NonVariantException, IncompleteInformationException {
         super.checkVariantInformation(variant, fileId, studyId);
 
-        VariantSourceEntry variantSourceEntry = variant.getSourceEntry(fileId, studyId);
-        if (!canAlleleFrequenciesBeCalculated(variantSourceEntry)) {
-            throw new IncompleteInformationException(variant);
-        } else if (variantFrequencyIsZero(variantSourceEntry)) {
-            throw new NonVariantException("The variant " + variant + " has allele frequency or counts '0'");
+        if (requireEvidence) {
+            VariantSourceEntry variantSourceEntry = variant.getSourceEntry(fileId, studyId);
+            if (!canAlleleFrequenciesBeCalculated(variantSourceEntry)) {
+                throw new IncompleteInformationException(variant);
+            } else if (variantFrequencyIsZero(variantSourceEntry)) {
+                throw new NonVariantException("The variant " + variant + " has allele frequency or counts '0'");
+            }
         }
     }
 
