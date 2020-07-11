@@ -198,6 +198,18 @@ public class VariantAggregatedVcfFactoryTest {
     }
 
     @Test
+    public void allowVariantWithNoAlleleCountsOrFrequency() {
+        String line = "1\t1000\t.\tT\tG\t.\t.\tAA=A";
+
+        factory.setRequireEvidence(false);
+
+        List<Variant> variants = factory.create(FILE_ID, STUDY_ID, line);
+        assertEquals(1, variants.size());
+        assertEquals(1000, variants.get(0).getStart());
+        assertEquals("A", variants.get(0).getSourceEntries().iterator().next().getAttribute("AA"));
+    }
+
+    @Test
     public void testMultiallelicVariantWithNoAlleleCountsOrFrequency() {
         String line = "1\t1000\t.\tT\tG,A\t.\t.\tAA=A";
 
