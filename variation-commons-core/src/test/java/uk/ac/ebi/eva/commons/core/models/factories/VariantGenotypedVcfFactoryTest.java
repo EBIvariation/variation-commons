@@ -410,6 +410,16 @@ public class VariantGenotypedVcfFactoryTest {
     }
 
     @Test
+    public void testRequireNoEvidence() {
+        // a variant with frequency but no genotypes, will be valid for the VariantAggregatedVcfFactory, but not for
+        // VariantGenotypedVcfFactory, that expects to find genotypes
+        String line = "1\t1000\t.\tT\tG\t.\t.\tAF=0.5";
+
+        thrown.expect(UnsupportedOperationException.class);
+        factory.setRequireEvidence(false);
+    }
+
+    @Test
     public void testMultiallelicVariantWitnNoSampleInformation() {
         // a variant with frequency but no genotypes, will be valid for the VariantAggregatedVcfFactory, but not for
         // VariantGenotypedVcfFactory, that expects to find genotypes

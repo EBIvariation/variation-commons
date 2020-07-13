@@ -51,7 +51,7 @@ public class GenotypedVcfLineMapper implements LineMapper<List<Variant>> {
         factory.setIncludeIds(includeIds);
     }
 
-    public boolean getIncludeIds() {
-        return factory.getIncludeIds();
+    public boolean isIncludeIds() {
+        return factory.isIncludeIds();
     }
 }

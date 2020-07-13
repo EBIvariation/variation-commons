@@ -137,4 +137,16 @@ public class VariantGenotypedVcfFactory extends VariantVcfFactory {
         // updated those indexes so all calls to the alternate allele in this variant has now index 1
         return Arrays.stream(sampleField.split("[/|]")).anyMatch(allele -> allele.equals("1"));
     }
+
+    @Override
+    public void setRequireEvidence(boolean requireEvidence) {
+        if (requireEvidence) {
+            this.requireEvidence = requireEvidence;
+        } else {
+            throw new UnsupportedOperationException("There is no use case at the moment for "
+                                                            + this.getClass().getSimpleName()
+                                                            + " to not require evidence. This class expects all "
+                                                            + "variants to have frequencies or genotypes.");
+        }
+    }
 }
