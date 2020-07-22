@@ -85,4 +85,72 @@ public class VariantClassifierTest {
     public void testHyphensInAlternate() {
         VariantClassifier.getVariantClassification("AA", "-", 2);
     }
+
+    //Test getVariantClassification without subSNPClass
+    @Test
+    public void testSNVsNoSnpClass() {
+        assertEquals(VariantType.SNV, VariantClassifier.getVariantClassification("A", "C"));
+    }
+
+    @Test
+    public void testDeletionsNoSnpClass() {
+        assertEquals(VariantType.DEL, VariantClassifier.getVariantClassification("TT", ""));
+    }
+
+    @Test
+    public void testInsertionsNoSnpClass() {
+        assertEquals(VariantType.INS, VariantClassifier.getVariantClassification("", "G"));
+    }
+
+    @Test
+    public void testINDELsNoSnpClass() {
+        assertEquals(VariantType.INDEL, VariantClassifier.getVariantClassification("A", "GTC"));
+        assertEquals(VariantType.INDEL, VariantClassifier.getVariantClassification("AA", "G"));
+    }
+
+    @Test
+    public void testSTRsNoSnpClass() {
+        assertEquals(VariantType.TANDEM_REPEAT, VariantClassifier.getVariantClassification("(A)5", "(A)7"));
+        assertEquals(VariantType.TANDEM_REPEAT, VariantClassifier.getVariantClassification("(G)3", "(G)7"));
+        assertEquals(VariantType.TANDEM_REPEAT, VariantClassifier.getVariantClassification("AAAAA", "AAAAAAA"));
+        assertEquals(VariantType.TANDEM_REPEAT, VariantClassifier.getVariantClassification("CCCCC", "CCCCCCC"));
+        assertEquals(VariantType.TANDEM_REPEAT, VariantClassifier.getVariantClassification("GGGGG", "GGGGGGG"));
+        assertEquals(VariantType.TANDEM_REPEAT, VariantClassifier.getVariantClassification("TTTTT", "TTTTTTT"));
+    }
+
+    @Test
+    public void testSequenceAlterationsNoSnpClass() {
+        assertEquals(VariantType.SEQUENCE_ALTERATION,
+                VariantClassifier.getVariantClassification("(ALI008)", "(LI090)"));
+        assertEquals(VariantType.SEQUENCE_ALTERATION, VariantClassifier.getVariantClassification("ATCZ", ""));
+        assertEquals(VariantType.SEQUENCE_ALTERATION,
+                VariantClassifier.getVariantClassification("(ALI008)", "(LI090)"));
+    }
+
+    @Test
+    public void testNoSequenceAlterationsNoSnpClass() {
+        assertEquals(VariantType.NO_SEQUENCE_ALTERATION,
+                VariantClassifier.getVariantClassification("NOVARIATION", ""));
+        assertNotEquals(VariantType.NO_SEQUENCE_ALTERATION,
+                VariantClassifier.getVariantClassification("NOVAR", ""));
+        assertEquals(VariantType.NO_SEQUENCE_ALTERATION,
+                VariantClassifier.getVariantClassification("", ""));
+        assertEquals(VariantType.NO_SEQUENCE_ALTERATION,
+                VariantClassifier.getVariantClassification("NOVARIATION", "NOVARIATION"));
+    }
+
+    @Test
+    public void testMNVsNoSnpClass() {
+        assertEquals(VariantType.MNV, VariantClassifier.getVariantClassification("AT", "CG"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testHyphensInReferenceNoSnpClass() {
+        VariantClassifier.getVariantClassification("-", "GG");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testHyphensInAlternateNoSnpClass() {
+        VariantClassifier.getVariantClassification("AA", "-");
+    }
 }

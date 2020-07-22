@@ -23,7 +23,13 @@ import java.util.regex.Pattern;
  */
 public class VariantClassifier {
 
-    private static Pattern alphaRegExPattern = Pattern.compile("[A-Z]+");
+    private static final Pattern alphaRegExPattern = Pattern.compile("[A-Z]+");
+
+    private static final Pattern ACGTPattern = Pattern.compile("[ACGT]+");
+
+    private static final Pattern tandemRepeatsPattern = Pattern.compile("^\\([ACGT]+\\)\\d+$");
+
+    private static final Pattern tandemRepeatsExpandedPattern = Pattern.compile("^A{3,}$|^C{3,}$|^G{3,}$|^T{3,}$");
 
     /**
      * Get the type of a given variant based on Sequence Ontology (SO) definitions.
@@ -70,5 +76,54 @@ public class VariantClassifier {
         throw new IllegalArgumentException(String.format("Cannot determine the type of the Variant with Reference: %s, "
                                                                  + "Alternate: %s and SubSNP class: %d",
                                                          reference, alternate, subSnpClass));
+    }
+
+    /**
+     * Get the type of a given variant without using the subSnpClass
+     */
+    public static VariantType getVariantClassification(String reference, String alternate) {
+        reference = reference.trim().toUpperCase();
+        alternate = alternate.trim().toUpperCase();
+
+        if (reference.equals("NOVARIATION") || alternate.equals(reference)) {
+            return VariantType.NO_SEQUENCE_ALTERATION;
+        } else {
+            if (isTandemRepeat(reference) || isTandemRepeat(alternate)) {
+                return VariantType.TANDEM_REPEAT;
+            }
+
+            boolean isRefAlpha = alphaRegExPattern.matcher(reference).matches();
+            boolean isAltAlpha = alphaRegExPattern.matcher(alternate).matches();
+
+            if(isNamedAllele(reference, isRefAlpha) || isNamedAllele(alternate, isAltAlpha)) {
+                return VariantType.SEQUENCE_ALTERATION;
+            }
+
+            if (isRefAlpha && isAltAlpha) {
+                if (reference.length() == alternate.length()) {
+                    return reference.length() == 1? VariantType.SNV : VariantType.MNV;
+                }
+                if (!reference.isEmpty() && !alternate.isEmpty()) {
+                    return VariantType.INDEL;
+                }
+            }
+            if (isRefAlpha && alternate.isEmpty()) {
+                return VariantType.DEL;
+            }
+            if (isAltAlpha && reference.isEmpty()) {
+                return VariantType.INS;
+            }
+        }
+        throw new IllegalArgumentException(String.format("Cannot determine the type of the Variant with Reference: %s, "
+                        + "Alternate: %s", reference, alternate));
+    }
+
+    private static boolean isTandemRepeat(String allele) {
+        return tandemRepeatsPattern.matcher(allele).matches() || tandemRepeatsExpandedPattern.matcher(allele).matches();
+    }
+
+    private static boolean isNamedAllele(String allele, boolean isAlpha) {
+        return (allele.startsWith("(") && allele.endsWith(")")) || (allele.startsWith("<") && allele.endsWith(">")) ||
+                isAlpha && !ACGTPattern.matcher(allele).matches();
     }
 }
