@@ -110,15 +110,11 @@ public class VariantClassifierTest {
 
     @Test
     public void testSTRsAsIndelsNoSnpClass() {
+        assertEquals(VariantType.INDEL, VariantClassifier.getVariantClassification("(A)5", "(A)7"));
+        assertEquals(VariantType.INDEL, VariantClassifier.getVariantClassification("(G)3", "(G)7"));
         assertEquals(VariantType.INDEL, VariantClassifier.getVariantClassification("AAAAA", "AAAAAAA"));
         assertEquals(VariantType.INDEL, VariantClassifier.getVariantClassification("CCCCC", "CCCCCCC"));
-        assertEquals(VariantType.INDEL, VariantClassifier.getVariantClassification("GGGGG", "GGGGGGG"));
-        assertEquals(VariantType.INDEL, VariantClassifier.getVariantClassification("TTTTT", "TTTTTTT"));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testTandemRepeatNotSupported() {
-        VariantClassifier.getVariantClassification("(A)5", "(A)7");
+        assertEquals(VariantType.INDEL, VariantClassifier.getVariantClassification("TACTACTACTAC", "TACTAC"));
     }
 
     @Test
