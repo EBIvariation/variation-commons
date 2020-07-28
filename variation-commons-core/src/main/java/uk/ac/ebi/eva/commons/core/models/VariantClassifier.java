@@ -27,10 +27,6 @@ public class VariantClassifier {
 
     private static final Pattern ACGTPattern = Pattern.compile("[ACGT]+");
 
-    private static final Pattern tandemRepeatsPattern = Pattern.compile("^\\([ACGT]+\\)\\d+$");
-
-    private static final Pattern tandemRepeatsExpandedPattern = Pattern.compile("^A{3,}$|^C{3,}$|^G{3,}$|^T{3,}$");
-
     /**
      * Get the type of a given variant based on Sequence Ontology (SO) definitions.
      * See <a href="https://docs.google.com/spreadsheets/d/1YH8qDBDu7C6tqULJNCrGw8uBjdW3ZT5OjTkJzGNOZ4E/edit#gid=1433496764">documentation</a>.
@@ -88,10 +84,6 @@ public class VariantClassifier {
         if (reference.equals("NOVARIATION") || alternate.equals(reference)) {
             return VariantType.NO_SEQUENCE_ALTERATION;
         } else {
-            if (isTandemRepeat(reference) || isTandemRepeat(alternate)) {
-                return VariantType.TANDEM_REPEAT;
-            }
-
             boolean isRefAlpha = alphaRegExPattern.matcher(reference).matches();
             boolean isAltAlpha = alphaRegExPattern.matcher(alternate).matches();
 
@@ -116,10 +108,6 @@ public class VariantClassifier {
         }
         throw new IllegalArgumentException(String.format("Cannot determine the type of the Variant with Reference: %s, "
                         + "Alternate: %s", reference, alternate));
-    }
-
-    private static boolean isTandemRepeat(String allele) {
-        return tandemRepeatsPattern.matcher(allele).matches() || tandemRepeatsExpandedPattern.matcher(allele).matches();
     }
 
     private static boolean isNamedAllele(String allele, boolean isAlpha) {
