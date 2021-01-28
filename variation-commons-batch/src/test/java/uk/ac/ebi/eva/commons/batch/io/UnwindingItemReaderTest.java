@@ -84,7 +84,7 @@ public class UnwindingItemReaderTest {
         UnwindingItemReader<Variant> reader = new UnwindingItemReader<>(vcfReader);
         Variant variant;
         while ((variant = reader.read()) != null) {
-            assertThat(variant.getChromosome(), equalTo("chromosome11"));
+            assertThat(variant.getChromosome(), equalTo("Chromosome11"));
         }
     }
 
