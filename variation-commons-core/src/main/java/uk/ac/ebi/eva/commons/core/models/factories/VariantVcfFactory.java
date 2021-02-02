@@ -70,7 +70,7 @@ public abstract class VariantVcfFactory {
             throw new IllegalArgumentException("Not enough fields provided (min 8)");
         }
 
-        String chromosome = getChromosomeWithoutPrefix(fields);
+        String chromosome = fields[0];
         long position = getPosition(fields);
         Set<String> ids = getIds(fields);
         String reference = getReference(fields);
