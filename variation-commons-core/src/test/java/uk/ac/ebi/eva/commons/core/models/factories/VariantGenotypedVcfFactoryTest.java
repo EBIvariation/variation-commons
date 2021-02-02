@@ -480,7 +480,7 @@ public class VariantGenotypedVcfFactoryTest {
     @Test
     public void infoAttributesWontBeValidated() {
         List<Variant> expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 1000, 1000, "T", "G"));
+        expResult.add(new Variant("chr1", 1000, 1000, "T", "G"));
         String line;
 
         // the variant is valid if it has some alternate genotypes, even if AF, AC or AN are zero
