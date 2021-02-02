@@ -106,21 +106,6 @@ public abstract class VariantVcfFactory {
         return variants;
     }
 
-    /**
-     * Replace "chr" references only at the beginning of the chromosome name.
-     * For instance, tomato has SL2.40ch00 and that should be kept that way
-     */
-    protected String getChromosomeWithoutPrefix(String[] fields) {
-        String chromosome = fields[0];
-        boolean ignoreCase = true;
-        int startOffset = 0;
-        String prefixToRemove = "chr";
-        if (chromosome.regionMatches(ignoreCase, startOffset, prefixToRemove, startOffset, prefixToRemove.length())) {
-            return chromosome.substring(prefixToRemove.length());
-        }
-        return chromosome;
-    }
-
     protected long getPosition(String[] fields) {
         return Long.parseLong(fields[1]);
     }
