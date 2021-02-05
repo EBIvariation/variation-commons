@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.zip.GZIPInputStream;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -48,6 +49,8 @@ public class UnwindingItemReaderTest {
     private static final String INPUT_FILE_PATH = "/input-files/vcf/genotyped.vcf.gz";
 
     private static final String INPUT_WRONG_FILE_PATH = "/input-files/vcf/wrong_same_ref_alt.vcf.gz";
+
+    private static final String INPUT_FILE_PATH_CHR_PREFIX = "/input-files/vcf/spreadsheet_-2021.1.2.vcf.gz";
 
     private static final String FILE_ID = "5";
 
@@ -65,6 +68,24 @@ public class UnwindingItemReaderTest {
         vcfReader.open(executionContext);
 
         consumeReader(input, new UnwindingItemReader<>(vcfReader));
+    }
+
+    @Test
+    public void shouldReadAllLinesAndDontDeletePrefix() throws Exception {
+        ExecutionContext executionContext = MetaDataInstanceFactory.createStepExecution().getExecutionContext();
+
+        // input vcf
+        File input = FileUtils.getResourceFile(INPUT_FILE_PATH_CHR_PREFIX);
+
+        VcfReader vcfReader = new VcfReader(FILE_ID, STUDY_ID, input);
+        vcfReader.setSaveState(false);
+        vcfReader.open(executionContext);
+
+        UnwindingItemReader<Variant> reader = new UnwindingItemReader<>(vcfReader);
+        Variant variant;
+        while ((variant = reader.read()) != null) {
+            assertThat(variant.getChromosome(), equalTo("Chromosome11"));
+        }
     }
 
     @Test

@@ -45,7 +45,7 @@ public class CoordinatesVcfFactory extends VariantVcfFactory {
     public List<Variant> create(String fileId, String studyId, String line)
             throws IllegalArgumentException, NonVariantException, IncompleteInformationException {
         String[] fields = line.split("\t", 6);
-        String chromosome = getChromosomeWithoutPrefix(fields);
+        String chromosome = fields[0];
         long position = getPosition(fields);
         Set<String> ids = getIds(fields);
         String reference = getReference(fields);
