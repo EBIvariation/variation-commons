@@ -16,6 +16,11 @@ import javax.sql.DataSource;
 
 public class SpringBoot1CompatibilityConfiguration {
 
+    // Due to the bug here: https://github.com/spring-projects/spring-batch/issues/1289#issue-538711146
+    // BatchConfigurer seems to override the transaction manager that is already present in the ExecutionContext
+    // This leads to issues like https://github.com/spring-projects/spring-batch/issues/961#issue-538704176
+    // Therefore, we have to "re-assert" to Spring Boot that we intend to use
+    // a JPA Transaction manager by putting back in the ExecutionContext
     private static JpaTransactionManager getTransactionManager(DataSource dataSource, EntityManagerFactory entityManagerFactory) {
         final JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
         jpaTransactionManager.setDataSource(dataSource);
