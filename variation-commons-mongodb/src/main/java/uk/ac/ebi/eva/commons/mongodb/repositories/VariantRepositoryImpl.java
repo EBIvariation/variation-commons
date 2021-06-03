@@ -201,10 +201,11 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
         criteriaList.add(existingCriteria);
         Criteria criteria = new Criteria().andOperator(criteriaList.toArray(new Criteria[criteriaList.size()]));
 
+        //Allow aggregation to use disk (allowDiskUse parameter) for data heavy queries.
         Aggregation aggregation = Aggregation.newAggregation(
                 Aggregation.match(criteria),
                 Aggregation.group().count().as("count")
-        );
+        ).withOptions(Aggregation.newAggregationOptions().allowDiskUse(true).build());
 
         AggregationResults<VariantAggregationCount> aggregationResults =
                 mongoTemplate.aggregate(aggregation, VariantMongo.class, VariantAggregationCount.class);
