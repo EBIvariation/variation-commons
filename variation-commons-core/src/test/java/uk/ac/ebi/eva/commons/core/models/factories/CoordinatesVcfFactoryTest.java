@@ -191,7 +191,7 @@ public class CoordinatesVcfFactoryTest {
 
         // Check proper conversion of main fields
         List<Variant> expResult = new LinkedList<>();
-        expResult.add(new Variant("1", 10040, 10040 + "TGACGTAACGAT".length() - 1, "TGACGTAACGAT", ""));
+        expResult.add(new Variant("1", 10041, 10040 + "TGACGTAACGAT".length(), "GACGTAACGATT", ""));
         expResult.add(new Variant("1", 10050, 10050 + "A".length() - 1, "A", "G"));
         expResult.add(new Variant("1", 10048, 10048 + "CGATT".length() - 1, "CGATT", "TAC"));
 
