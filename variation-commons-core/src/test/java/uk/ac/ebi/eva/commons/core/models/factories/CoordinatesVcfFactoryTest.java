@@ -263,4 +263,17 @@ public class CoordinatesVcfFactoryTest {
         assertEquals(expectedVariants, parsedVariants);
         assertEquals(expectedIds, parsedVariants.get(0).getIds());
     }
+
+    @Test
+    public void testReadContextBaseVariant() {
+        String line = "chr1\t1000\t.\tGCAG\tG\t.\t.\t.";
+        List<Variant> expectedResult = Collections.singletonList(new Variant("chr1", 1001, 1003, "CAG", ""));
+        List<Variant> actualResult = factory.create(FILE_ID, STUDY_ID, line);
+        assertEquals(expectedResult, actualResult);
+
+        line = "chr1\t1000\t.\tG\tGG\t.\t.\t.";
+        expectedResult = Collections.singletonList(new Variant("chr1", 1001, 1001, "", "G"));
+        actualResult = factory.create(FILE_ID, STUDY_ID, line);
+        assertEquals(expectedResult, actualResult);
+    }
 }

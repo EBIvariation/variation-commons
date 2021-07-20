@@ -17,7 +17,6 @@
 package uk.ac.ebi.eva.commons.core.models;
 
 import org.apache.commons.lang3.StringUtils;
-
 import uk.ac.ebi.eva.commons.core.models.factories.exception.NonVariantException;
 
 import static java.lang.Math.max;
@@ -46,15 +45,19 @@ public class VariantCoreFields {
     public VariantCoreFields(String chromosome, long position, String reference, String alternate) {
         if (reference.equals(alternate)) {
             throw new NonVariantException("One alternate allele is identical to the reference. Variant found as: "
-                                                       + chromosome + ":" + position + ":" + reference + ">" + alternate);
+                    + chromosome + ":" + position + ":" + reference + ">" + alternate);
         }
 
         this.chromosome = chromosome;
+        String rightTrimmedReference = reference;
+        String rightTrimmedAlternate = alternate;
 
-        // remove common trailing bases
-        int numTrailingNucleotidesToRemove = getIndexOfLastDifferentNucleotide(reference, alternate);
-        String rightTrimmedReference = reference.substring(0, reference.length() - numTrailingNucleotidesToRemove);
-        String rightTrimmedAlternate = alternate.substring(0, alternate.length() - numTrailingNucleotidesToRemove);
+        if (!isContextBasePresent(reference, alternate)) {
+            // remove common trailing bases
+            int numTrailingNucleotidesToRemove = getIndexOfLastDifferentNucleotide(reference, alternate);
+            rightTrimmedReference = reference.substring(0, reference.length() - numTrailingNucleotidesToRemove);
+            rightTrimmedAlternate = alternate.substring(0, alternate.length() - numTrailingNucleotidesToRemove);
+        }
 
         // remove common leading bases
         int numLeadingNucleotidesToRemove = StringUtils.indexOfDifference(rightTrimmedReference, rightTrimmedAlternate);
@@ -64,6 +67,15 @@ public class VariantCoreFields {
         // calculate start and end
         start = position + numLeadingNucleotidesToRemove;
         end = calculateEnd(position, rightTrimmedReference, rightTrimmedAlternate);
+    }
+
+    private boolean isContextBasePresent(String reference, String alternate) {
+        if (alternate.length() == 1 && reference.length() > 1 && reference.startsWith(alternate)) {
+            return true;
+        } else if (reference.length() == 1 && alternate.length() > 1 && alternate.startsWith(reference)) {
+            return true;
+        }
+        return false;
     }
 
     private int getIndexOfLastDifferentNucleotide(String reference, String alternate) {
