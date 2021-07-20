@@ -55,7 +55,7 @@ public class CoordinatesVcfFactory extends VariantVcfFactory {
         for (String alternateAllele : alternateAlleles) {
             VariantCoreFields keyFields;
             try {
-                keyFields = new VariantCoreFields(chromosome, position, reference, alternateAllele);
+                keyFields = new VariantCoreFields(chromosome, position, reference, alternateAllele, true);
             } catch (NonVariantException e) {
                 continue;
             }

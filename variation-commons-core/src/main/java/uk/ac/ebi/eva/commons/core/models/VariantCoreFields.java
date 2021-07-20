@@ -42,7 +42,7 @@ public class VariantCoreFields {
 
     private String alternate;
 
-    public VariantCoreFields(String chromosome, long position, String reference, String alternate) {
+    public VariantCoreFields(String chromosome, long position, String reference, String alternate, boolean checkForContextBase) {
         if (reference.equals(alternate)) {
             throw new NonVariantException("One alternate allele is identical to the reference. Variant found as: "
                     + chromosome + ":" + position + ":" + reference + ">" + alternate);
@@ -52,7 +52,7 @@ public class VariantCoreFields {
         String rightTrimmedReference = reference;
         String rightTrimmedAlternate = alternate;
 
-        if (!isContextBasePresent(reference, alternate)) {
+        if (!checkForContextBase || (!isContextBasePresent(reference, alternate))) {
             // remove common trailing bases
             int numTrailingNucleotidesToRemove = getIndexOfLastDifferentNucleotide(reference, alternate);
             rightTrimmedReference = reference.substring(0, reference.length() - numTrailingNucleotidesToRemove);
@@ -74,8 +74,9 @@ public class VariantCoreFields {
             return true;
         } else if (reference.length() == 1 && alternate.length() > 1 && alternate.startsWith(reference)) {
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     private int getIndexOfLastDifferentNucleotide(String reference, String alternate) {

@@ -24,7 +24,7 @@ public class VariantCoreFieldsTest {
 
     @Test
     public void testSnp() {
-        VariantCoreFields snp = new VariantCoreFields("chr1", 1000L, "A", "C");
+        VariantCoreFields snp = new VariantCoreFields("chr1", 1000L, "A", "C", false);
         assertEquals("chr1", snp.getChromosome());
         assertEquals(1000L, snp.getStart());
         assertEquals(1000L, snp.getEnd());
@@ -35,7 +35,7 @@ public class VariantCoreFieldsTest {
     @Test
     public void testSingleNucleotideInsertions() {
         // nucleotide inserted before context nucleotide
-        VariantCoreFields insertion = new VariantCoreFields("chr1", 1000, "A", "TA");
+        VariantCoreFields insertion = new VariantCoreFields("chr1", 1000, "A", "TA", false);
         assertEquals("chr1", insertion.getChromosome());
         assertEquals(1000, insertion.getStart());
         assertEquals(1000, insertion.getEnd());
@@ -43,7 +43,7 @@ public class VariantCoreFieldsTest {
         assertEquals("T", insertion.getAlternate());
 
         // nucleotide inserted after context nucleotide
-        insertion = new VariantCoreFields("chr1", 1000, "A", "AT");
+        insertion = new VariantCoreFields("chr1", 1000, "A", "AT", false);
         assertEquals("chr1", insertion.getChromosome());
         assertEquals(1001, insertion.getStart());
         assertEquals(1001, insertion.getEnd());
@@ -54,7 +54,7 @@ public class VariantCoreFieldsTest {
     @Test
     public void testSingleNucleotideDeletions() {
         // nucleotide inserted before context nucleotide
-        VariantCoreFields deletion = new VariantCoreFields("chr1", 1000, "TA", "A");
+        VariantCoreFields deletion = new VariantCoreFields("chr1", 1000, "TA", "A", false);
         assertEquals("chr1", deletion.getChromosome());
         assertEquals(1000, deletion.getStart());
         assertEquals(1000, deletion.getEnd());
@@ -62,7 +62,7 @@ public class VariantCoreFieldsTest {
         assertEquals("", deletion.getAlternate());
 
         // nucleotide deleted after context nucleotide
-        deletion = new VariantCoreFields("chr1", 1000, "TA", "T");
+        deletion = new VariantCoreFields("chr1", 1000, "TA", "T", false);
         assertEquals("chr1", deletion.getChromosome());
         assertEquals(1001, deletion.getStart());
         assertEquals(1001, deletion.getEnd());
@@ -73,7 +73,7 @@ public class VariantCoreFieldsTest {
     @Test
     public void testMNVs() {
         // two alleles ending with different nucleotide
-        VariantCoreFields insertion = new VariantCoreFields("chr1", 1000, "TCACCC", "TGACGG");
+        VariantCoreFields insertion = new VariantCoreFields("chr1", 1000, "TCACCC", "TGACGG", false);
         assertEquals("chr1", insertion.getChromosome());
         assertEquals(1001, insertion.getStart());
         assertEquals(1005, insertion.getEnd());
@@ -81,7 +81,7 @@ public class VariantCoreFieldsTest {
         assertEquals("GACGG", insertion.getAlternate());
 
         // two alleles ending with same nucleotide
-        insertion = new VariantCoreFields("chr1", 1000, "TCACCC", "TGACGC");
+        insertion = new VariantCoreFields("chr1", 1000, "TCACCC", "TGACGC", false);
         assertEquals("chr1", insertion.getChromosome());
         assertEquals(1001, insertion.getStart());
         assertEquals(1004, insertion.getEnd());
@@ -92,7 +92,7 @@ public class VariantCoreFieldsTest {
     @Test
     public void testMultiNucleotideInsertions() {
         // single context nucleotide
-        VariantCoreFields insertion = new VariantCoreFields("chr1", 1000, "A", "ATCT");
+        VariantCoreFields insertion = new VariantCoreFields("chr1", 1000, "A", "ATCT", false);
         assertEquals("chr1", insertion.getChromosome());
         assertEquals(1001, insertion.getStart());
         assertEquals(1003, insertion.getEnd());
@@ -100,7 +100,7 @@ public class VariantCoreFieldsTest {
         assertEquals("TCT", insertion.getAlternate());
 
         // several common nucleotides
-        insertion = new VariantCoreFields("chr1", 1000, "AT", "ATC");
+        insertion = new VariantCoreFields("chr1", 1000, "AT", "ATC", false);
         assertEquals("chr1", insertion.getChromosome());
         assertEquals(1002, insertion.getStart());
         assertEquals(1002, insertion.getEnd());
@@ -111,15 +111,15 @@ public class VariantCoreFieldsTest {
     @Test
     public void testMultiNucleotideDeletions() {
         // nucleotide inserted before context nucleotide
-        VariantCoreFields deletion = new VariantCoreFields("chr1", 1000, "GATC", "G");
+        VariantCoreFields deletion = new VariantCoreFields("chr1", 1000, "GATC", "G", false);
         assertEquals("chr1", deletion.getChromosome());
         assertEquals(1001, deletion.getStart());
         assertEquals(1003, deletion.getEnd());
         assertEquals("ATC", deletion.getReference());
         assertEquals("", deletion.getAlternate());
 
-         // several common nucleotides
-        deletion = new VariantCoreFields("chr1", 1000, "ATC", "TC");
+        // several common nucleotides
+        deletion = new VariantCoreFields("chr1", 1000, "ATC", "TC", false);
         assertEquals("chr1", deletion.getChromosome());
         assertEquals(1000, deletion.getStart());
         assertEquals(1000, deletion.getEnd());
@@ -129,14 +129,14 @@ public class VariantCoreFieldsTest {
 
     @Test
     public void testOtherIndels() {
-        VariantCoreFields deletion = new VariantCoreFields("chr1", 1000, "CGATT", "TAC");
+        VariantCoreFields deletion = new VariantCoreFields("chr1", 1000, "CGATT", "TAC", false);
         assertEquals("chr1", deletion.getChromosome());
         assertEquals(1000, deletion.getStart());
         assertEquals(1004, deletion.getEnd());
         assertEquals("CGATT", deletion.getReference());
         assertEquals("TAC", deletion.getAlternate());
 
-        deletion = new VariantCoreFields("chr1", 1000, "ATC", "AC");
+        deletion = new VariantCoreFields("chr1", 1000, "ATC", "AC", false);
         assertEquals("chr1", deletion.getChromosome());
         assertEquals(1001, deletion.getStart());
         assertEquals(1001, deletion.getEnd());

@@ -168,7 +168,7 @@ public abstract class VariantVcfFactory {
 
         for (int i = 0; i < alternateAlleles.length; i++) { // This index is necessary for getting the samples where
             // the mutated allele is present
-            VariantCoreFields keyFields = new VariantCoreFields(chromosome, position, reference, alternateAlleles[i]);
+            VariantCoreFields keyFields = new VariantCoreFields(chromosome, position, reference, alternateAlleles[i], false);
 
             // Since the reference and alternate alleles won't necessarily match
             // the ones read from the VCF file but they are still needed for
