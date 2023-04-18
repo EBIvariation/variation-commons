@@ -29,8 +29,7 @@ public class ContigAliasChromosome {
 
     private String enaSequenceName;
 
-    @JsonProperty("genbank")
-    private String insdc;
+    private String insdcAccession;
 
     private String refseq;
 
@@ -69,12 +68,12 @@ public class ContigAliasChromosome {
         this.enaSequenceName = enaSequenceName;
     }
 
-    public String getInsdc() {
-        return insdc;
+    public String getInsdcAccession() {
+        return insdcAccession;
     }
 
-    public void setInsdc(String insdc) {
-        this.insdc = insdc;
+    public void setInsdcAccession(String insdcAccession) {
+        this.insdcAccession = insdcAccession;
     }
 
     public String getRefseq() {

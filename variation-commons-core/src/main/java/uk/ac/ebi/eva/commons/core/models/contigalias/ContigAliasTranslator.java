@@ -31,13 +31,13 @@ public class ContigAliasTranslator {
                 contig = contigAliasChromosome.getTrunc512checksum();
                 break;
             default:
-                contig = contigAliasChromosome.getInsdc();
+                contig = contigAliasChromosome.getInsdcAccession();
         }
 
         if (contig != null) {
             return contig;
         } else {
-            throw new NoSuchElementException("Contig " + contigAliasChromosome.getInsdc() +
+            throw new NoSuchElementException("Contig " + contigAliasChromosome.getInsdcAccession() +
                     " could not be translated to " + contigNamingConvention);
         }
     }
