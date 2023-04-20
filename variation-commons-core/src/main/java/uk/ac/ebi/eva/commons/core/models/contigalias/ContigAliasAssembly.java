@@ -30,7 +30,7 @@ public class ContigAliasAssembly {
 
     private Long taxid;
 
-    private String genbank;
+    private String insdcAccession;
 
     private String refseq;
 
@@ -75,12 +75,12 @@ public class ContigAliasAssembly {
         this.taxid = taxid;
     }
 
-    public String getGenbank() {
-        return genbank;
+    public String getInsdcAccession() {
+        return insdcAccession;
     }
 
-    public void setGenbank(String genbank) {
-        this.genbank = genbank;
+    public void setInsdcAccession(String insdcAccession) {
+        this.insdcAccession = insdcAccession;
     }
 
     public String getRefseq() {
