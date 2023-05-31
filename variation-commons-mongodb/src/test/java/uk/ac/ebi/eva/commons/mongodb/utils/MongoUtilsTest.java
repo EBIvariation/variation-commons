@@ -39,10 +39,17 @@ public class MongoUtilsTest {
         assertEquals("mongodb://host1:27017,host2:27018/?readPreference=primary", mongoClientURI);
     }
 
-    // No parameters passed
+    // No parameters passed results in sane defaults
     @Test
     public void testNoParams() throws UnsupportedEncodingException {
         String mongoClientURI = MongoUtils.constructMongoClientURI("", null, "", "", "", "").getURI();
+        assertEquals("mongodb://localhost:27017/?readPreference=primary", mongoClientURI);
+    }
+
+    // Authentication params ignored when no username/password is provided
+    @Test
+    public void testAuthParamsIgnoredWhenNoUserNameAndPassword() throws UnsupportedEncodingException {
+        String mongoClientURI = MongoUtils.constructMongoClientURI("", null, "", "", "", "authdb", "authmech", "").getURI();
         assertEquals("mongodb://localhost:27017/?readPreference=primary", mongoClientURI);
     }
 }
