@@ -31,6 +31,7 @@ public class MongoClientURIBuilder {
     }
 
     public MongoClientURIBuilder host(final String host) {
+        // Use localhost by default if no host is provided.
         String hostToUse = (Objects.nonNull(host) && !host.isEmpty()) ? host : "localhost";
         if (hostToUse.contains(":")) {
             this.portProvidedAsPartOfHost = true;
@@ -99,7 +100,6 @@ public class MongoClientURIBuilder {
                 Objects.nonNull(password) && !password.isEmpty()) {
             uri.append(format("%s:%s@", userName, password));
         }
-        // Use localhost by default if no host is provided.
         uri.append(host);
         if (!this.portProvidedAsPartOfHost) {
             uri.append(":").append(this.port);
