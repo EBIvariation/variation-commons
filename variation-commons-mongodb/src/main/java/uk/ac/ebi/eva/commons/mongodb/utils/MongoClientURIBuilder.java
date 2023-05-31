@@ -1,8 +1,6 @@
 package uk.ac.ebi.eva.commons.mongodb.utils;
 
-import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientURI;
-import com.mongodb.MongoCredential;
 import com.mongodb.ReadPreference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,9 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -21,71 +17,35 @@ import static java.lang.String.format;
 
 // Adapted from https://github.com/mongodb/mongo-hadoop/blob/20208a027ad8638e56dfcf040773f176d6ee059f/core/src/main/java/com/mongodb/hadoop/util/MongoClientURIBuilder.java#L1
 public class MongoClientURIBuilder {
-    private MongoClientOptions options;
-    private MongoCredential credentials;
-    private final List<String> hosts = new ArrayList<String>();
+    private String host;
+    private Integer port;
     private String database;
     private String userName;
     private String password;
-    private Map<String, String> params = new LinkedHashMap<String, String>();
+    private boolean portProvidedAsPartOfHost = false;
+    private final Map<String, String> params = new LinkedHashMap<>();
 
-    private static Logger logger = LoggerFactory.getLogger(MongoClientURIBuilder.class);
+    private static final Logger logger = LoggerFactory.getLogger(MongoClientURIBuilder.class);
 
     public MongoClientURIBuilder() {
     }
 
-    public MongoClientURIBuilder(final MongoClientURI mongoClientURI) {
-        List<String> list = mongoClientURI.getHosts();
-        for (String s : list) {
-            host(s);
-        }
-        database = mongoClientURI.getDatabase();
-        userName = mongoClientURI.getUsername();
-        if (mongoClientURI.getPassword() != null) {
-            password = new String(mongoClientURI.getPassword());
-        }
-        options = mongoClientURI.getOptions();
-        String uri = mongoClientURI.getURI();
-        if (uri.contains("?")) {
-            String query = uri.substring(uri.indexOf('?') + 1);
-            String[] pairs = query.split("&");
-            for (String pair : pairs) {
-                String[] split = pair.split("=");
-                param(split[0], split[1]);
-            }
-        }
-    }
-
     public MongoClientURIBuilder host(final String host) {
         String hostToUse = (Objects.nonNull(host) && !host.isEmpty()) ? host : "localhost";
-        return host(hostToUse, null);
-    }
-
-    public MongoClientURIBuilder host(final String newHost, final Integer newPort) {
-        hosts.clear();
-        addHost(newHost, newPort);
-
+        if (hostToUse.contains(":")) {
+            this.portProvidedAsPartOfHost = true;
+        }
+        this.host = hostToUse;
         return this;
     }
 
-    public void addHost(final String newHost, final Integer newPort) {
-        if (newHost.contains(":") && newPort == null) {
-            hosts.add(newHost);
-        } else {
-            String host = newHost.isEmpty() ? "localhost" : newHost;
-            Integer port = newPort == null ? 27017 : newPort;
-            if (host.contains(":")) {
-                host = host.substring(0, host.indexOf(':'));
-            }
-            hosts.add(format("%s:%d", host, port));
-        }
-    }
-
     public MongoClientURIBuilder port(final Integer port) {
-        if (hosts.size() == 0) {
-            host("localhost", port);
+        if (this.portProvidedAsPartOfHost) {
+            logger.warn("Port already provided in parameter 'hosts'. Therefore, ignoring 'port' parameter...");
+            return this;
         }
-        logger.warn("Port already provided in parameter 'hosts'. Therefore, ignoring 'port' parameter...");
+        // Sometimes Spring parameters will encode integer parameters as 0 when left blank
+        this.port = (Objects.nonNull(port) && port != 0) ? port : 27017;
         return this;
     }
 
@@ -122,9 +82,8 @@ public class MongoClientURIBuilder {
         return this;
     }
 
-    public MongoClientURIBuilder options(final MongoClientOptions options) {
-        this.options = options;
-        return this;
+    public MongoClientURIBuilder readPreference(final ReadPreference readPreference) {
+        return this.param("readPreference", readPreference.getName());
     }
 
     public MongoClientURIBuilder param(final String key, final String value) {
@@ -135,26 +94,19 @@ public class MongoClientURIBuilder {
     }
 
     public MongoClientURI build() {
-        StringBuilder uri = new StringBuilder(format("mongodb://"));
+        StringBuilder uri = new StringBuilder("mongodb://");
         if (Objects.nonNull(userName) && !userName.isEmpty() &&
                 Objects.nonNull(password) && !password.isEmpty()) {
             uri.append(format("%s:%s@", userName, password));
         }
         // Use localhost by default if no host is provided.
-        if (hosts.isEmpty()) {
-            uri.append("localhost");
-        } else {
-            for (int i = 0; i < hosts.size(); i++) {
-                final String host = hosts.get(i);
-                if (i != 0) {
-                    uri.append(",");
-                }
-                uri.append(host);
-            }
+        uri.append(host);
+        if (!this.portProvidedAsPartOfHost) {
+            uri.append(":").append(this.port);
         }
-        if (database != null) {
-            uri.append(format("/%s", database));
-
+        uri.append("/");
+        if (Objects.nonNull(database) && !database.isEmpty()) {
+            uri.append(database);
         }
         if (!params.isEmpty()) {
             boolean paramAdded = false;
@@ -165,9 +117,5 @@ public class MongoClientURIBuilder {
             }
         }
         return new MongoClientURI(uri.toString());
-    }
-
-    public MongoClientURIBuilder readPreference(final ReadPreference readPreference) {
-        return this.param("readPreference", readPreference.getName());
     }
 }
