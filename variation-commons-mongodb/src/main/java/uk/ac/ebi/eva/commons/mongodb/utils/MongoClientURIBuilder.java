@@ -61,7 +61,9 @@ public class MongoClientURIBuilder {
     }
 
     public MongoClientURIBuilder password(final String password) throws UnsupportedEncodingException {
-        this.password = URLEncoder.encode(password, StandardCharsets.UTF_8.toString());
+        if(Objects.nonNull(password)) {
+            this.password = URLEncoder.encode(password, StandardCharsets.UTF_8.toString());
+        }
         return this;
     }
 
