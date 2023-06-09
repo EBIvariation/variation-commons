@@ -52,4 +52,10 @@ public class MongoUtilsTest {
         String mongoClientURI = MongoUtils.constructMongoClientURI("", null, "", "", "", "authdb", "authmech", "").getURI();
         assertEquals("mongodb://localhost:27017/?readPreference=primary", mongoClientURI);
     }
+
+    @Test
+    public void testAuthParamsIgnoredWhenNoUserNameAndPasswordIsNull() throws UnsupportedEncodingException {
+        String mongoClientURI = MongoUtils.constructMongoClientURI("", null, "", null, null, "authdb", "authmech", "").getURI();
+        assertEquals("mongodb://localhost:27017/?readPreference=primary", mongoClientURI);
+    }
 }
