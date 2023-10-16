@@ -34,6 +34,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -201,8 +202,8 @@ public class VariantMongo {
         this.start = start;
         this.end = end;
         this.length = length;
-        this.reference = reference;
-        this.alternate = alternate;
+        this.reference = Objects.nonNull(reference) ? reference.toUpperCase() : null;
+        this.alternate = Objects.nonNull(alternate) ? alternate.toUpperCase() : null;
         this.at = at;
         this.hgvs = new LinkedHashSet<>();
         if (hgvs != null && !hgvs.isEmpty()) {
@@ -229,6 +230,8 @@ public class VariantMongo {
 
     public static String buildVariantId(String chromosome, long start, String reference, String alternate) {
         StringBuilder builder = new StringBuilder(chromosome);
+        reference = reference.toUpperCase();
+        alternate = alternate.toUpperCase();
         builder.append("_");
         builder.append(start);
         builder.append("_");
