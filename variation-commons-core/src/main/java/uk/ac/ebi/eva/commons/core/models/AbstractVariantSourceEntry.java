@@ -66,10 +66,7 @@ public abstract class AbstractVariantSourceEntry implements IVariantSourceEntry 
         this.fileId = fileId;
         this.studyId = studyId;
         if (secondaryAlternates != null) {
-            this.secondaryAlternates = Arrays.stream(secondaryAlternates)
-                    .map(a->a.toUpperCase())
-                    .collect(Collectors.toList())
-                    .toArray(new String[0]);
+            setSecondaryAlternates(secondaryAlternates);
         } else {
             this.secondaryAlternates = new String[]{};
         }

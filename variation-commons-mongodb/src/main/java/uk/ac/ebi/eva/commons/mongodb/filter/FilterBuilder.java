@@ -115,8 +115,8 @@ public class FilterBuilder {
 
     public FilterBuilder withAlternates(List<String> alternates) {
         if (alternates != null && !alternates.isEmpty()) {
-            alternates = alternates.stream().map(a->a.toUpperCase()).collect(Collectors.toList());
-            filters.add(new VariantRepositoryAlternateFilter(alternates));
+            List<String> alternatesUppercase = alternates.stream().map(a->a.toUpperCase()).collect(Collectors.toList());
+            filters.add(new VariantRepositoryAlternateFilter(alternatesUppercase));
         }
         return this;
     }
