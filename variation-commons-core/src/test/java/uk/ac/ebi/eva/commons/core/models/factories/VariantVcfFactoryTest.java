@@ -250,6 +250,14 @@ public class VariantVcfFactoryTest {
                  Collections.singleton("rs123,rs456"));
     }
 
+    @Test
+    public void testChangeRefAltToUpperCase(){
+       String line = "chr1\t1000\t.\tt\tg\t.\t.\t.";
+        List<Variant> expResult = Collections.singletonList(new Variant("chr1", 1000, 1000, "T", "G"));
+        List<Variant> result = factory.create(FILE_ID, STUDY_ID, line);
+        assertEquals(expResult, result);
+    }
+
     private void checkIds(VariantVcfFactory variantVcfFactory, String vcfLine, Set<String> expectedIds) {
         List<Variant> expectedVariants = new LinkedList<>();
         expectedVariants.add(new Variant("1", 1000, 1000, "C", "T"));

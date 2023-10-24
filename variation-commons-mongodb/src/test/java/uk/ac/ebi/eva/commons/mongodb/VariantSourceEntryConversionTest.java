@@ -166,5 +166,19 @@ public class VariantSourceEntryConversionTest {
         Assert.assertEquals("1/1", variantSourceEntryWithSampleNames.getSamplesDataMap().get("NA003").get("GT"));
     }
 
+    @Test
+    public void testChangeRefAltToUpperCaseVariantSourceEntry() {
+        VariantSourceEntry variantSourceEntry = new VariantSourceEntry(null, "", new String[]{"a"},
+                null, null, null, null);
+        Assert.assertEquals("A", variantSourceEntry.getSecondaryAlternates()[0]);
+
+    }
+
+    @Test
+    public void testChangeRefAltToUpperCaseVariantEntrySourceMongo() {
+        VariantSourceEntryMongo variantSourceEntryMongo = new VariantSourceEntryMongo(new VariantSourceEntry(null,
+                "", new String[]{"a"}, null, null, null, null));
+        Assert.assertEquals( "A", variantSourceEntryMongo.getSecondaryAlternates()[0]);
+    }
 
 }
