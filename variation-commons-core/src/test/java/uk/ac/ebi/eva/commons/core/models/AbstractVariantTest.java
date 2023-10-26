@@ -100,6 +100,13 @@ public class AbstractVariantTest {
     }
 
     @Test
+    public void testChangeRefAltToUpperCase() {
+        Variant variant = new Variant("1", 1, 1, "c", "t");
+        assertEquals("C", variant.getReference());
+        assertEquals("T", variant.getAlternate());
+    }
+
+    @Test
     public void testRefAltAssignmentInRenormalization() {
         Variant variant = new Variant("1", 1, 1, "", "T");
         variant.renormalize(1, 2, "A", "AT");

@@ -17,7 +17,6 @@ package uk.ac.ebi.eva.commons.mongodb;
 
 import com.lordofthejars.nosqlunit.mongodb.MongoDbConfigurationBuilder;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
-
 import org.bson.BsonArray;
 import org.bson.BsonString;
 import org.bson.Document;
@@ -31,7 +30,6 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantWithSamplesAndAnnotation;
@@ -180,7 +178,7 @@ public class MongoVariantConversionTest {
 
     private Document buildMongoBasicVariant() {
         VariantWithSamplesAndAnnotation variant = new VariantWithSamplesAndAnnotation(CHROMOSOME, START, END, REFERENCE,
-                                                                                      ALTERNATE, null);
+                ALTERNATE, null);
         Document mongoVariant = new Document("_id", VARIANT_ID)
                 .append(VariantMongo.IDS_FIELD, Collections.singleton(RS_666))
                 .append(VariantMongo.TYPE_FIELD, variant.getType().name())
@@ -249,4 +247,13 @@ public class MongoVariantConversionTest {
         assertNotNull(variant.getIds());
         assertTrue(variant.getIds().isEmpty());
     }
+
+    @Test
+    public void testChangeRefAltToUpperCase() {
+        VariantMongo variantMongo = new VariantMongo(new VariantWithSamplesAndAnnotation("chr1", START,
+                END, "a", "t", null));
+        Assert.assertEquals("A", variantMongo.getReference());
+        Assert.assertEquals("T", variantMongo.getAlternate());
+    }
+
 }

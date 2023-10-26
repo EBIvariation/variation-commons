@@ -27,6 +27,7 @@ import uk.ac.ebi.eva.commons.core.utils.CompressionHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -100,8 +101,10 @@ public class VariantSourceEntryMongo {
         this.fileId = fileId;
         this.studyId = studyId;
         if (alternates != null && alternates.length > 0) {
-            this.alternates = new String[alternates.length];
-            System.arraycopy(alternates, 0, this.alternates, 0, alternates.length);
+            this.alternates = Arrays.stream(alternates)
+                    .map(a->a.toUpperCase())
+                    .collect(Collectors.toList())
+                    .toArray(new String[0]);
         }
 
         if (attributes != null) {

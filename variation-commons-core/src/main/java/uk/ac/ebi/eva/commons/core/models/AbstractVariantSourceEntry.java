@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Entry that associates a variant and a file in a variant archive. It contains
@@ -65,7 +66,7 @@ public abstract class AbstractVariantSourceEntry implements IVariantSourceEntry 
         this.fileId = fileId;
         this.studyId = studyId;
         if (secondaryAlternates != null) {
-            this.secondaryAlternates = Arrays.copyOf(secondaryAlternates, secondaryAlternates.length);
+            setSecondaryAlternates(secondaryAlternates);
         } else {
             this.secondaryAlternates = new String[]{};
         }
@@ -105,7 +106,10 @@ public abstract class AbstractVariantSourceEntry implements IVariantSourceEntry 
     }
 
     public void setSecondaryAlternates(String[] secondaryAlternates) {
-        this.secondaryAlternates = secondaryAlternates;
+        this.secondaryAlternates = Arrays.stream(secondaryAlternates)
+                .map(a->a.toUpperCase())
+                .collect(Collectors.toList())
+                .toArray(new String[0]);
     }
 
     @Override

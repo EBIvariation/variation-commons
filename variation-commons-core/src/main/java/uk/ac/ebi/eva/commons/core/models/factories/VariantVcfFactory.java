@@ -131,11 +131,14 @@ public abstract class VariantVcfFactory {
     }
 
     protected String getReference(String[] fields) {
-        return fields[3].equals(".") ? "" : fields[3];
+        return fields[3].equals(".") ? "" : fields[3].toUpperCase();
     }
 
     protected String[] getAlternateAlleles(String[] fields) {
-        return fields[4].split(",");
+        return Arrays.stream(fields[4].split(","))
+                .map(a->a.toUpperCase())
+                .collect(Collectors.toList())
+                .toArray(new String[0]);
     }
 
     protected float getQuality(String[] fields) {

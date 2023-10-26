@@ -124,6 +124,8 @@ public abstract class AbstractVariant implements IVariant {
         if (chromosome == null || chromosome.trim().equals("")) {
             throw new IllegalArgumentException("Chromosome name cannot be empty");
         }
+        reference = Objects.nonNull(reference) ? reference.toUpperCase() : null;
+        alternate = Objects.nonNull(alternate) ? alternate.toUpperCase() : null;
         this.chromosome = chromosome;
         this.setCoordinates(start, end);
         this.setReference(reference);
@@ -200,11 +202,11 @@ public abstract class AbstractVariant implements IVariant {
     }
 
     private void setReference(String reference) {
-        this.reference = (reference != null) ? reference : "";
+        this.reference = (reference != null) ? reference.toUpperCase() : "";
     }
 
     private void setAlternate(String alternate) {
-        this.alternate = (alternate != null) ? alternate : "";
+        this.alternate = (alternate != null) ? alternate.toUpperCase() : "";
     }
 
     private void setCoordinates(long start, long end) {

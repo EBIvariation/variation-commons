@@ -23,6 +23,7 @@ import uk.ac.ebi.eva.commons.core.models.VariantType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Class for building filters for querying using the VariantRepository
@@ -114,21 +115,22 @@ public class FilterBuilder {
 
     public FilterBuilder withAlternates(List<String> alternates) {
         if (alternates != null && !alternates.isEmpty()) {
-            filters.add(new VariantRepositoryAlternateFilter(alternates));
+            List<String> alternatesUppercase = alternates.stream().map(a->a.toUpperCase()).collect(Collectors.toList());
+            filters.add(new VariantRepositoryAlternateFilter(alternatesUppercase));
         }
         return this;
     }
 
     public FilterBuilder withAlternates(String alternate) {
         if (alternate != null) {
-            filters.add(new VariantRepositoryAlternateFilter(Collections.singletonList(alternate)));
+            filters.add(new VariantRepositoryAlternateFilter(Collections.singletonList(alternate.toUpperCase())));
         }
         return this;
     }
 
     public FilterBuilder withReferenceBases(String referenceBases) {
         if (referenceBases != null) {
-            filters.add(new VariantRepositoryReferenceBasesFilter(Collections.singletonList(referenceBases)));
+            filters.add(new VariantRepositoryReferenceBasesFilter(Collections.singletonList(referenceBases.toUpperCase())));
         }
         return this;
     }

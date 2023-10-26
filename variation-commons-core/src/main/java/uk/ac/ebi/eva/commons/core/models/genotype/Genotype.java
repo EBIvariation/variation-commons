@@ -47,8 +47,8 @@ public class Genotype {
     }
 
     public Genotype(String genotype, String ref, String alt) {
-        this.reference = ref;
-        this.alternate = alt;
+        this.reference = Objects.nonNull(ref) ? ref.toUpperCase() : null;
+        this.alternate = Objects.nonNull(alt) ? alt.toUpperCase() : null;
         this.phased = genotype.contains("|");
         this.count = 0;
         parseGenotype(genotype);
@@ -96,7 +96,7 @@ public class Genotype {
     }
 
     void setReference(String reference) {
-        this.reference = reference;
+        this.reference = Objects.nonNull(reference) ? reference.toUpperCase() : null;
     }
 
     public String getAlternate() {
@@ -104,7 +104,7 @@ public class Genotype {
     }
 
     void setAlternate(String alternate) {
-        this.alternate = alternate;
+        this.alternate = Objects.nonNull(alternate) ? alternate.toUpperCase() : null;
     }
 
     public int getAllele(int i) {

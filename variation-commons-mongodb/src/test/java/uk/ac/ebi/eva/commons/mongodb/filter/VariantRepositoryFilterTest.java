@@ -18,6 +18,7 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.filter;
 
+import org.bson.Document;
 import org.junit.Test;
 import org.springframework.data.mongodb.core.query.Criteria;
 
@@ -66,5 +67,15 @@ public class VariantRepositoryFilterTest {
         Criteria expected = Criteria.where(VariantRepositoryFilter.STUDY_ID_FIELD).in(studies);
         Criteria test = filter.getCriteria();
         assertEquals(expected, test);
+    }
+
+    @Test
+    public void testChangeRefAltToUpperCase() {
+        List<VariantRepositoryFilter> filters = new FilterBuilder().getBeaconFilters("a", "t",
+                null, null);
+        assertEquals("A", ((List<String>) ((Document)filters.get(0).getCriteria().getCriteriaObject()
+                .get("ref")).get("$in")).get(0));
+        assertEquals("T", ((List<String>) ((Document)filters.get(1).getCriteria().getCriteriaObject()
+                .get("alt")).get("$in")).get(0));
     }
 }
