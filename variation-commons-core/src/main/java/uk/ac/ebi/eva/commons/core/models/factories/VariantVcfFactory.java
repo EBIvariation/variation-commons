@@ -17,7 +17,8 @@
 package uk.ac.ebi.eva.commons.core.models.factories;
 
 import org.apache.commons.lang3.StringUtils;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.eva.commons.core.models.VariantCoreFields;
 import uk.ac.ebi.eva.commons.core.models.factories.exception.IncompleteInformationException;
 import uk.ac.ebi.eva.commons.core.models.factories.exception.NonVariantException;
@@ -37,6 +38,7 @@ import java.util.stream.Collectors;
  * Abstract class to parse the basic fields in VCF lines
  */
 public abstract class VariantVcfFactory {
+    private final static Logger logger = LoggerFactory.getLogger(VariantVcfFactory.class);
 
     public static final String ALLELE_FREQUENCY = "AF";
 
@@ -98,9 +100,12 @@ public abstract class VariantVcfFactory {
             // Fill the rest of fields (after samples because INFO depends on them)
             setOtherFields(variant, fileId, studyId, ids, quality, filter, info, altAlleleIdx, alternateAlleles, line);
 
-            checkVariantInformation(variant, fileId, studyId);
-
-            variants.add(variant);
+            try {
+                checkVariantInformation(variant, fileId, studyId);
+                variants.add(variant);
+            } catch (NonVariantException nve) {
+                logger.warn("The variant {} will be discarded as it is a non-variant: {}", variant, nve);
+            }
         }
 
         return variants;
