@@ -18,8 +18,6 @@ package uk.ac.ebi.eva.commons.core.models.factories;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import uk.ac.ebi.eva.commons.core.models.factories.exception.NonVariantException;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 
@@ -30,6 +28,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class VariantGenotypedVcfFactoryTest {
 
@@ -433,48 +432,50 @@ public class VariantGenotypedVcfFactoryTest {
     public void variantWithNoAltGenotypes() {
         String line = "1\t10040\trs123\tT\tC\t.\t.\t.\tGT\t0/0\t0|0\t./.\t0|0\t./.";
 
-        thrown.expect(NonVariantException.class);
-        factory.create(FILE_ID, STUDY_ID, line);
+        List<Variant> variantList = factory.create(FILE_ID, STUDY_ID, line);
+        assertTrue(variantList.isEmpty());
     }
 
     @Test
     public void haploidVariantWithNoAltGenotypes() {
         String line = "Y\t10040\trs123\tT\tC\t.\t.\t.\tGT\t.\t0\t0\t.";
 
-        thrown.expect(NonVariantException.class);
-        factory.create(FILE_ID, STUDY_ID, line);
+        List<Variant> variantList = factory.create(FILE_ID, STUDY_ID, line);
+        assertTrue(variantList.isEmpty());
     }
 
     @Test
     public void triploidVariantWithNoAltGenotypes() {
         String line = "1\t10040\trs123\tT\tC\t.\t.\t.\tGT\t0/0/0\t0|0|0\t././.\t0|0|0\t././.";
 
-        thrown.expect(NonVariantException.class);
-        factory.create(FILE_ID, STUDY_ID, line);
+        List<Variant> variantList = factory.create(FILE_ID, STUDY_ID, line);
+        assertTrue(variantList.isEmpty());
     }
 
     @Test
     public void variantWhereAllGenotypesAreMissingValues() {
         String line = "1\t10040\trs123\tT\tC\t.\t.\t.\tGT\t./.\t./.\t./.\t./.\t./.";
 
-        thrown.expect(NonVariantException.class);
-        factory.create(FILE_ID, STUDY_ID, line);
+        List<Variant> variantList = factory.create(FILE_ID, STUDY_ID, line);
+        assertTrue(variantList.isEmpty());
     }
 
     @Test
     public void variantWhereAllGenotypesAreReference() {
         String line = "1\t10040\trs123\tT\tC\t.\t.\t.\tGT\t0/0\t0|0\t0/0\t0|0\t0/0";
 
-        thrown.expect(NonVariantException.class);
-        factory.create(FILE_ID, STUDY_ID, line);
+        List<Variant> variantList = factory.create(FILE_ID, STUDY_ID, line);
+        assertTrue(variantList.isEmpty());
     }
 
     @Test
     public void multiallelicVariantAndOneAlleleHasNoGenotypes() {
         String line = "Y\t10040\trs123\tT\tC,G,A\t.\t.\t.\tGT\t0/0\t0/2\t./.\t2/2\t0/3\t2/3";
 
-        thrown.expect(NonVariantException.class);
-        factory.create(FILE_ID, STUDY_ID, line);
+        List<Variant> variantList = factory.create(FILE_ID, STUDY_ID, line);
+        assertEquals(2, variantList.size());
+        assertEquals("G", variantList.get(0).getAlternate());
+        assertEquals("A", variantList.get(1).getAlternate());
     }
 
     @Test
