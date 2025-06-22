@@ -108,6 +108,10 @@ public abstract class VariantVcfFactory {
             }
         }
 
+        if (variants.isEmpty()) {
+            throw new NonVariantException("No valid variants could be found");
+        }
+
         return variants;
     }
 
@@ -211,7 +215,7 @@ public abstract class VariantVcfFactory {
         }
         if (quality > -1) {
             variant.getSourceEntry(fileId, studyId)
-                   .addAttribute("QUAL", String.valueOf(quality));
+                    .addAttribute("QUAL", String.valueOf(quality));
         }
         if (!filter.isEmpty()) {
             variant.getSourceEntry(fileId, studyId).addAttribute("FILTER", filter);

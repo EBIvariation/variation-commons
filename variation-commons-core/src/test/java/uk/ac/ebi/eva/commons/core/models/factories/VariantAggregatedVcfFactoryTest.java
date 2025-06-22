@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
 import uk.ac.ebi.eva.commons.core.models.factories.exception.IncompleteInformationException;
+import uk.ac.ebi.eva.commons.core.models.factories.exception.NonVariantException;
 import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 
@@ -136,8 +137,8 @@ public class VariantAggregatedVcfFactoryTest {
     public void variantWithAlleleFrequencyZero() {
         String line = "1\t10040\trs123\tT\tC\t.\t.\tAF=0";
 
-        List<Variant> variantList = factory.create(FILE_ID, STUDY_ID, line);
-        assertTrue(variantList.isEmpty());
+        thrown.expect(NonVariantException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
     }
 
     @Test
@@ -154,8 +155,8 @@ public class VariantAggregatedVcfFactoryTest {
     public void variantWithAlleleCountZero() {
         String line = "1\t10040\trs123\tT\tC\t.\t.\tAN=5;AC=0";
 
-        List<Variant> variantList = factory.create(FILE_ID, STUDY_ID, line);
-        assertTrue(variantList.isEmpty());
+        thrown.expect(NonVariantException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
     }
 
     @Test
@@ -172,8 +173,8 @@ public class VariantAggregatedVcfFactoryTest {
     public void variantWithAlleleTotalNumberZero() {
         String line = "1\t10040\trs123\tT\tC\t.\t.\tAN=0;AC=5";
 
-        List<Variant> variantList = factory.create(FILE_ID, STUDY_ID, line);
-        assertTrue(variantList.isEmpty());
+        thrown.expect(NonVariantException.class);
+        factory.create(FILE_ID, STUDY_ID, line);
     }
 
     @Test
