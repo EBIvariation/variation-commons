@@ -16,7 +16,6 @@
 package uk.ac.ebi.eva.commons.core.models.factories;
 
 import uk.ac.ebi.eva.commons.core.models.factories.exception.IncompleteInformationException;
-import uk.ac.ebi.eva.commons.core.models.factories.exception.NonVariantException;
 import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
@@ -109,13 +108,18 @@ public class VariantGenotypedVcfFactory extends VariantVcfFactory {
     }
 
     @Override
-    protected void checkVariantInformation(Variant variant, String fileId, String studyId)
-            throws NonVariantException, IncompleteInformationException {
-        super.checkVariantInformation(variant, fileId, studyId);
+    protected boolean checkVariantInformation(Variant variant, String fileId, String studyId)
+            throws IncompleteInformationException {
+        if (!super.checkVariantInformation(variant, fileId, studyId)) {
+            return false;
+        }
         VariantSourceEntry variantSourceEntry = variant.getSourceEntry(fileId, studyId);
         if (!hasAlternateAlleleCalls(variantSourceEntry)) {
-            throw new NonVariantException("The variant " + variant + " has no alternate allele genotype calls");
+            logger.warn("The variant {} has no alternate allele genotype calls and will be discarded as a non-variant",
+                        variant);
+            return false;
         }
+        return true;
     }
 
     private boolean hasAlternateAlleleCalls(VariantSourceEntry variantSourceEntry) {
