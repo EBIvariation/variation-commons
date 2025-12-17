@@ -18,7 +18,6 @@ package uk.ac.ebi.eva.commons.core.models.factories;
 
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
 import uk.ac.ebi.eva.commons.core.models.factories.exception.IncompleteInformationException;
-import uk.ac.ebi.eva.commons.core.models.factories.exception.NonVariantException;
 import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
@@ -395,18 +394,23 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
     }
 
     @Override
-    protected void checkVariantInformation(Variant variant, String fileId, String studyId)
-            throws NonVariantException, IncompleteInformationException {
-        super.checkVariantInformation(variant, fileId, studyId);
+    protected boolean checkVariantInformation(Variant variant, String fileId, String studyId)
+            throws IncompleteInformationException {
+        if (!super.checkVariantInformation(variant, fileId, studyId)) {
+            return false;
+        }
 
         if (requireEvidence) {
             VariantSourceEntry variantSourceEntry = variant.getSourceEntry(fileId, studyId);
             if (!canAlleleFrequenciesBeCalculated(variantSourceEntry)) {
                 throw new IncompleteInformationException(variant);
             } else if (variantFrequencyIsZero(variantSourceEntry)) {
-                throw new NonVariantException("The variant " + variant + " has allele frequency or counts '0'");
+                logger.warn("The variant {} has allele frequency or counts '0' and will be discarded as a non-variant",
+                            variant);
+                return false;
             }
         }
+        return true;
     }
 
     protected boolean canAlleleFrequenciesBeCalculated(VariantSourceEntry variantSourceEntry) {

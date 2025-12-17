@@ -38,7 +38,8 @@ import java.util.stream.Collectors;
  * Abstract class to parse the basic fields in VCF lines
  */
 public abstract class VariantVcfFactory {
-    private final static Logger logger = LoggerFactory.getLogger(VariantVcfFactory.class);
+
+    protected final static Logger logger = LoggerFactory.getLogger(VariantVcfFactory.class);
 
     public static final String ALLELE_FREQUENCY = "AF";
 
@@ -100,16 +101,13 @@ public abstract class VariantVcfFactory {
             // Fill the rest of fields (after samples because INFO depends on them)
             setOtherFields(variant, fileId, studyId, ids, quality, filter, info, altAlleleIdx, alternateAlleles, line);
 
-            try {
-                checkVariantInformation(variant, fileId, studyId);
+            if (checkVariantInformation(variant, fileId, studyId)) {
                 variants.add(variant);
-            } catch (NonVariantException nve) {
-                logger.warn("The variant {} will be discarded as it is a non-variant: {}", variant, nve);
             }
         }
 
         if (variants.isEmpty()) {
-            throw new NonVariantException("No valid variants could be found");
+            logger.warn("No valid variants could be found");
         }
 
         return variants;
@@ -312,13 +310,19 @@ public abstract class VariantVcfFactory {
         return correctedAllele;
     }
 
-    protected void checkVariantInformation(Variant variant, String fileId, String studyId)
-            throws NonVariantException, IncompleteInformationException {
+    protected boolean checkVariantInformation(Variant variant, String fileId, String studyId)
+            throws IncompleteInformationException {
         if (variant.getAlternate().equalsIgnoreCase(variant.getReference())) {
-            throw new NonVariantException("The variant " + variant + " reference and alternate alleles are the same");
+            logger.warn(
+                    "The variant {} reference and alternate alleles are the same and will be discarded as a " +
+                            "non-variant",
+                    variant);
+            return false;
         }
         if (variant.getAlternate().equals(".")) {
-            throw new NonVariantException("The variant " + variant + " has no alternate allele");
+            logger.warn("The variant {} has no alternate allele and will be discarded as a non-variant", variant);
+            return false;
         }
+        return true;
     }
 }

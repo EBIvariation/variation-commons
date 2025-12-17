@@ -15,10 +15,16 @@
  */
 package uk.ac.ebi.eva.commons.core.models.factories;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import uk.ac.ebi.eva.commons.core.models.factories.exception.NonVariantException;
+import org.slf4j.LoggerFactory;
+
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 
@@ -41,6 +47,17 @@ public class VariantGenotypedVcfFactoryTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
+
+    private ListAppender<ILoggingEvent> listAppender;
+
+    @Before
+    public void setUp() {
+        // Set up appender to capture log messages
+        Logger factoryLogger = (Logger) LoggerFactory.getLogger(VariantVcfFactory.class);
+        listAppender = new ListAppender<>();
+        listAppender.start();
+        factoryLogger.addAppender(listAppender);
+    }
 
     @Test
     public void testCreateVariant_Samples() {
@@ -433,40 +450,40 @@ public class VariantGenotypedVcfFactoryTest {
     public void variantWithNoAltGenotypes() {
         String line = "1\t10040\trs123\tT\tC\t.\t.\t.\tGT\t0/0\t0|0\t./.\t0|0\t./.";
 
-        thrown.expect(NonVariantException.class);
         factory.create(FILE_ID, STUDY_ID, line);
+        assertNonVariantLogged();
     }
 
     @Test
     public void haploidVariantWithNoAltGenotypes() {
         String line = "Y\t10040\trs123\tT\tC\t.\t.\t.\tGT\t.\t0\t0\t.";
 
-        thrown.expect(NonVariantException.class);
         factory.create(FILE_ID, STUDY_ID, line);
+        assertNonVariantLogged();
     }
 
     @Test
     public void triploidVariantWithNoAltGenotypes() {
         String line = "1\t10040\trs123\tT\tC\t.\t.\t.\tGT\t0/0/0\t0|0|0\t././.\t0|0|0\t././.";
 
-        thrown.expect(NonVariantException.class);
         factory.create(FILE_ID, STUDY_ID, line);
+        assertNonVariantLogged();
     }
 
     @Test
     public void variantWhereAllGenotypesAreMissingValues() {
         String line = "1\t10040\trs123\tT\tC\t.\t.\t.\tGT\t./.\t./.\t./.\t./.\t./.";
 
-        thrown.expect(NonVariantException.class);
         factory.create(FILE_ID, STUDY_ID, line);
+        assertNonVariantLogged();
     }
 
     @Test
     public void variantWhereAllGenotypesAreReference() {
         String line = "1\t10040\trs123\tT\tC\t.\t.\t.\tGT\t0/0\t0|0\t0/0\t0|0\t0/0";
 
-        thrown.expect(NonVariantException.class);
         factory.create(FILE_ID, STUDY_ID, line);
+        assertNonVariantLogged();
     }
 
     @Test
@@ -489,6 +506,12 @@ public class VariantGenotypedVcfFactoryTest {
         line = "chr1\t1000\t.\tT\tG\t.\t.\tAF=0;AC=0;AN=0\tGT\t0/1";
         List<Variant> result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);
+    }
+
+    private void assertNonVariantLogged() {
+        List<ILoggingEvent> logsList = listAppender.list;
+        assertTrue(logsList.get(0).getMessage().contains("non-variant"));
+        assertEquals(Level.WARN, logsList.get(0).getLevel());
     }
 
 }
