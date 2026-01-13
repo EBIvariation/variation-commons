@@ -250,7 +250,7 @@ public class VariantStatistics implements IVariantStatistics {
         }
     }
 
-    void setGenotypesCount(Map<Genotype, Integer> genotypesCount) {
+    public void setGenotypesCount(Map<Genotype, Integer> genotypesCount) {
         this.genotypesCount = genotypesCount;
     }
 
