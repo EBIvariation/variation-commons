@@ -15,7 +15,6 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.writers;
 
-import com.mongodb.BulkWriteOperation;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.UpdateOneModel;
 import com.mongodb.client.model.UpdateOptions;
@@ -104,7 +103,7 @@ public class VariantMongoWriter extends MongoItemWriter<IVariant> {
     }
 
     @Override
-    protected void doWrite(List<? extends IVariant> variants) {
+    public void doWrite(List<? extends IVariant> variants) {
         List<UpdateOneModel<Document>> updates = new ArrayList<>();
         for (IVariant variant : variants) {
             updates.add(new UpdateOneModel<>(generateQuery(variant), generateUpdate(variant),

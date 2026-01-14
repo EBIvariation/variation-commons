@@ -33,7 +33,7 @@ public class AnnotationMetadata implements IAnnotationMetadata {
 
     public AnnotationMetadata(IAnnotationMetadata annotationMetadata) {
         this(annotationMetadata.getVepVersion(), annotationMetadata.getCacheVersion(),
-             annotationMetadata.isDefaultVersion());
+                annotationMetadata.isDefaultVersion());
     }
 
     public AnnotationMetadata(String vepVersion, String cacheVersion) {
@@ -59,6 +59,10 @@ public class AnnotationMetadata implements IAnnotationMetadata {
     @Override
     public boolean isDefaultVersion() {
         return defaultVersion;
+    }
+
+    public void setDefaultVersion(boolean defaultVersion) {
+        this.defaultVersion = defaultVersion;
     }
 
     @Override

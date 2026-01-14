@@ -96,7 +96,7 @@ public class ConsequenceTypeMongo implements IConsequenceType {
     @Field(value = RELATIVE_POS_FIELD)
     private Integer relativePosition;
 
-    ConsequenceTypeMongo() {
+    public ConsequenceTypeMongo() {
         this(null, null, null, null, null, null, null, null, null, null, null, null, null, null);
     }
 

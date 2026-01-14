@@ -321,12 +321,33 @@ public class VariantMongo {
         return variantSourceEntries;
     }
 
+    public void setSourceEntries(Set<VariantSourceEntryMongo> variantSourceEntries) {
+        this.variantSourceEntries = new HashSet<>();
+        if (variantSourceEntries != null && !variantSourceEntries.isEmpty()) {
+            this.variantSourceEntries.addAll(variantSourceEntries);
+        }
+    }
+
     public Set<VariantStatisticsMongo> getVariantStatsMongo() {
         return variantStatsMongo;
     }
 
+    public void setVariantStatsMongo(Set<VariantStatisticsMongo> variantStatsMongo) {
+        this.variantStatsMongo = new HashSet<>();
+        if (variantStatsMongo != null && !variantStatsMongo.isEmpty()) {
+            this.variantStatsMongo.addAll(variantStatsMongo);
+        }
+    }
+
     public Set<AnnotationIndexMongo> getIndexedAnnotations() {
         return indexedAnnotations;
+    }
+
+    public void setIndexedAnnotations(Set<AnnotationIndexMongo> indexedAnnotations) {
+        this.indexedAnnotations = new HashSet<>();
+        if (indexedAnnotations != null && !indexedAnnotations.isEmpty()) {
+            this.indexedAnnotations.addAll(indexedAnnotations);
+        }
     }
 
     public Set<String> getAnnotationIds() {
