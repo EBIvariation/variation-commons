@@ -97,4 +97,43 @@ public class SimplifiedVariant {
         }
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public VariantType getVariantType() {
+        return variantType;
+    }
+
+    public String getChromosome() {
+        return chromosome;
+    }
+
+    public long getStart() {
+        return start;
+    }
+
+    public long getEnd() {
+        return end;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public String getReference() {
+        return reference;
+    }
+
+    public String getAlternate() {
+        return alternate;
+    }
+
+    public VariantAtMongo getAt() {
+        return at;
+    }
+
+    public Set<HgvsMongo> getHgvs() {
+        return hgvs;
+    }
 }
