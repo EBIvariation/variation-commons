@@ -1,19 +1,15 @@
 package uk.ac.ebi.eva.commons.mongodb.services;
 
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbConfigurationBuilder;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
-
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import uk.ac.ebi.eva.commons.core.models.Aggregation;
 import uk.ac.ebi.eva.commons.core.models.StudyType;
@@ -23,21 +19,22 @@ import uk.ac.ebi.eva.commons.mongodb.configuration.EvaRepositoriesConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantGlobalStatsMongo;
-import uk.ac.ebi.eva.commons.mongodb.test.rule.FixSpringMongoDbRule;
+import uk.ac.ebi.eva.commons.mongodb.test.TestDataLoader;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:eva.properties")
-@UsingDataSet(locations = {"/test-data/files.json"})
 @ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class, EvaRepositoriesConfiguration.class})
 public class VariantSourceServiceTest {
 
@@ -47,17 +44,21 @@ public class VariantSourceServiceTest {
     private static final String FIRST_FILE_ID = "firstFileId";
     private static final String SECOND_FILE_ID = "secondFileId";
 
-    private static final String TEST_DB = "test-db";
-
     @Autowired
     private VariantSourceService service;
 
     @Autowired
-    private ApplicationContext applicationContext;
+    private TestDataLoader testDataLoader;
 
-    @Rule
-    public MongoDbRule mongoDbRule = new FixSpringMongoDbRule(
-            MongoDbConfigurationBuilder.mongoDb().databaseName(TEST_DB).build());
+    @BeforeEach
+    public void setUp() throws IOException {
+        testDataLoader.load("/test-data/files.json");
+    }
+
+    @AfterEach
+    public void tearDown() {
+        testDataLoader.cleanupTestCollections();
+    }
 
     @Test
     public void testConvert() {
@@ -86,9 +87,11 @@ public class VariantSourceServiceTest {
         assertEquals(variantSource, variantSources.get(0));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConvertNull() {
-        service.convert(null);
+        assertThrows(NullPointerException.class, () -> {
+            service.convert(null);
+        });
     }
 
     @Test
@@ -118,21 +121,21 @@ public class VariantSourceServiceTest {
         List<String> studyIds = new ArrayList<>();
         studyIds.add(SECOND_STUDY_ID);
 
-        Pageable pageable = new PageRequest(0, 1);
+        Pageable pageable = PageRequest.of(0, 1);
         List<VariantSource> variantSourceMongoList = service.findByStudyIdIn(studyIds, pageable);
         assertEquals(1, variantSourceMongoList.size());
 
-        pageable = new PageRequest(0, 2);
+        pageable = PageRequest.of(0, 2);
         variantSourceMongoList = service.findByStudyIdIn(studyIds, pageable);
         assertEquals(2, variantSourceMongoList.size());
 
         studyIds.add(FIRST_STUDY_ID);
 
-        pageable = new PageRequest(1, 2);
+        pageable = PageRequest.of(1, 2);
         variantSourceMongoList = service.findByStudyIdIn(studyIds, pageable);
         assertEquals(1, variantSourceMongoList.size());
 
-        pageable = new PageRequest(2, 2);
+        pageable = PageRequest.of(2, 2);
         variantSourceMongoList = service.findByStudyIdIn(studyIds, pageable);
         assertEquals(0, variantSourceMongoList.size());
     }
@@ -156,7 +159,7 @@ public class VariantSourceServiceTest {
         List<String> fileIds = new ArrayList<>();
         fileIds.add(FIRST_FILE_ID);
 
-        Pageable pageable = new PageRequest(0, 100);
+        Pageable pageable = PageRequest.of(0, 100);
         List<VariantSource> variantSourceMongoList = service.findByFileIdIn(fileIds, pageable);
         assertEquals(1, variantSourceMongoList.size());
 
@@ -171,7 +174,7 @@ public class VariantSourceServiceTest {
         List<String> fileIds = new ArrayList<>();
         fileIds.add(FIRST_FILE_ID);
 
-        Pageable pageable = new PageRequest(0, 100);
+        Pageable pageable = PageRequest.of(0, 100);
         List<VariantSource> variantSourceList = service.findByFileIdIn(fileIds, pageable);
         assertEquals(1, variantSourceList.size());
 

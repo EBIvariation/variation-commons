@@ -16,10 +16,11 @@
 
 package uk.ac.ebi.eva.commons.core.models;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class VariantClassifierTest {
 
@@ -76,14 +77,18 @@ public class VariantClassifierTest {
         assertEquals(VariantType.MNV, VariantClassifier.getVariantClassification("AT", "CG", 8));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testHyphensInReference() {
-        VariantClassifier.getVariantClassification("-", "GG", 2);
+        assertThrows(IllegalArgumentException.class, () -> {
+            VariantClassifier.getVariantClassification("-", "GG", 2);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testHyphensInAlternate() {
-        VariantClassifier.getVariantClassification("AA", "-", 2);
+        assertThrows(IllegalArgumentException.class, () -> {
+            VariantClassifier.getVariantClassification("AA", "-", 2);
+        });
     }
 
     //Test getVariantClassification without subSNPClass
@@ -143,13 +148,17 @@ public class VariantClassifierTest {
         assertEquals(VariantType.MNV, VariantClassifier.getVariantClassification("AT", "CG"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testHyphensInReferenceNoSnpClass() {
-        VariantClassifier.getVariantClassification("-", "GG");
+        assertThrows(IllegalArgumentException.class, () -> {
+            VariantClassifier.getVariantClassification("-", "GG");
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testHyphensInAlternateNoSnpClass() {
-        VariantClassifier.getVariantClassification("AA", "-");
+        assertThrows(IllegalArgumentException.class, () -> {
+            VariantClassifier.getVariantClassification("AA", "-");
+        });
     }
 }

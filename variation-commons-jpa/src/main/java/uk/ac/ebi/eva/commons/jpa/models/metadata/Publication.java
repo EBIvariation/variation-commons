@@ -15,13 +15,11 @@
  */
 package uk.ac.ebi.eva.commons.jpa.models.metadata;
 
-import org.springframework.data.jpa.domain.AbstractPersistable;
-
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
@@ -34,7 +32,7 @@ import java.util.Set;
  */
 @Entity
 @Table(indexes = {@Index(name = "publication_unique", columnList = "title,journal,volume", unique = true)})
-public class Publication extends AbstractPersistable<Long> {
+public class Publication extends BaseEntity<Long> {
 
     private static final long serialVersionUID = 8055335219199952073L;
 

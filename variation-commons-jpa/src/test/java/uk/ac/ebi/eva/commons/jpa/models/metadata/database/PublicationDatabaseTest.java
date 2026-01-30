@@ -1,12 +1,12 @@
 package uk.ac.ebi.eva.commons.jpa.models.metadata.database;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.eva.commons.jpa.models.metadata.DatabaseTestConfiguration;
 import uk.ac.ebi.eva.commons.jpa.models.metadata.Publication;
@@ -16,18 +16,19 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Created by parce on 20/10/15.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @Transactional
 @ContextConfiguration(classes = DatabaseTestConfiguration.class)
 public class PublicationDatabaseTest {
@@ -37,7 +38,7 @@ public class PublicationDatabaseTest {
 
     Publication publication1, publication2, publication3;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         String author1 = "Author 1";
         String author2 = "Author 2";
@@ -192,7 +193,7 @@ public class PublicationDatabaseTest {
      *
      * @todo How to report this kind of errors?
      */
-    @Test(expected = DataIntegrityViolationException.class)
+    @Test
     public void testUpdateDuplicate() {
         Publication savedPublication1 = repository.save(publication1);
         Publication savedPublication3 = repository.save(publication3);
@@ -203,6 +204,8 @@ public class PublicationDatabaseTest {
         // is not necessary update the authors because publication 1 has the same author list than publication 3
 
         repository.save(savedPublication1);
-        repository.findAll();
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            repository.findAll();
+        });
     }
 }

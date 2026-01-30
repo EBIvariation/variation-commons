@@ -15,10 +15,8 @@
  */
 package uk.ac.ebi.eva.commons.batch.io;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.file.FlatFileParseException;
 import org.springframework.batch.test.MetaDataInstanceFactory;
@@ -28,16 +26,15 @@ import uk.ac.ebi.eva.commons.core.utils.CompressionHelper;
 import uk.ac.ebi.eva.commons.core.utils.FileUtils;
 
 import java.io.File;
+import java.nio.file.Path;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static uk.ac.ebi.eva.commons.batch.io.UnwindingItemReaderTest.consumeReader;
 
 public class UnwindingItemStreamReaderTest {
-    
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
 
-    @Rule
-    public TemporaryFolder temporaryFolderRule = new TemporaryFolder();
+    @TempDir
+    Path temporaryFolder;
 
     private static final String INPUT_FILE_PATH = "/input-files/vcf/genotyped.vcf.gz";
 
@@ -77,9 +74,10 @@ public class UnwindingItemStreamReaderTest {
         unwindingItemStreamReader.open(executionContext);
 
         // consume the reader and check that a wrong variant raise an exception
-        exception.expect(FlatFileParseException.class);
-        while (unwindingItemStreamReader.read() != null) {
-        }
+        assertThrows(FlatFileParseException.class, () -> {
+            while (unwindingItemStreamReader.read() != null) {
+            }
+        });
     }
 
     @Test
@@ -88,7 +86,7 @@ public class UnwindingItemStreamReaderTest {
 
         // uncompress the input VCF into a temporary file
         File input = FileUtils.getResourceFile(INPUT_FILE_PATH);
-        File tempFile = temporaryFolderRule.newFile();
+        File tempFile = temporaryFolder.resolve("tempFile.vcf").toFile();
         CompressionHelper.uncompress(input.getAbsolutePath(), tempFile);
 
         VcfReader vcfReader = new VcfReader(FILE_ID, STUDY_ID, tempFile);

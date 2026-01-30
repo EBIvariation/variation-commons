@@ -22,15 +22,15 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 
 /**
  * Beacon-specific error. This should be non-null in exceptional situations only, in which case &#x60;exists&#x60; has to be null.
  */
 @ApiModel(description = "Beacon-specific error. This should be non-null in exceptional situations only, in which case `exists` has to be null.")
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
 public class BeaconError   {
     @JsonProperty("errorCode")
     private Integer errorCode = null;

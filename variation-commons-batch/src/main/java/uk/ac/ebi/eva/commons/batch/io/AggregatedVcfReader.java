@@ -17,7 +17,7 @@ package uk.ac.ebi.eva.commons.batch.io;
 
 import uk.ac.ebi.eva.commons.core.models.Aggregation;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 

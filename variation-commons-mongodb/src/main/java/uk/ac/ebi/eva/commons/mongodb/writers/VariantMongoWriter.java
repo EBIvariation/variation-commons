@@ -34,6 +34,8 @@ import uk.ac.ebi.eva.commons.mongodb.entities.projections.SimplifiedVariant;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantStatisticsMongo;
 
+import org.springframework.batch.item.Chunk;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -103,7 +105,7 @@ public class VariantMongoWriter extends MongoItemWriter<IVariant> {
     }
 
     @Override
-    public void doWrite(List<? extends IVariant> variants) {
+    protected void doWrite(Chunk<? extends IVariant> variants) {
         List<UpdateOneModel<Document>> updates = new ArrayList<>();
         for (IVariant variant : variants) {
             updates.add(new UpdateOneModel<>(generateQuery(variant), generateUpdate(variant),

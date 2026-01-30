@@ -15,13 +15,13 @@
  */
 package uk.ac.ebi.eva.commons.jpa.models.metadata.database;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.ac.ebi.eva.commons.jpa.models.metadata.DatabaseTestConfiguration;
@@ -29,12 +29,13 @@ import uk.ac.ebi.eva.commons.jpa.models.metadata.Organisation;
 
 import java.util.Iterator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @Transactional
 @ContextConfiguration(classes = DatabaseTestConfiguration.class)
 public class OrganisationDatabaseTest {
@@ -44,7 +45,7 @@ public class OrganisationDatabaseTest {
 
     Organisation organisation1, organisation2;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         organisation1 = new Organisation("EMBL-EBI", "Hinxton, Cambridgeshire, UK");
         organisation2 = new Organisation("CIPF", "Valencia, Spain");
@@ -154,7 +155,7 @@ public class OrganisationDatabaseTest {
      *
      * @todo How to report this kind of errors?
      */
-    @Test(expected = DataIntegrityViolationException.class)
+    @Test
     public void testUpdateDuplicate() {
         Organisation savedOrganisation1 = repository.save(organisation1);
         Organisation savedOrganisation2 = repository.save(organisation2);
@@ -162,6 +163,8 @@ public class OrganisationDatabaseTest {
         savedOrganisation1.setName(organisation2.getName());
         savedOrganisation1.setAddress(organisation2.getAddress());
         repository.save(savedOrganisation1);
-        repository.findAll();
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            repository.findAll();
+        });
     }
 }

@@ -15,24 +15,25 @@
  */
 package uk.ac.ebi.eva.commons.jpa.models.metadata.database;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.eva.commons.jpa.models.metadata.DatabaseTestConfiguration;
 import uk.ac.ebi.eva.commons.jpa.models.metadata.File;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @Transactional
 @ContextConfiguration(classes = DatabaseTestConfiguration.class)
 public class FileDatabaseTest {
@@ -42,7 +43,7 @@ public class FileDatabaseTest {
 
     File file1, file2;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         file1 = new File("file1.vcf", File.Type.VCF, "7s6efgwe78748");
         file2 = new File("file2.vcf", File.Type.VCF, "7s6efgwe78748");
@@ -132,13 +133,15 @@ public class FileDatabaseTest {
      *
      * @todo How to report this kind of errors?
      */
-    @Test(expected = DataIntegrityViolationException.class)
+    @Test
     public void testUpdateDuplicate() {
         File savedFile1 = repository.save(file1);
         File savedFile2 = repository.save(file2);
         savedFile1.setName(savedFile2.getName());
         repository.save(savedFile1);
-        repository.findAll();
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            repository.findAll();
+        });
     }
 
 }
