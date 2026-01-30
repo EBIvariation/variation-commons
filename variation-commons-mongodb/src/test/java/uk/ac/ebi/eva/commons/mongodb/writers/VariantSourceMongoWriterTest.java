@@ -16,16 +16,16 @@
 
 package uk.ac.ebi.eva.commons.mongodb.writers;
 
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.ListIndexesIterable;
 import com.mongodb.client.MongoCollection;
 
 import org.bson.Document;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.springframework.batch.item.Chunk;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import uk.ac.ebi.eva.commons.core.models.Aggregation;
 import uk.ac.ebi.eva.commons.core.models.StudyType;
@@ -37,7 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantGlobalStatsMongo;
 
@@ -46,8 +46,8 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 /**
@@ -56,13 +56,7 @@ import static org.junit.Assert.assertNotNull;
  * output: the VariantSourceMongo object gets written in mongo, with at least: fname, fid, sid, sname, samp, meta, stype,
  * date, aggregation. Stats are not there because those are written by the statistics job.
  */
-@RunWith(SpringRunner.class)
-@UsingDataSet(locations = {
-        "/test-data/annotation_metadata.json",
-        "/test-data/annotations.json",
-        "/test-data/features.json",
-        "/test-data/files.json",
-        "/test-data/variants.json"})
+@ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:eva.properties")
 @ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class, EvaRepositoriesConfiguration.class})
 public class VariantSourceMongoWriterTest {
@@ -86,12 +80,12 @@ public class VariantSourceMongoWriterTest {
     @Autowired
     private MongoOperations mongoOperations;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         mongoOperations.dropCollection(COLLECTION_FILES_NAME);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         mongoOperations.dropCollection(COLLECTION_FILES_NAME);
     }
@@ -103,7 +97,7 @@ public class VariantSourceMongoWriterTest {
                 mongoOperations, COLLECTION_FILES_NAME);
 
         VariantSourceMongo variantSource = getVariantSource();
-        filesWriter.write(Collections.singletonList(variantSource));
+        filesWriter.write(new Chunk<>(Collections.singletonList(variantSource)));
 
         FindIterable<Document> cursor = fileCollection.find();
         int count = 0;
@@ -143,7 +137,7 @@ public class VariantSourceMongoWriterTest {
         samplesPosition.put("JP-dash", 3);
         variantSource.setSamplesPosition(samplesPosition);
 
-        filesWriter.write(Collections.singletonList(variantSource));
+        filesWriter.write(new Chunk<>(Collections.singletonList(variantSource)));
 
         FindIterable<Document> cursor = fileCollection.find();
 
@@ -162,7 +156,7 @@ public class VariantSourceMongoWriterTest {
         VariantSourceMongoWriter filesWriter = new VariantSourceMongoWriter( mongoOperations, COLLECTION_FILES_NAME);
 
         VariantSourceMongo variantSource = getVariantSource();
-        filesWriter.write(Collections.singletonList(variantSource));
+        filesWriter.write(new Chunk<>(Collections.singletonList(variantSource)));
 
         ListIndexesIterable<Document> indexesInfo = fileCollection.listIndexes();
 

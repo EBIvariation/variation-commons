@@ -15,13 +15,11 @@
  */
 package uk.ac.ebi.eva.commons.jpa.models.metadata;
 
-import org.springframework.data.jpa.domain.AbstractPersistable;
-
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -31,7 +29,7 @@ import java.util.Set;
  */
 @Entity
 @Table(indexes = {@Index(name = "file_unique", columnList = "name,type,md5", unique = true)})
-public class File extends AbstractPersistable<Long> {
+public class File extends BaseEntity<Long> {
 
     private static final long serialVersionUID = 4602079283068239196L;
 

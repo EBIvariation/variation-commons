@@ -15,57 +15,58 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.repositories;
 
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbConfigurationBuilder;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
-
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import uk.ac.ebi.eva.commons.mongodb.configuration.EvaRepositoriesConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.entities.AnnotationMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
-import uk.ac.ebi.eva.commons.mongodb.test.rule.FixSpringMongoDbRule;
+import uk.ac.ebi.eva.commons.mongodb.test.TestDataLoader;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:eva.properties")
-@UsingDataSet(locations = {
-        "/test-data/variants.json",
-        "/test-data/annotations.json"})
 @ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class, EvaRepositoriesConfiguration.class})
 public class AnnotationMongoRepositoryTest {
-
-    private static final String TEST_DB = "test-db";
-
-    @Autowired
-    private ApplicationContext applicationContext;
-
-    @Rule
-    public MongoDbRule mongoDbRule = new FixSpringMongoDbRule(
-            MongoDbConfigurationBuilder.mongoDb().databaseName(TEST_DB).build());
 
     @Autowired
     private AnnotationRepository repository;
 
     @Autowired
     private VariantRepository variantRepository;
+
+    @Autowired
+    private TestDataLoader testDataLoader;
+
+    @BeforeEach
+    public void setUp() throws IOException {
+        testDataLoader.load(
+                "/test-data/variants.json",
+                "/test-data/annotations.json"
+        );
+    }
+
+    @AfterEach
+    public void tearDown() {
+        testDataLoader.cleanupTestCollections();
+    }
 
     @Test
     public void testFindOne() {

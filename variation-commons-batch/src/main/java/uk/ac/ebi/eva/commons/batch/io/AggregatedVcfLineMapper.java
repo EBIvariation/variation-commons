@@ -26,7 +26,7 @@ import uk.ac.ebi.eva.commons.core.models.factories.VariantVcfExacFactory;
 import uk.ac.ebi.eva.commons.core.models.factories.VariantVcfFactory;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;

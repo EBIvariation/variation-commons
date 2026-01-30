@@ -1,6 +1,6 @@
 package uk.ac.ebi.eva.commons.mongodb.utils;
 
-import com.mongodb.MongoClientURI;
+import com.mongodb.ConnectionString;
 import com.mongodb.ReadPreference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,7 +96,7 @@ public class MongoClientURIBuilder {
         return this;
     }
 
-    public MongoClientURI build() {
+    public ConnectionString build() {
         StringBuilder uri = new StringBuilder("mongodb://");
         if (Objects.nonNull(userName) && !userName.isEmpty() &&
                 Objects.nonNull(password) && !password.isEmpty()) {
@@ -118,6 +118,6 @@ public class MongoClientURIBuilder {
                 uri.append(format("%s=%s", entry.getKey(), entry.getValue()));
             }
         }
-        return new MongoClientURI(uri.toString());
+        return new ConnectionString(uri.toString());
     }
 }

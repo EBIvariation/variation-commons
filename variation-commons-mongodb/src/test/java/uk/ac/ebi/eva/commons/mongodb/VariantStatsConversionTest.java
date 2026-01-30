@@ -15,20 +15,16 @@
  */
 package uk.ac.ebi.eva.commons.mongodb;
 
-import com.lordofthejars.nosqlunit.mongodb.MongoDbConfigurationBuilder;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
-
 import org.bson.Document;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
@@ -36,9 +32,8 @@ import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.mongodb.configuration.EvaRepositoriesConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantStatisticsMongo;
-import uk.ac.ebi.eva.commons.mongodb.test.rule.FixSpringMongoDbRule;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @TestPropertySource({"classpath:eva.properties"})
 @ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class, EvaRepositoriesConfiguration.class})
 public class VariantStatsConversionTest {
@@ -61,10 +56,6 @@ public class VariantStatsConversionTest {
     //Required by nosql-unit
     @Autowired
     private ApplicationContext applicationContext;
-
-    @Rule
-    public MongoDbRule mongoDbRule = new FixSpringMongoDbRule(
-            MongoDbConfigurationBuilder.mongoDb().databaseName(TEST_DB).build());
 
     @Test
     public void testConvertVariantStatsToMongo() {
@@ -90,16 +81,16 @@ public class VariantStatsConversionTest {
         VariantStatisticsMongo variantStatsMongo = new VariantStatisticsMongo(STUDY_ID, FILE_ID, COHORT_ID, stats);
         Document converted = (Document) mongoOperations.getConverter().convertToMongoType(variantStatsMongo);
 
-        Assert.assertEquals(STUDY_ID, converted.get(VariantStatisticsMongo.STUDY_ID));
-        Assert.assertEquals(FILE_ID, converted.get(VariantStatisticsMongo.FILE_ID));
-        Assert.assertEquals(COHORT_ID, converted.get(VariantStatisticsMongo.COHORT_ID));
-        Assert.assertEquals(MGF, converted.get(VariantStatisticsMongo.MGF_FIELD));
-        Assert.assertEquals(MAF_ALLELE, converted.get(VariantStatisticsMongo.MAFALLELE_FIELD));
-        Assert.assertEquals(MGF_GENOTYPE, converted.get(VariantStatisticsMongo.MGFGENOTYPE_FIELD));
-        Assert.assertEquals(MISSING_ALLELES, converted.get(VariantStatisticsMongo.MISSALLELE_FIELD));
-        Assert.assertEquals(MISSING_GENOTYPES, converted.get(VariantStatisticsMongo.MISSGENOTYPE_FIELD));
-        Assert.assertNotNull(converted.get(VariantStatisticsMongo.NUMGT_FIELD));
-        Assert.assertEquals(3, ((Document) converted.get(VariantStatisticsMongo.NUMGT_FIELD)).size());
+        Assertions.assertEquals(STUDY_ID, converted.get(VariantStatisticsMongo.STUDY_ID));
+        Assertions.assertEquals(FILE_ID, converted.get(VariantStatisticsMongo.FILE_ID));
+        Assertions.assertEquals(COHORT_ID, converted.get(VariantStatisticsMongo.COHORT_ID));
+        Assertions.assertEquals(MGF, converted.get(VariantStatisticsMongo.MGF_FIELD));
+        Assertions.assertEquals(MAF_ALLELE, converted.get(VariantStatisticsMongo.MAFALLELE_FIELD));
+        Assertions.assertEquals(MGF_GENOTYPE, converted.get(VariantStatisticsMongo.MGFGENOTYPE_FIELD));
+        Assertions.assertEquals(MISSING_ALLELES, converted.get(VariantStatisticsMongo.MISSALLELE_FIELD));
+        Assertions.assertEquals(MISSING_GENOTYPES, converted.get(VariantStatisticsMongo.MISSGENOTYPE_FIELD));
+        Assertions.assertNotNull(converted.get(VariantStatisticsMongo.NUMGT_FIELD));
+        Assertions.assertEquals(3, ((Document) converted.get(VariantStatisticsMongo.NUMGT_FIELD)).size());
 
     }
 
@@ -123,16 +114,16 @@ public class VariantStatsConversionTest {
 
         VariantStatisticsMongo converted = mongoOperations.getConverter().read(VariantStatisticsMongo.class, mongoStats);
 
-        Assert.assertEquals(STUDY_ID, converted.getStudyId());
-        Assert.assertEquals(FILE_ID, converted.getFileId());
-        Assert.assertEquals(COHORT_ID, converted.getCohortId());
-        Assert.assertEquals(MGF, converted.getMgf(), 0.0f);
-        Assert.assertEquals(MAF_ALLELE, converted.getMafAllele());
-        Assert.assertEquals(MGF_GENOTYPE, converted.getMgfGenotype());
-        Assert.assertEquals(MISSING_ALLELES, converted.getMissingAlleles());
-        Assert.assertEquals(MISSING_GENOTYPES, converted.getMissingGenotypes());
-        Assert.assertNotNull(converted.getGenotypesCount());
-        Assert.assertEquals(3, converted.getGenotypesCount().size());
+        Assertions.assertEquals(STUDY_ID, converted.getStudyId());
+        Assertions.assertEquals(FILE_ID, converted.getFileId());
+        Assertions.assertEquals(COHORT_ID, converted.getCohortId());
+        Assertions.assertEquals(MGF, converted.getMgf(), 0.0f);
+        Assertions.assertEquals(MAF_ALLELE, converted.getMafAllele());
+        Assertions.assertEquals(MGF_GENOTYPE, converted.getMgfGenotype());
+        Assertions.assertEquals(MISSING_ALLELES, converted.getMissingAlleles());
+        Assertions.assertEquals(MISSING_GENOTYPES, converted.getMissingGenotypes());
+        Assertions.assertNotNull(converted.getGenotypesCount());
+        Assertions.assertEquals(3, converted.getGenotypesCount().size());
     }
 
 }

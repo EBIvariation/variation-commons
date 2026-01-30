@@ -16,22 +16,23 @@
 
 package uk.ac.ebi.eva.commons.jpa.models.metadata;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AnalysisTest {
 
     Study study;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         study = new Study("Some study", "PRJEB12345", "Study description", Study.Material.UNKNOWN, Study.Scope.UNKNOWN);
     }
@@ -69,19 +70,25 @@ public class AnalysisTest {
         assertNotNull(analysis3.getDate());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorNoAlias() {
-        Analysis analysis = new Analysis(null, "Title", "Description", null, null, null, true, null);
+        assertThrows(NullPointerException.class, () -> {
+            Analysis analysis = new Analysis(null, "Title", "Description", null, null, null, true, null);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorNoTitle() {
-        Analysis analysis = new Analysis("Analysis1", null, "Description", null, null, null, true, null);
+        assertThrows(NullPointerException.class, () -> {
+            Analysis analysis = new Analysis("Analysis1", null, "Description", null, null, null, true, null);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorNoDescription() {
-        Analysis analysis = new Analysis("Analysis1", "Title", null, null, null, null, true, null);
+        assertThrows(NullPointerException.class, () -> {
+            Analysis analysis = new Analysis("Analysis1", "Title", null, null, null, null, true, null);
+        });
     }
 
 }

@@ -15,13 +15,13 @@
  */
 package uk.ac.ebi.eva.commons.jpa.models.metadata.database;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.ac.ebi.eva.commons.jpa.models.metadata.Analysis;
@@ -32,15 +32,16 @@ import uk.ac.ebi.eva.commons.jpa.models.metadata.Study;
 
 import java.util.Optional;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @Transactional
 @ContextConfiguration(classes = DatabaseTestConfiguration.class)
 public class StudyDatabaseTest {
@@ -60,7 +61,7 @@ public class StudyDatabaseTest {
     Study study1, study2;
     Organisation organisation1, organisation2;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         // Study(String title, String alias, String description, Material material, Scope scope)
 
@@ -161,13 +162,15 @@ public class StudyDatabaseTest {
     /**
      * Updating a study assigning the unique key from other must fail when serialising.
      */
-    @Test(expected = DataIntegrityViolationException.class)
+    @Test
     public void testUpdateDuplicate() {
         Study savedStudy1 = repository.save(study1);
         Study savedStudy2 = repository.save(study2);
         savedStudy1.setTitle(savedStudy2.getTitle());
         repository.save(savedStudy1);
-        repository.findAll();
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            repository.findAll();
+        });
     }
 
     /**

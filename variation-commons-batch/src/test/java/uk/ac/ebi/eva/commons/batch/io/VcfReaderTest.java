@@ -15,10 +15,8 @@
  */
 package uk.ac.ebi.eva.commons.batch.io;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.file.FlatFileParseException;
 import org.springframework.batch.test.MetaDataInstanceFactory;
@@ -30,11 +28,13 @@ import uk.ac.ebi.eva.commons.core.utils.FileUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * {@link VcfReader}
@@ -45,9 +45,6 @@ import static org.junit.Assert.assertTrue;
  */
 public class VcfReaderTest {
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
     private static final String INPUT_FILE_PATH = "/input-files/vcf/genotyped.vcf.gz";
 
     private static final String INPUT_WRONG_FILE_PATH = "/input-files/vcf/wrong_same_ref_alt.vcf.gz";
@@ -56,8 +53,8 @@ public class VcfReaderTest {
 
     private static final String STUDY_ID = "7";
 
-    @Rule
-    public TemporaryFolder temporaryFolderRule = new TemporaryFolder();
+    @TempDir
+    Path temporaryFolder;
 
     @Test
     public void shouldReadAllLines() throws Exception {
@@ -85,9 +82,10 @@ public class VcfReaderTest {
         vcfReader.open(executionContext);
 
         // consume the reader and check that a wrong variant raise an exception
-        exception.expect(FlatFileParseException.class);
-        while (vcfReader.read() != null) {
-        }
+        assertThrows(FlatFileParseException.class, () -> {
+            while (vcfReader.read() != null) {
+            }
+        });
     }
 
     @Test
@@ -96,7 +94,7 @@ public class VcfReaderTest {
 
         // uncompress the input VCF into a temporary file
         File input = FileUtils.getResourceFile(INPUT_FILE_PATH);
-        File tempFile = temporaryFolderRule.newFile();
+        File tempFile = temporaryFolder.resolve("tempFile.vcf").toFile();
         CompressionHelper.uncompress(input.getAbsolutePath(), tempFile);
 
         VcfReader vcfReader = new VcfReader(FILE_ID, STUDY_ID, tempFile);
