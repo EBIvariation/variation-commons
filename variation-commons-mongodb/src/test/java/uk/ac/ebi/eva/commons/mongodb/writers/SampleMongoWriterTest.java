@@ -16,30 +16,25 @@
 
 package uk.ac.ebi.eva.commons.mongodb.writers;
 
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbConfigurationBuilder;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import com.mongodb.client.MongoCollection;
 
 import org.bson.Document;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.springframework.batch.item.Chunk;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import uk.ac.ebi.eva.commons.mongodb.configuration.EvaRepositoriesConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.entities.SampleMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.SamplePhenotypeMongo;
-import uk.ac.ebi.eva.commons.mongodb.test.rule.FixSpringMongoDbRule;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -47,20 +42,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static java.util.Collections.emptyList;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(SpringRunner.class)
-@UsingDataSet(locations = {
-        "/test-data/annotation_metadata.json",
-        "/test-data/annotations.json",
-        "/test-data/features.json",
-        "/test-data/files.json",
-        "/test-data/variants.json"})
+@ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:eva.properties")
 @ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class, EvaRepositoriesConfiguration.class})
 public class SampleMongoWriterTest {
-
-    private static final String TEST_DB = "test-db";
 
     @Autowired
     private MongoOperations mongoOperations;
@@ -72,30 +59,22 @@ public class SampleMongoWriterTest {
 
     private SampleMongoWriter sampleMongoWriter;
 
-    //Required by nosql-unit
-    @Autowired
-    private ApplicationContext applicationContext;
-
-    @Rule
-    public MongoDbRule mongoDbRule = new FixSpringMongoDbRule(
-            MongoDbConfigurationBuilder.mongoDb().databaseName(TEST_DB).build());
-
-    @Before
+    @BeforeEach
     public void setUp() {
         dbCollection = mongoOperations.getCollection(samplesCollection);
         sampleMongoWriter = new SampleMongoWriter(mongoOperations);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         dbCollection.drop();
     }
 
     @Test
     public void noSamplesNothingShouldBeWritten() throws Exception {
-        sampleMongoWriter.write(emptyList());
+        sampleMongoWriter.write(new Chunk<>(emptyList()));
 
-        assertEquals(0, dbCollection.count());
+        assertEquals(0, dbCollection.countDocuments());
     }
 
     @Test
@@ -106,9 +85,9 @@ public class SampleMongoWriterTest {
         SamplePhenotypeMongo phenotype2 = new SamplePhenotypeMongo("category2", "value2");
         SampleMongo sample2 = new SampleMongo("id2", "V", "father2", "mother2", buildPhenotypeSet(phenotype2));
 
-        sampleMongoWriter.write(Arrays.asList(sample1, sample2));
+        sampleMongoWriter.write(new Chunk<>(Arrays.asList(sample1, sample2)));
 
-        assertEquals(2, dbCollection.count());
+        assertEquals(2, dbCollection.countDocuments());
     }
 
     @Test
@@ -116,9 +95,9 @@ public class SampleMongoWriterTest {
         SamplePhenotypeMongo phenotype1 = new SamplePhenotypeMongo("category1", "value1");
         SampleMongo sample1 = new SampleMongo("id1", "V", "father1", "mother1", buildPhenotypeSet(phenotype1));
 
-        sampleMongoWriter.write(Arrays.asList(sample1, sample1));
+        sampleMongoWriter.write(new Chunk<>(Arrays.asList(sample1, sample1)));
 
-        assertEquals(1, dbCollection.count());
+        assertEquals(1, dbCollection.countDocuments());
     }
 
 
@@ -130,8 +109,8 @@ public class SampleMongoWriterTest {
         SamplePhenotypeMongo phenotype1b = new SamplePhenotypeMongo("category1", "value1");
         SampleMongo sample1b = new SampleMongo("id1", "V", "father1", "mother1", buildPhenotypeSet(phenotype1b));
 
-        sampleMongoWriter.write(Arrays.asList(sample1, sample1b));
-        assertEquals(1, dbCollection.count());
+        sampleMongoWriter.write(new Chunk<>(Arrays.asList(sample1, sample1b)));
+        assertEquals(1, dbCollection.countDocuments());
     }
 
     @Test
@@ -142,11 +121,11 @@ public class SampleMongoWriterTest {
         SamplePhenotypeMongo phenotype2 = new SamplePhenotypeMongo("category2", "value2");
         SampleMongo sample2 = new SampleMongo("id2", "V", "father2", "mother2", buildPhenotypeSet(phenotype2));
 
-        sampleMongoWriter.write(Arrays.asList(sample1, sample2));
+        sampleMongoWriter.write(new Chunk<>(Arrays.asList(sample1, sample2)));
         sampleMongoWriter.setDelete(true);
-        sampleMongoWriter.write(Collections.singletonList(sample2));
+        sampleMongoWriter.write(new Chunk<>(Collections.singletonList(sample2)));
 
-        assertEquals(1, dbCollection.count());
+        assertEquals(1, dbCollection.countDocuments());
         assertEquals("id1", ((Document)dbCollection.find().first()).get("_id"));
     }
 

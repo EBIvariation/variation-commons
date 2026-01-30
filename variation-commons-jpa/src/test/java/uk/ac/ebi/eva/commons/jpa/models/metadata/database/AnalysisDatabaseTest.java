@@ -15,13 +15,13 @@
  */
 package uk.ac.ebi.eva.commons.jpa.models.metadata.database;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.ac.ebi.eva.commons.jpa.models.metadata.Analysis;
@@ -31,19 +31,20 @@ import uk.ac.ebi.eva.commons.jpa.models.metadata.FileGenerator;
 
 import java.util.Date;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @Transactional
 @ContextConfiguration(classes = DatabaseTestConfiguration.class)
 public class AnalysisDatabaseTest {
@@ -57,7 +58,7 @@ public class AnalysisDatabaseTest {
 
     Analysis analysis1, analysis2, analysis3;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         analysis1 = new Analysis("analysis1", "Analysis 1 title", "Analysis 1 description");
         analysis2 = new Analysis("analysis2", "Analysis 2 title", "Analysis 2 description");
@@ -183,14 +184,16 @@ public class AnalysisDatabaseTest {
      *
      * @todo How to report this kind of errors?
      */
-    @Test(expected = DataIntegrityViolationException.class)
+    @Test
     public void testUpdateDuplicate() {
         Analysis savedAnalysis1 = repository.save(analysis1);
         Analysis savedAnalysis2 = repository.save(analysis2);
 
         savedAnalysis1.setAlias("analysis2");
         repository.save(savedAnalysis1);
-        repository.findAll();
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            repository.findAll();
+        });
     }
 
     /**

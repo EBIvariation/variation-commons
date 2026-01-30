@@ -16,65 +16,64 @@
 
 package uk.ac.ebi.eva.commons.core.models;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class AbstractVariantTest {
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
     @Test
     public void testNegativeStartCoordinateInConstructor() throws IllegalArgumentException {
-        exception.expect(IllegalArgumentException.class);
-        exception.expectMessage(CoreMatchers.equalTo(AbstractVariant.VARIANT_START_COORDINATE_CANNOT_BE_NEGATIVE));
-        new Variant("1", -1, 1, "C", "T");
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            new Variant("1", -1, 1, "C", "T");
+        });
+        assertEquals(AbstractVariant.VARIANT_START_COORDINATE_CANNOT_BE_NEGATIVE, exception.getMessage());
     }
 
     @Test
     public void testNegativeStartCoordinateInRenormalization() throws IllegalArgumentException {
         Variant variant = new Variant("1", 1, 1, "C", "T");
-        exception.expect(IllegalArgumentException.class);
-        exception.expectMessage(CoreMatchers.equalTo(AbstractVariant.VARIANT_START_COORDINATE_CANNOT_BE_NEGATIVE));
-        variant.renormalize(-1, 1, "A", "T");
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            variant.renormalize(-1, 1, "A", "T");
+        });
+        assertEquals(AbstractVariant.VARIANT_START_COORDINATE_CANNOT_BE_NEGATIVE, exception.getMessage());
     }
 
     @Test
     public void testNegativeEndCoordinateInConstructor() throws IllegalArgumentException {
-        exception.expect(IllegalArgumentException.class);
-        exception.expectMessage(CoreMatchers.equalTo(AbstractVariant.VARIANT_END_COORDINATE_CANNOT_BE_NEGATIVE));
-        new Variant("1", 1, -1, "C", "T");
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            new Variant("1", 1, -1, "C", "T");
+        });
+        assertEquals(AbstractVariant.VARIANT_END_COORDINATE_CANNOT_BE_NEGATIVE, exception.getMessage());
     }
 
     @Test
     public void testNegativeEndCoordinateInRenormalization() throws IllegalArgumentException {
         Variant variant = new Variant("1", 1, 1, "C", "T");
-        exception.expect(IllegalArgumentException.class);
-        exception.expectMessage(CoreMatchers.equalTo(AbstractVariant.VARIANT_END_COORDINATE_CANNOT_BE_NEGATIVE));
-        variant.renormalize(1, -1, "A", "T");
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            variant.renormalize(1, -1, "A", "T");
+        });
+        assertEquals(AbstractVariant.VARIANT_END_COORDINATE_CANNOT_BE_NEGATIVE, exception.getMessage());
     }
 
     @Test
     public void testStartHigherThanEndInConstructor() throws IllegalArgumentException {
-        exception.expect(IllegalArgumentException.class);
-        exception.expectMessage(
-                CoreMatchers.equalTo(AbstractVariant.END_POSITION_MUST_BE_EQUAL_OR_GREATER_THAN_THE_START_POSITION));
-        new Variant("1", 2, 1, "C", "T");
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            new Variant("1", 2, 1, "C", "T");
+        });
+        assertEquals(AbstractVariant.END_POSITION_MUST_BE_EQUAL_OR_GREATER_THAN_THE_START_POSITION, exception.getMessage());
     }
 
     @Test
     public void testStartHigherThanEndInRenormalization() throws IllegalArgumentException {
         Variant variant = new Variant("1", 1, 1, "C", "T");
-        exception.expect(IllegalArgumentException.class);
-        exception.expectMessage(
-                CoreMatchers.equalTo(AbstractVariant.END_POSITION_MUST_BE_EQUAL_OR_GREATER_THAN_THE_START_POSITION));
-        variant.renormalize(1, 0, "A", "T");
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            variant.renormalize(1, 0, "A", "T");
+        });
+        assertEquals(AbstractVariant.END_POSITION_MUST_BE_EQUAL_OR_GREATER_THAN_THE_START_POSITION, exception.getMessage());
     }
 
     @Test

@@ -15,12 +15,12 @@
  */
 package uk.ac.ebi.eva.commons.jpa.models.metadata.database;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.eva.commons.jpa.models.metadata.DatabaseTestConfiguration;
 import uk.ac.ebi.eva.commons.jpa.models.metadata.Study;
@@ -29,12 +29,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Created by tom on 29/10/15.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @Transactional
 @ContextConfiguration(classes = DatabaseTestConfiguration.class)
 public class StudyRelationDatabaseTest {
@@ -45,7 +45,7 @@ public class StudyRelationDatabaseTest {
     Study parentStudy1, parentStudy2;
     Study childStudy1, childStudy2, childStudy3, childStudy4, childStudy5, childStudy6;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         parentStudy1 = new Study("P Study 1", "P1", "Parent study number 1", Study.Material.DNA, Study.Scope.MULTI_ISOLATE);
         parentStudy2 = new Study("P Study 2", "P2", "Parent study number 2", Study.Material.DNA, Study.Scope.MULTI_ISOLATE);

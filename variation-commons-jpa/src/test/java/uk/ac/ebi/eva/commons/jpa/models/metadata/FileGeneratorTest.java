@@ -1,43 +1,54 @@
 package uk.ac.ebi.eva.commons.jpa.models.metadata;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.isIn;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Created by parce on 07/10/15.
  */
 public class FileGeneratorTest {
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorNoTitle() {
-        Study study = new Study(null, "Alias", "Description", Study.Material.DNA, Study.Scope.OTHER);
+        assertThrows(NullPointerException.class, () -> {
+            Study study = new Study(null, "Alias", "Description", Study.Material.DNA, Study.Scope.OTHER);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorNoAlias() {
-        Study study = new Study("Title", null, "Description", Study.Material.DNA, Study.Scope.OTHER);
+        assertThrows(NullPointerException.class, () -> {
+            Study study = new Study("Title", null, "Description", Study.Material.DNA, Study.Scope.OTHER);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorNoDescription() {
-        Study study = new Study("Title", "Alias", null, Study.Material.DNA, Study.Scope.OTHER);
+        assertThrows(NullPointerException.class, () -> {
+            Study study = new Study("Title", "Alias", null, Study.Material.DNA, Study.Scope.OTHER);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorNoMaterial() {
-        Study study = new Study("Title", "Alias", "Description", null, Study.Scope.OTHER);
+        assertThrows(NullPointerException.class, () -> {
+            Study study = new Study("Title", "Alias", "Description", null, Study.Scope.OTHER);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorNoScope() {
-        Study study = new Study("Title", "Alias", "Description", Study.Material.DNA, null);
+        assertThrows(NullPointerException.class, () -> {
+            Study study = new Study("Title", "Alias", "Description", Study.Material.DNA, null);
+        });
     }
 
     @Test
