@@ -42,7 +42,7 @@ public class MongoRepositoryTestConfiguration {
     @Bean
     @ServiceConnection
     public MongoDBContainer mongoDBContainer() {
-        MongoDBContainer container = new MongoDBContainer(DockerImageName.parse("mongo:4.4"));
+        MongoDBContainer container = new MongoDBContainer(DockerImageName.parse("mongo:6.0"));
         container.start();
         return container;
     }
