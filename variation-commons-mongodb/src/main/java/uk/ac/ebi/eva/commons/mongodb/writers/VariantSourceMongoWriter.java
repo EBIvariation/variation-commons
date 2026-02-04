@@ -33,8 +33,6 @@ import java.util.stream.Collectors;
  */
 public class VariantSourceMongoWriter extends MongoItemWriter<IVariantSource> {
 
-    public static final String UNIQUE_FILE_INDEX_NAME = "unique_file";
-
     private MongoOperations mongoOperations;
 
     private String collection;
@@ -53,7 +51,7 @@ public class VariantSourceMongoWriter extends MongoItemWriter<IVariantSource> {
     }
 
     private void createIndexes() {
-        IndexOptions indexOptions = new IndexOptions().background(true).unique(true).name(UNIQUE_FILE_INDEX_NAME);
+        IndexOptions indexOptions = new IndexOptions().background(true).unique(true);
         mongoOperations.getCollection(collection).createIndex(
                 new Document(VariantSourceMongo.STUDYID_FIELD, 1).append(VariantSourceMongo.FILEID_FIELD, 1)
                                                                  .append(VariantSourceMongo.FILENAME_FIELD, 1),
