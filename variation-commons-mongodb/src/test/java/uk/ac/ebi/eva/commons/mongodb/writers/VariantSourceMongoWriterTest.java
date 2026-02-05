@@ -170,11 +170,11 @@ public class VariantSourceMongoWriterTest {
                 indexesInfo.map(index -> index.get("name").toString()).spliterator(), false)
                                                   .collect(Collectors.toSet());
         Set<String> expectedIndexes = new HashSet<>();
-        expectedIndexes.addAll(Arrays.asList(VariantSourceMongoWriter.UNIQUE_FILE_INDEX_NAME, "_id_"));
+        expectedIndexes.addAll(Arrays.asList("sid_1_fid_1_fname_1", "_id_"));
         assertEquals(expectedIndexes, createdIndexes);
 
         for(Document indexInfo: indexesInfo) {
-            if (VariantSourceMongoWriter.UNIQUE_FILE_INDEX_NAME.equals(indexInfo.get("name").toString())) {
+            if ("sid_1_fid_1_fname_1".equals(indexInfo.get("name").toString())) {
                 assertNotNull(indexInfo);
                 assertEquals("true", indexInfo.get(UNIQUE_INDEX).toString());
                 assertEquals("true", indexInfo.get(BACKGROUND_INDEX).toString());
