@@ -28,7 +28,7 @@ import uk.ac.ebi.eva.commons.batch.exception.NoJobToExecuteException;
 import uk.ac.ebi.eva.commons.batch.exception.NoParametersHaveBeenPassedException;
 import uk.ac.ebi.eva.commons.batch.exception.NoPreviousJobExecutionException;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -60,7 +60,7 @@ public class JobStatusManager {
             throw new NoPreviousJobExecutionException(jobName, jobParameters);
         }
 
-        Date currentTime = new Date();
+        LocalDateTime currentTime = LocalDateTime.now();
         lastJobExecution.setEndTime(currentTime);
         lastJobExecution.setStatus(BatchStatus.FAILED);
         lastJobExecution.setExitStatus(

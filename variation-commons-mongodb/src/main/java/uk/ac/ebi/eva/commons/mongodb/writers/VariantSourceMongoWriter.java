@@ -22,6 +22,8 @@ import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.util.Assert;
 
+import org.springframework.batch.item.Chunk;
+
 import uk.ac.ebi.eva.commons.core.models.IVariantSource;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
 
@@ -59,10 +61,10 @@ public class VariantSourceMongoWriter extends MongoItemWriter<IVariantSource> {
     }
 
     @Override
-    public void write(List<? extends IVariantSource> items) throws Exception {
-        List<VariantSourceMongo> convertedList = items.stream()
+    public void write(Chunk<? extends IVariantSource> items) throws Exception {
+        List<VariantSourceMongo> convertedList = items.getItems().stream()
                 .map(VariantSourceMongo::new)
                 .collect(Collectors.toList());
-        super.write(convertedList);
+        super.write(new Chunk<>(convertedList));
     }
 }

@@ -15,27 +15,22 @@
  */
 package uk.ac.ebi.eva.commons.mongodb;
 
-import com.lordofthejars.nosqlunit.mongodb.MongoDbConfigurationBuilder;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
-
 import org.bson.Document;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 import uk.ac.ebi.eva.commons.core.models.ws.VariantSourceEntryWithSampleNames;
 import uk.ac.ebi.eva.commons.mongodb.configuration.EvaRepositoriesConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
-import uk.ac.ebi.eva.commons.mongodb.test.rule.FixSpringMongoDbRule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +44,7 @@ import static uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceE
 import static uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo.SAMPLES_FIELD;
 import static uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo.STUDYID_FIELD;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @TestPropertySource({"classpath:eva.properties"})
 @ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class, EvaRepositoriesConfiguration.class})
 public class VariantSourceEntryConversionTest {
@@ -66,19 +61,15 @@ public class VariantSourceEntryConversionTest {
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Rule
-    public MongoDbRule mongoDbRule = new FixSpringMongoDbRule(
-            MongoDbConfigurationBuilder.mongoDb().databaseName(TEST_DB).build());
-
     @Test
     public void testConvertVariantSourceEntryWithoutStatsToMongo() {
         VariantSourceEntryMongo variantSourceEntryMongo = new VariantSourceEntryMongo(createVariantSourceEntry());
         Document converted = (Document) mongoOperations.getConverter().convertToMongoType(variantSourceEntryMongo);
-        Assert.assertEquals(FILE_ID, converted.get(FILEID_FIELD));
-        Assert.assertEquals(STUDY_ID, converted.get(STUDYID_FIELD));
-        Assert.assertEquals(FORMAT, converted.get(FORMAT_FIELD));
-        Assert.assertEquals(3, ((Document) converted.get(ATTRIBUTES_FIELD)).size());
-        Assert.assertEquals(3, ((Document) converted.get(SAMPLES_FIELD)).size());
+        Assertions.assertEquals(FILE_ID, converted.get(FILEID_FIELD));
+        Assertions.assertEquals(STUDY_ID, converted.get(STUDYID_FIELD));
+        Assertions.assertEquals(FORMAT, converted.get(FORMAT_FIELD));
+        Assertions.assertEquals(3, ((Document) converted.get(ATTRIBUTES_FIELD)).size());
+        Assertions.assertEquals(3, ((Document) converted.get(SAMPLES_FIELD)).size());
     }
 
     private VariantSourceEntry createVariantSourceEntry() {
@@ -107,11 +98,11 @@ public class VariantSourceEntryConversionTest {
                 createMongoVariantSourceEntry());
         // We cannot check equality because it has a map String object that can contain arrays. This defaults to
         // reference comparison in that case instead of checking same elements in both sides.
-        Assert.assertEquals(FILE_ID, variantSource.getFileId());
-        Assert.assertEquals(STUDY_ID, variantSource.getStudyId());
-        Assert.assertEquals(FORMAT, variantSource.getFormat());
-        Assert.assertEquals(3, variantSource.getAttributes().size());
-        Assert.assertEquals(3, variantSource.getSamples().size());
+        Assertions.assertEquals(FILE_ID, variantSource.getFileId());
+        Assertions.assertEquals(STUDY_ID, variantSource.getStudyId());
+        Assertions.assertEquals(FORMAT, variantSource.getFormat());
+        Assertions.assertEquals(3, variantSource.getAttributes().size());
+        Assertions.assertEquals(3, variantSource.getSamples().size());
     }
 
     private Document createMongoVariantSourceEntry() {
@@ -148,29 +139,29 @@ public class VariantSourceEntryConversionTest {
                 = new VariantSourceEntry(variantSourceEntryMongo.getFileId(), variantSourceEntryMongo.getStudyId(),
                                          variantSourceEntryMongo.getSecondaryAlternates(), variantSourceEntryMongo.getFormat(),
                                          null, variantSourceEntryMongo.getAttributes(), variantSourceEntryMongo.deflateSamplesData(sampleNames.size()));
-        Assert.assertEquals(FILE_ID, variantSourceEntry.getFileId());
-        Assert.assertEquals(STUDY_ID, variantSourceEntry.getStudyId());
-        Assert.assertEquals(FORMAT, variantSourceEntry.getFormat());
-        Assert.assertEquals(3, variantSourceEntry.getAttributes().size());
-        Assert.assertEquals(3, variantSourceEntry.getSamplesData().size());
+        Assertions.assertEquals(FILE_ID, variantSourceEntry.getFileId());
+        Assertions.assertEquals(STUDY_ID, variantSourceEntry.getStudyId());
+        Assertions.assertEquals(FORMAT, variantSourceEntry.getFormat());
+        Assertions.assertEquals(3, variantSourceEntry.getAttributes().size());
+        Assertions.assertEquals(3, variantSourceEntry.getSamplesData().size());
 
         VariantSourceEntryWithSampleNames variantSourceEntryWithSampleNames = new VariantSourceEntryWithSampleNames(
                 variantSourceEntry, sampleNames);
-        Assert.assertEquals(FILE_ID, variantSourceEntryWithSampleNames.getFileId());
-        Assert.assertEquals(STUDY_ID, variantSourceEntryWithSampleNames.getStudyId());
-        Assert.assertEquals(FORMAT, variantSourceEntryWithSampleNames.getFormat());
-        Assert.assertEquals(3, variantSourceEntryWithSampleNames.getAttributes().size());
-        Assert.assertEquals(3, variantSourceEntryWithSampleNames.getSamplesDataMap().size());
-        Assert.assertEquals("0/0", variantSourceEntryWithSampleNames.getSamplesDataMap().get("NA001").get("GT"));
-        Assert.assertEquals("0/1", variantSourceEntryWithSampleNames.getSamplesDataMap().get("NA002").get("GT"));
-        Assert.assertEquals("1/1", variantSourceEntryWithSampleNames.getSamplesDataMap().get("NA003").get("GT"));
+        Assertions.assertEquals(FILE_ID, variantSourceEntryWithSampleNames.getFileId());
+        Assertions.assertEquals(STUDY_ID, variantSourceEntryWithSampleNames.getStudyId());
+        Assertions.assertEquals(FORMAT, variantSourceEntryWithSampleNames.getFormat());
+        Assertions.assertEquals(3, variantSourceEntryWithSampleNames.getAttributes().size());
+        Assertions.assertEquals(3, variantSourceEntryWithSampleNames.getSamplesDataMap().size());
+        Assertions.assertEquals("0/0", variantSourceEntryWithSampleNames.getSamplesDataMap().get("NA001").get("GT"));
+        Assertions.assertEquals("0/1", variantSourceEntryWithSampleNames.getSamplesDataMap().get("NA002").get("GT"));
+        Assertions.assertEquals("1/1", variantSourceEntryWithSampleNames.getSamplesDataMap().get("NA003").get("GT"));
     }
 
     @Test
     public void testChangeRefAltToUpperCaseVariantSourceEntry() {
         VariantSourceEntry variantSourceEntry = new VariantSourceEntry(null, "", new String[]{"a"},
                 null, null, null, null);
-        Assert.assertEquals("A", variantSourceEntry.getSecondaryAlternates()[0]);
+        Assertions.assertEquals("A", variantSourceEntry.getSecondaryAlternates()[0]);
 
     }
 
@@ -178,7 +169,7 @@ public class VariantSourceEntryConversionTest {
     public void testChangeRefAltToUpperCaseVariantEntrySourceMongo() {
         VariantSourceEntryMongo variantSourceEntryMongo = new VariantSourceEntryMongo(new VariantSourceEntry(null,
                 "", new String[]{"a"}, null, null, null, null));
-        Assert.assertEquals( "A", variantSourceEntryMongo.getSecondaryAlternates()[0]);
+        Assertions.assertEquals( "A", variantSourceEntryMongo.getSecondaryAlternates()[0]);
     }
 
 }

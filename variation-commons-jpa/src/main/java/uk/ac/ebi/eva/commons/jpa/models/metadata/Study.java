@@ -15,16 +15,14 @@
  */
 package uk.ac.ebi.eva.commons.jpa.models.metadata;
 
-import org.springframework.data.jpa.domain.AbstractPersistable;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.PreRemove;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PreRemove;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashSet;
@@ -33,7 +31,7 @@ import java.util.Set;
 
 @Entity
 @Table(indexes = {@Index(name = "study_unique", columnList = "title,material,scope,description,alias", unique = true)})
-public class Study extends AbstractPersistable<Long> {
+public class Study extends BaseEntity<Long> {
 
     private static final long serialVersionUid = 3947143813564096660L;
 

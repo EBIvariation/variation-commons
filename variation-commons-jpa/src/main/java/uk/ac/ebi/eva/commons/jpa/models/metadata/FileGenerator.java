@@ -15,21 +15,19 @@
  */
 package uk.ac.ebi.eva.commons.jpa.models.metadata;
 
-import org.springframework.data.jpa.domain.AbstractPersistable;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.Inheritance;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import jakarta.persistence.UniqueConstraint;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -41,7 +39,7 @@ import java.util.Set;
 @Inheritance
 @DiscriminatorColumn(name = "type")
 @Table(uniqueConstraints = {@UniqueConstraint(name = "alias_unique", columnNames = "alias")})
-public abstract class FileGenerator extends AbstractPersistable<Long> {
+public abstract class FileGenerator extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -5926609525556333330L;
 

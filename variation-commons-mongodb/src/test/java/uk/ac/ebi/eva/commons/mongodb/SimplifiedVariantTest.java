@@ -1,11 +1,11 @@
 package uk.ac.ebi.eva.commons.mongodb;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import uk.ac.ebi.eva.commons.mongodb.entities.projections.SimplifiedVariant;
 
 import java.lang.reflect.Field;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SimplifiedVariantTest {
 

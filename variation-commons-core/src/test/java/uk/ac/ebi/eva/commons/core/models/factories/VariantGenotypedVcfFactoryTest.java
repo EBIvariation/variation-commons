@@ -19,10 +19,8 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
@@ -33,9 +31,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class VariantGenotypedVcfFactoryTest {
 
@@ -45,12 +44,9 @@ public class VariantGenotypedVcfFactoryTest {
 
     private static VariantVcfFactory factory = new VariantGenotypedVcfFactory();
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
     private ListAppender<ILoggingEvent> listAppender;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         // Set up appender to capture log messages
         Logger factoryLogger = (Logger) LoggerFactory.getLogger(VariantVcfFactory.class);
@@ -422,8 +418,9 @@ public class VariantGenotypedVcfFactoryTest {
         // VariantGenotypedVcfFactory, that expects to find genotypes
         String line = "1\t1000\t.\tT\tG\t.\t.\tAF=0.5";
 
-        thrown.expect(IllegalArgumentException.class);
-        factory.create(FILE_ID, STUDY_ID, line);
+        assertThrows(IllegalArgumentException.class, () -> {
+            factory.create(FILE_ID, STUDY_ID, line);
+        });
     }
 
     @Test
@@ -432,8 +429,9 @@ public class VariantGenotypedVcfFactoryTest {
         // VariantGenotypedVcfFactory, that expects to find genotypes
         String line = "1\t1000\t.\tT\tG\t.\t.\tAF=0.5";
 
-        thrown.expect(UnsupportedOperationException.class);
-        factory.setRequireEvidence(false);
+        assertThrows(UnsupportedOperationException.class, () -> {
+            factory.setRequireEvidence(false);
+        });
     }
 
     @Test
@@ -442,8 +440,9 @@ public class VariantGenotypedVcfFactoryTest {
         // VariantGenotypedVcfFactory, that expects to find genotypes
         String line = "1\t1000\t.\tT\tG,C\t.\t.\tAF=0.5";
 
-        thrown.expect(IllegalArgumentException.class);
-        factory.create(FILE_ID, STUDY_ID, line);
+        assertThrows(IllegalArgumentException.class, () -> {
+            factory.create(FILE_ID, STUDY_ID, line);
+        });
     }
 
     @Test

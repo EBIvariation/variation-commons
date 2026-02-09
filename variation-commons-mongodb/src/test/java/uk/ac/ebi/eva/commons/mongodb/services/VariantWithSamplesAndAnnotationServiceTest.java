@@ -15,20 +15,16 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.services;
 
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbConfigurationBuilder;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
-
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import uk.ac.ebi.eva.commons.core.models.Region;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
@@ -39,41 +35,46 @@ import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfigurat
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.filter.FilterBuilder;
 import uk.ac.ebi.eva.commons.mongodb.filter.VariantRepositoryFilter;
-import uk.ac.ebi.eva.commons.mongodb.test.rule.FixSpringMongoDbRule;
+import uk.ac.ebi.eva.commons.mongodb.test.TestDataLoader;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:eva.properties")
-@UsingDataSet(locations = {
-        "/test-data/variants.json",
-        "/test-data/annotations.json",
-        "/test-data/files.json",
-        "/test-data/annotation_metadata.json"})
 @ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class, EvaRepositoriesConfiguration.class})
 public class VariantWithSamplesAndAnnotationServiceTest {
 
-    private static final String TEST_DB = "test-db";
-
-    @Autowired
-    private ApplicationContext applicationContext;
-
-    @Rule
-    public MongoDbRule mongoDbRule = new FixSpringMongoDbRule(
-            MongoDbConfigurationBuilder.mongoDb().databaseName(TEST_DB).build());
-
     @Autowired
     private VariantWithSamplesAndAnnotationsService service;
+
+    @Autowired
+    private TestDataLoader testDataLoader;
+
+    @BeforeEach
+    public void setUp() throws IOException {
+        testDataLoader.load(
+                "/test-data/variants.json",
+                "/test-data/annotations.json",
+                "/test-data/files.json",
+                "/test-data/annotation_metadata.json"
+        );
+    }
+
+    @AfterEach
+    public void tearDown() {
+        testDataLoader.cleanupTestCollections();
+    }
 
     @Test
     public void testFindByRegionsAndComplexFilters() throws AnnotationMetadataNotFoundException {
@@ -82,7 +83,7 @@ public class VariantWithSamplesAndAnnotationServiceTest {
         regions.add(region);
 
         List<VariantWithSamplesAndAnnotation> variantEntityList = service.findByRegionsAndComplexFilters(
-                regions, null, null, null, new PageRequest(0, 10000));
+                regions, null, null, null, PageRequest.of(0, 10000));
 
         assertEquals(1, variantEntityList.size());
 
@@ -126,7 +127,7 @@ public class VariantWithSamplesAndAnnotationServiceTest {
         Region startRange = new Region("9", 10099L, 10099L);
         Region endRange = new Region("9", 10099L, 10099L);
 
-        Pageable pageable = new PageRequest(0, 1000);
+        Pageable pageable = PageRequest.of(0, 1000);
 
         List<VariantRepositoryFilter> filters = new FilterBuilder().getBeaconFilters("A", "T",
                 VariantType.SNV, Collections.singletonList("PRJEB5829"));
@@ -160,7 +161,7 @@ public class VariantWithSamplesAndAnnotationServiceTest {
         Region startRange = new Region("11", 190238L, 190276L);
         Region endRange = new Region("11", 190238L, 190276L);
 
-        Pageable pageable = new PageRequest(0, 1000);
+        Pageable pageable = PageRequest.of(0, 1000);
 
         List<VariantRepositoryFilter> filters = new FilterBuilder().getBeaconFilters("A", null, null, null);
 
@@ -184,4 +185,3 @@ public class VariantWithSamplesAndAnnotationServiceTest {
                 pageable).get(0).getId());
     }
 }
-

@@ -19,7 +19,7 @@ package uk.ac.ebi.eva.commons.mongodb.readers;
 import com.mongodb.ClientSessionOptions;
 import com.mongodb.MongoClientException;
 import com.mongodb.client.ClientSession;
-import com.mongodb.util.JSON;
+import org.bson.json.JsonWriterSettings;
 import org.bson.BsonDocument;
 import org.bson.Document;
 import org.slf4j.Logger;
@@ -30,7 +30,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.util.CloseableIterator;
+import java.util.Iterator;
+import java.util.stream.Stream;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
@@ -80,7 +81,9 @@ public class MongoDbCursorItemReader<T> extends AbstractItemCountingItemStreamIt
 
     private List<Object> parameterValues;
 
-    private CloseableIterator<? extends T> cursor;
+    private Stream<? extends T> cursorStream;
+
+    private Iterator<? extends T> cursor;
 
     private Query mongoQuery;
 
@@ -219,7 +222,7 @@ public class MongoDbCursorItemReader<T> extends AbstractItemCountingItemStreamIt
         ClientSessionOptions sessionOptions = ClientSessionOptions.builder().causallyConsistent(true).build();
         ClientSession session = null;
         try {
-            session = this.mongoTemplate.getMongoDbFactory().getSession(sessionOptions);
+            session = this.mongoTemplate.getMongoDatabaseFactory().getSession(sessionOptions);
         }
         catch (MongoClientException ex) { // Handle stand-alone instances that don't have session support
             if (ex.getMessage().toLowerCase().contains("sessions are not supported")) {
@@ -259,16 +262,17 @@ public class MongoDbCursorItemReader<T> extends AbstractItemCountingItemStreamIt
         logger.info("Issuing MongoDB query: {}", mongoQuery);
 
         if(StringUtils.hasText(collection)) {
-            cursor = this.mongoTemplate.stream(mongoQuery, type, collection);
+            cursorStream = this.mongoTemplate.stream(mongoQuery, type, collection);
         } else {
-            cursor = this.mongoTemplate.stream(mongoQuery, type);
+            cursorStream = this.mongoTemplate.stream(mongoQuery, type);
         }
+        cursor = cursorStream.iterator();
         return null;
     }
 
     @Override
     protected void doClose() throws Exception {
-        cursor.close();
+        cursorStream.close();
     }
 
     /**
@@ -299,7 +303,21 @@ public class MongoDbCursorItemReader<T> extends AbstractItemCountingItemStreamIt
 
     // Copied from StringBasedMongoQuery...is there a place where this type of logic is already exposed?
     private String getParameterWithIndex(List<Object> values, int index) {
-        return JSON.serialize(values.get(index));
+        Object value = values.get(index);
+        if (value == null) {
+            return "null";
+        }
+        if (value instanceof String) {
+            return "\"" + value + "\"";
+        }
+        if (value instanceof Number || value instanceof Boolean) {
+            return value.toString();
+        }
+        if (value instanceof Document) {
+            return ((Document) value).toJson(JsonWriterSettings.builder().build());
+        }
+        return new Document("v", value).toJson(JsonWriterSettings.builder().build())
+                .replaceFirst("\\{\\s*\"v\"\\s*:\\s*", "").replaceFirst("\\s*\\}$", "");
     }
 
     private Sort convertToSort(Map<String, Sort.Direction> sorts) {
@@ -309,6 +327,6 @@ public class MongoDbCursorItemReader<T> extends AbstractItemCountingItemStreamIt
             sortValues.add(new Sort.Order(curSort.getValue(), curSort.getKey()));
         }
 
-        return new Sort(sortValues);
+        return Sort.by(sortValues);
     }
 }

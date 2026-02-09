@@ -21,11 +21,16 @@ package uk.ac.ebi.eva.commons.mongodb.configuration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.util.Assert;
+import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.utility.DockerImageName;
+import uk.ac.ebi.eva.commons.mongodb.test.TestDataLoader;
 
 @Configuration
 @EntityScan(basePackages = {"uk.ac.ebi.eva.commons.mongodb.entities"})
@@ -35,42 +40,55 @@ import org.springframework.util.Assert;
 public class MongoRepositoryTestConfiguration {
 
     @Bean
+    @ServiceConnection
+    public MongoDBContainer mongoDBContainer() {
+        MongoDBContainer container = new MongoDBContainer(DockerImageName.parse("mongo:6.0"));
+        container.start();
+        return container;
+    }
+
+    @Bean
+    public TestDataLoader testDataLoader(MongoTemplate mongoTemplate) {
+        return new TestDataLoader(mongoTemplate);
+    }
+
+    @Bean
     public String mongoCollectionsAnnotationMetadata(
             @Value("${eva.mongo.collections.annotation-metadata:#{null}}") String collectionAnnotationMetadata) {
-        Assert.notNull(collectionAnnotationMetadata);
+        Assert.notNull(collectionAnnotationMetadata, "collectionAnnotationMetadata must not be null");
         return collectionAnnotationMetadata;
     }
 
     @Bean
     public String mongoCollectionsAnnotations(
             @Value("${eva.mongo.collections.annotations:#{null}}") String collectionAnnotations) {
-        Assert.notNull(collectionAnnotations);
+        Assert.notNull(collectionAnnotations, "collectionAnnotations must not be null");
         return collectionAnnotations;
     }
 
     @Bean
     public String mongoCollectionsFeatures(
             @Value("${eva.mongo.collections.features:#{null}}") String collectionFeatures) {
-        Assert.notNull(collectionFeatures);
+        Assert.notNull(collectionFeatures, "collectionFeatures must not be null");
         return collectionFeatures;
     }
 
     @Bean
     public String mongoCollectionsVariants(
             @Value("${eva.mongo.collections.variants:#{null}}") String collectionVariants) {
-        Assert.notNull(collectionVariants);
+        Assert.notNull(collectionVariants, "collectionVariants must not be null");
         return collectionVariants;
     }
 
     @Bean
     public String mongoCollectionsFiles(@Value("${eva.mongo.collections.files:#{null}}") String collectionFiles) {
-        Assert.notNull(collectionFiles);
+        Assert.notNull(collectionFiles, "collectionFiles must not be null");
         return collectionFiles;
     }
 
     @Bean
     public String mongoCollectionsSamples(@Value("${eva.mongo.collections.samples:#{null}}") String collectionSamples) {
-        Assert.notNull(collectionSamples);
+        Assert.notNull(collectionSamples, "collectionSamples must not be null");
         return collectionSamples;
     }
 }

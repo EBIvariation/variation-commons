@@ -1,14 +1,10 @@
 package uk.ac.ebi.eva.commons.mongodb.utils;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.junit.jupiter.api.Test;
 
 import java.io.UnsupportedEncodingException;
 
-import static org.junit.Assert.assertEquals;
-
-@RunWith(SpringRunner.class)
+import static org.junit.jupiter.api.Assertions.assertEquals;
 public class MongoUtilsTest {
 
     // All parameters passed
@@ -16,7 +12,7 @@ public class MongoUtilsTest {
     public void testConstructMongoClientURIAllParams() throws UnsupportedEncodingException {
         String mongoClientURI = MongoUtils.constructMongoClientURI("localhost", 27018, "testDB", "username",
                                                                    "password", "authdb", "SCRAM-SHA-1", "primary")
-                                          .getURI();
+                                          .getConnectionString();
         assertEquals("mongodb://username:password@localhost:27018/testDB?authSource=authdb" +
                              "&authMechanism=SCRAM-SHA-1&readPreference=primary", mongoClientURI);
     }
@@ -25,7 +21,7 @@ public class MongoUtilsTest {
     @Test
     public void testConstructMongoClientURINoAuthMechanismAndReadPref() throws UnsupportedEncodingException {
         String mongoClientURI = MongoUtils.constructMongoClientURI("localhost", 27018, "testDB", "username",
-                                                                   "password", "authdb").getURI();
+                                                                   "password", "authdb").getConnectionString();
         assertEquals("mongodb://username:password@localhost:27018/testDB" +
                              "?authSource=authdb&readPreference=primary", mongoClientURI);
     }
@@ -34,7 +30,7 @@ public class MongoUtilsTest {
     @Test
     public void testMultipleHosts() throws UnsupportedEncodingException {
         String mongoClientURI = MongoUtils.constructMongoClientURI("host1:27017,host2:27018", 27019,
-                                                                   "", "", "", "").getURI();
+                                                                   "", "", "", "").getConnectionString();
         // Ensure separate port parameter is overridden by the ports provided in the hosts parameter
         assertEquals("mongodb://host1:27017,host2:27018/?readPreference=primary", mongoClientURI);
     }
@@ -42,20 +38,20 @@ public class MongoUtilsTest {
     // No parameters passed results in sane defaults
     @Test
     public void testNoParams() throws UnsupportedEncodingException {
-        String mongoClientURI = MongoUtils.constructMongoClientURI("", null, "", "", "", "").getURI();
+        String mongoClientURI = MongoUtils.constructMongoClientURI("", null, "", "", "", "").getConnectionString();
         assertEquals("mongodb://localhost:27017/?readPreference=primary", mongoClientURI);
     }
 
     // Authentication params ignored when no username/password is provided
     @Test
     public void testAuthParamsIgnoredWhenNoUserNameAndPassword() throws UnsupportedEncodingException {
-        String mongoClientURI = MongoUtils.constructMongoClientURI("", null, "", "", "", "authdb", "authmech", "").getURI();
+        String mongoClientURI = MongoUtils.constructMongoClientURI("", null, "", "", "", "authdb", "authmech", "").getConnectionString();
         assertEquals("mongodb://localhost:27017/?readPreference=primary", mongoClientURI);
     }
 
     @Test
     public void testAuthParamsIgnoredWhenNoUserNameAndPasswordIsNull() throws UnsupportedEncodingException {
-        String mongoClientURI = MongoUtils.constructMongoClientURI("", null, "", null, null, "authdb", "authmech", "").getURI();
+        String mongoClientURI = MongoUtils.constructMongoClientURI("", null, "", null, null, "authdb", "authmech", "").getConnectionString();
         assertEquals("mongodb://localhost:27017/?readPreference=primary", mongoClientURI);
     }
 }
