@@ -45,9 +45,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 
 /**
@@ -72,6 +70,8 @@ public class VariantSourceMongoWriterTest {
     private static final String FILE_ID = "1";
 
     private static final String STUDY_ID = "1";
+
+    private static final String FILE_NAME = "CHICKEN_SNPS_LAYER";
 
     private static final String STUDY_NAME = "small";
 
@@ -98,7 +98,7 @@ public class VariantSourceMongoWriterTest {
 
     @Test
     public void shouldWriteAllFieldsIntoMongoDb() throws Exception {
-        MongoCollection<Document> fileCollection = mongoOperations.getCollection (COLLECTION_FILES_NAME);
+        MongoCollection<Document> fileCollection = mongoOperations.getCollection(COLLECTION_FILES_NAME);
         VariantSourceMongoWriter filesWriter = new VariantSourceMongoWriter(
                 mongoOperations, COLLECTION_FILES_NAME);
 
@@ -108,7 +108,7 @@ public class VariantSourceMongoWriterTest {
         FindIterable<Document> cursor = fileCollection.find();
         int count = 0;
 
-        for (Document next: cursor) {
+        for (Document next : cursor) {
             count++;
             assertNotNull(next.get(VariantSourceMongo.FILEID_FIELD));
             assertNotNull(next.get(VariantSourceMongo.FILENAME_FIELD));
@@ -116,6 +116,61 @@ public class VariantSourceMongoWriterTest {
             assertNotNull(next.get(VariantSourceMongo.STUDYNAME_FIELD));
             assertNotNull(next.get(VariantSourceMongo.STUDYTYPE_FIELD));
             assertNotNull(next.get(VariantSourceMongo.AGGREGATION_FIELD));
+            assertNotNull(next.get(VariantSourceMongo.SAMPLES_FIELD));
+            assertNotNull(next.get(VariantSourceMongo.DATE_FIELD));
+
+            Document meta = (Document) next.get(VariantSourceMongo.METADATA_FIELD);
+            assertNotNull(meta);
+            assertNotNull(meta.get("ALT"));
+            assertNotNull(meta.get("FILTER"));
+            assertNotNull(meta.get("INFO"));
+            assertNotNull(meta.get("FORMAT"));
+        }
+        assertEquals(1, count);
+    }
+
+    @Test
+    public void shouldDoUpdateInCaseOfExistingDocument() throws Exception {
+        MongoCollection<Document> fileCollection = mongoOperations.getCollection(COLLECTION_FILES_NAME);
+        VariantSourceMongoWriter filesWriter = new VariantSourceMongoWriter(
+                mongoOperations, COLLECTION_FILES_NAME);
+
+        // make an entry into the database
+        VariantSourceMongo variantSource = new VariantSourceMongo(FILE_ID, FILE_NAME, STUDY_ID, STUDY_NAME,
+                StudyType.AGGREGATE, Aggregation.BASIC, null, null, null);
+        filesWriter.write(Collections.singletonList(variantSource));
+        FindIterable<Document> cursor = fileCollection.find();
+        int count = 0;
+        for (Document next : cursor) {
+            count++;
+            assertTrue(next.get(VariantSourceMongo.FILEID_FIELD).equals(FILE_ID));
+            assertTrue(next.get(VariantSourceMongo.STUDYID_FIELD).equals(STUDY_ID));
+            assertTrue(next.get(VariantSourceMongo.FILENAME_FIELD).equals(FILE_NAME));
+            assertTrue(next.get(VariantSourceMongo.STUDYNAME_FIELD).equals(STUDY_NAME));
+            assertTrue(next.get(VariantSourceMongo.STUDYTYPE_FIELD).equals(StudyType.AGGREGATE.name()));
+            assertTrue(next.get(VariantSourceMongo.AGGREGATION_FIELD).equals(Aggregation.BASIC.name()));
+            assertNotNull(next.get(VariantSourceMongo.DATE_FIELD));
+            assertTrue(next.get(VariantSourceMongo.SAMPLES_FIELD).equals(new Document()));
+            assertTrue(next.get(VariantSourceMongo.METADATA_FIELD).equals(new Document()));
+        }
+        assertEquals(1, count);
+
+        // insert another document with same fileId, studyId and fileName
+        variantSource = getVariantSource();
+        filesWriter.write(Collections.singletonList(variantSource));
+        cursor = fileCollection.find();
+        count = 0;
+        for (Document next : cursor) {
+            count++;
+
+            assertTrue(next.get(VariantSourceMongo.FILEID_FIELD).equals(FILE_ID));
+            assertTrue(next.get(VariantSourceMongo.STUDYID_FIELD).equals(STUDY_ID));
+            assertTrue(next.get(VariantSourceMongo.FILENAME_FIELD).equals(FILE_NAME));
+            assertTrue(next.get(VariantSourceMongo.STUDYNAME_FIELD).equals(STUDY_NAME));
+
+            // existing document should be updated with new values from the document
+            assertTrue(next.get(VariantSourceMongo.STUDYTYPE_FIELD).equals(StudyType.COLLECTION.name()));
+            assertTrue(next.get(VariantSourceMongo.AGGREGATION_FIELD).equals(Aggregation.NONE.name()));
             assertNotNull(next.get(VariantSourceMongo.SAMPLES_FIELD));
             assertNotNull(next.get(VariantSourceMongo.DATE_FIELD));
 
@@ -147,7 +202,7 @@ public class VariantSourceMongoWriterTest {
 
         FindIterable<Document> cursor = fileCollection.find();
 
-        for (Document next: cursor) {
+        for (Document next : cursor) {
             Document samples = (Document) next.get(VariantSourceMongo.SAMPLES_FIELD);
             Set<String> keySet = samples.keySet();
 
@@ -158,8 +213,8 @@ public class VariantSourceMongoWriterTest {
 
     @Test
     public void shouldCreateUniqueFileIndex() throws Exception {
-        MongoCollection<Document> fileCollection = mongoOperations.getCollection (COLLECTION_FILES_NAME);
-        VariantSourceMongoWriter filesWriter = new VariantSourceMongoWriter( mongoOperations, COLLECTION_FILES_NAME);
+        MongoCollection<Document> fileCollection = mongoOperations.getCollection(COLLECTION_FILES_NAME);
+        VariantSourceMongoWriter filesWriter = new VariantSourceMongoWriter(mongoOperations, COLLECTION_FILES_NAME);
 
         VariantSourceMongo variantSource = getVariantSource();
         filesWriter.write(Collections.singletonList(variantSource));
@@ -167,13 +222,13 @@ public class VariantSourceMongoWriterTest {
         ListIndexesIterable<Document> indexesInfo = fileCollection.listIndexes();
 
         Set<String> createdIndexes = StreamSupport.stream(
-                indexesInfo.map(index -> index.get("name").toString()).spliterator(), false)
-                                                  .collect(Collectors.toSet());
+                        indexesInfo.map(index -> index.get("name").toString()).spliterator(), false)
+                .collect(Collectors.toSet());
         Set<String> expectedIndexes = new HashSet<>();
         expectedIndexes.addAll(Arrays.asList("sid_1_fid_1_fname_1", "_id_"));
         assertEquals(expectedIndexes, createdIndexes);
 
-        for(Document indexInfo: indexesInfo) {
+        for (Document indexInfo : indexesInfo) {
             if ("sid_1_fid_1_fname_1".equals(indexInfo.get("name").toString())) {
                 assertNotNull(indexInfo);
                 assertEquals("true", indexInfo.get(UNIQUE_INDEX).toString());
@@ -196,9 +251,9 @@ public class VariantSourceMongoWriterTest {
         metadata.put("FILTER", "All filters passed");
         metadata.put("INFO", "INFO field");
         metadata.put("FORMAT", "FORMAT field");
-        return new VariantSourceMongo(FILE_ID, "CHICKEN_SNPS_LAYER", STUDY_ID, STUDY_NAME, STUDY_TYPE,
+        return new VariantSourceMongo(FILE_ID, FILE_NAME, STUDY_ID, STUDY_NAME, STUDY_TYPE,
                 AGGREGATION, samplesPosition, metadata,
-                new VariantGlobalStatsMongo(0,0,0, 0,
+                new VariantGlobalStatsMongo(0, 0, 0, 0,
                         0, 0, 0, 0, 0));
     }
 }
