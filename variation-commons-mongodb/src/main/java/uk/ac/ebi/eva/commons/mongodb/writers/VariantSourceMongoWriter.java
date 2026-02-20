@@ -17,6 +17,9 @@
 package uk.ac.ebi.eva.commons.mongodb.writers;
 
 import com.mongodb.client.model.IndexOptions;
+import com.mongodb.client.model.UpdateOneModel;
+import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.model.WriteModel;
 import org.bson.Document;
 import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -25,6 +28,7 @@ import org.springframework.util.Assert;
 import uk.ac.ebi.eva.commons.core.models.IVariantSource;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,9 +64,27 @@ public class VariantSourceMongoWriter extends MongoItemWriter<IVariantSource> {
 
     @Override
     public void write(List<? extends IVariantSource> items) throws Exception {
-        List<VariantSourceMongo> convertedList = items.stream()
+        List<VariantSourceMongo> variantSourceMongoList = items.stream()
                 .map(VariantSourceMongo::new)
                 .collect(Collectors.toList());
-        super.write(convertedList);
+
+        List<WriteModel<Document>> writes = new ArrayList<>();
+        for (VariantSourceMongo variantSourceMongo : variantSourceMongoList) {
+            // include only shard keys as part of query
+            Document query = new Document()
+                    .append(VariantSourceMongo.STUDYID_FIELD, variantSourceMongo.getStudyId())
+                    .append(VariantSourceMongo.FILEID_FIELD, variantSourceMongo.getFileId())
+                    .append(VariantSourceMongo.FILENAME_FIELD, variantSourceMongo.getFileName());
+            Document update = new Document("$set", convertToMongo(variantSourceMongo));
+            writes.add(new UpdateOneModel<>(query, update, new UpdateOptions().upsert(true)));
+        }
+
+        if (!writes.isEmpty()) {
+            mongoOperations.getCollection(collection).bulkWrite(writes);
+        }
+    }
+
+    private Document convertToMongo(VariantSourceMongo variantSourceMongo) {
+        return (Document) mongoOperations.getConverter().convertToMongoType(variantSourceMongo);
     }
 }
