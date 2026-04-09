@@ -31,6 +31,7 @@ import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
@@ -159,6 +160,14 @@ public class VariantAggregatedVcfFactoryTest {
     }
 
     @Test
+    public void variantWithAlleleFrequencyMissing() {
+        String line = "1\t10040\trs123\tT\tC\t.\t.\tAF=.";
+
+        factory.create(FILE_ID, STUDY_ID, line);
+        assertNonVariantLogged();
+    }
+
+    @Test
     public void multiallelicWithAlleleFrequencyZero() {
         String line = "1\t10040\trs123\tT\tC,G,A\t.\t.\tAF=0.5,0,0.2";
 
@@ -240,7 +249,10 @@ public class VariantAggregatedVcfFactoryTest {
 
     private void assertNonVariantLogged() {
         List<ILoggingEvent> logsList = listAppender.list;
-        assertTrue(logsList.get(0).getMessage().contains("non-variant"));
-        assertEquals(Level.WARN, logsList.get(0).getLevel());
+        Optional<ILoggingEvent> nonVariantLogEvent = logsList.stream()
+                .filter(l -> l.getMessage().contains("will be discarded as a non-variant"))
+                .findAny();
+        assertTrue(nonVariantLogEvent.isPresent());
+        assertEquals(Level.WARN, nonVariantLogEvent.get().getLevel());
     }
 }
