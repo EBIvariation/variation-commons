@@ -244,7 +244,7 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
                         variantStats.setMafAllele(mafAllele);
                     }
                 } catch (NumberFormatException ex) {
-                    logger.warn("ALLELE_FREQUENCY missing : AF values " + Arrays.toString(afs));
+                    logger.debug("ALLELE_FREQUENCY missing : AF values " + Arrays.toString(afs));
                 }
             }
         }
