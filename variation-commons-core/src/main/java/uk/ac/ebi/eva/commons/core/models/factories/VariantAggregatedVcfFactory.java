@@ -223,24 +223,28 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
         if (attributes.containsKey(ALLELE_FREQUENCY)) {
             String[] afs = attributes.get(ALLELE_FREQUENCY).split(",");
             if (afs.length == alternateAlleles.length) {
-                variantStats.setAltAlleleFreq(Float.parseFloat(afs[numAllele]));
-                if (variantStats.getMaf() == -1) {  // in case that we receive AFs but no ACs
-                    float sumFreq = 0;
-                    for (String af : afs) {
-                        sumFreq += Float.parseFloat(af);
-                    }
-                    float maf = 1 - sumFreq;
-                    String mafAllele = variantStats.getRefAllele();
-
-                    for (int i = 0; i < afs.length; i++) {
-                        float auxMaf = Float.parseFloat(afs[i]);
-                        if (auxMaf < maf) {
-                            maf = auxMaf;
-                            mafAllele = alternateAlleles[i];
+                try {
+                    variantStats.setAltAlleleFreq(Float.parseFloat(afs[numAllele]));
+                    if (variantStats.getMaf() == -1) {  // in case that we receive AFs but no ACs
+                        float sumFreq = 0;
+                        for (String af : afs) {
+                            sumFreq += Float.parseFloat(af);
                         }
+                        float maf = 1 - sumFreq;
+                        String mafAllele = variantStats.getRefAllele();
+
+                        for (int i = 0; i < afs.length; i++) {
+                            float auxMaf = Float.parseFloat(afs[i]);
+                            if (auxMaf < maf) {
+                                maf = auxMaf;
+                                mafAllele = alternateAlleles[i];
+                            }
+                        }
+                        variantStats.setMaf(maf);
+                        variantStats.setMafAllele(mafAllele);
                     }
-                    variantStats.setMaf(maf);
-                    variantStats.setMafAllele(mafAllele);
+                } catch (NumberFormatException ex) {
+                    logger.debug("ALLELE_FREQUENCY missing : AF values " + Arrays.toString(afs));
                 }
             }
         }
@@ -405,8 +409,8 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
             if (!canAlleleFrequenciesBeCalculated(variantSourceEntry)) {
                 throw new IncompleteInformationException(variant);
             } else if (variantFrequencyIsZero(variantSourceEntry)) {
-                logger.warn("The variant {} has allele frequency or counts '0' and will be discarded as a non-variant",
-                            variant);
+                logger.warn("The variant {} has allele frequency or counts '0'or '.' (missing) and will be discarded as a non-variant",
+                        variant);
                 return false;
             }
         }
@@ -431,7 +435,8 @@ public class VariantAggregatedVcfFactory extends VariantVcfFactory {
     }
 
     protected boolean isAttributeZeroInVariantSourceEntry(VariantSourceEntry variantSourceEntry, String attribute) {
-        return variantSourceEntry.hasAttribute(attribute) && variantSourceEntry.getAttribute(attribute).equals("0");
+        return variantSourceEntry.hasAttribute(attribute) &&
+                (variantSourceEntry.getAttribute(attribute).equals("0") || variantSourceEntry.getAttribute(attribute).equals("."));
     }
 
 }
