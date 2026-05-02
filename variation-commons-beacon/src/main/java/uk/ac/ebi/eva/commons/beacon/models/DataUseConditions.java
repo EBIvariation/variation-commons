@@ -16,21 +16,20 @@
 
 package uk.ac.ebi.eva.commons.beacon.models;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+
+import java.util.Objects;
 
 /**
  * Data use conditions ruling this dataset.
  */
-@ApiModel(description = "Data use conditions ruling this dataset.")
+@Schema(description = "Data use conditions ruling this dataset.")
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
 public class DataUseConditions   {
   @JsonProperty("consentCodeDataUse")
   private ConsentCodeDataUse consentCodeDataUse = null;
@@ -47,7 +46,7 @@ public class DataUseConditions   {
    * Get consentCodeDataUse
    * @return consentCodeDataUse
   **/
-  @ApiModelProperty(required = true, value = "")
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description ="")
   @NotNull
 
   @Valid
@@ -68,7 +67,7 @@ public class DataUseConditions   {
    * Get adamDataUse
    * @return adamDataUse
   **/
-  @ApiModelProperty(required = true, value = "")
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description ="")
   @NotNull
 
   @Valid

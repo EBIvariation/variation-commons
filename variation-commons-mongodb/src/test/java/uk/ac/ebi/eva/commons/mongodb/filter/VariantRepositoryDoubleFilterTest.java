@@ -18,24 +18,24 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.filter;
 
-import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class VariantRepositoryDoubleFilterTest {
 
     @Test
-    public void getValueFromRelation() throws Exception {
-        assertEquals(new Double(0.5), VariantRepositoryDoubleFilter.getValueFromRelation("=0.5"));
-        assertEquals(new Double(0.12), VariantRepositoryDoubleFilter.getValueFromRelation(">0.12"));
-        assertEquals(new Double(0.134), VariantRepositoryDoubleFilter.getValueFromRelation(">=0.134"));
-        assertEquals(new Double(1.1), VariantRepositoryDoubleFilter.getValueFromRelation("<1.1"));
-        assertEquals(new Double(0.5), VariantRepositoryDoubleFilter.getValueFromRelation("<=0.5"));
+    public void getValueFromRelation() {
+        assertEquals(0.5, VariantRepositoryDoubleFilter.getValueFromRelation("=0.5"));
+        assertEquals(0.12, VariantRepositoryDoubleFilter.getValueFromRelation(">0.12"));
+        assertEquals(0.134, VariantRepositoryDoubleFilter.getValueFromRelation(">=0.134"));
+        assertEquals(1.1, VariantRepositoryDoubleFilter.getValueFromRelation("<1.1"));
+        assertEquals(0.5, VariantRepositoryDoubleFilter.getValueFromRelation("<=0.5"));
     }
 
     @Test
-    public void getRelationalOperatorFromRelation() throws Exception {
+    public void getRelationalOperatorFromRelation() {
         assertEquals(RelationalOperator.EQ,
                 VariantRepositoryDoubleFilter.getRelationalOperatorFromRelation("=0.5"));
         assertEquals(RelationalOperator.GT,

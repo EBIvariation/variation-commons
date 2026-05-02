@@ -15,11 +15,8 @@
  */
 package uk.ac.ebi.eva.commons.core.models.factories;
 
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 
 import java.util.Arrays;
@@ -31,7 +28,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * {@link VariantVcfFactory}
@@ -46,7 +43,7 @@ public class CoordinatesVcfFactoryTest {
 
     private static VariantVcfFactory factory;
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         factory = new CoordinatesVcfFactory();
     }
@@ -204,53 +201,53 @@ public class CoordinatesVcfFactoryTest {
      */
     @Test
     public void testVariantIdsByDefault() {
-            // test that an ID is NOT ignored
-            checkIds(factory, "1\t1000\trs123\tC\tT\t.\t.\t.", Collections.singleton("rs123"));
+        // test that an ID is NOT ignored
+        checkIds(factory, "1\t1000\trs123\tC\tT\t.\t.\t.", Collections.singleton("rs123"));
 
-            // test that several ID are ignored
-            checkIds(factory, "1\t1000\trs123;rs456\tC\tT\t.\t.\t.", new HashSet<>(Arrays.asList("rs123", "rs456")));
+        // test that several ID are ignored
+        checkIds(factory, "1\t1000\trs123;rs456\tC\tT\t.\t.\t.", new HashSet<>(Arrays.asList("rs123", "rs456")));
 
-            // test that a missing ID ('.') is not added to the IDs set
-            checkIds(factory, "1\t1000\t.\tC\tT\t.\t.\t.", Collections.emptySet());
+        // test that a missing ID ('.') is not added to the IDs set
+        checkIds(factory, "1\t1000\t.\tC\tT\t.\t.\t.", Collections.emptySet());
     }
 
     @Test
     public void testVariantIdsEnabled() {
-            // EVA-1898 - needed for eva-accession-clustering, test that ID is read if explicitly configured
-            VariantVcfFactory accessionedVariantFactory = new CoordinatesVcfFactory();
-            accessionedVariantFactory.setIncludeIds(true);
+        // EVA-1898 - needed for eva-accession-clustering, test that ID is read if explicitly configured
+        VariantVcfFactory accessionedVariantFactory = new CoordinatesVcfFactory();
+        accessionedVariantFactory.setIncludeIds(true);
 
-            // test that an ID is properly read
-            checkIds(accessionedVariantFactory, "1\t1000\trs123\tC\tT\t.\t.\t.", Collections.singleton("rs123"));
+        // test that an ID is properly read
+        checkIds(accessionedVariantFactory, "1\t1000\trs123\tC\tT\t.\t.\t.", Collections.singleton("rs123"));
 
-            // test that a missing ID ('.') is not added to the IDs set
-            checkIds(factory, "1\t1000\t.\tC\tT\t.\t.\t.", Collections.emptySet());
-            checkIds(accessionedVariantFactory, "1\t1000\trs123;.\tC\tT\t.\t.\t.", Collections.singleton("rs123"));
+        // test that a missing ID ('.') is not added to the IDs set
+        checkIds(factory, "1\t1000\t.\tC\tT\t.\t.\t.", Collections.emptySet());
+        checkIds(accessionedVariantFactory, "1\t1000\trs123;.\tC\tT\t.\t.\t.", Collections.singleton("rs123"));
 
-            // test that the ';' is used as the ID separator (as of VCF 4.2)
-            checkIds(accessionedVariantFactory, "1\t1000\trs123;rs456\tC\tT\t.\t.\t.",
-                     Stream.of("rs123", "rs456").collect(Collectors.toSet()));
+        // test that the ';' is used as the ID separator (as of VCF 4.2)
+        checkIds(accessionedVariantFactory, "1\t1000\trs123;rs456\tC\tT\t.\t.\t.",
+                Stream.of("rs123", "rs456").collect(Collectors.toSet()));
 
-            // test that the ',' is NOT used as the ID separator (as of VCF 4.2)
-            checkIds(accessionedVariantFactory, "1\t1000\trs123,rs456\tC\tT\t.\t.\t.",
-                     Collections.singleton("rs123,rs456"));
+        // test that the ',' is NOT used as the ID separator (as of VCF 4.2)
+        checkIds(accessionedVariantFactory, "1\t1000\trs123,rs456\tC\tT\t.\t.\t.",
+                Collections.singleton("rs123,rs456"));
     }
 
     @Test
     public void testVariantIdsDisabled() {
-            // ignore ids if explicitly configured, to comply with the interface
-            VariantVcfFactory nonAccessionedVariantFactory = new CoordinatesVcfFactory();
-            nonAccessionedVariantFactory.setIncludeIds(false);
-            Set<String> emptySet = Collections.emptySet();
+        // ignore ids if explicitly configured, to comply with the interface
+        VariantVcfFactory nonAccessionedVariantFactory = new CoordinatesVcfFactory();
+        nonAccessionedVariantFactory.setIncludeIds(false);
+        Set<String> emptySet = Collections.emptySet();
 
-            // test that an ID is ignored
-            checkIds(nonAccessionedVariantFactory, "1\t1000\trs123\tC\tT\t.\t.\t.", emptySet);
+        // test that an ID is ignored
+        checkIds(nonAccessionedVariantFactory, "1\t1000\trs123\tC\tT\t.\t.\t.", emptySet);
 
-            // test that several ID are ignored
-            checkIds(nonAccessionedVariantFactory, "1\t1000\trs123;rs456\tC\tT\t.\t.\t.", emptySet);
+        // test that several ID are ignored
+        checkIds(nonAccessionedVariantFactory, "1\t1000\trs123;rs456\tC\tT\t.\t.\t.", emptySet);
 
-            // test that a missing ID ('.') is not added to the IDs set
-            checkIds(nonAccessionedVariantFactory, "1\t1000\t.\tC\tT\t.\t.\t.", emptySet);
+        // test that a missing ID ('.') is not added to the IDs set
+        checkIds(nonAccessionedVariantFactory, "1\t1000\t.\tC\tT\t.\t.\t.", emptySet);
     }
 
     private void checkIds(VariantVcfFactory variantVcfFactory, String vcfLine, Set<String> expectedIds) {

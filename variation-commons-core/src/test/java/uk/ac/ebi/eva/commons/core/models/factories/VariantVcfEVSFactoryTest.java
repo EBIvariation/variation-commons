@@ -15,8 +15,7 @@
  */
 package uk.ac.ebi.eva.commons.core.models.factories;
 
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
@@ -29,8 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 /**
@@ -227,7 +226,7 @@ public class VariantVcfEVSFactoryTest {
         genotypes.add(new Genotype("0/0", "G", ""));
         List<Integer> counts = new ArrayList<>(Arrays.asList(0, 1, 1924));
         Map<Genotype, Integer> genotypesCount = res.get(0).getSourceEntry("EVS", "EVS").getCohortStats("EA")
-                                                   .getGenotypesCount();
+                .getGenotypesCount();
         for (int i = 0; i < genotypes.size(); i++) {
             assertEquals(genotypesCount.get(genotypes.get(i)), counts.get(i));
         }
@@ -299,7 +298,7 @@ public class VariantVcfEVSFactoryTest {
 
         List<Integer> counts = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
         Map<Genotype, Integer> genotypesCount = res.get(0).getSourceEntry("EVS", "EVS").getCohortStats("EA")
-                                                   .getGenotypesCount();
+                .getGenotypesCount();
 
         for (int i = 0; i < genotypes.size(); i++) {
             assertEquals(genotypesCount.get(genotypes.get(i)), counts.get(i));
@@ -320,7 +319,7 @@ public class VariantVcfEVSFactoryTest {
         genotypes.add(new Genotype("0/3", "TT", ""));
         genotypes.add(new Genotype("0/0", "TT", ""));
         counts = new ArrayList<>(Arrays.asList(5, 2, 6, 7, 1, 3, 4, 8, 9,
-                                               10)); // taking A2 as if it were the first allele A1, and moving A1 to A2
+                10)); // taking A2 as if it were the first allele A1, and moving A1 to A2
         genotypesCount = res.get(1).getSourceEntry("EVS", "EVS").getCohortStats("EA").getGenotypesCount();
 
         for (int i = 0; i < genotypes.size(); i++) {
@@ -340,7 +339,7 @@ public class VariantVcfEVSFactoryTest {
         genotypes.add(new Genotype("0/3", "T", ""));
         genotypes.add(new Genotype("0/0", "T", ""));
         counts = new ArrayList<>(Arrays.asList(8, 3, 6, 9, 1, 2, 4, 5, 7,
-                                               10));// taking A3 as if it were the first allele A1, and moving A1 to A2, and A2 to A3
+                10));// taking A3 as if it were the first allele A1, and moving A1 to A2, and A2 to A3
         genotypesCount = res.get(2).getSourceEntry("EVS", "EVS").getCohortStats("EA").getGenotypesCount();
 
         for (int i = 0; i < genotypes.size(); i++) {

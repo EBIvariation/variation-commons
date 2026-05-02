@@ -2,37 +2,34 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>variation-commons</artifactId>
-        <groupId>uk.ac.ebi.eva</groupId>
-        <version>0.8.11-SNAPSHOT</version>
-    </parent>
+
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>variation-commons-batch</artifactId>
+
+    <parent>
+        <groupId>uk.ac.ebi.eva</groupId>
+        <artifactId>variation-commons</artifactId>
+        <version>${revision}</version>
+    </parent>
 
     <dependencies>
         <dependency>
             <groupId>uk.ac.ebi.eva</groupId>
             <artifactId>variation-commons-core</artifactId>
-            <version>0.8.11-SNAPSHOT</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-batch</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.batch</groupId>
-            <artifactId>spring-batch-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lordofthejars</groupId>
-            <artifactId>nosqlunit-mongodb</artifactId>
+            <groupId>org.springframework.batch</groupId>
+            <artifactId>spring-batch-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

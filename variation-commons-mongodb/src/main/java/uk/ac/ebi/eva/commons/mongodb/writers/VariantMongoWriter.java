@@ -22,6 +22,7 @@ import com.mongodb.client.model.UpdateOptions;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.util.Assert;
@@ -103,7 +104,7 @@ public class VariantMongoWriter extends MongoItemWriter<IVariant> {
     }
 
     @Override
-    public void doWrite(List<? extends IVariant> variants) {
+    public void doWrite(Chunk<? extends IVariant> variants) {
         List<UpdateOneModel<Document>> updates = new ArrayList<>();
         for (IVariant variant : variants) {
             updates.add(new UpdateOneModel<>(generateQuery(variant), generateUpdate(variant),

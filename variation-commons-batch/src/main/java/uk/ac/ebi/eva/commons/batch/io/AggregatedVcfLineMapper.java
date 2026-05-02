@@ -17,14 +17,13 @@ package uk.ac.ebi.eva.commons.batch.io;
 
 import org.springframework.batch.item.file.LineMapper;
 import org.springframework.util.Assert;
-
-import uk.ac.ebi.eva.commons.core.utils.FileUtils;
 import uk.ac.ebi.eva.commons.core.models.Aggregation;
 import uk.ac.ebi.eva.commons.core.models.factories.VariantAggregatedVcfFactory;
 import uk.ac.ebi.eva.commons.core.models.factories.VariantVcfEVSFactory;
 import uk.ac.ebi.eva.commons.core.models.factories.VariantVcfExacFactory;
 import uk.ac.ebi.eva.commons.core.models.factories.VariantVcfFactory;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
+import uk.ac.ebi.eva.commons.core.utils.FileUtils;
 
 import javax.annotation.Nullable;
 import java.io.FileInputStream;

@@ -16,20 +16,17 @@
 
 package uk.ac.ebi.eva.commons.beacon.models;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+
+import java.util.Objects;
 
 /**
  * Contact
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
 public class Contact   {
   @JsonProperty("name")
   private String name = null;
@@ -46,7 +43,7 @@ public class Contact   {
    * Get name
    * @return name
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   public String getName() {
     return name;
@@ -65,7 +62,7 @@ public class Contact   {
    * Get email
    * @return email
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   public String getEmail() {
     return email;

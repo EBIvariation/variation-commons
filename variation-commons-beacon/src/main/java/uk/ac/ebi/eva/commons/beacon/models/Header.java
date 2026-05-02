@@ -16,22 +16,20 @@
 
 package uk.ac.ebi.eva.commons.beacon.models;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import org.springframework.validation.annotation.Validated;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import java.util.Objects;
 
 /**
  * Header
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
 public class Header   {
   @JsonProperty("matrixName")
   private String matrixName = null;
@@ -80,7 +78,7 @@ public class Header   {
    * Get matrixName
    * @return matrixName
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description = "")
 
   public String getMatrixName() {
     return matrixName;
@@ -99,7 +97,7 @@ public class Header   {
    * Get matrixVersion
    * @return matrixVersion
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description = "")
 
   public String getMatrixVersion() {
     return matrixVersion;
@@ -126,7 +124,7 @@ public class Header   {
    * Publications, URLs, DOIs for the resource.
    * @return matrixReferences
   **/
-  @ApiModelProperty(value = "Publications, URLs, DOIs for the resource.")
+  @Schema(description = "Publications, URLs, DOIs for the resource.")
 
   public List<String> getMatrixReferences() {
     return matrixReferences;
@@ -145,7 +143,7 @@ public class Header   {
    * Get matrixProfileCreateDate
    * @return matrixProfileCreateDate
   **/
-  @ApiModelProperty(example = "2017-01-17T20:33:40Z", value = "")
+  @Schema(example = "2017-01-17T20:33:40Z", description = "")
 
   public String getMatrixProfileCreateDate() {
     return matrixProfileCreateDate;
@@ -172,7 +170,7 @@ public class Header   {
    * Get matrixProfileUpdates
    * @return matrixProfileUpdates
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
   @Valid
   public List<ProfileUpdates> getMatrixProfileUpdates() {
     return matrixProfileUpdates;
@@ -191,7 +189,7 @@ public class Header   {
    * Get resourceName
    * @return resourceName
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   public String getResourceName() {
     return resourceName;
@@ -218,7 +216,7 @@ public class Header   {
    * Publications, URLs, DOIs for the resource.
    * @return resourceReferences
   **/
-  @ApiModelProperty(value = "Publications, URLs, DOIs for the resource.")
+  @Schema(description ="Publications, URLs, DOIs for the resource.")
 
   public List<String> getResourceReferences() {
     return resourceReferences;
@@ -237,7 +235,7 @@ public class Header   {
    * Get resourceDescription
    * @return resourceDescription
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   public String getResourceDescription() {
     return resourceDescription;
@@ -256,7 +254,7 @@ public class Header   {
    * Get resourceDataLevel
    * @return resourceDataLevel
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   @Valid
   public DataLevel getResourceDataLevel() {
@@ -284,7 +282,7 @@ public class Header   {
    * Get resourceContactNames
    * @return resourceContactNames
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
   @Valid
   public List<Contact> getResourceContactNames() {
     return resourceContactNames;
@@ -311,7 +309,7 @@ public class Header   {
    * Get resourceContactOrganisations
    * @return resourceContactOrganisations
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   public List<String> getResourceContactOrganisations() {
     return resourceContactOrganisations;

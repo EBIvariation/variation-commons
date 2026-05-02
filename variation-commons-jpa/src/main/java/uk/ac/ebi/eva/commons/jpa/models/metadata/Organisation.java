@@ -15,12 +15,12 @@
  */
 package uk.ac.ebi.eva.commons.jpa.models.metadata;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
 import java.util.Objects;
 
 /**

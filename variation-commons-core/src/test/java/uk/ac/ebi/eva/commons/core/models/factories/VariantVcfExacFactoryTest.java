@@ -15,8 +15,7 @@
  */
 package uk.ac.ebi.eva.commons.core.models.factories;
 
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
 import uk.ac.ebi.eva.commons.core.models.genotype.Genotype;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
@@ -27,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * {@link VariantVcfExacFactory}
@@ -72,7 +71,7 @@ public class VariantVcfExacFactoryTest {
         Map<Genotype, Integer> genotypes = new HashMap<>();
 
         genotypes.put(new Genotype("0/0", "G", "T"),
-                      (10890 - 22 * 2) / 2);    // AN - alleles_in_gt_0/1: how many ref alleles there are in the genotype 0/0, as there are no 1/1
+                (10890 - 22 * 2) / 2);    // AN - alleles_in_gt_0/1: how many ref alleles there are in the genotype 0/0, as there are no 1/1
         genotypes.put(new Genotype("0/1", "G", "T"), 22);
         genotypes.put(new Genotype("1/1", "G", "T"), 0);
 
@@ -121,7 +120,7 @@ public class VariantVcfExacFactoryTest {
         Map<Genotype, Integer> genotypes = new HashMap<>();
 
         genotypes.put(new Genotype("0/0", "G", "T"),
-                      (79012 - 4 * 2) / 2);    // AN - alleles_in_gt_0/1: how many ref alleles there are in the genotype 0/0, as there are no 1/1
+                (79012 - 4 * 2) / 2);    // AN - alleles_in_gt_0/1: how many ref alleles there are in the genotype 0/0, as there are no 1/1
         genotypes.put(new Genotype("0/1", "G", "T"), 1);
         genotypes.put(new Genotype("1/1", "G", "T"), 1);
         genotypes.put(new Genotype("0/2", "G", "T"), 1);
@@ -136,11 +135,11 @@ public class VariantVcfExacFactoryTest {
         assertEquals(3, sourceEntry.getStats().getAltAlleleCount());
         assertEquals(79012 - 1 - 2 - 1 - 2, sourceEntry.getStats().getRefAlleleCount());
         assertEquals(0, sourceEntry.getStats().getMaf(),
-                     0.00001);   // how can a multiallelic variant have an allele count of 0? the "Adjusted" just removed it
+                0.00001);   // how can a multiallelic variant have an allele count of 0? the "Adjusted" just removed it
 
         genotypes.clear();
         genotypes.put(new Genotype("0/0", "G", "A"),
-                      (79012 - 4 * 2) / 2);    // AN - alleles_in_gt_0/1: how many ref alleles there are in the genotype 0/0, as there are no 1/1
+                (79012 - 4 * 2) / 2);    // AN - alleles_in_gt_0/1: how many ref alleles there are in the genotype 0/0, as there are no 1/1
         genotypes.put(new Genotype("0/1", "G", "A"), 1);
         genotypes.put(new Genotype("1/1", "G", "A"), 1);
         genotypes.put(new Genotype("0/2", "G", "A"), 1);
@@ -159,7 +158,7 @@ public class VariantVcfExacFactoryTest {
 
         genotypes.clear();
         genotypes.put(new Genotype("0/0", "G", "C"),
-                      (79012 - 4 * 2) / 2);    // AN - alleles_in_gt_0/1: how many ref alleles there are in the genotype 0/0, as there are no 1/1
+                (79012 - 4 * 2) / 2);    // AN - alleles_in_gt_0/1: how many ref alleles there are in the genotype 0/0, as there are no 1/1
         genotypes.put(new Genotype("0/1", "G", "C"), 0);
         genotypes.put(new Genotype("1/1", "G", "C"), 0);
         genotypes.put(new Genotype("0/2", "G", "C"), 1);
@@ -297,11 +296,11 @@ public class VariantVcfExacFactoryTest {
 
         Integer alleles[] = new Integer[2];
         VariantVcfExacFactory.getHeterozygousGenotype(3, 3, alleles);
-        assertEquals(alleles[0], new Integer(1));
-        assertEquals(alleles[1], new Integer(2));
+        assertEquals(alleles[0], 1);
+        assertEquals(alleles[1], 2);
         VariantVcfExacFactory.getHeterozygousGenotype(4, 4, alleles);
-        assertEquals(alleles[0], new Integer(1));
-        assertEquals(alleles[1], new Integer(2));
+        assertEquals(alleles[0], 1);
+        assertEquals(alleles[1], 2);
     }
 
     @Test

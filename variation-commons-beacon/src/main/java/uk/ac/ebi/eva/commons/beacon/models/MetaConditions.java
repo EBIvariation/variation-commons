@@ -16,22 +16,20 @@
 
 package uk.ac.ebi.eva.commons.beacon.models;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import org.springframework.validation.annotation.Validated;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import java.util.Objects;
 
 /**
  * MetaConditions
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
 public class MetaConditions   {
   @JsonProperty("sharingMode")
   private SharingMode sharingMode = null;
@@ -61,7 +59,7 @@ public class MetaConditions   {
    * Get sharingMode
    * @return sharingMode
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description = "")
 
   @Valid
   public SharingMode getSharingMode() {
@@ -81,7 +79,7 @@ public class MetaConditions   {
    * Get multipleObligationsRule
    * @return multipleObligationsRule
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description = "")
 
   @Valid
   public MultipleObligationsRule getMultipleObligationsRule() {
@@ -101,7 +99,7 @@ public class MetaConditions   {
    * There are no other use restrictions/limitations in force which are not herein specified.
    * @return noOtherConditions
   **/
-  @ApiModelProperty(value = "There are no other use restrictions/limitations in force which are not herein specified.")
+  @Schema(description = "There are no other use restrictions/limitations in force which are not herein specified.")
 
   public Boolean isNoOtherConditions() {
     return noOtherConditions;
@@ -128,7 +126,7 @@ public class MetaConditions   {
    * Other permissions/limitations may apply as specified.
    * @return whichOtherConditions
   **/
-  @ApiModelProperty(value = "Other permissions/limitations may apply as specified.")
+  @Schema(description = "Other permissions/limitations may apply as specified.")
 
   public List<String> getWhichOtherConditions() {
     return whichOtherConditions;
@@ -147,7 +145,7 @@ public class MetaConditions   {
    * No special evaluation required for access requests involving sensitive/restricted populations.
    * @return sensitivePopulations
   **/
-  @ApiModelProperty(value = "No special evaluation required for access requests involving sensitive/restricted populations.")
+  @Schema(description = "No special evaluation required for access requests involving sensitive/restricted populations.")
 
   public Boolean isSensitivePopulations() {
     return sensitivePopulations;
@@ -166,7 +164,7 @@ public class MetaConditions   {
    * Identical consent permissions have been provided by all subjects.
    * @return uniformConsent
   **/
-  @ApiModelProperty(value = "Identical consent permissions have been provided by all subjects.")
+  @Schema(description = "Identical consent permissions have been provided by all subjects.")
 
   public Boolean isUniformConsent() {
     return uniformConsent;

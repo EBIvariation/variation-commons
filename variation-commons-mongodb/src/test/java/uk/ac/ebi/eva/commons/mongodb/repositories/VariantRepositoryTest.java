@@ -18,30 +18,29 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.repositories;
 
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbConfigurationBuilder;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
-
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.ac.ebi.eva.commons.core.models.Region;
 import uk.ac.ebi.eva.commons.core.models.VariantType;
 import uk.ac.ebi.eva.commons.mongodb.configuration.EvaRepositoriesConfiguration;
+import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantSourceEntryMongo;
-import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.filter.FilterBuilder;
 import uk.ac.ebi.eva.commons.mongodb.filter.VariantRepositoryFilter;
-import uk.ac.ebi.eva.commons.mongodb.test.rule.FixSpringMongoDbRule;
+import uk.ac.ebi.eva.commons.mongodb.utils.MongoTestContainerHelper;
+import uk.ac.ebi.eva.commons.mongodb.utils.MongoTestDataLoader;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,23 +60,37 @@ import static org.junit.Assert.assertTrue;
  * <p>
  * Load data from json using lordofthejars nosqlunit.
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:eva.properties")
-@UsingDataSet(locations = {
-        "/test-data/variants.json",
-        "/test-data/annotations.json",
-        "/test-data/files.json"})
 @ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class, EvaRepositoriesConfiguration.class})
-public class VariantRepositoryTest {
+public class VariantRepositoryTest extends MongoTestContainerHelper {
+    @Value("${eva.mongo.collections.annotations}")
+    private String annotationCollection;
 
-    private static final String TEST_DB = "test-db";
+    @Value("${eva.mongo.collections.variants}")
+    private String variantCollection;
+
+    @Value("${eva.mongo.collections.files}")
+    private String fileCollection;
 
     @Autowired
-    private ApplicationContext applicationContext;
+    MongoTemplate mongoTemplate;
 
-    @Rule
-    public MongoDbRule mongoDbRule = new FixSpringMongoDbRule(
-            MongoDbConfigurationBuilder.mongoDb().databaseName(TEST_DB).build());
+    @Autowired
+    ResourceLoader resourceLoader;
+
+    @BeforeEach
+    void setUp() {
+        mongoTemplate.getDb().drop();
+        new MongoTestDataLoader(mongoTemplate, resourceLoader).load("/test-data/variants.json", variantCollection);
+        new MongoTestDataLoader(mongoTemplate, resourceLoader).load("/test-data/annotations.json", annotationCollection);
+        new MongoTestDataLoader(mongoTemplate, resourceLoader).load("/test-data/files.json", fileCollection);
+    }
+
+    @AfterEach
+    void cleanDb() {
+        mongoTemplate.getDb().drop();
+    }
 
     @Autowired
     private VariantRepository variantRepository;
@@ -93,7 +106,7 @@ public class VariantRepositoryTest {
 
         List<VariantMongo> variantEntityList = variantRepository
                 .findByRegionsAndComplexFilters(regions, filters, exclude,
-                        new PageRequest(0, 100000000));
+                        PageRequest.of(0, 100000000));
 
         for (VariantMongo currVariantEntity : variantEntityList) {
             assertFalse(currVariantEntity.getSourceEntries().isEmpty());
@@ -113,8 +126,8 @@ public class VariantRepositoryTest {
         assertFalse(variantEntityWithSourceLine.getSourceEntries().isEmpty());
         assertFalse(variantEntityWithSourceLine.getIds().isEmpty());
         assertEquals("NC_027300.1\t369\t.\tC\tT\t23494.8\tPASS\t.",
-                     variantEntityWithSourceLine.getSourceEntries().stream().findFirst().get().getAttributes()
-                                                .get("src"));
+                variantEntityWithSourceLine.getSourceEntries().stream().findFirst().get().getAttributes()
+                        .get("src"));
     }
 
     @Test
@@ -169,7 +182,7 @@ public class VariantRepositoryTest {
         List<VariantRepositoryFilter> filters = new ArrayList<>();
 
         Long count = variantRepository.countByIdsAndComplexFilters(ids, filters);
-        assertEquals(new Long(2), count);
+        assertEquals(Long.valueOf(2), count);
     }
 
     @Test
@@ -179,7 +192,7 @@ public class VariantRepositoryTest {
 
         List<VariantRepositoryFilter> filters = new ArrayList<>();
         Long count = variantRepository.countByIdsAndComplexFilters(ids, filters);
-        assertEquals(new Long(0), count);
+        assertEquals(Long.valueOf(0), count);
     }
 
     @Test
@@ -206,7 +219,7 @@ public class VariantRepositoryTest {
         List<Region> regions = new ArrayList<>();
         regions.add(region);
         List<VariantMongo> variantEntityList = variantRepository
-                .findByRegionsAndComplexFilters(regions, filters, exclude, new PageRequest(0, 1000000));
+                .findByRegionsAndComplexFilters(regions, filters, exclude, PageRequest.of(0, 1000000));
         assertNotNull(variantEntityList);
         assertTrue(variantEntityList.size() > 0);
         assertEquals(chr, variantEntityList.get(0).getChromosome());
@@ -222,7 +235,7 @@ public class VariantRepositoryTest {
         List<Region> regions = new ArrayList<>();
         regions.add(region);
         List<VariantMongo> variantEntityList = variantRepository
-                .findByRegionsAndComplexFilters(regions, filters, exclude, new PageRequest(0, 1000000));
+                .findByRegionsAndComplexFilters(regions, filters, exclude, PageRequest.of(0, 1000000));
         assertNotNull(variantEntityList);
         assertTrue(variantEntityList.size() > 0);
         assertEquals(478, variantEntityList.size());
@@ -239,7 +252,7 @@ public class VariantRepositoryTest {
         List<Region> regions = new ArrayList<>();
         regions.add(region);
         Long count = variantRepository.countByRegionsAndComplexFilters(regions, filters);
-        assertEquals(new Long(418), count);
+        assertEquals(Long.valueOf(418), count);
     }
 
     @Test
@@ -250,7 +263,7 @@ public class VariantRepositoryTest {
         List<Region> regions = new ArrayList<>();
         regions.add(region);
         List<VariantMongo> variantEntityList = variantRepository
-                .findByRegionsAndComplexFilters(regions, filters, exclude, new PageRequest(0, 1000000));
+                .findByRegionsAndComplexFilters(regions, filters, exclude, PageRequest.of(0, 1000000));
         assertNotNull(variantEntityList);
         assertTrue(variantEntityList.size() == 0);
     }
@@ -402,7 +415,7 @@ public class VariantRepositoryTest {
         List<VariantRepositoryFilter> filters = new ArrayList<>();
 
         List<VariantMongo> variantEntityList = variantRepository
-                .findByRegionsAndComplexFilters(regions, filters, exclude, new PageRequest(0, 10000));
+                .findByRegionsAndComplexFilters(regions, filters, exclude, PageRequest.of(0, 10000));
         assertNotNull(variantEntityList);
         for (VariantMongo currVariantEntity : variantEntityList) {
             assertTrue(currVariantEntity.getSourceEntries().isEmpty());
@@ -420,7 +433,7 @@ public class VariantRepositoryTest {
         List<VariantRepositoryFilter> filters = new ArrayList<>();
 
         List<VariantMongo> variantEntityList = variantRepository
-                .findByRegionsAndComplexFilters(regions, filters, exclude, new PageRequest(0, 10000));
+                .findByRegionsAndComplexFilters(regions, filters, exclude, PageRequest.of(0, 10000));
 
         assertNotNull(variantEntityList);
         for (VariantMongo currVariantEntity : variantEntityList) {
@@ -449,7 +462,7 @@ public class VariantRepositoryTest {
         studies.add("PRJEB6930");
         Long count = (long) variantRepository
                 .findByChromosomeAndStartAndAltAndStudyIn("11", 190057, "T", studies).size();
-        assertEquals(new Long(1), count);
+        assertEquals(Long.valueOf(1), count);
     }
 
     @Test
@@ -468,33 +481,33 @@ public class VariantRepositoryTest {
         regions.add(region);
 
         List<VariantMongo> variantEntityList = variantRepository.
-                findByRegionsAndComplexFilters(regions, null, null, new PageRequest(0, 10000));
+                findByRegionsAndComplexFilters(regions, null, null, PageRequest.of(0, 10000));
 
         assertEquals(1, variantEntityList.size());
     }
 
     @Test
     public void testFindByChromosomeAndStudyInSortedBy() {
-        Sort ascendingStartOrder = new Sort(Sort.Direction.ASC, "start");
-        Sort descendingStartOrder = new Sort(Sort.Direction.DESC, "start");
+        Sort ascendingStartOrder = Sort.by(Sort.Direction.ASC, "start");
+        Sort descendingStartOrder = Sort.by(Sort.Direction.DESC, "start");
 
         // first and last variant for one study
         VariantMongo firstVariant =
                 variantRepository.findOneByChromosomeAndStudyInSorted("11", Collections.singletonList("PRJEB8661"),
-                                                                      ascendingStartOrder);
+                        ascendingStartOrder);
         VariantMongo lastVariant =
                 variantRepository.findOneByChromosomeAndStudyInSorted("11", Collections.singletonList("PRJEB8661"),
-                                                                      descendingStartOrder);
+                        descendingStartOrder);
         assertEquals(193051L, firstVariant.getStart());
         assertEquals(193959L, lastVariant.getStart());
 
         // first and last variant for two studies
         firstVariant =
                 variantRepository.findOneByChromosomeAndStudyInSorted("11", Arrays.asList("PRJEB8661", "PRJEB6930"),
-                                                                      ascendingStartOrder);
+                        ascendingStartOrder);
         lastVariant =
                 variantRepository.findOneByChromosomeAndStudyInSorted("11", Arrays.asList("PRJEB8661", "PRJEB6930"),
-                                                                      descendingStartOrder);
+                        descendingStartOrder);
         assertEquals(190010L, firstVariant.getStart());
         assertEquals(194190L, lastVariant.getStart());
 
@@ -502,10 +515,10 @@ public class VariantRepositoryTest {
         // in a chromosome with one variant, the first and the last variants are the same
         firstVariant =
                 variantRepository.findOneByChromosomeAndStudyInSorted("9", Collections.singletonList("PRJEB5829"),
-                                                                      ascendingStartOrder);
+                        ascendingStartOrder);
         lastVariant =
                 variantRepository.findOneByChromosomeAndStudyInSorted("9", Collections.singletonList("PRJEB5829"),
-                                                                      descendingStartOrder);
+                        descendingStartOrder);
         assertEquals(firstVariant.getId(), lastVariant.getId());
         assertEquals(10099L, firstVariant.getStart());
 
@@ -515,7 +528,7 @@ public class VariantRepositoryTest {
                                          List<String> exclude, int expectedResultLength) {
         List<VariantMongo> variantEntityList =
                 variantRepository.findByRegionsAndComplexFilters(regions, filters, exclude,
-                        new PageRequest(0, 10000));
+                        PageRequest.of(0, 10000));
         assertNotNull(variantEntityList);
         assertEquals(expectedResultLength, variantEntityList.size());
     }
@@ -523,7 +536,7 @@ public class VariantRepositoryTest {
     private void testFindByRegionsAndComplexFiltersHelper(List<Region> regions, List<VariantRepositoryFilter> filters,
                                                           List<String> exclude, int expectedResultLength) {
         List<VariantMongo> variantEntityList = variantRepository
-                .findByRegionsAndComplexFilters(regions, filters, exclude, new PageRequest(0, 100000000));
+                .findByRegionsAndComplexFilters(regions, filters, exclude, PageRequest.of(0, 100000000));
         assertNotNull(variantEntityList);
         assertTrue(variantEntityList.size() > 0);
         VariantMongo prevVariantEntity = variantEntityList.get(0);

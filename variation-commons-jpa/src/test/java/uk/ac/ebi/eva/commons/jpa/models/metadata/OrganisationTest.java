@@ -1,14 +1,13 @@
 package uk.ac.ebi.eva.commons.jpa.models.metadata;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Created by tom on 15/10/15.
@@ -17,7 +16,7 @@ public class OrganisationTest {
 
     Organisation x, y, z, notx;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         x = new Organisation("Sanger", "Wellcome Genome Campus");
         y = new Organisation("Sanger", "Wellcome Genome Campus");
@@ -66,7 +65,7 @@ public class OrganisationTest {
      * A class is equal to itself.
      */
     public void testEqual_ToSelf() {
-        assertTrue("Class equal to itself.", x.equals(x));
+        assertTrue(x.equals(x), "Class equal to itself.");
     }
 
     /**
@@ -74,7 +73,7 @@ public class OrganisationTest {
      */
     @Test
     public void testPassIncompatibleType_isFalse() {
-        assertFalse("Passing incompatible object to equals should return false", x.equals("string"));
+        assertFalse(x.equals("string"), "Passing incompatible object to equals should return false");
     }
 
     /**
@@ -82,7 +81,7 @@ public class OrganisationTest {
      */
     @Test
     public void testNullReference_isFalse() {
-        assertFalse("Passing null to equals should return false", x.equals(null));
+        assertFalse(x.equals(null), "Passing null to equals should return false");
     }
 
     /**
@@ -91,8 +90,8 @@ public class OrganisationTest {
      */
     @Test
     public void testEquals_isReflexive_isSymmetric() {
-        assertTrue("Reflexive test fail x,y", x.equals(y));
-        assertTrue("Symmetric test fail y", y.equals(x));
+        assertTrue(x.equals(y), "Reflexive test fail x,y");
+        assertTrue(y.equals(x), "Symmetric test fail y");
     }
 
     /**
@@ -102,9 +101,9 @@ public class OrganisationTest {
      */
     @Test
     public void testEquals_isTransitive() {
-        assertTrue("Transitive test fails x,y", x.equals(y));
-        assertTrue("Transitive test fails y,z", y.equals(z));
-        assertTrue("Transitive test fails x,z", x.equals(z));
+        assertTrue(x.equals(y), "Transitive test fails x,y");
+        assertTrue(y.equals(z), "Transitive test fails y,z");
+        assertTrue(x.equals(z), "Transitive test fails x,z");
     }
 
     /**
@@ -112,9 +111,9 @@ public class OrganisationTest {
      */
     @Test
     public void testEquals_isConsistent() {
-        assertTrue("Consistent test fail x,y", x.equals(y));
-        assertTrue("Consistent test fail x,y", x.equals(y));
-        assertTrue("Consistent test fail x,y", x.equals(y));
+        assertTrue(x.equals(y), "Consistent test fail x,y");
+        assertTrue(x.equals(y), "Consistent test fail x,y");
+        assertTrue(x.equals(y), "Consistent test fail x,y");
         assertFalse(notx.equals(x));
         assertFalse(notx.equals(x));
         assertFalse(notx.equals(x));
@@ -128,8 +127,8 @@ public class OrganisationTest {
     public void testHashcode_isConsistent() {
         int initial_hashcode = x.hashCode();
 
-        assertEquals("Consistent hashcode test fails", initial_hashcode, x.hashCode());
-        assertEquals("Consistent hashcode test fails", initial_hashcode, x.hashCode());
+        assertEquals(initial_hashcode, x.hashCode(), "Consistent hashcode test fails");
+        assertEquals(initial_hashcode, x.hashCode(), "Consistent hashcode test fails");
     }
 
     /**
@@ -140,7 +139,7 @@ public class OrganisationTest {
         int xhashcode = x.hashCode();
         int yhashcode = y.hashCode();
 
-        assertEquals("Equal object, return equal hashcode test fails", xhashcode, yhashcode);
+        assertEquals(xhashcode, yhashcode, "Equal object, return equal hashcode test fails");
     }
 
     /**
@@ -152,7 +151,7 @@ public class OrganisationTest {
         int xhashcode = x.hashCode();
         int notxHashcode = notx.hashCode();
 
-        assertTrue("Equal object, return unequal hashcode test fails", !(xhashcode == notxHashcode));
+        assertTrue(!(xhashcode == notxHashcode), "Equal object, return unequal hashcode test fails");
     }
 
 }

@@ -16,24 +16,26 @@
 
 package uk.ac.ebi.eva.commons.beacon.models;
 
-import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import org.springframework.validation.annotation.Validated;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import java.util.Objects;
 
 /**
  * Allele request as interpreted by the beacon.
  */
-@ApiModel(description = "Allele request as interpreted by the beacon.")
+@Schema(description = "Allele request as interpreted by the beacon.")
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
 public class BeaconAlleleRequest   {
     @JsonProperty("referenceName")
     private Chromosome referenceName = null;
@@ -118,7 +120,7 @@ public class BeaconAlleleRequest   {
      * Get referenceName
      * @return referenceName
      **/
-    @ApiModelProperty(required = true, value = "")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "")
     @NotNull
 
     @Valid
@@ -140,7 +142,7 @@ public class BeaconAlleleRequest   {
      * minimum: 0
      * @return start
      **/
-    @ApiModelProperty(value = "Precise start coordinate position, allele locus (0-based, inclusive). * start only:   - for single positions, e.g. the start of a specified sequence alteration where the size is given through the specified alternateBases   - typical use are queries for SNV and small InDels   - the use of \"start\" without an \"end\" parameter requires the use of \"referenceBases\" * start and end:   - special use case for exactly determined structural changes ")
+    @Schema(description = "Precise start coordinate position, allele locus (0-based, inclusive). * start only:   - for single positions, e.g. the start of a specified sequence alteration where the size is given through the specified alternateBases   - typical use are queries for SNV and small InDels   - the use of \"start\" without an \"end\" parameter requires the use of \"referenceBases\" * start and end:   - special use case for exactly determined structural changes ")
 
     @Min(0L)  public Long getStart() {
         return start;
@@ -159,7 +161,7 @@ public class BeaconAlleleRequest   {
      * Precise end coordinate (0-based, exclusive). See start.
      * @return end
      **/
-    @ApiModelProperty(value = "Precise end coordinate (0-based, exclusive). See start.")
+    @Schema(description = "Precise end coordinate (0-based, exclusive). See start.")
 
     public Integer getEnd() {
         return end;
@@ -178,7 +180,7 @@ public class BeaconAlleleRequest   {
      * Minimum start coordinate * startMin + startMax + endMin + endMax   - for querying imprecise positions (e.g. identifying all structural variants starting anywhere between startMin <-> startMax, and ending anywhere between endMin <-> endMax)   - single or double sided precise matches can be achieved by setting startMin = startMax XOR endMin = endMax
      * @return startMin
      **/
-    @ApiModelProperty(value = "Minimum start coordinate * startMin + startMax + endMin + endMax   - for querying imprecise positions (e.g. identifying all structural variants starting anywhere between startMin <-> startMax, and ending anywhere between endMin <-> endMax)   - single or double sided precise matches can be achieved by setting startMin = startMax XOR endMin = endMax ")
+    @Schema(description = "Minimum start coordinate * startMin + startMax + endMin + endMax   - for querying imprecise positions (e.g. identifying all structural variants starting anywhere between startMin <-> startMax, and ending anywhere between endMin <-> endMax)   - single or double sided precise matches can be achieved by setting startMin = startMax XOR endMin = endMax ")
 
     public Integer getStartMin() {
         return startMin;
@@ -197,7 +199,7 @@ public class BeaconAlleleRequest   {
      * Maximum start coordinate. See startMin.
      * @return startMax
      **/
-    @ApiModelProperty(value = "Maximum start coordinate. See startMin.")
+    @Schema(description = "Maximum start coordinate. See startMin.")
 
     public Integer getStartMax() {
         return startMax;
@@ -216,7 +218,7 @@ public class BeaconAlleleRequest   {
      * Minimum end coordinate. See startMin.
      * @return endMin
      **/
-    @ApiModelProperty(value = "Minimum end coordinate. See startMin.")
+    @Schema(description = "Minimum end coordinate. See startMin.")
 
     public Integer getEndMin() {
         return endMin;
@@ -235,7 +237,7 @@ public class BeaconAlleleRequest   {
      * Maximum end coordinate. See startMin.
      * @return endMax
      **/
-    @ApiModelProperty(value = "Maximum end coordinate. See startMin.")
+    @Schema(description = "Maximum end coordinate. See startMin.")
 
     public Integer getEndMax() {
         return endMax;
@@ -254,7 +256,7 @@ public class BeaconAlleleRequest   {
      * Reference bases for this variant (starting from `start`). Accepted values: [ACGT]*   When querying for variants without specific base alterations (e.g. imprecise structural variants with separate variant_type as well as start_min & end_min ... parameters), the use of a single \"N\" value is required.
      * @return referenceBases
      **/
-    @ApiModelProperty(required = true, value = "Reference bases for this variant (starting from `start`). Accepted values: [ACGT]*   When querying for variants without specific base alterations (e.g. imprecise structural variants with separate variant_type as well as start_min & end_min ... parameters), the use of a single \"N\" value is required. ")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Reference bases for this variant (starting from `start`). Accepted values: [ACGT]*   When querying for variants without specific base alterations (e.g. imprecise structural variants with separate variant_type as well as start_min & end_min ... parameters), the use of a single \"N\" value is required. ")
     @NotNull
 
     @Pattern(regexp="^([ACGT]+|N)$")   public String getReferenceBases() {
@@ -274,7 +276,7 @@ public class BeaconAlleleRequest   {
      * The bases that appear instead of the reference bases. Accepted values: [ACGT]* or N. Symbolic ALT alleles (DEL, INS, DUP, INV, CNV, DUP:TANDEM, DEL:ME, INS:ME) will be represented in `variantType`. Optional: either `alternateBases` or `variantType` is required.
      * @return alternateBases
      **/
-    @ApiModelProperty(value = "The bases that appear instead of the reference bases. Accepted values: [ACGT]* or N. Symbolic ALT alleles (DEL, INS, DUP, INV, CNV, DUP:TANDEM, DEL:ME, INS:ME) will be represented in `variantType`. Optional: either `alternateBases` or `variantType` is required. ")
+    @Schema(description = "The bases that appear instead of the reference bases. Accepted values: [ACGT]* or N. Symbolic ALT alleles (DEL, INS, DUP, INV, CNV, DUP:TANDEM, DEL:ME, INS:ME) will be represented in `variantType`. Optional: either `alternateBases` or `variantType` is required. ")
 
     @Pattern(regexp="^([ACGT]+|N)$")   public String getAlternateBases() {
         return alternateBases;
@@ -293,7 +295,7 @@ public class BeaconAlleleRequest   {
      * The `variantType` is used to denote e.g. structural variants. Examples: * DUP: duplication of sequence following `start`; not necessarily in situ * DEL: deletion of sequence following `start`  Optional: either `alternateBases` or `variantType` is required.
      * @return variantType
      **/
-    @ApiModelProperty(value = "The `variantType` is used to denote e.g. structural variants. Examples: * DUP: duplication of sequence following `start`; not necessarily in situ * DEL: deletion of sequence following `start`  Optional: either `alternateBases` or `variantType` is required. ")
+    @Schema(description ="The `variantType` is used to denote e.g. structural variants. Examples: * DUP: duplication of sequence following `start`; not necessarily in situ * DEL: deletion of sequence following `start`  Optional: either `alternateBases` or `variantType` is required. ")
 
     public String getVariantType() {
         return variantType;
@@ -312,7 +314,7 @@ public class BeaconAlleleRequest   {
      * Assembly identifier (GRC notation, e.g. `GRCh37`).
      * @return assemblyId
      **/
-    @ApiModelProperty(example = "GRCh38", required = true, value = "Assembly identifier (GRC notation, e.g. `GRCh37`).")
+    @Schema(example = "GRCh38", requiredMode = Schema.RequiredMode.REQUIRED, description ="Assembly identifier (GRC notation, e.g. `GRCh37`).")
     @NotNull
 
     public String getAssemblyId() {
@@ -340,7 +342,7 @@ public class BeaconAlleleRequest   {
      * Identifiers of datasets, as defined in `BeaconDataset`. If this field is null/not specified, all datasets should be queried.
      * @return datasetIds
      **/
-    @ApiModelProperty(value = "Identifiers of datasets, as defined in `BeaconDataset`. If this field is null/not specified, all datasets should be queried.")
+    @Schema(description ="Identifiers of datasets, as defined in `BeaconDataset`. If this field is null/not specified, all datasets should be queried.")
 
     public List<String> getDatasetIds() {
         return datasetIds;
@@ -359,7 +361,7 @@ public class BeaconAlleleRequest   {
      * Indicator of whether responses for individual datasets (datasetAlleleResponses) should be included in the response (BeaconAlleleResponse) to this request or not. If null (not specified), the default value of NONE is assumed.
      * @return includeDatasetResponses
      **/
-    @ApiModelProperty(value = "Indicator of whether responses for individual datasets (datasetAlleleResponses) should be included in the response (BeaconAlleleResponse) to this request or not. If null (not specified), the default value of NONE is assumed.")
+    @Schema(description ="Indicator of whether responses for individual datasets (datasetAlleleResponses) should be included in the response (BeaconAlleleResponse) to this request or not. If null (not specified), the default value of NONE is assumed.")
 
     public IncludeDatasetResponsesEnum getIncludeDatasetResponses() {
         return includeDatasetResponses;
