@@ -16,22 +16,20 @@
 
 package uk.ac.ebi.eva.commons.beacon.models;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import org.springframework.validation.annotation.Validated;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import java.util.Objects;
 
 /**
  * Terms
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
 public class Terms   {
   @JsonProperty("noAuthorizationTerms")
   private Boolean noAuthorizationTerms = null;
@@ -123,7 +121,7 @@ public class Terms   {
    * Get noAuthorizationTerms
    * @return noAuthorizationTerms
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   public Boolean isNoAuthorizationTerms() {
     return noAuthorizationTerms;
@@ -150,7 +148,7 @@ public class Terms   {
    * Get whichAuthorizationTerms
    * @return whichAuthorizationTerms
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   public List<String> getWhichAuthorizationTerms() {
     return whichAuthorizationTerms;
@@ -169,7 +167,7 @@ public class Terms   {
    * Get noPublicationTerms
    * @return noPublicationTerms
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   public Boolean isNoPublicationTerms() {
     return noPublicationTerms;
@@ -196,7 +194,7 @@ public class Terms   {
    * Get whichPublicationTerms
    * @return whichPublicationTerms
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   public List<String> getWhichPublicationTerms() {
     return whichPublicationTerms;
@@ -215,7 +213,7 @@ public class Terms   {
    * Get noTimelineTerms
    * @return noTimelineTerms
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   public Boolean isNoTimelineTerms() {
     return noTimelineTerms;
@@ -242,7 +240,7 @@ public class Terms   {
    * Get whichTimelineTerms
    * @return whichTimelineTerms
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   public List<String> getWhichTimelineTerms() {
     return whichTimelineTerms;
@@ -261,7 +259,7 @@ public class Terms   {
    * Get noSecurityTerms
    * @return noSecurityTerms
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   public Boolean isNoSecurityTerms() {
     return noSecurityTerms;
@@ -288,7 +286,7 @@ public class Terms   {
    * Get whichSecurityTerms
    * @return whichSecurityTerms
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   public List<String> getWhichSecurityTerms() {
     return whichSecurityTerms;
@@ -307,7 +305,7 @@ public class Terms   {
    * Get noExpungingTerms
    * @return noExpungingTerms
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   public Boolean isNoExpungingTerms() {
     return noExpungingTerms;
@@ -334,7 +332,7 @@ public class Terms   {
    * Get whichExpungingTerms
    * @return whichExpungingTerms
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   public List<String> getWhichExpungingTerms() {
     return whichExpungingTerms;
@@ -353,7 +351,7 @@ public class Terms   {
    * Get noLinkingTerms
    * @return noLinkingTerms
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   public Boolean isNoLinkingTerms() {
     return noLinkingTerms;
@@ -380,7 +378,7 @@ public class Terms   {
    * Get whichLinkingTerms
    * @return whichLinkingTerms
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   public List<String> getWhichLinkingTerms() {
     return whichLinkingTerms;
@@ -399,7 +397,7 @@ public class Terms   {
    * Get noRecontactTerms
    * @return noRecontactTerms
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   public Boolean isNoRecontactTerms() {
     return noRecontactTerms;
@@ -426,7 +424,7 @@ public class Terms   {
    * Get allowedRecontactTerms
    * @return allowedRecontactTerms
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   public List<String> getAllowedRecontactTerms() {
     return allowedRecontactTerms;
@@ -453,7 +451,7 @@ public class Terms   {
    * Get compulsoryRecontactTerms
    * @return compulsoryRecontactTerms
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   public List<String> getCompulsoryRecontactTerms() {
     return compulsoryRecontactTerms;
@@ -472,7 +470,7 @@ public class Terms   {
    * Get noIPClaimTerms
    * @return noIPClaimTerms
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   public Boolean isNoIPClaimTerms() {
     return noIPClaimTerms;
@@ -499,7 +497,7 @@ public class Terms   {
    * Get whichIPClaimTerms
    * @return whichIPClaimTerms
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description = "")
 
   public List<String> getWhichIPClaimTerms() {
     return whichIPClaimTerms;
@@ -518,7 +516,7 @@ public class Terms   {
    * Get noReportingTerms
    * @return noReportingTerms
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description = "")
 
   public Boolean isNoReportingTerms() {
     return noReportingTerms;
@@ -545,7 +543,7 @@ public class Terms   {
    * Get whichReportingTerms
    * @return whichReportingTerms
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description = "")
 
   public List<String> getWhichReportingTerms() {
     return whichReportingTerms;
@@ -564,7 +562,7 @@ public class Terms   {
    * Get noCollaborationTerms
    * @return noCollaborationTerms
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description = "")
 
   public Boolean isNoCollaborationTerms() {
     return noCollaborationTerms;
@@ -591,7 +589,7 @@ public class Terms   {
    * Get whichCollaborationTerms
    * @return whichCollaborationTerms
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description = "")
 
   public List<String> getWhichCollaborationTerms() {
     return whichCollaborationTerms;
@@ -610,7 +608,7 @@ public class Terms   {
    * Get noPaymentTerms
    * @return noPaymentTerms
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description = "")
 
   public Boolean isNoPaymentTerms() {
     return noPaymentTerms;
@@ -637,7 +635,7 @@ public class Terms   {
    * Get whichPaymentTerms
    * @return whichPaymentTerms
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description = "")
 
   public List<String> getWhichPaymentTerms() {
     return whichPaymentTerms;

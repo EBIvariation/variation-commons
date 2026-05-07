@@ -15,13 +15,13 @@
  */
 package uk.ac.ebi.eva.commons.jpa.models.metadata;
 
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;

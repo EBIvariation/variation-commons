@@ -16,8 +16,8 @@
 
 package uk.ac.ebi.eva.commons.beacon.models;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * Reference name (chromosome). Accepting values 1-22, X, Y.

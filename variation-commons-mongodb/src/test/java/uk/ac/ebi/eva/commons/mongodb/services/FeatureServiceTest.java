@@ -18,47 +18,32 @@
  */
 package uk.ac.ebi.eva.commons.mongodb.services;
 
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbConfigurationBuilder;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
-
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.ac.ebi.eva.commons.core.models.FeatureCoordinates;
 import uk.ac.ebi.eva.commons.mongodb.configuration.EvaRepositoriesConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
-import uk.ac.ebi.eva.commons.mongodb.test.rule.FixSpringMongoDbRule;
+import uk.ac.ebi.eva.commons.mongodb.utils.MongoTestContainerHelper;
+import uk.ac.ebi.eva.commons.mongodb.utils.MongoTestDataLoader;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:eva.properties")
-@UsingDataSet(locations = {
-        "/test-data/features.json"})
 @ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class, EvaRepositoriesConfiguration.class})
-public class FeatureServiceTest {
-
-    private static final String TEST_DB = "test-db";
-
-    @Rule
-    public MongoDbRule mongoDbRule = new FixSpringMongoDbRule(
-            MongoDbConfigurationBuilder.mongoDb().databaseName(TEST_DB).build());
-
-    @Autowired
-    private ApplicationContext applicationContext;
-
-    @Autowired
-    private FeatureService featureService;
+public class FeatureServiceTest extends MongoTestContainerHelper {
 
     private String GENE_ID_EXISTING1 = "ENSG00000223972";
 
@@ -71,6 +56,29 @@ public class FeatureServiceTest {
     private String GENE_ID_NON_EXISTING = "NonExisitngGeneId";
 
     private String GENE_NAME_NON_EXISITNG = "NonExisitngGeneName";
+
+    @Value("${eva.mongo.collections.features}")
+    private String featureCollection;
+
+    @Autowired
+    MongoTemplate mongoTemplate;
+
+    @Autowired
+    ResourceLoader resourceLoader;
+
+    @Autowired
+    private FeatureService featureService;
+
+    @BeforeEach
+    void setUp() {
+        mongoTemplate.getDb().drop();
+        new MongoTestDataLoader(mongoTemplate, resourceLoader).load("/test-data/features.json", featureCollection);
+    }
+
+    @AfterEach
+    void cleanDb() {
+        mongoTemplate.getDb().drop();
+    }
 
     @Test
     public void testGeneIdorGeneName() {

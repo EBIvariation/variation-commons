@@ -15,23 +15,19 @@
  */
 package uk.ac.ebi.eva.commons.core.models.factories;
 
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import uk.ac.ebi.eva.commons.core.models.pipeline.Variant;
 import uk.ac.ebi.eva.commons.core.models.pipeline.VariantSourceEntry;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * {@link VariantVcfFactory}
@@ -46,10 +42,7 @@ public class VariantVcfFactoryTest {
 
     private static VariantVcfFactory factory;
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         factory = instantiateAbstractVcfFactory();
     }
@@ -243,16 +236,16 @@ public class VariantVcfFactoryTest {
 
         // test that the ';' is used as the ID separator (as of VCF 4.2)
         checkIds(accessionedVariantFactory, "1\t1000\trs123;rs456\tC\tT\t.\t.\t.",
-                 Stream.of("rs123", "rs456").collect(Collectors.toSet()));
+                Stream.of("rs123", "rs456").collect(Collectors.toSet()));
 
         // test that the ',' is NOT used as the ID separator (as of VCF 4.2)
         checkIds(accessionedVariantFactory, "1\t1000\trs123,rs456\tC\tT\t.\t.\t.",
-                 Collections.singleton("rs123,rs456"));
+                Collections.singleton("rs123,rs456"));
     }
 
     @Test
-    public void testChangeRefAltToUpperCase(){
-       String line = "chr1\t1000\t.\tt\tg\t.\t.\t.";
+    public void testChangeRefAltToUpperCase() {
+        String line = "chr1\t1000\t.\tt\tg\t.\t.\t.";
         List<Variant> expResult = Collections.singletonList(new Variant("chr1", 1000, 1000, "T", "G"));
         List<Variant> result = factory.create(FILE_ID, STUDY_ID, line);
         assertEquals(expResult, result);

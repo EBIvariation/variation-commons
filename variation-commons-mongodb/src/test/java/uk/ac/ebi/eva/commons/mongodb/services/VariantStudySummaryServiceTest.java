@@ -17,50 +17,44 @@
 package uk.ac.ebi.eva.commons.mongodb.services;
 
 
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbConfigurationBuilder;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
-
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.ac.ebi.eva.commons.mongodb.configuration.EvaRepositoriesConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.entities.projections.VariantStudySummary;
-import uk.ac.ebi.eva.commons.mongodb.test.rule.FixSpringMongoDbRule;
+import uk.ac.ebi.eva.commons.mongodb.utils.MongoTestContainerHelper;
+import uk.ac.ebi.eva.commons.mongodb.utils.MongoTestDataLoader;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:eva.properties")
-@UsingDataSet(locations = {"/test-data/files.json"})
 @ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class, EvaRepositoriesConfiguration.class})
-public class VariantStudySummaryServiceTest {
+public class VariantStudySummaryServiceTest extends MongoTestContainerHelper {
 
     protected static Logger logger = LoggerFactory.getLogger(VariantStudySummaryServiceTest.class);
 
-    private static final String FIRST_STUDY_NAME = "firstStudyName";
     private static final String SECOND_STUDY_NAME = "secondStudyName";
 
-    private static final String FIRST_STUDY_ID = "firstStudyId";
     private static final String SECOND_STUDY_ID = "secondStudyId";
-
-    private static final String TEST_DB = "test-db";
 
     private static final int EXPECTED_UNIQUE_STUDIES_COUNT = 18;
 
@@ -70,18 +64,30 @@ public class VariantStudySummaryServiceTest {
     private static final int FIRST_PAGE_EXPECTED_UNIQUE_STUDIES_COUNT = 10;
     private static final int SECOND_PAGE_EXPECTED_UNIQUE_STUDIES_COUNT = 8;
 
-    private static final int EXPECTED_FILE_COUNT_FROM_FIRST_STUDY_ID = 1;
     private static final int EXPECTED_FILE_COUNT_FROM_SECOND_STUDY_ID = 2;
 
+    @Value("${eva.mongo.collections.files}")
+    private String fileCollection;
+
     @Autowired
-    private ApplicationContext applicationContext;
+    MongoTemplate mongoTemplate;
+
+    @Autowired
+    ResourceLoader resourceLoader;
 
     @Autowired
     private VariantStudySummaryService service;
 
-    @Rule
-    public MongoDbRule mongoDbRule = new FixSpringMongoDbRule(
-            MongoDbConfigurationBuilder.mongoDb().databaseName(TEST_DB).build());
+    @BeforeEach
+    void setUp() {
+        mongoTemplate.getDb().drop();
+        new MongoTestDataLoader(mongoTemplate, resourceLoader).load("/test-data/files.json", fileCollection);
+    }
+
+    @AfterEach
+    void cleanDb() {
+        mongoTemplate.getDb().drop();
+    }
 
     @Test
     public void testFindsByNameOrIdProvidingName() {
@@ -139,7 +145,7 @@ public class VariantStudySummaryServiceTest {
         List<VariantStudySummary> studiesRightAfterLastDate = service.findByFromDate(dateFormat.parse("2018-04-24"));
         assertEquals(0, studiesRightAfterLastDate.size());
 
-        int nextYear = LocalDate.now().getYear()+1;
+        int nextYear = LocalDate.now().getYear() + 1;
         List<VariantStudySummary> futureStudies = service.findByFromDate(dateFormat.parse(nextYear + "-01-01"));
         assertEquals(0, futureStudies.size());
     }

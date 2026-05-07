@@ -15,11 +15,8 @@
  */
 package uk.ac.ebi.eva.commons.jpa.models.metadata;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @EnableAutoConfiguration

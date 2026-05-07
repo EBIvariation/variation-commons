@@ -16,23 +16,25 @@
 
 package uk.ac.ebi.eva.commons.beacon.models;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.validation.annotation.Validated;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import java.util.Objects;
 
 /**
  * BeaconDatasetAlleleResponse
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
 public class BeaconDatasetAlleleResponse   {
     @JsonProperty("datasetId")
     private String datasetId = null;
@@ -74,7 +76,7 @@ public class BeaconDatasetAlleleResponse   {
      * not provided
      * @return datasetId
      **/
-    @ApiModelProperty(required = true, value = "not provided")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "not provided")
     @NotNull
 
     public String getDatasetId() {
@@ -94,7 +96,7 @@ public class BeaconDatasetAlleleResponse   {
      * Indicator of whether the given allele was observed in the dataset. This should be non-null, unless there was an error, in which case `error` has to be non-null.
      * @return exists
      **/
-    @ApiModelProperty(value = "Indicator of whether the given allele was observed in the dataset. This should be non-null, unless there was an error, in which case `error` has to be non-null.")
+    @Schema(description = "Indicator of whether the given allele was observed in the dataset. This should be non-null, unless there was an error, in which case `error` has to be non-null.")
 
     public Boolean isExists() {
         return exists;
@@ -113,7 +115,7 @@ public class BeaconDatasetAlleleResponse   {
      * Get error
      * @return error
      **/
-    @ApiModelProperty(value = "")
+    @Schema(description = "")
 
     @Valid
     public BeaconError getError() {
@@ -135,7 +137,7 @@ public class BeaconDatasetAlleleResponse   {
      * maximum: 1
      * @return frequency
      **/
-    @ApiModelProperty(value = "Frequency of this allele in the dataset. Between 0 and 1, inclusive.")
+    @Schema(description = "Frequency of this allele in the dataset. Between 0 and 1, inclusive.")
 
     @Valid
     @DecimalMin("0") @DecimalMax("1")   public BigDecimal getFrequency() {
@@ -156,7 +158,7 @@ public class BeaconDatasetAlleleResponse   {
      * minimum: 0
      * @return variantCount
      **/
-    @ApiModelProperty(value = "Number of variants matching the allele request in the dataset.")
+    @Schema(description = "Number of variants matching the allele request in the dataset.")
 
     @Min(0L)  public Long getVariantCount() {
         return variantCount;
@@ -176,7 +178,7 @@ public class BeaconDatasetAlleleResponse   {
      * minimum: 0
      * @return callCount
      **/
-    @ApiModelProperty(value = "Number of calls matching the allele request in the dataset.")
+    @Schema(description = "Number of calls matching the allele request in the dataset.")
 
     @Min(0L)  public Long getCallCount() {
         return callCount;
@@ -196,7 +198,7 @@ public class BeaconDatasetAlleleResponse   {
      * minimum: 0
      * @return sampleCount
      **/
-    @ApiModelProperty(value = "Number of samples matching the allele request in the dataset")
+    @Schema(description ="Number of samples matching the allele request in the dataset")
 
     @Min(0L)  public Long getSampleCount() {
         return sampleCount;
@@ -215,7 +217,7 @@ public class BeaconDatasetAlleleResponse   {
      * Additional note or description of the response.
      * @return note
      **/
-    @ApiModelProperty(value = "Additional note or description of the response.")
+    @Schema(description ="Additional note or description of the response.")
 
     public String getNote() {
         return note;
@@ -234,7 +236,7 @@ public class BeaconDatasetAlleleResponse   {
      * URL to an external system, such as a secured beacon or a system providing more information about a given allele (RFC 3986 format).
      * @return externalUrl
      **/
-    @ApiModelProperty(value = "URL to an external system, such as a secured beacon or a system providing more information about a given allele (RFC 3986 format).")
+    @Schema(description ="URL to an external system, such as a secured beacon or a system providing more information about a given allele (RFC 3986 format).")
 
     public String getExternalUrl() {
         return externalUrl;
@@ -261,7 +263,7 @@ public class BeaconDatasetAlleleResponse   {
      * Additional structured metadata, key-value pairs.
      * @return info
      **/
-    @ApiModelProperty(value = "Additional structured metadata, key-value pairs.")
+    @Schema(description ="Additional structured metadata, key-value pairs.")
     @Valid
     public List<KeyValuePair> getInfo() {
         return info;

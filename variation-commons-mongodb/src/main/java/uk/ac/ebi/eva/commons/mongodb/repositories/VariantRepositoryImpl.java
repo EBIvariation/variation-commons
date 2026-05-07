@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.MongoDbFactory;
+import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -56,7 +56,7 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
     private static final String GENE_IDS_FIELD = VariantMongo.ANNOTATION_FIELD + "." + AnnotationIndexMongo.XREFS_FIELD;
 
     @Autowired
-    public VariantRepositoryImpl(MongoDbFactory mongoDbFactory, MappingMongoConverter mappingMongoConverter) {
+    public VariantRepositoryImpl(MongoDatabaseFactory mongoDbFactory, MappingMongoConverter mappingMongoConverter) {
         mongoTemplate = new MongoTemplate(mongoDbFactory, mappingMongoConverter);
     }
 
@@ -154,12 +154,9 @@ public class VariantRepositoryImpl implements VariantRepositoryCustom {
 
         addFilterCriteriaToQuery(query, filters);
 
-        ArrayList<String> sortProperties = new ArrayList<String>();
-        sortProperties.add(VariantMongo.CHROMOSOME_FIELD);
-        sortProperties.add(VariantMongo.START_FIELD);
-        query.with(new Sort(Sort.Direction.ASC, sortProperties));
+        query.with(Sort.by(Sort.Direction.ASC, VariantMongo.CHROMOSOME_FIELD, VariantMongo.START_FIELD));
 
-        Pageable pageable1 = (pageable != null) ? pageable : new PageRequest(0, 10);
+        Pageable pageable1 = (pageable != null) ? pageable : PageRequest.of(0, 10);
         query.with(pageable1);
 
         if (exclude != null && !exclude.isEmpty()) {

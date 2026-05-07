@@ -16,23 +16,22 @@
 
 package uk.ac.ebi.eva.commons.beacon.models;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.validation.annotation.Validated;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import java.util.Objects;
 
 /**
  * Organization owning the beacon.
  */
-@ApiModel(description = "Organization owning the beacon.")
+@Schema(description = "Organization owning the beacon.")
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
 public class BeaconOrganization   {
     @JsonProperty("id")
     private String id = null;
@@ -68,7 +67,7 @@ public class BeaconOrganization   {
      * Unique identifier of the organization.
      * @return id
      **/
-    @ApiModelProperty(required = true, value = "Unique identifier of the organization.")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Unique identifier of the organization.")
     @NotNull
 
     public String getId() {
@@ -88,7 +87,7 @@ public class BeaconOrganization   {
      * Name of the organization.
      * @return name
      **/
-    @ApiModelProperty(required = true, value = "Name of the organization.")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Name of the organization.")
     @NotNull
 
     public String getName() {
@@ -108,7 +107,7 @@ public class BeaconOrganization   {
      * Description of the organization.
      * @return description
      **/
-    @ApiModelProperty(value = "Description of the organization.")
+    @Schema(description = "Description of the organization.")
 
     public String getDescription() {
         return description;
@@ -127,7 +126,7 @@ public class BeaconOrganization   {
      * Address of the organization.
      * @return address
      **/
-    @ApiModelProperty(value = "Address of the organization.")
+    @Schema(description = "Address of the organization.")
 
     public String getAddress() {
         return address;
@@ -146,7 +145,7 @@ public class BeaconOrganization   {
      * URL of the website of the organization (RFC 3986 format).
      * @return welcomeUrl
      **/
-    @ApiModelProperty(value = "URL of the website of the organization (RFC 3986 format).")
+    @Schema(description = "URL of the website of the organization (RFC 3986 format).")
 
     public String getWelcomeUrl() {
         return welcomeUrl;
@@ -165,7 +164,7 @@ public class BeaconOrganization   {
      * URL with the contact for the beacon operator/maintainer, e.g. link to a contact form (RFC 3986 format) or an email (RFC 2368 format).
      * @return contactUrl
      **/
-    @ApiModelProperty(value = "URL with the contact for the beacon operator/maintainer, e.g. link to a contact form (RFC 3986 format) or an email (RFC 2368 format).")
+    @Schema(description = "URL with the contact for the beacon operator/maintainer, e.g. link to a contact form (RFC 3986 format) or an email (RFC 2368 format).")
 
     public String getContactUrl() {
         return contactUrl;
@@ -184,7 +183,7 @@ public class BeaconOrganization   {
      * URL to the logo (PNG/JPG format) of the organization (RFC 3986 format).
      * @return logoUrl
      **/
-    @ApiModelProperty(value = "URL to the logo (PNG/JPG format) of the organization (RFC 3986 format).")
+    @Schema(description = "URL to the logo (PNG/JPG format) of the organization (RFC 3986 format).")
 
     public String getLogoUrl() {
         return logoUrl;
@@ -211,7 +210,7 @@ public class BeaconOrganization   {
      * Additional structured metadata, key-value pairs.
      * @return info
      **/
-    @ApiModelProperty(value = "Additional structured metadata, key-value pairs.")
+    @Schema(description = "Additional structured metadata, key-value pairs.")
     @Valid
     public List<KeyValuePair> getInfo() {
         return info;

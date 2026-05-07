@@ -16,23 +16,22 @@
 
 package uk.ac.ebi.eva.commons.beacon.models;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import java.util.Objects;
 
 /**
  * Beacon
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
 public class Beacon   {
     @JsonProperty("id")
     private String id = null;
@@ -85,7 +84,7 @@ public class Beacon   {
      * Unique identifier of the beacon. Use reverse domain name notation.
      * @return id
      **/
-    @ApiModelProperty(example = "org.ga4gh.beacon", required = true, value = "Unique identifier of the beacon. Use reverse domain name notation.")
+    @Schema(example = "org.ga4gh.beacon", requiredMode = Schema.RequiredMode.REQUIRED, description = "Unique identifier of the beacon. Use reverse domain name notation.")
     @NotNull
 
     public String getId() {
@@ -105,7 +104,7 @@ public class Beacon   {
      * Name of the beacon.
      * @return name
      **/
-    @ApiModelProperty(required = true, value = "Name of the beacon.")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Name of the beacon.")
     @NotNull
 
     public String getName() {
@@ -125,7 +124,7 @@ public class Beacon   {
      * Version of the API provided by the beacon.
      * @return apiVersion
      **/
-    @ApiModelProperty(example = "v0.3", required = true, value = "Version of the API provided by the beacon.")
+    @Schema(example = "v0.3", requiredMode = Schema.RequiredMode.REQUIRED, description = "Version of the API provided by the beacon.")
     @NotNull
 
     public String getApiVersion() {
@@ -145,7 +144,7 @@ public class Beacon   {
      * Get organization
      * @return organization
      **/
-    @ApiModelProperty(required = true, value = "")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "")
     @NotNull
 
     @Valid
@@ -166,7 +165,7 @@ public class Beacon   {
      * Description of the beacon.
      * @return description
      **/
-    @ApiModelProperty(value = "Description of the beacon.")
+    @Schema(description = "Description of the beacon.")
 
     public String getDescription() {
         return description;
@@ -185,7 +184,7 @@ public class Beacon   {
      * Version of the beacon.
      * @return version
      **/
-    @ApiModelProperty(example = "v0.1", value = "Version of the beacon.")
+    @Schema(example = "v0.1", description = "Version of the beacon.")
 
     public String getVersion() {
         return version;
@@ -204,7 +203,7 @@ public class Beacon   {
      * URL to the welcome page for this beacon (RFC 3986 format).
      * @return welcomeUrl
      **/
-    @ApiModelProperty(example = "http://example.org/wiki/Main_Page", value = "URL to the welcome page for this beacon (RFC 3986 format).")
+    @Schema(example = "http://example.org/wiki/Main_Page", description = "URL to the welcome page for this beacon (RFC 3986 format).")
 
     public String getWelcomeUrl() {
         return welcomeUrl;
@@ -223,7 +222,7 @@ public class Beacon   {
      * Alternative URL to the API, e.g. a restricted version of this beacon (RFC 3986 format).
      * @return alternativeUrl
      **/
-    @ApiModelProperty(example = "http://example.org/wiki/Main_Page", value = "Alternative URL to the API, e.g. a restricted version of this beacon (RFC 3986 format).")
+    @Schema(example = "http://example.org/wiki/Main_Page", description = "Alternative URL to the API, e.g. a restricted version of this beacon (RFC 3986 format).")
 
     public String getAlternativeUrl() {
         return alternativeUrl;
@@ -242,7 +241,7 @@ public class Beacon   {
      * The time the beacon was created (ISO 8601 format).
      * @return createDateTime
      **/
-    @ApiModelProperty(example = "2012-07-19 or 2017-01-17T20:33:40Z", value = "The time the beacon was created (ISO 8601 format).")
+    @Schema(example = "2012-07-19 or 2017-01-17T20:33:40Z", description = "The time the beacon was created (ISO 8601 format).")
 
     public String getCreateDateTime() {
         return createDateTime;
@@ -261,7 +260,7 @@ public class Beacon   {
      * The time the beacon was updated in (ISO 8601 format).
      * @return updateDateTime
      **/
-    @ApiModelProperty(example = "2012-07-19 or 2017-01-17T20:33:40Z", value = "The time the beacon was updated in (ISO 8601 format).")
+    @Schema(example = "2012-07-19 or 2017-01-17T20:33:40Z", description ="The time the beacon was updated in (ISO 8601 format).")
 
     public String getUpdateDateTime() {
         return updateDateTime;
@@ -285,7 +284,7 @@ public class Beacon   {
      * Dataset(s) served by the beacon.
      * @return datasets
      **/
-    @ApiModelProperty(required = true, value = "Dataset(s) served by the beacon.")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description ="Dataset(s) served by the beacon.")
     @NotNull
     @Valid
     @Size(min=1)   public List<BeaconDataset> getDatasets() {
@@ -313,7 +312,7 @@ public class Beacon   {
      * Examples of interesting queries, e.g. a few queries demonstrating different responses.
      * @return sampleAlleleRequests
      **/
-    @ApiModelProperty(value = "Examples of interesting queries, e.g. a few queries demonstrating different responses.")
+    @Schema(description ="Examples of interesting queries, e.g. a few queries demonstrating different responses.")
     @Valid
     public List<BeaconAlleleRequest> getSampleAlleleRequests() {
         return sampleAlleleRequests;
@@ -340,7 +339,7 @@ public class Beacon   {
      * Additional structured metadata, key-value pairs.
      * @return info
      **/
-    @ApiModelProperty(value = "Additional structured metadata, key-value pairs.")
+    @Schema(description ="Additional structured metadata, key-value pairs.")
     @Valid
     public List<KeyValuePair> getInfo() {
         return info;

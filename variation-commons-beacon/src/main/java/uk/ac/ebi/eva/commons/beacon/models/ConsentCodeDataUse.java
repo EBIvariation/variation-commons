@@ -16,23 +16,22 @@
 
 package uk.ac.ebi.eva.commons.beacon.models;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.validation.annotation.Validated;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import java.util.Objects;
 
 /**
  * Data use of a resource based on consent codes.
  */
-@ApiModel(description = "Data use of a resource based on consent codes.")
+@Schema(description = "Data use of a resource based on consent codes.")
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
 public class ConsentCodeDataUse   {
   @JsonProperty("primaryCategory")
   private ConsentCodeDataUseCondition primaryCategory = null;
@@ -57,7 +56,7 @@ public class ConsentCodeDataUse   {
    * Get primaryCategory
    * @return primaryCategory
   **/
-  @ApiModelProperty(required = true, value = "")
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "")
   @NotNull
 
   @Valid
@@ -86,7 +85,7 @@ public class ConsentCodeDataUse   {
    * Get secondaryCategories
    * @return secondaryCategories
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description = "")
   @Valid
   public List<ConsentCodeDataUseCondition> getSecondaryCategories() {
     return secondaryCategories;
@@ -113,7 +112,7 @@ public class ConsentCodeDataUse   {
    * Get requirements
    * @return requirements
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description = "")
   @Valid
   public List<ConsentCodeDataUseCondition> getRequirements() {
     return requirements;
@@ -132,7 +131,7 @@ public class ConsentCodeDataUse   {
    * Version of the data use specification.
    * @return version
   **/
-  @ApiModelProperty(example = "0.1", required = true, value = "Version of the data use specification.")
+  @Schema(example = "0.1", requiredMode = Schema.RequiredMode.REQUIRED, description = "Version of the data use specification.")
   @NotNull
 
   public String getVersion() {

@@ -15,24 +15,30 @@
  */
 package uk.ac.ebi.eva.commons.core.models;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class VariantTypeToSOAccessionMapTest {
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
-
     @Test
-    public void testInvalidVariantTypeLookup() {
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage(
-                String.format(VariantTypeToSOAccessionMap.INVALID_VARIANT_TYPE_EXCEPTION_MESSAGE,
-                              VariantType.NO_ALTERNATE));
-        VariantTypeToSOAccessionMap.getSequenceOntologyAccession(VariantType.NO_ALTERNATE);
+    void testInvalidVariantTypeLookup() {
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> VariantTypeToSOAccessionMap.getSequenceOntologyAccession(VariantType.NO_ALTERNATE)
+        );
+
+        assertTrue(
+                ex.getMessage().contains(
+                        String.format(
+                                VariantTypeToSOAccessionMap.INVALID_VARIANT_TYPE_EXCEPTION_MESSAGE,
+                                VariantType.NO_ALTERNATE
+                        )
+                )
+        );
     }
 
     @Test
