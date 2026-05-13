@@ -38,7 +38,7 @@ import uk.ac.ebi.eva.commons.mongodb.utils.MongoTestDataLoader;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:eva.properties")

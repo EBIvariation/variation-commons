@@ -41,7 +41,6 @@ import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfigurat
 import uk.ac.ebi.eva.commons.mongodb.utils.MongoTestContainerHelper;
 import uk.ac.ebi.eva.commons.mongodb.utils.MongoTestDataLoader;
 
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -130,7 +129,7 @@ public class VariantMongoWriterTest extends MongoTestContainerHelper {
     }
 
     @Test
-    public void noVariantsNothingShouldBeWritten() throws UnknownHostException {
+    public void noVariantsNothingShouldBeWritten() {
         MongoCollection dbCollection = mongoOperations.getCollection(COLLECTION_NAME);
 
         VariantMongoWriter variantMongoWriter = new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, false);
@@ -154,7 +153,7 @@ public class VariantMongoWriterTest extends MongoTestContainerHelper {
     }
 
     @Test
-    public void indexesShouldBeCreatedInBackground() throws UnknownHostException {
+    public void indexesShouldBeCreatedInBackground() {
         MongoCollection dbCollection = mongoOperations.getCollection(COLLECTION_NAME);
 
         new VariantMongoWriter(COLLECTION_NAME, mongoOperations, false, false);
