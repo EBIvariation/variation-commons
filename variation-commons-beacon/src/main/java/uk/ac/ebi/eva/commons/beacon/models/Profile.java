@@ -16,22 +16,20 @@
 
 package uk.ac.ebi.eva.commons.beacon.models;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import org.springframework.validation.annotation.Validated;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import java.util.Objects;
 
 /**
  * Profile
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
 public class Profile   {
   @JsonProperty("country")
   private RestrictionsUL country = null;
@@ -141,7 +139,7 @@ public class Profile   {
    * Get country
    * @return country
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   @Valid
   public RestrictionsUL getCountry() {
@@ -169,7 +167,7 @@ public class Profile   {
    * Get allowedCountries
    * @return allowedCountries
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
   @Valid
   public List<ProfileDescription> getAllowedCountries() {
     return allowedCountries;
@@ -188,7 +186,7 @@ public class Profile   {
    * Get organisation
    * @return organisation
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   @Valid
   public RestrictionsUL getOrganisation() {
@@ -216,7 +214,7 @@ public class Profile   {
    * Get allowedOrganisations
    * @return allowedOrganisations
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
   @Valid
   public List<ProfileDescription> getAllowedOrganisations() {
     return allowedOrganisations;
@@ -235,7 +233,7 @@ public class Profile   {
    * Get nonProfitOrganisation
    * @return nonProfitOrganisation
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   @Valid
   public RestrictionsULF getNonProfitOrganisation() {
@@ -263,7 +261,7 @@ public class Profile   {
    * Get allowedNonProfitOrganisations
    * @return allowedNonProfitOrganisations
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
   @Valid
   public List<ProfileDescription> getAllowedNonProfitOrganisations() {
     return allowedNonProfitOrganisations;
@@ -282,7 +280,7 @@ public class Profile   {
    * Get profitOrganisation
    * @return profitOrganisation
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   @Valid
   public RestrictionsULF getProfitOrganisation() {
@@ -310,7 +308,7 @@ public class Profile   {
    * Get allowedProfitOrganisations
    * @return allowedProfitOrganisations
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
   @Valid
   public List<ProfileDescription> getAllowedProfitOrganisations() {
     return allowedProfitOrganisations;
@@ -329,7 +327,7 @@ public class Profile   {
    * Get person
    * @return person
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   @Valid
   public RestrictionsUL getPerson() {
@@ -357,7 +355,7 @@ public class Profile   {
    * Get allowedPersons
    * @return allowedPersons
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
   @Valid
   public List<ProfileDescription> getAllowedPersons() {
     return allowedPersons;
@@ -376,7 +374,7 @@ public class Profile   {
    * Get academicProfessional
    * @return academicProfessional
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   @Valid
   public RestrictionsULF getAcademicProfessional() {
@@ -404,7 +402,7 @@ public class Profile   {
    * Get allowedAcademicProfessionals
    * @return allowedAcademicProfessionals
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
   @Valid
   public List<ProfileDescription> getAllowedAcademicProfessionals() {
     return allowedAcademicProfessionals;
@@ -423,7 +421,7 @@ public class Profile   {
    * Get clinicalProfessional
    * @return clinicalProfessional
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   @Valid
   public RestrictionsULF getClinicalProfessional() {
@@ -451,7 +449,7 @@ public class Profile   {
    * Get allowedClinicalProfessionals
    * @return allowedClinicalProfessionals
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
   @Valid
   public List<ProfileDescription> getAllowedClinicalProfessionals() {
     return allowedClinicalProfessionals;
@@ -470,7 +468,7 @@ public class Profile   {
    * Get profitProfessional
    * @return profitProfessional
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   @Valid
   public RestrictionsULF getProfitProfessional() {
@@ -498,7 +496,7 @@ public class Profile   {
    * Get allowedProfitProfessionals
    * @return allowedProfitProfessionals
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
   @Valid
   public List<ProfileDescription> getAllowedProfitProfessionals() {
     return allowedProfitProfessionals;
@@ -517,7 +515,7 @@ public class Profile   {
    * Get nonProfessional
    * @return nonProfessional
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   @Valid
   public RestrictionsULF getNonProfessional() {
@@ -545,7 +543,7 @@ public class Profile   {
    * Get allowedNonProfessionals
    * @return allowedNonProfessionals
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
   @Valid
   public List<ProfileDescription> getAllowedNonProfessionals() {
     return allowedNonProfessionals;
@@ -564,7 +562,7 @@ public class Profile   {
    * Get nonProfitPurpose
    * @return nonProfitPurpose
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
 
   @Valid
   public RestrictionsULF getNonProfitPurpose() {
@@ -592,7 +590,7 @@ public class Profile   {
    * Get allowedNonProfitPurposes
    * @return allowedNonProfitPurposes
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description ="")
   @Valid
   public List<ProfileDescription> getAllowedNonProfitPurposes() {
     return allowedNonProfitPurposes;
@@ -611,7 +609,7 @@ public class Profile   {
    * Get profitPurpose
    * @return profitPurpose
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description = "")
 
   @Valid
   public RestrictionsULF getProfitPurpose() {
@@ -639,7 +637,7 @@ public class Profile   {
    * Get allowedProfitPurposes
    * @return allowedProfitPurposes
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description = "")
   @Valid
   public List<ProfileDescription> getAllowedProfitPurposes() {
     return allowedProfitPurposes;
@@ -658,7 +656,7 @@ public class Profile   {
    * Get researchPurpose
    * @return researchPurpose
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description = "")
 
   @Valid
   public RestrictionsULF getResearchPurpose() {
@@ -686,7 +684,7 @@ public class Profile   {
    * Get allowedResearchPurposes
    * @return allowedResearchPurposes
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description = "")
   @Valid
   public List<ProfileDescription> getAllowedResearchPurposes() {
     return allowedResearchPurposes;
@@ -713,7 +711,7 @@ public class Profile   {
    * Get allowedResearchProfiles
    * @return allowedResearchProfiles
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description = "")
   @Valid
   public List<ResearchDescription> getAllowedResearchProfiles() {
     return allowedResearchProfiles;
@@ -732,7 +730,7 @@ public class Profile   {
    * Get clinicalPurpose
    * @return clinicalPurpose
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description = "")
 
   @Valid
   public RestrictionsULF getClinicalPurpose() {
@@ -760,7 +758,7 @@ public class Profile   {
    * Get allowedClinicalPurpose
    * @return allowedClinicalPurpose
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description = "")
   @Valid
   public List<ProfileDescription> getAllowedClinicalPurpose() {
     return allowedClinicalPurpose;
@@ -787,7 +785,7 @@ public class Profile   {
    * Get allowedClinicalProfiles
    * @return allowedClinicalProfiles
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description = "")
   @Valid
   public List<ClinicalDescription> getAllowedClinicalProfiles() {
     return allowedClinicalProfiles;

@@ -21,6 +21,7 @@ import com.mongodb.client.model.UpdateOneModel;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.WriteModel;
 import org.bson.Document;
+import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.util.Assert;
@@ -63,8 +64,8 @@ public class VariantSourceMongoWriter extends MongoItemWriter<IVariantSource> {
     }
 
     @Override
-    public void write(List<? extends IVariantSource> items) throws Exception {
-        List<VariantSourceMongo> variantSourceMongoList = items.stream()
+    public void write(Chunk<? extends IVariantSource> chunk) {
+        List<VariantSourceMongo> variantSourceMongoList = chunk.getItems().stream()
                 .map(VariantSourceMongo::new)
                 .collect(Collectors.toList());
 

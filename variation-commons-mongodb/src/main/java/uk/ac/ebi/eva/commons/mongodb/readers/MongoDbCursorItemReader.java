@@ -19,7 +19,6 @@ package uk.ac.ebi.eva.commons.mongodb.readers;
 import com.mongodb.ClientSessionOptions;
 import com.mongodb.MongoClientException;
 import com.mongodb.client.ClientSession;
-import com.mongodb.util.JSON;
 import org.bson.BsonDocument;
 import org.bson.Document;
 import org.slf4j.Logger;
@@ -28,9 +27,7 @@ import org.springframework.batch.item.support.AbstractItemCountingItemStreamItem
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.util.CloseableIterator;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
@@ -38,11 +35,11 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 
 /**
@@ -62,11 +59,7 @@ public class MongoDbCursorItemReader<T> extends AbstractItemCountingItemStreamIt
 
     private static Logger logger = LoggerFactory.getLogger(MongoDbCursorItemReader.class);
 
-    private static final Pattern PLACEHOLDER = Pattern.compile("\\?(\\d+)");
-
     private MongoTemplate mongoTemplate;
-
-    private String query;
 
     private Class<? extends T> type;
 
@@ -74,13 +67,11 @@ public class MongoDbCursorItemReader<T> extends AbstractItemCountingItemStreamIt
 
     private String hint;
 
-    private String fields;
-
     private String collection;
 
-    private List<Object> parameterValues;
+    private Stream<? extends T> cursor;
 
-    private CloseableIterator<? extends T> cursor;
+    private Iterator<? extends T> cursorIterator;
 
     private Query mongoQuery;
 
@@ -110,25 +101,10 @@ public class MongoDbCursorItemReader<T> extends AbstractItemCountingItemStreamIt
     }
 
     /**
-     * A JSON formatted MongoDB query.  Parameterization of the provided query is allowed
-     * via ?&lt;index&gt; placeholders where the &lt;index&gt; indicates the index of the
-     * parameterValue to substitute.
-     *
-     * @param query JSON formatted Mongo query
-     */
-    public void setQuery(String query) {
-        this.query = query;
-    }
-
-    /**
      * A Spring Data Query.
      * @param query
      */
     public void setQuery(Query query) {
-        if (this.query != null) {
-            throw new IllegalArgumentException(
-                    "Only one type of query should be provided (either a String or a Query)");
-        }
         this.mongoQuery = query;
     }
 
@@ -139,26 +115,6 @@ public class MongoDbCursorItemReader<T> extends AbstractItemCountingItemStreamIt
      */
     public void setTargetType(Class<? extends T> type) {
         this.type = type;
-    }
-
-    /**
-     * {@link List} of values to be substituted in for each of the
-     * parameters in the query.
-     *
-     * @param parameterValues
-     */
-    public void setParameterValues(List<Object> parameterValues) {
-        this.parameterValues = parameterValues;
-    }
-
-    /**
-     * JSON defining the fields to be returned from the matching documents
-     * by MongoDB.
-     *
-     * @param fields JSON string that identifies the fields to sort by.
-     */
-    public void setFields(String fields) {
-        this.fields = fields;
     }
 
     /**
@@ -200,28 +156,27 @@ public class MongoDbCursorItemReader<T> extends AbstractItemCountingItemStreamIt
     }
 
     @Override
-    protected T doRead() throws Exception {
+    protected T doRead() {
         if (!this.startPeriodicRefreshThread && this.hasSessionSupport) {
             startPeriodicSessionRefresh();
             startPeriodicRefreshThread = true;
         }
-        if(cursor.hasNext()) {
-            return cursor.next();
+        if (cursorIterator.hasNext()) {
+            return cursorIterator.next();
         }
-        if (this.hasSessionSupport) {
+        if (this.hasSessionSupport && this.scheduler != null) {
             this.scheduler.shutdown();
         }
         return null;
     }
 
     @Override
-    protected void doOpen() throws Exception {
+    protected void doOpen() {
         ClientSessionOptions sessionOptions = ClientSessionOptions.builder().causallyConsistent(true).build();
         ClientSession session = null;
         try {
-            session = this.mongoTemplate.getMongoDbFactory().getSession(sessionOptions);
-        }
-        catch (MongoClientException ex) { // Handle stand-alone instances that don't have session support
+            session = this.mongoTemplate.getMongoDatabaseFactory().getSession(sessionOptions);
+        } catch (MongoClientException ex) { // Handle stand-alone instances that don't have session support
             if (ex.getMessage().toLowerCase().contains("sessions are not supported")) {
                 this.hasSessionSupport = false;
             }
@@ -239,16 +194,7 @@ public class MongoDbCursorItemReader<T> extends AbstractItemCountingItemStreamIt
     // There is no need for this method to return Object except for the fact that the execute method
     // that calls this method requires a non-void return type
     private Object initializeCursor() {
-        if (mongoQuery == null) {
-            String populatedQuery = replacePlaceholders(query, parameterValues);
-            if (StringUtils.hasText(fields)) {
-                mongoQuery = new BasicQuery(populatedQuery, fields);
-            } else {
-                mongoQuery = new BasicQuery(populatedQuery);
-            }
-        }
-
-        if(StringUtils.hasText(hint)) {
+        if (StringUtils.hasText(hint)) {
             mongoQuery.withHint(hint);
         }
 
@@ -258,16 +204,18 @@ public class MongoDbCursorItemReader<T> extends AbstractItemCountingItemStreamIt
 
         logger.info("Issuing MongoDB query: {}", mongoQuery);
 
-        if(StringUtils.hasText(collection)) {
+        if (StringUtils.hasText(collection)) {
             cursor = this.mongoTemplate.stream(mongoQuery, type, collection);
+            cursorIterator = cursor.iterator();
         } else {
             cursor = this.mongoTemplate.stream(mongoQuery, type);
+            cursorIterator = cursor.iterator();
         }
         return null;
     }
 
     @Override
-    protected void doClose() throws Exception {
+    protected void doClose() {
         cursor.close();
     }
 
@@ -277,29 +225,10 @@ public class MongoDbCursorItemReader<T> extends AbstractItemCountingItemStreamIt
      * @see InitializingBean#afterPropertiesSet()
      */
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         Assert.state(mongoTemplate != null, "An implementation of MongoTemplate is required.");
         Assert.state(type != null, "A type to convert the input into is required.");
-        Assert.state(query != null || mongoQuery != null, "A query is required.");
-    }
-
-    // Copied from StringBasedMongoQuery...is there a place where this type of logic is already exposed?
-    private String replacePlaceholders(String input, List<Object> values) {
-        Matcher matcher = PLACEHOLDER.matcher(input);
-        String result = input;
-
-        while (matcher.find()) {
-            String group = matcher.group();
-            int index = Integer.parseInt(matcher.group(1));
-            result = result.replace(group, getParameterWithIndex(values, index));
-        }
-
-        return result;
-    }
-
-    // Copied from StringBasedMongoQuery...is there a place where this type of logic is already exposed?
-    private String getParameterWithIndex(List<Object> values, int index) {
-        return JSON.serialize(values.get(index));
+        Assert.state(mongoQuery != null, "A query is required.");
     }
 
     private Sort convertToSort(Map<String, Sort.Direction> sorts) {
@@ -309,6 +238,6 @@ public class MongoDbCursorItemReader<T> extends AbstractItemCountingItemStreamIt
             sortValues.add(new Sort.Order(curSort.getValue(), curSort.getKey()));
         }
 
-        return new Sort(sortValues);
+        return Sort.by(sortValues);
     }
 }

@@ -19,48 +19,48 @@
 package uk.ac.ebi.eva.commons.mongodb.filter;
 
 import org.bson.Document;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.data.mongodb.core.query.Criteria;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class VariantRepositoryFilterTest {
     @Test
-    public void getCriteriaEq() throws Exception {
+    public void getCriteriaEq() {
         VariantRepositoryFilter filter = new VariantRepositoryMafFilter("=0.1");
         assertEquals(Criteria.where(VariantRepositoryFilter.MAF_FIELD).is(0.1), filter.getCriteria());
     }
 
     @Test
-    public void getCriteriaGt() throws Exception {
+    public void getCriteriaGt() {
         VariantRepositoryFilter filter = new VariantRepositoryPolyphenFilter(">0.5");
         assertEquals(Criteria.where(VariantRepositoryFilter.POLYPHEN_FIELD).gt(0.5), filter.getCriteria());
     }
 
     @Test
-    public void getCriteriaLt() throws Exception {
+    public void getCriteriaLt() {
         VariantRepositoryFilter filter = new VariantRepositorySiftFilter("<0.9");
         assertEquals(Criteria.where(VariantRepositoryFilter.SIFT_FIELD).lt(0.9),
                 filter.getCriteria());
     }
 
     @Test
-    public void getCriteriaGte() throws Exception {
+    public void getCriteriaGte() {
         VariantRepositoryFilter filter = new VariantRepositoryMafFilter(">=0.12");
         assertEquals(Criteria.where(VariantRepositoryFilter.MAF_FIELD).gte(0.12), filter.getCriteria());
     }
 
     @Test
-    public void getCriteriaLte() throws Exception {
+    public void getCriteriaLte() {
         VariantRepositoryFilter filter = new VariantRepositoryPolyphenFilter("<=0.856");
         assertEquals(Criteria.where(VariantRepositoryFilter.POLYPHEN_FIELD).lte(0.856), filter.getCriteria());
     }
 
     @Test
-    public void getCriteriaIn() throws Exception {
+    public void getCriteriaIn() {
         List<String> studies = new ArrayList<>();
         studies.add("PRJEB123");
         VariantRepositoryFilter filter = new VariantRepositoryStudyFilter(studies);

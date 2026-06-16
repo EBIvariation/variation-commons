@@ -19,10 +19,9 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 import uk.ac.ebi.eva.commons.core.models.VariantStatistics;
@@ -34,8 +33,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 /**
@@ -50,12 +50,9 @@ public class VariantAggregatedVcfFactoryTest {
 
     private VariantAggregatedVcfFactory factory = new VariantAggregatedVcfFactory();
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
     private ListAppender<ILoggingEvent> listAppender;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         // Set up appender to capture log messages
         Logger factoryLogger = (Logger) LoggerFactory.getLogger(VariantVcfFactory.class);
@@ -87,9 +84,9 @@ public class VariantAggregatedVcfFactoryTest {
         List<Variant> variants = factory.create(FILE_ID, STUDY_ID, line);
 
         VariantStatistics stats = variants.get(0).getSourceEntry(FILE_ID, STUDY_ID).getStats();
-        assertEquals(new Integer(304), stats.getGenotypesCount().get(new Genotype("0/0", "C", "T")));
-        assertEquals(new Integer(163), stats.getGenotypesCount().get(new Genotype("0/1", "C", "T")));
-        assertEquals(new Integer(31), stats.getGenotypesCount().get(new Genotype("T/T", "C", "T")));
+        assertEquals(304, stats.getGenotypesCount().get(new Genotype("0/0", "C", "T")));
+        assertEquals(163, stats.getGenotypesCount().get(new Genotype("0/1", "C", "T")));
+        assertEquals(31, stats.getGenotypesCount().get(new Genotype("T/T", "C", "T")));
         assertEquals(0.225903614, stats.getMaf(), 0.0001);
     }
 
@@ -109,14 +106,14 @@ public class VariantAggregatedVcfFactoryTest {
         assertEquals(3, stats.getAltAlleleCount());
         assertEquals(0.006, stats.getAltAlleleFreq(), 0.0001);
         assertEquals(3.0 / 534, stats.getMaf(), 0.0001);
-        assertEquals(new Integer(258), stats.getGenotypesCount().get(new Genotype("0/0", "G", "A")));
-        assertEquals(new Integer(1), stats.getGenotypesCount().get(new Genotype("0/1", "G", "A")));
-        assertEquals(new Integer(1), stats.getGenotypesCount().get(new Genotype("A/A", "G", "A")));
-        assertEquals(new Integer(6), stats.getGenotypesCount().get(new Genotype("0/2", "G", "A")));
-        assertEquals(new Integer(0), stats.getGenotypesCount().get(new Genotype("./.", "G", "A")));
+        assertEquals(258, stats.getGenotypesCount().get(new Genotype("0/0", "G", "A")));
+        assertEquals(1, stats.getGenotypesCount().get(new Genotype("0/1", "G", "A")));
+        assertEquals(1, stats.getGenotypesCount().get(new Genotype("A/A", "G", "A")));
+        assertEquals(6, stats.getGenotypesCount().get(new Genotype("0/2", "G", "A")));
+        assertEquals(0, stats.getGenotypesCount().get(new Genotype("./.", "G", "A")));
 
         stats = variants.get(1).getSourceEntry(FILE_ID, STUDY_ID).getCohortStats("ALL");
-        assertEquals(new Integer(6), stats.getGenotypesCount().get(new Genotype("0/1", "G", "C")));
+        assertEquals(6, stats.getGenotypesCount().get(new Genotype("0/1", "G", "C")));
 
     }
 
@@ -127,9 +124,9 @@ public class VariantAggregatedVcfFactoryTest {
         List<Variant> variants = factory.create(FILE_ID, STUDY_ID, line);
 
         VariantStatistics stats = variants.get(0).getSourceEntry(FILE_ID, STUDY_ID).getStats();
-        assertEquals(new Integer(34), stats.getGenotypesCount().get(new Genotype("0/0", "A", "G")));
-        assertEquals(new Integer(0), stats.getGenotypesCount().get(new Genotype("0/1", "A", "G")));
-        assertEquals(new Integer(1), stats.getGenotypesCount().get(new Genotype("G/G", "A", "G")));
+        assertEquals(34, stats.getGenotypesCount().get(new Genotype("0/0", "A", "G")));
+        assertEquals(0, stats.getGenotypesCount().get(new Genotype("0/1", "A", "G")));
+        assertEquals(1, stats.getGenotypesCount().get(new Genotype("G/G", "A", "G")));
         assertEquals(2.0 / 70, stats.getMaf(), 0.0001);
     }
 
@@ -148,7 +145,7 @@ public class VariantAggregatedVcfFactoryTest {
         assertEquals(alleles[0], alleles[1]);
         VariantAggregatedVcfFactory.getGenotype(5, alleles);    // 2/2
         assertEquals(alleles[0], alleles[1]);
-        assertEquals(alleles[0], new Integer(2));
+        assertEquals(alleles[0], 2);
     }
 
     @Test
@@ -206,25 +203,27 @@ public class VariantAggregatedVcfFactoryTest {
     @Test
     public void variantWithAlleleTotalNumberButNotAlleleCount() {
         String line = "1\t10040\trs123\tT\tC\t.\t.\tAN=5";
-
-        thrown.expect(IncompleteInformationException.class);
-        factory.create(FILE_ID, STUDY_ID, line);
+        assertThrows(IncompleteInformationException.class, () -> {
+            factory.create(FILE_ID, STUDY_ID, line);
+        });
     }
 
     @Test
     public void variantWithAlleleCountButNotAlleleTotalNumber() {
         String line = "1\t10040\trs123\tT\tC\t.\t.\tAC=5";
 
-        thrown.expect(IncompleteInformationException.class);
-        factory.create(FILE_ID, STUDY_ID, line);
+        assertThrows(IncompleteInformationException.class, () -> {
+            factory.create(FILE_ID, STUDY_ID, line);
+        });
     }
 
     @Test
     public void testVariantWithNoAlleleCountsOrFrequency() {
         String line = "1\t1000\t.\tT\tG\t.\t.\tAA=A";
 
-        thrown.expect(IncompleteInformationException.class);
-        factory.create(FILE_ID, STUDY_ID, line);
+        assertThrows(IncompleteInformationException.class, () -> {
+            factory.create(FILE_ID, STUDY_ID, line);
+        });
     }
 
     @Test
@@ -243,8 +242,9 @@ public class VariantAggregatedVcfFactoryTest {
     public void testMultiallelicVariantWithNoAlleleCountsOrFrequency() {
         String line = "1\t1000\t.\tT\tG,A\t.\t.\tAA=A";
 
-        thrown.expect(IncompleteInformationException.class);
-        factory.create(FILE_ID, STUDY_ID, line);
+        assertThrows(IncompleteInformationException.class, () -> {
+            factory.create(FILE_ID, STUDY_ID, line);
+        });
     }
 
     private void assertNonVariantLogged() {

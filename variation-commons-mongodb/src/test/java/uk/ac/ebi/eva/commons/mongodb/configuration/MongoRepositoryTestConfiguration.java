@@ -37,40 +37,40 @@ public class MongoRepositoryTestConfiguration {
     @Bean
     public String mongoCollectionsAnnotationMetadata(
             @Value("${eva.mongo.collections.annotation-metadata:#{null}}") String collectionAnnotationMetadata) {
-        Assert.notNull(collectionAnnotationMetadata);
+        Assert.notNull(collectionAnnotationMetadata, "Annotation Metadata collection name must be provided");
         return collectionAnnotationMetadata;
     }
 
     @Bean
     public String mongoCollectionsAnnotations(
             @Value("${eva.mongo.collections.annotations:#{null}}") String collectionAnnotations) {
-        Assert.notNull(collectionAnnotations);
+        Assert.notNull(collectionAnnotations, "Annotations collection name must be provided");
         return collectionAnnotations;
     }
 
     @Bean
     public String mongoCollectionsFeatures(
             @Value("${eva.mongo.collections.features:#{null}}") String collectionFeatures) {
-        Assert.notNull(collectionFeatures);
+        Assert.notNull(collectionFeatures, "Features collection name must be provided");
         return collectionFeatures;
     }
 
     @Bean
     public String mongoCollectionsVariants(
             @Value("${eva.mongo.collections.variants:#{null}}") String collectionVariants) {
-        Assert.notNull(collectionVariants);
+        Assert.notNull(collectionVariants, "Variants collection name must be provided");
         return collectionVariants;
     }
 
     @Bean
     public String mongoCollectionsFiles(@Value("${eva.mongo.collections.files:#{null}}") String collectionFiles) {
-        Assert.notNull(collectionFiles);
+        Assert.notNull(collectionFiles, "Files collection name must be provided");
         return collectionFiles;
     }
 
     @Bean
     public String mongoCollectionsSamples(@Value("${eva.mongo.collections.samples:#{null}}") String collectionSamples) {
-        Assert.notNull(collectionSamples);
+        Assert.notNull(collectionSamples, "Samples collection name must be provided");
         return collectionSamples;
     }
 }

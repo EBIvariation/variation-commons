@@ -16,20 +16,17 @@
 
 package uk.ac.ebi.eva.commons.beacon.models;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+
+import java.util.Objects;
 
 /**
  * ProfileUpdates
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
 public class ProfileUpdates   {
   @JsonProperty("date")
   private String date = null;
@@ -46,7 +43,7 @@ public class ProfileUpdates   {
    * Date the change was made to the profile.
    * @return date
   **/
-  @ApiModelProperty(example = "2012-07-19 or 2017-01-17T20:33:40Z", value = "Date the change was made to the profile.")
+  @Schema(example = "2012-07-19 or 2017-01-17T20:33:40Z", description = "Date the change was made to the profile.")
 
   public String getDate() {
     return date;
@@ -65,7 +62,7 @@ public class ProfileUpdates   {
    * Text describing the profile change made.
    * @return description
   **/
-  @ApiModelProperty(value = "Text describing the profile change made.")
+  @Schema(description = "Text describing the profile change made.")
 
   public String getDescription() {
     return description;

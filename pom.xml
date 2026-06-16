@@ -6,8 +6,8 @@
 
     <groupId>uk.ac.ebi.eva</groupId>
     <artifactId>variation-commons</artifactId>
+    <version>${revision}</version>
     <packaging>pom</packaging>
-    <version>0.8.11-SNAPSHOT</version>
     <modules>
         <module>variation-commons-core</module>
         <module>variation-commons-mongodb</module>
@@ -17,46 +17,49 @@
     </modules>
 
     <properties>
-        <java.version>1.8</java.version>
-        <spring.boot.version>2.1.0.RELEASE</spring.boot.version>
+        <revision>1.0.0-SNAPSHOT</revision>
+        <java.version>21</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jackson.version>2.17.2</jackson.version>
+        <swagger.version>2.2.22</swagger.version>
+        <apache.commons.version>3.5</apache.commons.version>
+        <google.guava.version>22.0</google.guava.version>
+        <commons.validator.version>1.4.1</commons.validator.version>
+        <commons.codec.version>1.10</commons.codec.version>
     </properties>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.4.13</version>
+    </parent>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <!-- Import dependency management from Spring Boot -->
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring.boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-validator</groupId>
-                        <artifactId>commons-validator</artifactId>
-                    </exclusion>
-                </exclusions>
+                <groupId>uk.ac.ebi.eva</groupId>
+                <artifactId>variation-commons-core</artifactId>
+                <version>${revision}</version>
             </dependency>
             <dependency>
-                <groupId>com.lordofthejars</groupId>
-                <artifactId>nosqlunit-mongodb</artifactId>
-                <scope>test</scope>
-                <version>0.14.0</version>
+                <groupId>uk.ac.ebi.eva</groupId>
+                <artifactId>variation-commons-mongodb</artifactId>
+                <version>${revision}</version>
             </dependency>
             <dependency>
-                <groupId>javax.validation</groupId>
-                <artifactId>validation-api</artifactId>
-                <version>1.1.0.Final</version>
+                <groupId>uk.ac.ebi.eva</groupId>
+                <artifactId>variation-commons-jpa</artifactId>
+                <version>${revision}</version>
             </dependency>
             <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>2.9.9</version>
+                <groupId>uk.ac.ebi.eva</groupId>
+                <artifactId>variation-commons-batch</artifactId>
+                <version>${revision}</version>
             </dependency>
             <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-annotations</artifactId>
-                <version>1.5.22</version>
+                <groupId>uk.ac.ebi.eva</groupId>
+                <artifactId>variation-commons-beacon</artifactId>
+                <version>${revision}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -64,37 +67,16 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+            <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-validator</groupId>
-            <artifactId>commons-validator</artifactId>
-            <version>1.4.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>22.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.5</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.10</version>
         </dependency>
     </dependencies>
 
@@ -114,21 +96,39 @@
     </repositories>
 
     <build>
-        <sourceDirectory>src/main/java</sourceDirectory>
-        <testSourceDirectory>src/test/java</testSourceDirectory>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.2</version>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                    <showDeprecation>true</showDeprecation>
-                    <showWarnings>true</showWarnings>
-                    <encoding>UTF-8</encoding>
+                    <reuseForks>false</reuseForks>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

@@ -16,37 +16,40 @@
 
 package uk.ac.ebi.eva.commons.mongodb.writers;
 
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.ListIndexesIterable;
 import com.mongodb.client.MongoCollection;
-
 import org.bson.Document;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import uk.ac.ebi.eva.commons.core.models.Aggregation;
-import uk.ac.ebi.eva.commons.core.models.StudyType;
-
-import uk.ac.ebi.eva.commons.mongodb.configuration.EvaRepositoriesConfiguration;
-import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
-
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.batch.item.Chunk;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import uk.ac.ebi.eva.commons.core.models.Aggregation;
+import uk.ac.ebi.eva.commons.core.models.StudyType;
+import uk.ac.ebi.eva.commons.mongodb.configuration.EvaRepositoriesConfiguration;
+import uk.ac.ebi.eva.commons.mongodb.configuration.MongoRepositoryTestConfiguration;
 import uk.ac.ebi.eva.commons.mongodb.entities.VariantSourceMongo;
 import uk.ac.ebi.eva.commons.mongodb.entities.subdocuments.VariantGlobalStatsMongo;
+import uk.ac.ebi.eva.commons.mongodb.utils.MongoTestContainerHelper;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.junit.Assert.*;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * {@link VariantSourceMongoWriter}
@@ -54,16 +57,10 @@ import static org.junit.Assert.*;
  * output: the VariantSourceMongo object gets written in mongo, with at least: fname, fid, sid, sname, samp, meta, stype,
  * date, aggregation. Stats are not there because those are written by the statistics job.
  */
-@RunWith(SpringRunner.class)
-@UsingDataSet(locations = {
-        "/test-data/annotation_metadata.json",
-        "/test-data/annotations.json",
-        "/test-data/features.json",
-        "/test-data/files.json",
-        "/test-data/variants.json"})
+@ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:eva.properties")
 @ContextConfiguration(classes = {MongoRepositoryTestConfiguration.class, EvaRepositoriesConfiguration.class})
-public class VariantSourceMongoWriterTest {
+public class VariantSourceMongoWriterTest extends MongoTestContainerHelper {
 
     private static final String COLLECTION_FILES_NAME = "files";
 
@@ -86,24 +83,24 @@ public class VariantSourceMongoWriterTest {
     @Autowired
     private MongoOperations mongoOperations;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() {
         mongoOperations.dropCollection(COLLECTION_FILES_NAME);
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @AfterEach
+    public void tearDown() {
         mongoOperations.dropCollection(COLLECTION_FILES_NAME);
     }
 
     @Test
-    public void shouldWriteAllFieldsIntoMongoDb() throws Exception {
+    public void shouldWriteAllFieldsIntoMongoDb() {
         MongoCollection<Document> fileCollection = mongoOperations.getCollection(COLLECTION_FILES_NAME);
         VariantSourceMongoWriter filesWriter = new VariantSourceMongoWriter(
                 mongoOperations, COLLECTION_FILES_NAME);
 
         VariantSourceMongo variantSource = getVariantSource();
-        filesWriter.write(Collections.singletonList(variantSource));
+        filesWriter.write(Chunk.of(variantSource));
 
         FindIterable<Document> cursor = fileCollection.find();
         int count = 0;
@@ -130,7 +127,7 @@ public class VariantSourceMongoWriterTest {
     }
 
     @Test
-    public void shouldDoUpdateInCaseOfExistingDocument() throws Exception {
+    public void shouldDoUpdateInCaseOfExistingDocument() {
         MongoCollection<Document> fileCollection = mongoOperations.getCollection(COLLECTION_FILES_NAME);
         VariantSourceMongoWriter filesWriter = new VariantSourceMongoWriter(
                 mongoOperations, COLLECTION_FILES_NAME);
@@ -138,7 +135,7 @@ public class VariantSourceMongoWriterTest {
         // make an entry into the database
         VariantSourceMongo variantSource = new VariantSourceMongo(FILE_ID, FILE_NAME, STUDY_ID, STUDY_NAME,
                 StudyType.AGGREGATE, Aggregation.BASIC, null, null, null);
-        filesWriter.write(Collections.singletonList(variantSource));
+        filesWriter.write(Chunk.of(variantSource));
         FindIterable<Document> cursor = fileCollection.find();
         int count = 0;
         for (Document next : cursor) {
@@ -157,7 +154,7 @@ public class VariantSourceMongoWriterTest {
 
         // insert another document with same fileId, studyId and fileName
         variantSource = getVariantSource();
-        filesWriter.write(Collections.singletonList(variantSource));
+        filesWriter.write(Chunk.of(variantSource));
         cursor = fileCollection.find();
         count = 0;
         for (Document next : cursor) {
@@ -185,7 +182,7 @@ public class VariantSourceMongoWriterTest {
     }
 
     @Test
-    public void shouldWriteSamplesWithDotsInName() throws Exception {
+    public void shouldWriteSamplesWithDotsInName() {
         MongoCollection<Document> fileCollection = mongoOperations.getCollection(COLLECTION_FILES_NAME);
 
         VariantSourceMongoWriter filesWriter = new VariantSourceMongoWriter(
@@ -198,7 +195,7 @@ public class VariantSourceMongoWriterTest {
         samplesPosition.put("JP-dash", 3);
         variantSource.setSamplesPosition(samplesPosition);
 
-        filesWriter.write(Collections.singletonList(variantSource));
+        filesWriter.write(Chunk.of(variantSource));
 
         FindIterable<Document> cursor = fileCollection.find();
 
@@ -212,12 +209,12 @@ public class VariantSourceMongoWriterTest {
     }
 
     @Test
-    public void shouldCreateUniqueFileIndex() throws Exception {
+    public void shouldCreateUniqueFileIndex() {
         MongoCollection<Document> fileCollection = mongoOperations.getCollection(COLLECTION_FILES_NAME);
         VariantSourceMongoWriter filesWriter = new VariantSourceMongoWriter(mongoOperations, COLLECTION_FILES_NAME);
 
         VariantSourceMongo variantSource = getVariantSource();
-        filesWriter.write(Collections.singletonList(variantSource));
+        filesWriter.write(Chunk.of(variantSource));
 
         ListIndexesIterable<Document> indexesInfo = fileCollection.listIndexes();
 
@@ -237,7 +234,7 @@ public class VariantSourceMongoWriterTest {
         }
     }
 
-    private VariantSourceMongo getVariantSource() throws Exception {
+    private VariantSourceMongo getVariantSource() {
         Map<String, Integer> samplesPosition = new HashMap<>();
         samplesPosition.put("sample0", 0);
         samplesPosition.put("sample1", 1);

@@ -16,20 +16,22 @@
 
 package uk.ac.ebi.eva.commons.beacon.models;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.validation.annotation.Validated;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import java.util.Objects;
 
 /**
  * BeaconDataset
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
 public class BeaconDataset   {
     @JsonProperty("id")
     private String id = null;
@@ -80,7 +82,7 @@ public class BeaconDataset   {
      * Unique identifier of the dataset.
      * @return id
      **/
-    @ApiModelProperty(required = true, value = "Unique identifier of the dataset.")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Unique identifier of the dataset.")
     @NotNull
 
     public String getId() {
@@ -100,7 +102,7 @@ public class BeaconDataset   {
      * Name of the dataset.
      * @return name
      **/
-    @ApiModelProperty(required = true, value = "Name of the dataset.")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Name of the dataset.")
     @NotNull
 
     public String getName() {
@@ -120,7 +122,7 @@ public class BeaconDataset   {
      * Description of the dataset.
      * @return description
      **/
-    @ApiModelProperty(value = "Description of the dataset.")
+    @Schema(description = "Description of the dataset.")
 
     public String getDescription() {
         return description;
@@ -139,7 +141,7 @@ public class BeaconDataset   {
      * Assembly identifier (GRC notation, e.g. `GRCh37`).
      * @return assemblyId
      **/
-    @ApiModelProperty(example = "GRCh38", required = true, value = "Assembly identifier (GRC notation, e.g. `GRCh37`).")
+    @Schema(example = "GRCh38", requiredMode = Schema.RequiredMode.REQUIRED, description = "Assembly identifier (GRC notation, e.g. `GRCh37`).")
     @NotNull
 
     public String getAssemblyId() {
@@ -159,7 +161,7 @@ public class BeaconDataset   {
      * The time the dataset was created (ISO 8601 format).
      * @return createDateTime
      **/
-    @ApiModelProperty(example = "2012-07-29 or 2017-01-17T20:33:40Z", required = true, value = "The time the dataset was created (ISO 8601 format).")
+    @Schema(example = "2012-07-29 or 2017-01-17T20:33:40Z", requiredMode = Schema.RequiredMode.REQUIRED, description = "The time the dataset was created (ISO 8601 format).")
     @NotNull
 
     public String getCreateDateTime() {
@@ -179,7 +181,7 @@ public class BeaconDataset   {
      * The time the dataset was updated in (ISO 8601 format).
      * @return updateDateTime
      **/
-    @ApiModelProperty(example = "2012-07-19 or 2017-01-17T20:33:40Z", required = true, value = "The time the dataset was updated in (ISO 8601 format).")
+    @Schema(example = "2012-07-19 or 2017-01-17T20:33:40Z", requiredMode = Schema.RequiredMode.REQUIRED, description = "The time the dataset was updated in (ISO 8601 format).")
     @NotNull
 
     public String getUpdateDateTime() {
@@ -199,7 +201,7 @@ public class BeaconDataset   {
      * Version of the dataset.
      * @return version
      **/
-    @ApiModelProperty(value = "Version of the dataset.")
+    @Schema(description = "Version of the dataset.")
 
     public String getVersion() {
         return version;
@@ -219,7 +221,7 @@ public class BeaconDataset   {
      * minimum: 0
      * @return variantCount
      **/
-    @ApiModelProperty(value = "Total number of variants in the dataset.")
+    @Schema(description = "Total number of variants in the dataset.")
 
     @Min(0L)  public Long getVariantCount() {
         return variantCount;
@@ -239,7 +241,7 @@ public class BeaconDataset   {
      * minimum: 0
      * @return callCount
      **/
-    @ApiModelProperty(value = "Total number of calls in the dataset.")
+    @Schema(description = "Total number of calls in the dataset.")
 
     @Min(0L)  public Long getCallCount() {
         return callCount;
@@ -259,7 +261,7 @@ public class BeaconDataset   {
      * minimum: 0
      * @return sampleCount
      **/
-    @ApiModelProperty(value = "Total number of samples in the dataset.")
+    @Schema(description = "Total number of samples in the dataset.")
 
     @Min(0L)  public Long getSampleCount() {
         return sampleCount;
@@ -278,7 +280,7 @@ public class BeaconDataset   {
      * URL to an external system providing more dataset information (RFC 3986 format).
      * @return externalUrl
      **/
-    @ApiModelProperty(example = "http://example.org/wiki/Main_Page", value = "URL to an external system providing more dataset information (RFC 3986 format).")
+    @Schema(example = "http://example.org/wiki/Main_Page", description = "URL to an external system providing more dataset information (RFC 3986 format).")
 
     public String getExternalUrl() {
         return externalUrl;
@@ -305,7 +307,7 @@ public class BeaconDataset   {
      * Additional structured metadata, key-value pairs.
      * @return info
      **/
-    @ApiModelProperty(value = "Additional structured metadata, key-value pairs.")
+    @Schema(description = "Additional structured metadata, key-value pairs.")
     @Valid
     public List<KeyValuePair> getInfo() {
         return info;
@@ -324,7 +326,7 @@ public class BeaconDataset   {
      * Get dataUseConditions
      * @return dataUseConditions
      **/
-    @ApiModelProperty(value = "")
+    @Schema(description ="")
 
     @Valid
     public DataUseConditions getDataUseConditions() {

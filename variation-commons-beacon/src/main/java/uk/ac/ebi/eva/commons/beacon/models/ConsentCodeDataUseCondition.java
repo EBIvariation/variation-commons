@@ -16,21 +16,19 @@
 
 package uk.ac.ebi.eva.commons.beacon.models;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+
+import java.util.Objects;
 
 /**
  * Data use condition.
  */
-@ApiModel(description = "Data use condition.")
+@Schema(description = "Data use condition.")
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
 public class ConsentCodeDataUseCondition   {
   @JsonProperty("code")
   private String code = null;
@@ -47,7 +45,7 @@ public class ConsentCodeDataUseCondition   {
    * Consent code abbreviation.
    * @return code
   **/
-  @ApiModelProperty(example = "NRES", required = true, value = "Consent code abbreviation.")
+  @Schema(example = "NRES", requiredMode = Schema.RequiredMode.REQUIRED, description ="Consent code abbreviation.")
   @NotNull
 
   public String getCode() {
@@ -67,7 +65,7 @@ public class ConsentCodeDataUseCondition   {
    * Description of the condition.
    * @return description
   **/
-  @ApiModelProperty(value = "Description of the condition.")
+  @Schema(description ="Description of the condition.")
 
   public String getDescription() {
     return description;

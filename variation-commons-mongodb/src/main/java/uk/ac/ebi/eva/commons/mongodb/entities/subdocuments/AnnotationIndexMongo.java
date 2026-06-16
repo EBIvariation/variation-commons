@@ -75,8 +75,8 @@ public class AnnotationIndexMongo {
      * @throws IllegalArgumentException If {@param vepVersion} or {@param vepCacheVersion} are null or empty values.
      */
     public AnnotationIndexMongo(String vepVersion, String vepCacheVersion) {
-        Assert.hasText(vepVersion);
-        Assert.hasText(vepCacheVersion);
+        Assert.hasText(vepVersion, "vepVersion must not be empty");
+        Assert.hasText(vepCacheVersion, "vepCacheVersion must not be empty");
         this.vepVersion = vepVersion;
         this.vepCacheVersion = vepCacheVersion;
         this.soAccessions = new HashSet<>();

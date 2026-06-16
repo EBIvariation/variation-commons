@@ -1,11 +1,10 @@
 package uk.ac.ebi.eva.commons.mongodb.utils;
 
-import com.mongodb.MongoClientURI;
+import com.mongodb.ConnectionString;
 import com.mongodb.ReadPreference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
@@ -16,7 +15,7 @@ import java.util.Objects;
 import static java.lang.String.format;
 
 // Adapted from https://github.com/mongodb/mongo-hadoop/blob/20208a027ad8638e56dfcf040773f176d6ee059f/core/src/main/java/com/mongodb/hadoop/util/MongoClientURIBuilder.java#L1
-public class MongoClientURIBuilder {
+public class MongoConnectionStringBuilder {
     private String host;
     private Integer port;
     private String database;
@@ -25,12 +24,12 @@ public class MongoClientURIBuilder {
     private boolean portProvidedAsPartOfHost = false;
     private final Map<String, String> params = new LinkedHashMap<>();
 
-    private static final Logger logger = LoggerFactory.getLogger(MongoClientURIBuilder.class);
+    private static final Logger logger = LoggerFactory.getLogger(MongoConnectionStringBuilder.class);
 
-    public MongoClientURIBuilder() {
+    public MongoConnectionStringBuilder() {
     }
 
-    public MongoClientURIBuilder host(final String host) {
+    public MongoConnectionStringBuilder host(final String host) {
         // Use localhost by default if no host is provided.
         String hostToUse = (Objects.nonNull(host) && !host.isEmpty()) ? host : "localhost";
         if (hostToUse.contains(":")) {
@@ -40,7 +39,7 @@ public class MongoClientURIBuilder {
         return this;
     }
 
-    public MongoClientURIBuilder port(final Integer port) {
+    public MongoConnectionStringBuilder port(final Integer port) {
         if (this.portProvidedAsPartOfHost) {
             logger.warn("Port already provided in parameter 'hosts'. Therefore, ignoring 'port' parameter...");
             return this;
@@ -50,24 +49,26 @@ public class MongoClientURIBuilder {
         return this;
     }
 
-    public MongoClientURIBuilder database(final String database) {
+    public MongoConnectionStringBuilder database(final String database) {
         this.database = database;
         return this;
     }
 
-    public MongoClientURIBuilder username(final String userName) {
-        this.userName = userName;
-        return this;
-    }
-
-    public MongoClientURIBuilder password(final String password) throws UnsupportedEncodingException {
-        if(Objects.nonNull(password)) {
-            this.password = URLEncoder.encode(password, StandardCharsets.UTF_8.toString());
+    public MongoConnectionStringBuilder username(final String userName) {
+        if (Objects.nonNull(userName)) {
+            this.userName = URLEncoder.encode(userName, StandardCharsets.UTF_8);
         }
         return this;
     }
 
-    public MongoClientURIBuilder authenticationDatabase(final String authenticationDatabase) {
+    public MongoConnectionStringBuilder password(final String password) {
+        if (Objects.nonNull(password)) {
+            this.password = URLEncoder.encode(password, StandardCharsets.UTF_8);
+        }
+        return this;
+    }
+
+    public MongoConnectionStringBuilder authenticationDatabase(final String authenticationDatabase) {
         if (Objects.nonNull(userName) && !userName.isEmpty() &&
                 Objects.nonNull(password) && !password.isEmpty()) {
             return this.param("authSource", authenticationDatabase);
@@ -76,7 +77,7 @@ public class MongoClientURIBuilder {
         return this;
     }
 
-    public MongoClientURIBuilder authenticationMechanism(final String authenticationMechanism) {
+    public MongoConnectionStringBuilder authenticationMechanism(final String authenticationMechanism) {
         if (Objects.nonNull(userName) && !userName.isEmpty() &&
                 Objects.nonNull(password) && !password.isEmpty()) {
             return this.param("authMechanism", authenticationMechanism);
@@ -85,18 +86,18 @@ public class MongoClientURIBuilder {
         return this;
     }
 
-    public MongoClientURIBuilder readPreference(final ReadPreference readPreference) {
+    public MongoConnectionStringBuilder readPreference(final ReadPreference readPreference) {
         return this.param("readPreference", readPreference.getName());
     }
 
-    public MongoClientURIBuilder param(final String key, final String value) {
+    public MongoConnectionStringBuilder param(final String key, final String value) {
         if (Objects.nonNull(value) && !value.isEmpty()) {
             this.params.put(key, value);
         }
         return this;
     }
 
-    public MongoClientURI build() {
+    public ConnectionString build() {
         StringBuilder uri = new StringBuilder("mongodb://");
         if (Objects.nonNull(userName) && !userName.isEmpty() &&
                 Objects.nonNull(password) && !password.isEmpty()) {
@@ -118,6 +119,6 @@ public class MongoClientURIBuilder {
                 uri.append(format("%s=%s", entry.getKey(), entry.getValue()));
             }
         }
-        return new MongoClientURI(uri.toString());
+        return new ConnectionString(uri.toString());
     }
 }

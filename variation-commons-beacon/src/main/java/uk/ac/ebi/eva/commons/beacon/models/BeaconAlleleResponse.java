@@ -16,20 +16,21 @@
 
 package uk.ac.ebi.eva.commons.beacon.models;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.validation.annotation.Validated;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import java.util.Objects;
 
 /**
  * BeaconAlleleResponse
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
 public class BeaconAlleleResponse   {
     @JsonProperty("beaconId")
     private String beaconId = null;
@@ -59,7 +60,7 @@ public class BeaconAlleleResponse   {
      * Identifier of the beacon, as defined in `Beacon`.
      * @return beaconId
      **/
-    @ApiModelProperty(required = true, value = "Identifier of the beacon, as defined in `Beacon`.")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Identifier of the beacon, as defined in `Beacon`.")
     @NotNull
 
     public String getBeaconId() {
@@ -79,7 +80,7 @@ public class BeaconAlleleResponse   {
      * Version of the API. If specified, the value must match `apiVersion` in Beacon
      * @return apiVersion
      **/
-    @ApiModelProperty(value = "Version of the API. If specified, the value must match `apiVersion` in Beacon")
+    @Schema(description = "Version of the API. If specified, the value must match `apiVersion` in Beacon")
 
     public String getApiVersion() {
         return apiVersion;
@@ -98,7 +99,7 @@ public class BeaconAlleleResponse   {
      * Indicator of whether the given allele was observed in any of the datasets queried. This should be non-null, unless there was an error, in which case `error` has to be non-null.
      * @return exists
      **/
-    @ApiModelProperty(value = "Indicator of whether the given allele was observed in any of the datasets queried. This should be non-null, unless there was an error, in which case `error` has to be non-null.")
+    @Schema(description = "Indicator of whether the given allele was observed in any of the datasets queried. This should be non-null, unless there was an error, in which case `error` has to be non-null.")
 
     public Boolean isExists() {
         return exists;
@@ -117,7 +118,7 @@ public class BeaconAlleleResponse   {
      * Get alleleRequest
      * @return alleleRequest
      **/
-    @ApiModelProperty(value = "")
+    @Schema(description = "")
 
     @Valid
     public BeaconAlleleRequest getAlleleRequest() {
@@ -145,7 +146,7 @@ public class BeaconAlleleResponse   {
      * Indicator of whether the given allele was  observed in individual datasets. This should be non-null if `includeDatasetResponses` in the corresponding `BeaconAlleleRequest` is true, and null otherwise.
      * @return datasetAlleleResponses
      **/
-    @ApiModelProperty(value = "Indicator of whether the given allele was  observed in individual datasets. This should be non-null if `includeDatasetResponses` in the corresponding `BeaconAlleleRequest` is true, and null otherwise.")
+    @Schema(description = "Indicator of whether the given allele was  observed in individual datasets. This should be non-null if `includeDatasetResponses` in the corresponding `BeaconAlleleRequest` is true, and null otherwise.")
     @Valid
     public List<BeaconDatasetAlleleResponse> getDatasetAlleleResponses() {
         return datasetAlleleResponses;
@@ -164,7 +165,7 @@ public class BeaconAlleleResponse   {
      * Get error
      * @return error
      **/
-    @ApiModelProperty(value = "")
+    @Schema(description = "")
 
     @Valid
     public BeaconError getError() {

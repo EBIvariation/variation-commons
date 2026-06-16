@@ -15,9 +15,8 @@
  */
 package uk.ac.ebi.eva.commons.batch.io;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.test.MetaDataInstanceFactory;
 
@@ -29,13 +28,15 @@ import uk.ac.ebi.eva.commons.core.utils.FileUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * {@link AggregatedVcfReader}
@@ -54,17 +55,19 @@ public class AggregatedVcfReaderTest {
 
     private static final String INPUT_FILE_PATH_EVS = "/input-files/vcf/aggregated.evs.vcf.gz";
 
-    @Rule
-    public TemporaryFolder temporaryFolderRule = new TemporaryFolder();
+    @TempDir
+    Path tempDir;
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowOnInvalidAggregation() throws IOException {
-        new AggregatedVcfReader(FILE_ID, STUDY_ID, Aggregation.NONE, null, FileUtils.getResourceFile(INPUT_FILE_PATH));
+    @Test
+    public void shouldThrowOnInvalidAggregation() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new AggregatedVcfReader(FILE_ID, STUDY_ID, Aggregation.NONE, null, FileUtils.getResourceFile(INPUT_FILE_PATH)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowOnNullAggregation() throws IOException {
-        new AggregatedVcfReader(FILE_ID, STUDY_ID, null, null, FileUtils.getResourceFile(INPUT_FILE_PATH));
+    @Test
+    public void shouldThrowOnNullAggregation() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new AggregatedVcfReader(FILE_ID, STUDY_ID, null, null, FileUtils.getResourceFile(INPUT_FILE_PATH)));
     }
 
     @Test
@@ -104,11 +107,11 @@ public class AggregatedVcfReaderTest {
 
         // uncompress the input VCF into a temporal file
         File input = FileUtils.getResourceFile(INPUT_FILE_PATH);
-        File tempFile = temporaryFolderRule.newFile();
-        CompressionHelper.uncompress(input.getAbsolutePath(), tempFile);
+        Path tempFile = Files.createTempFile(tempDir, "test-input-", ".tmp");
+        CompressionHelper.uncompress(input.getAbsolutePath(), tempFile.toFile());
 
         AggregatedVcfReader vcfReader = new AggregatedVcfReader(FILE_ID, STUDY_ID, Aggregation.BASIC,
-                                                                null, tempFile);
+                                                                null, tempFile.toFile());
         vcfReader.setSaveState(false);
         vcfReader.open(executionContext);
 

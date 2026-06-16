@@ -16,21 +16,19 @@
 
 package uk.ac.ebi.eva.commons.beacon.models;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+
+import java.util.Objects;
 
 /**
  * Beacon-specific error. This should be non-null in exceptional situations only, in which case &#x60;exists&#x60; has to be null.
  */
-@ApiModel(description = "Beacon-specific error. This should be non-null in exceptional situations only, in which case `exists` has to be null.")
+@Schema(description = "Beacon-specific error. This should be non-null in exceptional situations only, in which case `exists` has to be null.")
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
 public class BeaconError   {
     @JsonProperty("errorCode")
     private Integer errorCode = null;
@@ -47,7 +45,7 @@ public class BeaconError   {
      * Get errorCode
      * @return errorCode
      **/
-    @ApiModelProperty(required = true, value = "")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "")
     @NotNull
 
     public Integer getErrorCode() {
@@ -67,7 +65,7 @@ public class BeaconError   {
      * Get errorMessage
      * @return errorMessage
      **/
-    @ApiModelProperty(value = "")
+    @Schema(description = "")
 
     public String getErrorMessage() {
         return errorMessage;

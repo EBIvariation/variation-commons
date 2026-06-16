@@ -16,20 +16,18 @@
 
 package uk.ac.ebi.eva.commons.beacon.models;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+
+import java.util.Objects;
 
 /**
  * ClinicalDescription
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-06-18T18:08:34.969Z[GMT]")
 public class ClinicalDescription   {
   @JsonProperty("type")
   private ClinicalProfile type = null;
@@ -49,7 +47,7 @@ public class ClinicalDescription   {
    * Get type
    * @return type
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description = "")
 
   @Valid
   public ClinicalProfile getType() {
@@ -69,7 +67,7 @@ public class ClinicalDescription   {
    * Get description
    * @return description
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description = "")
 
   public String getDescription() {
     return description;
@@ -88,7 +86,7 @@ public class ClinicalDescription   {
    * Get restriction
    * @return restriction
   **/
-  @ApiModelProperty(value = "")
+  @Schema(description = "")
 
   @Valid
   public RestrictionsULF getRestriction() {

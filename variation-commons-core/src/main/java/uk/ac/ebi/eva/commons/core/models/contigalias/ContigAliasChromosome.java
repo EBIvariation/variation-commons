@@ -18,7 +18,6 @@
 package uk.ac.ebi.eva.commons.core.models.contigalias;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ContigAliasChromosome {
