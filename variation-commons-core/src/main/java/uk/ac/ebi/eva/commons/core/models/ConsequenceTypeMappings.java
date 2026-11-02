@@ -78,6 +78,10 @@ public class ConsequenceTypeMappings {
         termToAccession.put("polypeptide_variation_site", 336);
         termToAccession.put("protein_altering_variant", 1818);
         termToAccession.put("start_lost", 2012);
+        termToAccession.put("splice_donor_5th_base_variant", 1787);
+        termToAccession.put("splice_donor_region_variant", 2170);
+        termToAccession.put("splice_polypyrimidine_tract_variant", 2169);
+        termToAccession.put("start_retained_variant", 2019);
 
         // Fill the accession to term map
         for(String key : termToAccession.keySet()) {
